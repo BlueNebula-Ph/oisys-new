@@ -1,0 +1,60 @@
+@import '~@angular/material/prebuilt-themes/purple-green.css';
+
+/* You can add global styles to this file, and also import other style files */
+body {
+    background-color: #404040;
+    color: #fff;
+}
+
+h1, h2, h3, h4, .h1, .h2, .h3, .h4 {
+    font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif
+}
+
+h1.main-header {
+    margin-left: 10px;
+}
+
+h1 small {
+    color: #fff;
+}
+
+h3, .h3 {
+    margin-top: 10px;
+}
+
+.loading {
+    text-align: center;
+    font-size: 1.5em;
+    color: #fff;
+    font-weight: bold;
+    font-style: italic;
+    margin-top: 20px;
+}
+
+/* Tables */
+.table-container {
+    border: 1px solid #ccc;
+}
+
+mat-header-row {
+    min-height: 40px !important;
+}
+
+mat-row {
+    min-height: 0 !important;
+}
+
+.mat-sort-header-button {
+    font-weight: bold !important;
+    font-size: medium !important;
+}
+
+/* Form */
+.mat-form-field-label {
+    color: #fff !important;
+}
+
+.mat-form-field {
+    font-size: 14px;
+    width: 100%;
+}

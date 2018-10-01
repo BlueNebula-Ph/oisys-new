@@ -1,0 +1,37 @@
+<div class="col-md-6 category-list">
+  <mat-form-field appearance="fill">
+    <mat-label><i matPrefix class="fa fa-search"></i> Search categories</mat-label>
+    <input matInput placeholder="Search categories" #searchBox autofocus>
+  </mat-form-field>
+
+  <div class="table-container">
+    <mat-table [dataSource]="dataSource" matSort>
+
+      <!-- Name Column -->
+      <ng-container matColumnDef="name">
+        <mat-header-cell *matHeaderCellDef mat-sort-header>Category</mat-header-cell>
+        <mat-cell *matCellDef="let category">{{ category.name }}</mat-cell>
+      </ng-container>
+
+      <ng-container matColumnDef="buttons">
+        <mat-header-cell *matHeaderCellDef></mat-header-cell>
+        <mat-cell *matCellDef="let category">
+          <button mat-icon-button>
+            <i class="fa fa-pencil"></i>
+          </button>
+          <button mat-icon-button>
+            <i class="fa fa-trash-o"></i>
+          </button>
+        </mat-cell>
+      </ng-container>
+
+      <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+      <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+    </mat-table>
+
+    <mat-paginator [length]="resultsLength" [pageSize]="20" showFirstLastButtons></mat-paginator>
+  </div>
+</div>
+<div class="col-md-6 category-add">
+  <app-edit-category></app-edit-category>
+</div>
