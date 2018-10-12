@@ -12,5 +12,10 @@ namespace OisysNew.DTO.Category
         /// </summary>
         [Required(ErrorMessage = "Category name is required.")]
         public string Name { get; set; }
+
+        /// <summary>
+        /// Gets or sets the row version for concurrency check
+        /// </summary> 
+        public string RowVersion { get; set; }
     }
 }

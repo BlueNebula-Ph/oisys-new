@@ -1,23 +1,31 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Category } from '../models/category';
 import { Observable, of } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import { catchError, map, tap } from 'rxjs/operators';
 import { SummaryItem } from '../models/summary-item';
 
+const httpOptions = {
+  headers: new HttpHeaders({
+    'Content-Type':  'application/json'
+  })
+};
+
 @Injectable({
   providedIn: 'root'
 })
 export class CategoryService {
-  private url = environment.apiHost + 'api/category/search';
+  private url = environment.apiHost + 'api/category';
 
   constructor(private http: HttpClient) { }
 
   getCategories(pageNumber: number, pageSize: number, sortBy: string, sortDirection: string, searchTerm: string):
     Observable<SummaryItem> {
       var filter = { pageNumber, pageSize, sortBy, sortDirection, searchTerm };
-      return this.http.post<any>(this.url, filter)
+      var searchUrl = this.url + '/search';
+
+      return this.http.post<any>(searchUrl, filter)
         .pipe(
           catchError(this.handleError('getCategories', []))
         );
@@ -25,13 +33,19 @@ export class CategoryService {
 
   getCategoryById(id: number):
     Category {
-      return { id: 0, name: "", rowVersion: "" };
+      return new Category(0, '', '');
+    };
+
+  getCategoryLookup():
+    Observable<Category[]> {
+      return null;
     };
   
-  saveCategory():
+  saveCategory(category: Category):
     void {
-      alert('category saved!');
-    }; 
+      this.http.post<any>(this.url, category, httpOptions)
+        .subscribe((result) => { console.log(result); });
+    };
 
   deleteCategory(id: number):
     void {

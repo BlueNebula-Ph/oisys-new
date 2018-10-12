@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.SpaServices.AngularCli;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using OisysNew.Helpers;
 using Swashbuckle.AspNetCore.Swagger;
 
 namespace OisysNew
@@ -26,14 +27,16 @@ namespace OisysNew
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddAutoMapper();
-
             services.AddDbContext<OisysDbContext>(opt =>
             {
                 opt.UseInMemoryDatabase("OisysDb");
             });
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+
+            // App services
+            services.AddAutoMapper();
+            services.AddTransient<IListHelpers, ListHelpers>();
 
             // In production, the Angular files will be served from this directory
             services.AddSpaStaticFiles(configuration =>

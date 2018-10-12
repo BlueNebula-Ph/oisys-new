@@ -10,18 +10,21 @@ using AutoMapper.QueryableExtensions;
 using OisysNew.DTO.Category;
 using OisysNew.Models;
 using System.Collections.Generic;
+using Oisys.Web.DTO;
 
 namespace OisysNew.Controllers
 {
     /// <summary>
     /// <see cref="CategoryController"/> handles creating, reading, updating and deleting categories
     /// </summary>
+    [ApiController]
     [Produces("application/json")]
     [Route("api/[controller]")]
     public class CategoryController : Controller
     {
         private readonly OisysDbContext context;
         private readonly IMapper mapper;
+        private readonly IListHelpers listHelpers;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="CategoryController"/> class.
@@ -30,10 +33,12 @@ namespace OisysNew.Controllers
         /// <param name="mapper">Automapper</param>
         public CategoryController(
             OisysDbContext context,
-            IMapper mapper)
+            IMapper mapper,
+            IListHelpers listHelpers)
         {
             this.context = context;
             this.mapper = mapper;
+            this.listHelpers = listHelpers;
         }
 
         /// <summary>
@@ -42,7 +47,8 @@ namespace OisysNew.Controllers
         /// <param name="filter"><see cref="CategoryFilterRequest"/></param>
         /// <returns>List of Category</returns>
         [HttpPost("search", Name = "GetAllCategories")]
-        public async Task<IActionResult> GetAll([FromBody] CategoryFilterRequest filter)
+        [ProducesResponseType(200)]
+        public async Task<ActionResult<PaginatedList<CategorySummary>>> GetAll([FromBody] CategoryFilterRequest filter)
         {
             // get list of active categories (not deleted)
             var list = this.context.Categories
@@ -64,17 +70,8 @@ namespace OisysNew.Controllers
 
             list = list.OrderBy(ordering);
 
-            var count = await list.CountAsync();
-
-            var entities = list
-                .Page(filter.PageNumber, filter.PageSize)
-                .ToList();
-
-            return this.Ok(new 
-            {
-                items = entities,
-                total_count = count
-            });
+            var result = await this.listHelpers.CreatePaginatedListAsync<Category, CategorySummary>(list, filter.PageNumber, filter.PageSize);
+            return result;
         }
 
         /// <summary>
@@ -82,7 +79,8 @@ namespace OisysNew.Controllers
         /// </summary>
         /// <returns>List of Categories</returns>
         [HttpGet("lookup", Name = "GetCategoryLookup")]
-        public IActionResult GetLookup()
+        [ProducesResponseType(200)]
+        public async Task<ActionResult<IEnumerable<CategoryLookup>>> GetLookup()
         {
             // get list of active items (not deleted)
             var list = this.context.Categories
@@ -94,9 +92,8 @@ namespace OisysNew.Controllers
 
             list = list.OrderBy(ordering);
 
-            var entities = list.ProjectTo<CategoryLookup>();
-
-            return this.Ok(entities);
+            var categories = await list.ProjectTo<CategoryLookup>().ToListAsync();
+            return categories;
         }
 
         /// <summary>
@@ -105,7 +102,9 @@ namespace OisysNew.Controllers
         /// <param name="id">id</param>
         /// <returns>Category</returns>
         [HttpGet("{id}", Name = "GetCategory")]
-        public async Task<IActionResult> GetById(long id)
+        [ProducesResponseType(200)]
+        [ProducesResponseType(404)]
+        public async Task<ActionResult<CategorySummary>> GetById(long id)
         {
             var entity = await this.context.Categories
                 .AsNoTracking()
@@ -116,9 +115,8 @@ namespace OisysNew.Controllers
                 return this.NotFound(id);
             }
 
-            var mappedEntity = this.mapper.Map<CategorySummary>(entity);
-
-            return this.Ok(mappedEntity);
+            var category = this.mapper.Map<CategorySummary>(entity);
+            return category;
         }
 
         /// <summary>
@@ -127,8 +125,16 @@ namespace OisysNew.Controllers
         /// <param name="entity">entity to be created</param>
         /// <returns>Category</returns>
         [HttpPost]
-        public async Task<IActionResult> Create([FromBody] SaveCategoryRequest entity)
+        [ProducesResponseType(201)]
+        [ProducesResponseType(400)]
+        public async Task<ActionResult<SaveCategoryRequest>> Create([FromBody] SaveCategoryRequest entity)
         {
+            // TODO: Move to a filter
+            if(!ModelState.IsValid)
+            {
+                return this.BadRequest(ModelState);
+            }
+
             var category = this.mapper.Map<Category>(entity);
             await this.context.Categories.AddAsync(category);
             await this.context.SaveChangesAsync();
@@ -143,7 +149,10 @@ namespace OisysNew.Controllers
         /// <param name="entity">entity</param>
         /// <returns>None</returns>
         [HttpPut("{id}")]
-        public async Task<IActionResult> Update(long id, [FromBody] SaveCategoryRequest entity)
+        [ProducesResponseType(200)]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(404)]
+        public async Task<ActionResult> Update(long id, [FromBody] SaveCategoryRequest entity)
         {
             var category = await this.context.Categories.SingleOrDefaultAsync(t => t.Id == id);
             if (category == null)
@@ -175,7 +184,9 @@ namespace OisysNew.Controllers
         /// <param name="id">id</param>
         /// <returns>None</returns>
         [HttpDelete("{id}")]
-        public async Task<IActionResult> Delete(long id)
+        [ProducesResponseType(200)]
+        [ProducesResponseType(404)]
+        public async Task<ActionResult> Delete(long id)
         {
             var category = await this.context.Categories.SingleOrDefaultAsync(t => t.Id == id);
             if (category == null)

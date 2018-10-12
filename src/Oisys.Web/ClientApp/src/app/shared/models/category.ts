@@ -1,5 +1,7 @@
-export interface Category {
-    id: number;
-    name: string;
-    rowVersion: string;
+export class Category {
+    constructor(public id?: number, public name?: string, public rowVersion?: string) {
+        this.id = id || 0;
+        this.name = name || '';
+        this.rowVersion = rowVersion || '';
+    };
 }

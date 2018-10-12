@@ -5,10 +5,10 @@
   <mat-card-content>
       <mat-form-field appearance="outline">
           <mat-label>Category Name</mat-label>
-          <input matInput required>
+          <input #categoryName (keyup.enter)="saveCategory(categoryName.value);" matInput required>
         </mat-form-field>
         <div class="button-row">
-          <button mat-flat-button color="primary">
+          <button mat-flat-button color="primary" (click)="saveCategory(categoryName.value);">
               <i class="fa fa-save"></i> Save
           </button>
         </div>

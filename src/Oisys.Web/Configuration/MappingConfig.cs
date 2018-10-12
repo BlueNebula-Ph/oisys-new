@@ -15,6 +15,11 @@
         /// </summary>
         public MappingConfig()
         {
+            // Category
+            this.CreateMap<Category, CategorySummary>();
+            this.CreateMap<Category, CategoryLookup>();
+            this.CreateMap<SaveCategoryRequest, Category>();
+
             // // Adjustment
             // this.CreateMap<Adjustment, ItemAdjustmentSummary>()
             //     .ForMember(d => d.Item, s => s.MapFrom(o => o.Item.Name))
@@ -24,10 +29,7 @@
             // this.CreateMap<CashVoucher, CashVoucherSummary>();
             // this.CreateMap<SaveCashVoucherRequest, CashVoucher>();
 
-            // Category
-            this.CreateMap<Category, CategorySummary>();
-            this.CreateMap<Category, CategoryLookup>();
-            this.CreateMap<SaveCategoryRequest, Category>();
+            
 
             // // City
             // this.CreateMap<City, CitySummary>()
