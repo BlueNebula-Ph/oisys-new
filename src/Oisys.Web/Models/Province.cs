@@ -1,7 +1,8 @@
-﻿namespace OisysNew.Models
-{
-    using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
+namespace OisysNew.Models
+{
     /// <summary>
     /// Entity model for province
     /// </summary>
@@ -16,6 +17,13 @@
         /// Gets or sets a value indicating whether gets or sets property IsDeleted.
         /// </summary>
         public bool IsDeleted { get; set; }
+
+        /// <summary>
+        /// Gets or sets concurrency check.
+        /// </summary>
+        [Timestamp]
+        public byte[] RowVersion { get; set; }
+
 
         /// <summary>
         /// Gets or sets the cities under this province.

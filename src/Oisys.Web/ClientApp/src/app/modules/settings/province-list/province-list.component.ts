@@ -1,40 +1,40 @@
 import { Component, ViewChild, AfterViewInit, ElementRef } from '@angular/core';
 
 import { MatPaginator, MatTableDataSource, MatSort } from '@angular/material';
-import { CategoryService } from '../../../shared/services/category.service';
+import { ProvinceService } from '../../../shared/services/province.service';
 
 import { Observable, of, merge, fromEvent } from 'rxjs';
 import { catchError, map, startWith, switchMap, debounceTime, distinctUntilChanged, tap } from 'rxjs/operators';
 import { SummaryItem } from '../../../shared/models/summary-item';
-import { Category } from '../../../shared/models/category';
+import { Province } from '../../../shared/models/province';
 import { UtilitiesService } from '../../../shared/services/utilities.service';
 
 @Component({
-  selector: 'app-category-list',
-  templateUrl: './category-list.component.html',
-  styleUrls: ['./category-list.component.css']
+  selector: 'app-province-list',
+  templateUrl: './province-list.component.html',
+  styleUrls: ['./province-list.component.css']
 })
-export class CategoryListComponent implements AfterViewInit {
-  displayedColumns: string[] = ['name', 'buttons'];
+export class ProvinceListComponent implements AfterViewInit {
+  displayedColumns: string[] = ['name', 'cities', 'buttons'];
   dataSource = new MatTableDataSource();
-  categories: Observable<SummaryItem<Category>>;
+  categories: Observable<SummaryItem<Province>>;
 
   resultsLength = 0;
   isLoadingResults = false;
 
-  selectedCategory: Category;
+  selectedProvince: Province;
 
-  constructor(private categoryService: CategoryService, private util: UtilitiesService) { }
+  constructor(private provinceService: ProvinceService, private util: UtilitiesService) { }
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
   @ViewChild('searchBox') input: ElementRef;
 
   ngAfterViewInit() {
-    this.loadCategories();
+    this.loadProvinces();
   };
 
-  loadCategories() {
+  loadProvinces() {
     // If the user changes the sort order, reset back to the first page.
     this.sort.sortChange.subscribe(() => this.paginator.pageIndex = 0);
 
@@ -54,12 +54,16 @@ export class CategoryListComponent implements AfterViewInit {
         startWith({}),
         switchMap(() => {
           this.isLoadingResults = true;
-          return this.fetchCategories();
+          return this.fetchProvinces();
         }),
         map(data => {
           // Flip flag to show that loading has finished.
           this.isLoadingResults = false;
           this.resultsLength = data.total_count;
+
+          data.items.map((item) => {
+            item.cityNames = item.cities.map((sc) => sc.name).join(', ');
+          });
 
           return data.items;
         }),
@@ -72,8 +76,8 @@ export class CategoryListComponent implements AfterViewInit {
       .subscribe(data => this.dataSource.data = data);
   }
 
-  fetchCategories() {
-    return this.categoryService.getCategories(
+  fetchProvinces() {
+    return this.provinceService.getProvinces(
       this.paginator.pageIndex + 1,
       this.paginator.pageSize,
       this.sort.active,
@@ -81,21 +85,21 @@ export class CategoryListComponent implements AfterViewInit {
       this.input.nativeElement.value);
   };
 
-  onEditCategory(categoryToEdit: Category): void {
-    this.selectedCategory = categoryToEdit;
+  onEditProvince(provinceToEdit: Province): void {
+    this.selectedProvince = provinceToEdit;
   };
 
-  onDeleteCategory(id: number): void {
-    if (confirm("Are you sure you want to delete this category?")) {
-      this.categoryService.deleteCategory(id).subscribe(() => {
-        this.loadCategories();
-        this.util.openSnackBar("Category deleted successfully.");
+  onDeleteProvince(id: number): void {
+    if (confirm("Are you sure you want to delete this province?")) {
+      this.provinceService.deleteProvince(id).subscribe(() => {
+        this.loadProvinces();
+        this.util.openSnackBar("Province deleted successfully.");
       });
     }
   };
 
-  onCategorySaved(category: Category): void {
-    this.loadCategories();
-    this.util.openSnackBar("Category saved successfully.");
+  onProvinceSaved(province: Province): void {
+    this.loadProvinces();
+    this.util.openSnackBar("Province saved successfully.");
   };
 }

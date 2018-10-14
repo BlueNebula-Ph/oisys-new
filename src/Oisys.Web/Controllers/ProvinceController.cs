@@ -1,9 +1,9 @@
-using AutoMapper;
+﻿using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Oisys.Web.DTO;
-using OisysNew.DTO.Category;
+using OisysNew.DTO.Province;
 using OisysNew.Helpers;
 using OisysNew.Models;
 using System;
@@ -14,28 +14,22 @@ using System.Threading.Tasks;
 
 namespace OisysNew.Controllers
 {
-    /// <summary>
-    /// <see cref="CategoryController"/> handles creating, reading, updating and deleting categories
-    /// </summary>
     [Route("api/[controller]")]
     [Produces("application/json")]
     [ApiController]
-    public class CategoryController : Controller
+    public class ProvinceController : ControllerBase
     {
         private readonly OisysDbContext context;
         private readonly IMapper mapper;
         private readonly IListHelpers listHelpers;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="CategoryController"/> class.
+        /// Initializes a new instance of the <see cref="ProvinceController"/> class.
         /// </summary>
         /// <param name="context">DbContext</param>
         /// <param name="mapper">Automapper</param>
         /// <param name="listHelpers">List helper</param>
-        public CategoryController(
-            OisysDbContext context,
-            IMapper mapper,
-            IListHelpers listHelpers)
+        public ProvinceController(OisysDbContext context, IMapper mapper, IListHelpers listHelpers)
         {
             this.context = context;
             this.mapper = mapper;
@@ -43,23 +37,25 @@ namespace OisysNew.Controllers
         }
 
         /// <summary>
-        /// Returns list of active <see cref="Category"/>
+        /// Returns list of active <see cref="Province"/>
         /// </summary>
-        /// <param name="filter"><see cref="CategoryFilterRequest"/></param>
-        /// <returns>List of Category</returns>
-        [HttpPost("search", Name = "GetAllCategories")]
+        /// <param name="filter"><see cref="ProvinceFilterRequest"/></param>
+        /// <returns>List of Province</returns>
+        [HttpPost("search", Name = "GetAllProvince")]
         [ProducesResponseType(200)]
-        public async Task<ActionResult<PaginatedList<CategorySummary>>> GetAll([FromBody] CategoryFilterRequest filter)
+        public async Task<ActionResult<PaginatedList<ProvinceSummary>>> GetAll([FromBody]ProvinceFilterRequest filter)
         {
-            // get list of active categories (not deleted)
-            var list = this.context.Categories
+            // get list of active sales quote (not deleted)
+            var list = this.context.Provinces
                 .AsNoTracking()
+                .Include(c => c.Cities)
                 .Where(c => !c.IsDeleted);
 
             // filter
             if (!string.IsNullOrEmpty(filter?.SearchTerm))
             {
-                list = list.Where(c => c.Name.Contains(filter.SearchTerm, StringComparison.CurrentCultureIgnoreCase));
+                list = list.Where(c => c.Name.Contains(filter.SearchTerm, StringComparison.CurrentCultureIgnoreCase) || 
+                    c.Cities.Any(a => a.Name.Contains(filter.SearchTerm, StringComparison.CurrentCultureIgnoreCase)));
             }
 
             // sort
@@ -71,20 +67,20 @@ namespace OisysNew.Controllers
 
             list = list.OrderBy(ordering);
 
-            var result = await this.listHelpers.CreatePaginatedListAsync<Category, CategorySummary>(list, filter.PageNumber, filter.PageSize);
+            var result = await this.listHelpers.CreatePaginatedListAsync<Province, ProvinceSummary>(list, filter.PageNumber, filter.PageSize);
             return result;
         }
 
         /// <summary>
-        /// Returns list of active <see cref="Category"/>
+        /// Returns list of active <see cref="Province"/>
         /// </summary>
-        /// <returns>List of Categories</returns>
-        [HttpGet("lookup", Name = "GetCategoryLookup")]
+        /// <returns>List of Provinces</returns>
+        [HttpGet("lookup", Name = "GetProvinceLookup")]
         [ProducesResponseType(200)]
-        public async Task<ActionResult<IEnumerable<CategoryLookup>>> GetLookup()
+        public async Task<ActionResult<IEnumerable<ProvinceLookup>>> GetLookup()
         {
             // get list of active items (not deleted)
-            var list = this.context.Categories
+            var list = this.context.Provinces
                 .AsNoTracking()
                 .Where(c => !c.IsDeleted);
 
@@ -93,58 +89,59 @@ namespace OisysNew.Controllers
 
             list = list.OrderBy(ordering);
 
-            var categories = await list.ProjectTo<CategoryLookup>().ToListAsync();
-            return categories;
+            var provinces = await list.ProjectTo<ProvinceLookup>().ToListAsync();
+            return provinces;
         }
 
         /// <summary>
-        /// Gets a specific <see cref="Category"/>.
+        /// Gets a specific <see cref="Province"/>.
         /// </summary>
         /// <param name="id">id</param>
-        /// <returns>Category</returns>
-        [HttpGet("{id}", Name = "GetCategory")]
+        /// <returns>Province</returns>
+        [HttpGet("{id}", Name = "GetProvince")]
         [ProducesResponseType(200)]
         [ProducesResponseType(404)]
-        public async Task<ActionResult<CategorySummary>> GetById(long id)
+        public async Task<ActionResult<ProvinceSummary>> GetById(long id)
         {
-            var entity = await this.context.Categories
+            var entity = await this.context.Provinces
                 .AsNoTracking()
-                .FirstOrDefaultAsync(c => c.Id == id);
+                .Include(c => c.Cities)
+                .SingleOrDefaultAsync(c => c.Id == id);
 
             if (entity == null)
             {
                 return this.NotFound(id);
             }
 
-            var category = this.mapper.Map<CategorySummary>(entity);
-            return category;
+            var province = this.mapper.Map<ProvinceSummary>(entity);
+            return province;
         }
 
         /// <summary>
-        /// Creates a <see cref="Category"/>.
+        /// Creates a <see cref="Province"/>.
         /// </summary>
         /// <param name="entity">entity to be created</param>
-        /// <returns>Category</returns>
+        /// <returns>Province</returns>
         [HttpPost]
         [ProducesResponseType(201)]
         [ProducesResponseType(400)]
-        public async Task<ActionResult<SaveCategoryRequest>> Create([FromBody] SaveCategoryRequest entity)
+        public async Task<ActionResult<SaveProvinceRequest>> Create([FromBody]SaveProvinceRequest entity)
         {
             // TODO: Move to a filter
-            if(!ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
                 return this.BadRequest(ModelState);
             }
 
-            var category = this.mapper.Map<Category>(entity);
-            await this.context.Categories.AddAsync(category);
+            var province = this.mapper.Map<Province>(entity);
+            await this.context.Provinces.AddAsync(province);
             await this.context.SaveChangesAsync();
 
-            return this.CreatedAtRoute("GetCategory", new { id = category.Id }, entity);
+            return this.CreatedAtRoute("GetProvince", new { id = province.Id }, entity);
         }
 
         /// <summary>
-        /// Updates a specific <see cref="Category"/>.
+        /// Updates a specific <see cref="Province"/>.
         /// </summary>
         /// <param name="id">id</param>
         /// <param name="entity">entity</param>
@@ -153,21 +150,24 @@ namespace OisysNew.Controllers
         [ProducesResponseType(200)]
         [ProducesResponseType(400)]
         [ProducesResponseType(404)]
-        public async Task<ActionResult> Update(long id, [FromBody] SaveCategoryRequest entity)
+        public async Task<ActionResult> Update(long id, [FromBody]SaveProvinceRequest entity)
         {
-            var category = await this.context.Categories.SingleOrDefaultAsync(t => t.Id == id);
-            if (category == null)
+            var province = await this.context.Provinces
+                .AsNoTracking()
+                .SingleOrDefaultAsync(t => t.Id == id);
+
+            if (province == null)
             {
                 return this.NotFound(id);
             }
 
             try
             {
-                this.mapper.Map(entity, category);
-                this.context.Update(category);
+                province = this.mapper.Map<Province>(entity);
+                this.context.Update(province);
                 await this.context.SaveChangesAsync();
             }
-            catch(DbUpdateConcurrencyException concurrencyEx)
+            catch (DbUpdateConcurrencyException concurrencyEx)
             {
                 return this.BadRequest(concurrencyEx);
             }
@@ -180,7 +180,7 @@ namespace OisysNew.Controllers
         }
 
         /// <summary>
-        /// Deletes a specific <see cref="Category"/>.
+        /// Deletes a specific <see cref="Province"/>.
         /// </summary>
         /// <param name="id">id</param>
         /// <returns>None</returns>
@@ -189,16 +189,16 @@ namespace OisysNew.Controllers
         [ProducesResponseType(404)]
         public async Task<ActionResult> Delete(long id)
         {
-            var category = await this.context.Categories.SingleOrDefaultAsync(t => t.Id == id);
-            if (category == null)
+            var city = await this.context.Provinces
+                .SingleOrDefaultAsync(c => c.Id == id);
+
+            if (city == null)
             {
                 return this.NotFound(id);
             }
 
-            category.IsDeleted = true;
-            this.context.Update(category);
+            city.IsDeleted = true;
             await this.context.SaveChangesAsync();
-
             return new NoContentResult();
         }
     }

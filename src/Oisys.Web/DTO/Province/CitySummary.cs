@@ -1,11 +1,9 @@
-﻿using System.ComponentModel.DataAnnotations;
-
-namespace OisysNew.Models
+﻿namespace OisysNew.DTO.Province
 {
     /// <summary>
-    /// Entity model for city.
+    /// <see cref="CitySummary"/> class CitySummary object.
     /// </summary>
-    public class City : ModelBase
+    public class CitySummary : DTOBase
     {
         /// <summary>
         /// Gets or sets the name of the city.
@@ -13,24 +11,18 @@ namespace OisysNew.Models
         public string Name { get; set; }
 
         /// <summary>
-        /// Gets or sets the province id of the city.
-        /// </summary>
-        public int ProvinceId { get; set; }
-
-        /// <summary>
         /// Gets or sets a value indicating whether gets or sets property IsDeleted.
         /// </summary>
         public bool IsDeleted { get; set; }
 
         /// <summary>
-        /// Gets or sets concurrency check.
+        /// Gets or sets the city row version
         /// </summary>
-        [Timestamp]
         public byte[] RowVersion { get; set; }
 
         /// <summary>
-        /// Gets or sets the province navigation property.
+        /// Gets or sets the province name of the city.
         /// </summary>
-        public Province Province { get; set; }
+        public string ProvinceName { get; set; }
     }
 }

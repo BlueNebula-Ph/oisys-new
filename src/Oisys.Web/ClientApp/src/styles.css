@@ -44,7 +44,7 @@ mat-row {
     min-height: 0 !important;
 }
 
-.mat-sort-header-button {
+.mat-sort-header-button, .mat-header-cell {
     font-weight: bold !important;
     font-size: medium !important;
 }

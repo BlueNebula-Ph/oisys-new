@@ -16,10 +16,10 @@
       <ng-container matColumnDef="buttons">
         <mat-header-cell *matHeaderCellDef></mat-header-cell>
         <mat-cell *matCellDef="let category">
-          <button mat-icon-button>
+          <button mat-icon-button (click)="onEditCategory(category)">
             <i class="fa fa-pencil"></i>
           </button>
-          <button mat-icon-button>
+          <button mat-icon-button (click)="onDeleteCategory(category.id)">
             <i class="fa fa-trash-o"></i>
           </button>
         </mat-cell>
@@ -33,5 +33,5 @@
   </div>
 </div>
 <div class="col-md-6 category-add">
-  <app-edit-category></app-edit-category>
+  <app-edit-category [category]="selectedCategory" (onCategorySaved)="onCategorySaved($event)"></app-edit-category>
 </div>

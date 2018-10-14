@@ -1,10 +1,11 @@
-﻿namespace OisysNew
-{
-    using System.Linq;
-    using AutoMapper;
-    using OisysNew.DTO.Category;
-    using OisysNew.Models;
+﻿using AutoMapper;
+using OisysNew.DTO.Category;
+using OisysNew.DTO.Province;
+using OisysNew.Models;
+using System.Linq;
 
+namespace OisysNew
+{
     /// <summary>
     /// <see cref="MappingConfig"/> class Mapping configuration.
     /// </summary>
@@ -20,6 +21,17 @@
             this.CreateMap<Category, CategoryLookup>();
             this.CreateMap<SaveCategoryRequest, Category>();
 
+            // City
+            this.CreateMap<City, CitySummary>()
+                .ForMember(d => d.ProvinceName, s => s.MapFrom(o => o.Province.Name));
+            this.CreateMap<SaveCityRequest, City>();
+
+            // Province
+            this.CreateMap<Province, ProvinceSummary>();
+            this.CreateMap<Province, ProvinceLookup>()
+                .ForMember(d => d.Cities, s => s.MapFrom(o => o.Cities.OrderBy(c => c.Name)));
+            this.CreateMap<SaveProvinceRequest, Province>();
+
             // // Adjustment
             // this.CreateMap<Adjustment, ItemAdjustmentSummary>()
             //     .ForMember(d => d.Item, s => s.MapFrom(o => o.Item.Name))
@@ -28,13 +40,6 @@
             // // Cash Voucher
             // this.CreateMap<CashVoucher, CashVoucherSummary>();
             // this.CreateMap<SaveCashVoucherRequest, CashVoucher>();
-
-            
-
-            // // City
-            // this.CreateMap<City, CitySummary>()
-            //     .ForMember(d => d.ProvinceName, s => s.MapFrom(o => o.Province.Name));
-            // this.CreateMap<SaveCityRequest, City>();
 
             // // Credit Memo
             // this.CreateMap<CreditMemo, CreditMemoSummary>();
@@ -131,12 +136,6 @@
             //     .ForMember(d => d.ItemCodeNameOrder, s => s.MapFrom(o => $"{o.Item.Code} - {o.Item.Name} ({o.Order.Code})"))
             //     .ForMember(d => d.Category, s => s.MapFrom(o => o.Item.Category.Name))
             //     .ForMember(d => d.QuantityDelivered, s => s.MapFrom(o => o.QuantityDelivered));
-
-            // // Province
-            // this.CreateMap<Province, ProvinceSummary>();
-            // this.CreateMap<Province, ProvinceLookup>()
-            //     .ForMember(d => d.Cities, s => s.MapFrom(o => o.Cities.OrderBy(c => c.Name)));
-            // this.CreateMap<SaveProvinceRequest, Province>();
 
             // // Reference
             // this.CreateMap<Reference, ReferenceLookup>();

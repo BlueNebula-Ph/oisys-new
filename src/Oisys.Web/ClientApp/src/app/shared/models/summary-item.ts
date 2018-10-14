@@ -1,7 +1,5 @@
-import { Category } from "./category";
-
-export interface SummaryItem
+export interface SummaryItem<T>
 {
-    items: Category[];
+    items: T[];
     total_count: number;
 }
