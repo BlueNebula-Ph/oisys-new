@@ -1,3 +1,25 @@
-<p>
-  edit-province works!
-</p>
+<form #provinceForm="ngForm" (ngSubmit)="saveProvince(provinceForm)">
+  <mat-card>
+    <mat-card-header>
+      <h4><i class="fa fa-pencil"></i> Add / Edit Provinces &amp; Cities.</h4>
+    </mat-card-header>
+    <mat-card-content>
+      <mat-form-field appearance="outline">
+        <mat-label>Province</mat-label>
+        <input [(ngModel)]="province.name" name="provinceName" matInput required>
+      </mat-form-field>
+      <mat-form-field *ngFor="let city of province.cities" appearance="outline">
+        <mat-label>City</mat-label>
+        <input [(ngModel)]="city.name" [ngModelOptions]="{standalone: true}" matInput required>
+      </mat-form-field>
+      <div class="button-row">
+        <button type="button" mat-flat-button color="background" (click)="addNewCity()">
+          <i class="fa fa-plus"></i> Add City
+        </button>
+        <button type="submit" mat-flat-button color="primary" [disabled]="!provinceForm.form.valid">
+          <i class="fa fa-save"></i> Save
+        </button>
+      </div>
+    </mat-card-content>
+  </mat-card>
+</form>

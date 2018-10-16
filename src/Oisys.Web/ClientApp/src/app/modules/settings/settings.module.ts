@@ -6,10 +6,12 @@ import { CustomMaterialModule } from '../custom-material/custom-material.module'
 import { EditCategoryComponent } from './edit-category/edit-category.component';
 import { ProvinceListComponent } from './province-list/province-list.component';
 import { EditProvinceComponent } from './edit-province/edit-province.component';
+import { FormsModule } from '@angular/forms';
 
 @NgModule({
   imports: [
     CommonModule,
+    FormsModule,
     CustomMaterialModule
   ],
   declarations: [ViewSettingsComponent, CategoryListComponent, EditCategoryComponent, ProvinceListComponent, EditProvinceComponent]

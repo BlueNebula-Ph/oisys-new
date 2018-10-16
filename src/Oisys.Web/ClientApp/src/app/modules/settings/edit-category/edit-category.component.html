@@ -1,16 +1,18 @@
-<mat-card>
-  <mat-card-header>
-    <h4><i class="fa fa-pencil"></i> Add / Edit Category.</h4>
-  </mat-card-header>
-  <mat-card-content>
+<form #categoryForm="ngForm" (ngSubmit)="saveCategory(categoryForm)">
+  <mat-card>
+    <mat-card-header>
+      <h4><i class="fa fa-pencil"></i> Add / Edit Category.</h4>
+    </mat-card-header>
+    <mat-card-content>
       <mat-form-field appearance="outline">
-          <mat-label>Category Name</mat-label>
-          <input #categoryName [value]="category.name" (keyup.enter)="saveCategory(categoryName.value);" matInput required>
-        </mat-form-field>
-        <div class="button-row">
-          <button mat-flat-button color="primary" (click)="saveCategory(categoryName.value);">
-              <i class="fa fa-save"></i> Save
-          </button>
-        </div>
-  </mat-card-content>
-</mat-card>
+        <mat-label>Category Name</mat-label>
+        <input name="categoryName" [(ngModel)]="category.name" (keyup.enter)="saveCategory(categoryForm)" matInput required>
+      </mat-form-field>
+      <div class="button-row">
+        <button type="submit" mat-flat-button color="primary" [disabled]="!categoryForm.form.valid">
+          <i class="fa fa-save"></i> Save
+        </button>
+      </div>
+    </mat-card-content>
+  </mat-card>
+</form>

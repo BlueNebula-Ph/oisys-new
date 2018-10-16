@@ -1,6 +1,7 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { CategoryService } from '../../../shared/services/category.service'
 import { Category } from '../../../shared/models/category';
+import { NgForm } from '@angular/forms';
 
 @Component({
   selector: 'app-edit-category',
@@ -17,14 +18,15 @@ export class EditCategoryComponent implements OnInit {
     this.clearCategory();
   }
 
-  saveCategory(categoryName: string) {
-    if (categoryName) {
-      this.category.name = categoryName;
+  saveCategory(categoryForm: NgForm) {
+    if (categoryForm.valid) {
       this.categoryService
         .saveCategory(this.category)
         .subscribe(result => {
           this.clearCategory();
           this.onCategorySaved.emit(result);
+
+          categoryForm.resetForm();
         });
     }
   }
