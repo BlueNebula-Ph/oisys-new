@@ -6,8 +6,11 @@
 
     public enum PriceList 
     {
+        [Display(Name = "Main Price")]
         MainPrice,
+        [Display(Name = "Walk-In Price")]
         WalkInPrice,
+        [Display(Name = "N.E. Price")]
         NEPrice
     }
 

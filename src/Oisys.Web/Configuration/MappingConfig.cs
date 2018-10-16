@@ -1,10 +1,13 @@
 ﻿using AutoMapper;
 using OisysNew.DTO.Category;
+using OisysNew.DTO.Customer;
 using OisysNew.DTO.Province;
+using OisysNew.Helpers;
 using OisysNew.Models;
+using System;
 using System.Linq;
 
-namespace OisysNew
+namespace OisysNew.Configuration
 {
     /// <summary>
     /// <see cref="MappingConfig"/> class Mapping configuration.
@@ -25,6 +28,17 @@ namespace OisysNew
             this.CreateMap<City, CitySummary>()
                 .ForMember(d => d.ProvinceName, s => s.MapFrom(o => o.Province.Name));
             this.CreateMap<SaveCityRequest, City>();
+
+            // Customer
+            this.CreateMap<Customer, CustomerLookup>();
+            this.CreateMap<Customer, CustomerWithOrdersLookup>();
+
+            this.CreateMap<Customer, CustomerSummary>()
+                .ForMember(d => d.CityName, s => s.MapFrom(o => o.City.Name))
+                .ForMember(d => d.ProvinceName, s => s.MapFrom(o => o.Province.Name))
+                .ForMember(d => d.PriceList, s => s.MapFrom(o => o.PriceList.GetDisplayName()));
+
+            this.CreateMap<SaveCustomerRequest, Customer>();
 
             // Province
             this.CreateMap<Province, ProvinceSummary>();
@@ -53,18 +67,7 @@ namespace OisysNew
             // this.CreateMap<SaveCreditMemoDetailRequest, CreditMemoDetail>()
             //     .ForMember(d => d.ReturnedToInventory, s => s.MapFrom(o => o.ShouldAddBackToInventory));
 
-            // // TODO: Change LastUpdatedBy value
-            // // Customer
-            // this.CreateMap<Customer, CustomerLookup>();
-            // this.CreateMap<Customer, CustomerWithOrdersLookup>();
-
-            // this.CreateMap<Customer, CustomerSummary>()
-            //     .ForMember(d => d.CityName, s => s.MapFrom(o => o.City.Name))
-            //     .ForMember(d => d.ProvinceName, s => s.MapFrom(o => o.Province.Name))
-            //     .ForMember(d => d.PriceList, s => s.MapFrom(o => o.PriceList.Code))
-            //     .ForMember(d => d.PriceListId, s => s.MapFrom(o => o.ProvinceId.ToString()));
-
-            // this.CreateMap<SaveCustomerRequest, Customer>();
+            
 
             // // Customer Transaction
             // // TODO: Create method to compute running balance

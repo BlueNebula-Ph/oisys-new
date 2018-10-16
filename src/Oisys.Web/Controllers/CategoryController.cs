@@ -1,5 +1,6 @@
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Oisys.Web.DTO;
@@ -48,7 +49,7 @@ namespace OisysNew.Controllers
         /// <param name="filter"><see cref="CategoryFilterRequest"/></param>
         /// <returns>List of Category</returns>
         [HttpPost("search", Name = "GetAllCategories")]
-        [ProducesResponseType(200)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<PaginatedList<CategorySummary>>> GetAll([FromBody] CategoryFilterRequest filter)
         {
             // get list of active categories (not deleted)
@@ -80,7 +81,7 @@ namespace OisysNew.Controllers
         /// </summary>
         /// <returns>List of Categories</returns>
         [HttpGet("lookup", Name = "GetCategoryLookup")]
-        [ProducesResponseType(200)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<IEnumerable<CategoryLookup>>> GetLookup()
         {
             // get list of active items (not deleted)
@@ -103,8 +104,8 @@ namespace OisysNew.Controllers
         /// <param name="id">id</param>
         /// <returns>Category</returns>
         [HttpGet("{id}", Name = "GetCategory")]
-        [ProducesResponseType(200)]
-        [ProducesResponseType(404)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<ActionResult<CategorySummary>> GetById(long id)
         {
             var entity = await this.context.Categories
@@ -126,8 +127,8 @@ namespace OisysNew.Controllers
         /// <param name="entity">entity to be created</param>
         /// <returns>Category</returns>
         [HttpPost]
-        [ProducesResponseType(201)]
-        [ProducesResponseType(400)]
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<SaveCategoryRequest>> Create([FromBody] SaveCategoryRequest entity)
         {
             // TODO: Move to a filter
@@ -150,9 +151,9 @@ namespace OisysNew.Controllers
         /// <param name="entity">entity</param>
         /// <returns>None</returns>
         [HttpPut("{id}")]
-        [ProducesResponseType(200)]
-        [ProducesResponseType(400)]
-        [ProducesResponseType(404)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<ActionResult> Update(long id, [FromBody] SaveCategoryRequest entity)
         {
             var category = await this.context.Categories.SingleOrDefaultAsync(t => t.Id == id);
@@ -185,8 +186,8 @@ namespace OisysNew.Controllers
         /// <param name="id">id</param>
         /// <returns>None</returns>
         [HttpDelete("{id}")]
-        [ProducesResponseType(200)]
-        [ProducesResponseType(404)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<ActionResult> Delete(long id)
         {
             var category = await this.context.Categories.SingleOrDefaultAsync(t => t.Id == id);
