@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using AutoMapper.QueryableExtensions;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Oisys.Web.DTO;
@@ -42,7 +43,7 @@ namespace OisysNew.Controllers
         /// <param name="filter"><see cref="ProvinceFilterRequest"/></param>
         /// <returns>List of Province</returns>
         [HttpPost("search", Name = "GetAllProvince")]
-        [ProducesResponseType(200)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<PaginatedList<ProvinceSummary>>> GetAll([FromBody]ProvinceFilterRequest filter)
         {
             // get list of active sales quote (not deleted)
@@ -76,7 +77,7 @@ namespace OisysNew.Controllers
         /// </summary>
         /// <returns>List of Provinces</returns>
         [HttpGet("lookup", Name = "GetProvinceLookup")]
-        [ProducesResponseType(200)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<IEnumerable<ProvinceLookup>>> GetLookup()
         {
             // get list of active items (not deleted)
@@ -99,8 +100,8 @@ namespace OisysNew.Controllers
         /// <param name="id">id</param>
         /// <returns>Province</returns>
         [HttpGet("{id}", Name = "GetProvince")]
-        [ProducesResponseType(200)]
-        [ProducesResponseType(404)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<ActionResult<ProvinceSummary>> GetById(long id)
         {
             var entity = await this.context.Provinces
@@ -123,8 +124,8 @@ namespace OisysNew.Controllers
         /// <param name="entity">entity to be created</param>
         /// <returns>Province</returns>
         [HttpPost]
-        [ProducesResponseType(201)]
-        [ProducesResponseType(400)]
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<SaveProvinceRequest>> Create([FromBody]SaveProvinceRequest entity)
         {
             // TODO: Move to a filter
@@ -147,9 +148,9 @@ namespace OisysNew.Controllers
         /// <param name="entity">entity</param>
         /// <returns>None</returns>
         [HttpPut("{id}")]
-        [ProducesResponseType(200)]
-        [ProducesResponseType(400)]
-        [ProducesResponseType(404)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<ActionResult> Update(long id, [FromBody]SaveProvinceRequest entity)
         {
             var province = await this.context.Provinces
@@ -185,8 +186,8 @@ namespace OisysNew.Controllers
         /// <param name="id">id</param>
         /// <returns>None</returns>
         [HttpDelete("{id}")]
-        [ProducesResponseType(200)]
-        [ProducesResponseType(404)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<ActionResult> Delete(long id)
         {
             var city = await this.context.Provinces
