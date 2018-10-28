@@ -7,11 +7,11 @@
     public enum PriceList 
     {
         [Display(Name = "Main Price")]
-        MainPrice,
+        MainPrice = 1,
         [Display(Name = "Walk-In Price")]
-        WalkInPrice,
+        WalkInPrice = 2,
         [Display(Name = "N.E. Price")]
-        NEPrice
+        NEPrice = 3
     }
 
     /// <summary>
@@ -72,6 +72,17 @@
         /// Gets or sets property Price List.
         /// </summary>
         public PriceList PriceList { get; set; }
+
+        /// <summary>
+        /// Gets or sets property Keywords.
+        /// </summary>
+        public string Keywords { get; set; }
+
+        /// <summary>
+        /// Gets or sets concurrency check.
+        /// </summary>
+        [Timestamp]
+        public byte[] RowVersion { get; set; }
 
         /// <summary>
         /// Gets or sets a value indicating whether gets or sets property IsDeleted.

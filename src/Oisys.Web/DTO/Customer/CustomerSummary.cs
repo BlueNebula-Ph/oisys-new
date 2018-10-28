@@ -69,6 +69,16 @@ namespace OisysNew.DTO.Customer
         public string PriceList { get; set; }
 
         /// <summary>
+        /// Gets or sets property price list.
+        /// </summary>
+        public string Keywords { get; set; }
+
+        /// <summary>
+        /// Gets or sets concurrency check.
+        /// </summary>
+        public byte[] RowVersion { get; set; }
+
+        /// <summary>
         /// Gets property RunningBalance.
         /// </summary>
         //public decimal Balance

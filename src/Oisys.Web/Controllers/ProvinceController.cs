@@ -90,7 +90,7 @@ namespace OisysNew.Controllers
 
             list = list.OrderBy(ordering);
 
-            var provinces = await list.ProjectTo<ProvinceLookup>().ToListAsync();
+            var provinces = await list.ProjectTo<ProvinceLookup>(this.mapper.ConfigurationProvider).ToListAsync();
             return provinces;
         }
 

@@ -15,14 +15,12 @@ import { CounterComponent } from './shared/components/counter/counter.component'
 import { CustomerModule } from './modules/customer/customer.module';
 import { InventoryModule } from './modules/inventory/inventory.module';
 import { OrderModule } from './modules/order/order.module';
-import { UserModule } from './modules/user/user.module';
 import { InvoiceModule } from './modules/invoice/invoice.module';
 import { DeliveryModule } from './modules/delivery/delivery.module';
 import { CreditMemoModule } from './modules/credit-memo/credit-memo.module';
 import { VoucherModule } from './modules/voucher/voucher.module';
 import { QuotationModule } from './modules/quotation/quotation.module';
 import { CategoryModule } from './modules/category/category.module';
-import { ProvinceModule } from './modules/province/province.module';
 import { SettingsModule } from './modules/settings/settings.module';
 import { CustomMaterialModule } from './modules/custom-material/custom-material.module';
 
@@ -43,14 +41,12 @@ import { CustomMaterialModule } from './modules/custom-material/custom-material.
     CustomerModule,
     InventoryModule,
     OrderModule,
-    UserModule,
     InvoiceModule,
     DeliveryModule,
     CreditMemoModule,
     VoucherModule,
     QuotationModule,
     CategoryModule,
-    ProvinceModule,
     SettingsModule,
     CustomMaterialModule
   ],

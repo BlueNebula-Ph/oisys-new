@@ -1,4 +1,33 @@
+import { PriceList } from "./price-list";
+import { Province } from "./Province";
+import { City } from "./city";
+
 export class Customer {
+  private _selectedProvince: Province;
+  get selectedProvince() {
+    return this._selectedProvince;
+  }
+  set selectedProvince(prov: Province) {
+    if (prov) {
+      this._selectedProvince = prov;
+      this.provinceId = prov.id;
+    }
+  }
+
+  private _selectedCity: City;
+  get selectedCity() {
+    return this._selectedCity;
+  }
+  set selectedCity(city: City) {
+    if (city) {
+      this._selectedCity = city;
+      this.cityId = city.id;
+    } else {
+      this._selectedCity = undefined;
+      this.cityId = 0;
+    }
+  }
+
   constructor(public id?: number,
     public name?: string,
     public email?: string,
@@ -8,7 +37,15 @@ export class Customer {
     public cityId?: number,
     public provinceId?: number,
     public terms?: string,
-    public discount?: string,
-    public priceList?: string,
-    public keywords?: string) { }
+    public discount?: number,
+    public priceListId?: number)
+  {
+    if (!this.id) {
+      this.id = 0;
+    }
+
+    if (!this.priceListId) {
+      this.priceListId = PriceList["Main Price"];
+    }
+  }
 }

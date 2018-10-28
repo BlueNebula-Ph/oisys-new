@@ -38,7 +38,9 @@ namespace OisysNew.Configuration
                 .ForMember(d => d.ProvinceName, s => s.MapFrom(o => o.Province.Name))
                 .ForMember(d => d.PriceList, s => s.MapFrom(o => o.PriceList.GetDisplayName()));
 
-            this.CreateMap<SaveCustomerRequest, Customer>();
+            this.CreateMap<SaveCustomerRequest, Customer>()
+                .ForMember(d => d.PriceList, s => s.MapFrom(o => o.PriceListId))
+                .ForMember(d => d.Keywords, s => s.MapFrom(o => $"{o.Name} {o.Address} {o.ContactNumber} {o.ContactPerson}"));
 
             // Province
             this.CreateMap<Province, ProvinceSummary>();

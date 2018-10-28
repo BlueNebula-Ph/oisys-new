@@ -43,6 +43,7 @@ namespace OisysNew
                     Terms = "term1",
                     Discount = 10m,
                     PriceList = PriceList.WalkInPrice,
+                    Keywords = "Mickey Mouse"
                 });
 
                 context.Customers.Add(new Customer
@@ -57,6 +58,7 @@ namespace OisysNew
                     Terms = "term2",
                     Discount = 5m,
                     PriceList = PriceList.MainPrice,
+                    Keywords = "Mario Cart"
                 });
             }
         }

@@ -31,16 +31,7 @@
         <mat-cell *matCellDef="let element" [attr.colspan]="displayedColumns.length">
           <div class="list-element-detail"
                [@detailExpand]="element == expandedElement ? 'expanded' : 'collapsed'">
-            <div class="example-element-diagram">
-              <div class="example-element-position"> {{element.name}} </div>
-              <div class="example-element-symbol"> {{element.email}} </div>
-              <div class="example-element-name"> {{element.address}} </div>
-              <div class="example-element-weight"> {{element.contactNumber}} </div>
-            </div>
-            <div class="example-element-description">
-              {{element.contactPerson}}
-              <span class="example-element-description-attribution"> -- Wikipedia </span>
-            </div>
+            <app-customer-detail [customer]="element"></app-customer-detail>
           </div>
         </mat-cell>
       </ng-container>
@@ -55,7 +46,7 @@
     <mat-paginator [length]="resultsLength" [pageSize]="20" showFirstLastButtons></mat-paginator>
   </div>
 </div>
-<div class="col-md-1" style="margin-top: 15px;">
+<div class="col-md-1 side-panel">
   <button mat-fab color="primary" (click)="addCustomer(0)" title="Add New Customer.">
     <i class="fa fa-plus"></i>
   </button>

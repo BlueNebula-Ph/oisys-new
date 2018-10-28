@@ -56,7 +56,7 @@ namespace OisysNew.Controllers
             // filter
             if (!string.IsNullOrEmpty(filter?.SearchTerm))
             {
-                list = list.Where(c => c.Name.Contains(filter.SearchTerm));
+                list = list.Where(c => c.Keywords.Contains(filter.SearchTerm, StringComparison.CurrentCultureIgnoreCase));
             }
 
             if (!(filter?.ProvinceId).IsNullOrZero())
