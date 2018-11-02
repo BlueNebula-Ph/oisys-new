@@ -1,24 +1,18 @@
-﻿namespace OisysNew.Models
+﻿namespace OisysNew.DTO.Item
 {
-    using System.Collections.Generic;
-    using System.ComponentModel;
-    using System.ComponentModel.DataAnnotations;
-
     /// <summary>
-    /// <see cref="Item"/> class Item/Inventory object.
+    /// View model for the Item entity.
     /// </summary>
-    public class Item : ModelBase
+    public class ItemSummary : DTOBase
     {
         /// <summary>
         /// Gets or sets property Code.
         /// </summary>
-        [Required]
         public string Code { get; set; }
 
         /// <summary>
         /// Gets or sets property Name.
         /// </summary>
-        [Required]
         public string Name { get; set; }
 
         /// <summary>
@@ -33,7 +27,6 @@
 
         /// <summary>
         /// Gets or sets property NEPrice.
-        /// Also known as Nueva Ecija Price.
         /// </summary>
         public decimal? NEPrice { get; set; }
 
@@ -53,42 +46,33 @@
         public string Thickness { get; set; }
 
         /// <summary>
-        /// Gets or sets property quantity.
-        /// </summary>
-        [DefaultValue(0)]
-        public int Quantity { get; set; }
-
-        /// <summary>
         /// Gets or sets property Unit.
         /// </summary>
         public string Unit { get; set; }
 
         /// <summary>
-        /// Gets or sets property CategoryId.
+        /// Gets or sets property category id.
         /// </summary>
-        [Required]
         public int CategoryId { get; set; }
 
         /// <summary>
-        /// Gets or sets a value indicating whether gets or sets property IsDeleted.
+        /// Gets or sets property category name.
         /// </summary>
-        [DefaultValue(false)]
-        public bool IsDeleted { get; set; }
+        public string CategoryName { get; set; }
+
+        /// <summary>
+        /// Gets or sets property Quantity.
+        /// </summary>
+        public int Quantity { get; set; }
 
         /// <summary>
         /// Gets or sets concurrency check.
         /// </summary>
-        [Timestamp]
         public byte[] RowVersion { get; set; }
-
-        /// <summary>
-        /// Gets or sets property Category.
-        /// </summary>
-        public Category Category { get; set; }
 
         /// <summary>
         /// Gets or sets the adjustments collection.
         /// </summary>
-        public ICollection<Adjustment> Adjustments { get; set; }
+        //public IEnumerable<ItemAdjustmentSummary> Adjustments { get; set; }
     }
 }

@@ -1,13 +1,10 @@
-using System;
-using System.Linq;
-using System.Linq.Dynamic.Core;
-using System.Threading.Tasks;
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using Microsoft.EntityFrameworkCore;
-using Oisys.Web.DTO;
 using OisysNew.DTO;
-using OisysNew.Models;
+using System.Linq;
+using System.Linq.Dynamic.Core;
+using System.Threading.Tasks;
 
 namespace OisysNew.Helpers
 {

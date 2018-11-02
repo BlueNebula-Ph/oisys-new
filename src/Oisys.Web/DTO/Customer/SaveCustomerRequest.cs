@@ -66,5 +66,10 @@ namespace OisysNew.DTO.Customer
         /// </summary>
         [Required]
         public int PriceListId { get; set; }
+
+        /// <summary>
+        /// Gets or sets concurrency check.
+        /// </summary>
+        public byte[] RowVersion { get; set; }
     }
 }

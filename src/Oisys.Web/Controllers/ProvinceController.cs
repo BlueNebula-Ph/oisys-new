@@ -3,7 +3,7 @@ using AutoMapper.QueryableExtensions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Oisys.Web.DTO;
+using OisysNew.DTO;
 using OisysNew.DTO.Province;
 using OisysNew.Helpers;
 using OisysNew.Models;

@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace Oisys.Web.DTO
+namespace OisysNew.DTO
 {
     public class PaginatedList<T>
     {

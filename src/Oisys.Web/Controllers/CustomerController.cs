@@ -3,7 +3,7 @@ using AutoMapper.QueryableExtensions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Oisys.Web.DTO;
+using OisysNew.DTO;
 using OisysNew.DTO.Customer;
 using OisysNew.Helpers;
 using OisysNew.Models;
@@ -100,7 +100,7 @@ namespace OisysNew.Controllers
 
             list = list.OrderBy(ordering);
 
-            var entities = await list.ProjectTo<CustomerLookup>().ToListAsync();
+            var entities = await list.ProjectTo<CustomerLookup>(this.mapper.ConfigurationProvider).ToListAsync();
             return entities;
         }
 

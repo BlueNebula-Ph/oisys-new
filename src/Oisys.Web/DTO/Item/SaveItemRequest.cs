@@ -1,24 +1,22 @@
-﻿namespace OisysNew.Models
-{
-    using System.Collections.Generic;
-    using System.ComponentModel;
-    using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
+namespace OisysNew.DTO.Item
+{
     /// <summary>
-    /// <see cref="Item"/> class Item/Inventory object.
+    /// <see cref="SaveItemRequest"/> class Create/Update Item object.
     /// </summary>
-    public class Item : ModelBase
+    public class SaveItemRequest : DTOBase
     {
         /// <summary>
-        /// Gets or sets property Code.
+        /// Gets or sets property item code.
         /// </summary>
-        [Required]
+        [Required(ErrorMessage = "Item code is required.")]
         public string Code { get; set; }
 
         /// <summary>
         /// Gets or sets property Name.
         /// </summary>
-        [Required]
+        [Required(ErrorMessage = "Item name is required.")]
         public string Name { get; set; }
 
         /// <summary>
@@ -33,7 +31,6 @@
 
         /// <summary>
         /// Gets or sets property NEPrice.
-        /// Also known as Nueva Ecija Price.
         /// </summary>
         public decimal? NEPrice { get; set; }
 
@@ -53,12 +50,6 @@
         public string Thickness { get; set; }
 
         /// <summary>
-        /// Gets or sets property quantity.
-        /// </summary>
-        [DefaultValue(0)]
-        public int Quantity { get; set; }
-
-        /// <summary>
         /// Gets or sets property Unit.
         /// </summary>
         public string Unit { get; set; }
@@ -70,25 +61,9 @@
         public int CategoryId { get; set; }
 
         /// <summary>
-        /// Gets or sets a value indicating whether gets or sets property IsDeleted.
+        /// Gets or sets property Quantity.
         /// </summary>
-        [DefaultValue(false)]
-        public bool IsDeleted { get; set; }
-
-        /// <summary>
-        /// Gets or sets concurrency check.
-        /// </summary>
-        [Timestamp]
-        public byte[] RowVersion { get; set; }
-
-        /// <summary>
-        /// Gets or sets property Category.
-        /// </summary>
-        public Category Category { get; set; }
-
-        /// <summary>
-        /// Gets or sets the adjustments collection.
-        /// </summary>
-        public ICollection<Adjustment> Adjustments { get; set; }
+        [Required]
+        public decimal Quantity { get; set; }
     }
 }
