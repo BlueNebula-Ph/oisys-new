@@ -161,7 +161,7 @@ namespace OisysNew.Controllers
         /// <param name="entity">entity</param>
         /// <returns>None</returns>
         [HttpPut("{id}")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> Update(long id, [FromBody]SaveItemRequest entity)
@@ -196,7 +196,7 @@ namespace OisysNew.Controllers
         /// <param name="id">id</param>
         /// <returns>None</returns>
         [HttpDelete("{id}")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> Delete(long id)
         {

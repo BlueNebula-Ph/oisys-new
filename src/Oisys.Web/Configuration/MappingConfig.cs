@@ -1,10 +1,10 @@
 ﻿using AutoMapper;
 using OisysNew.DTO.Category;
 using OisysNew.DTO.Customer;
+using OisysNew.DTO.Item;
 using OisysNew.DTO.Province;
 using OisysNew.Helpers;
 using OisysNew.Models;
-using System;
 using System.Linq;
 
 namespace OisysNew.Configuration
@@ -42,6 +42,17 @@ namespace OisysNew.Configuration
                 .ForMember(d => d.PriceList, s => s.MapFrom(o => o.PriceListId))
                 .ForMember(d => d.Keywords, s => s.MapFrom(o => $"{o.Name} {o.Address} {o.ContactNumber} {o.ContactPerson}"));
 
+            // Item
+            this.CreateMap<Item, ItemLookup>()
+                .ForMember(d => d.CodeName, s => s.MapFrom(o => $"{o.Code} - {o.Name}"))
+                .ForMember(d => d.NameCategoryDescription, s => s.MapFrom(o => $"{o.Name} - {o.Category.Name} - {o.Description}"))
+                .ForMember(d => d.CategoryName, s => s.MapFrom(o => o.Category.Name));
+
+            this.CreateMap<Item, ItemSummary>()
+                .ForMember(d => d.CategoryName, s => s.MapFrom(o => o.Category.Name));
+
+            this.CreateMap<SaveItemRequest, Item>();
+
             // Province
             this.CreateMap<Province, ProvinceSummary>();
             this.CreateMap<Province, ProvinceLookup>()
@@ -68,8 +79,6 @@ namespace OisysNew.Configuration
             //     .ForMember(d => d.ShouldAddBackToInventory, s => s.MapFrom(o => o.ReturnedToInventory));
             // this.CreateMap<SaveCreditMemoDetailRequest, CreditMemoDetail>()
             //     .ForMember(d => d.ReturnedToInventory, s => s.MapFrom(o => o.ShouldAddBackToInventory));
-
-            
 
             // // Customer Transaction
             // // TODO: Create method to compute running balance
@@ -102,17 +111,6 @@ namespace OisysNew.Configuration
 
             // // Invoice Detail
             // this.CreateMap<SaveInvoiceDetailRequest, InvoiceDetail>();
-
-            // // Item
-            // this.CreateMap<Item, ItemLookup>()
-            //     .ForMember(d => d.CodeName, s => s.MapFrom(o => $"{o.Code} - {o.Name}"))
-            //     .ForMember(d => d.NameCategoryDescription, s => s.MapFrom(o => $"{o.Name} - {o.Category.Name} - {o.Description}"))
-            //     .ForMember(d => d.CategoryName, s => s.MapFrom(o => o.Category.Name));
-
-            // this.CreateMap<Item, ItemSummary>()
-            //     .ForMember(d => d.CategoryName, s => s.MapFrom(o => o.Category.Name));
-
-            // this.CreateMap<SaveItemRequest, Item>();
 
             // // Order
             // this.CreateMap<Order, OrderSummary>()
