@@ -3,6 +3,7 @@ using AutoMapper.QueryableExtensions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using OisysNew.DTO;
 using OisysNew.DTO.Category;
 using OisysNew.Helpers;
@@ -19,13 +20,13 @@ namespace OisysNew.Controllers
     /// <see cref="CategoryController"/> handles creating, reading, updating and deleting categories
     /// </summary>
     [Route("api/[controller]")]
-    [Produces("application/json")]
     [ApiController]
     public class CategoryController : Controller
     {
-        private readonly OisysDbContext context;
+        private readonly IOisysDbContext context;
         private readonly IMapper mapper;
         private readonly IListHelpers listHelpers;
+        private readonly ILogger logger;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="CategoryController"/> class.
@@ -34,13 +35,15 @@ namespace OisysNew.Controllers
         /// <param name="mapper">Automapper</param>
         /// <param name="listHelpers">List helper</param>
         public CategoryController(
-            OisysDbContext context,
+            IOisysDbContext context,
             IMapper mapper,
-            IListHelpers listHelpers)
+            IListHelpers listHelpers,
+            ILogger<CategoryController> logger)
         {
             this.context = context;
             this.mapper = mapper;
             this.listHelpers = listHelpers;
+            this.logger = logger;
         }
 
         /// <summary>
@@ -50,30 +53,36 @@ namespace OisysNew.Controllers
         /// <returns>List of Category</returns>
         [HttpPost("search", Name = "GetAllCategories")]
         [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult<PaginatedList<CategorySummary>>> GetAll([FromBody] CategoryFilterRequest filter)
         {
-            // get list of active categories (not deleted)
-            var list = this.context.Categories
-                .AsNoTracking()
-                .Where(c => !c.IsDeleted);
-
-            // filter
-            if (!string.IsNullOrEmpty(filter?.SearchTerm))
+            try
             {
-                list = list.Where(c => c.Name.Contains(filter.SearchTerm, StringComparison.CurrentCultureIgnoreCase));
-            }
+                var list = this.context.Categories.AsNoTracking();
 
-            // sort
-            var ordering = $"Name {Constants.DefaultSortDirection}";
-            if (!string.IsNullOrEmpty(filter?.SortBy))
+                // filter
+                if (!string.IsNullOrEmpty(filter?.SearchTerm))
+                {
+                    list = list.Where(c => c.Name.Contains(filter.SearchTerm, StringComparison.CurrentCultureIgnoreCase));
+                }
+
+                // sort
+                var ordering = $"{Constants.ColumnNames.Name} {Constants.DefaultSortDirection}";
+                if (!string.IsNullOrEmpty(filter?.SortBy))
+                {
+                    ordering = $"{filter.SortBy} {filter.SortDirection}";
+                }
+
+                list = list.OrderBy(ordering);
+
+                var result = await this.listHelpers.CreatePaginatedListAsync<Category, CategorySummary>(list, filter.PageNumber, filter.PageSize);
+                return result;
+            }
+            catch (Exception e)
             {
-                ordering = $"{filter.SortBy} {filter.SortDirection}";
+                logger.LogError(e.Message);
+                return StatusCode(StatusCodes.Status500InternalServerError);
             }
-
-            list = list.OrderBy(ordering);
-
-            var result = await this.listHelpers.CreatePaginatedListAsync<Category, CategorySummary>(list, filter.PageNumber, filter.PageSize);
-            return result;
         }
 
         /// <summary>
@@ -82,20 +91,27 @@ namespace OisysNew.Controllers
         /// <returns>List of Categories</returns>
         [HttpGet("lookup", Name = "GetCategoryLookup")]
         [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult<IEnumerable<CategoryLookup>>> GetLookup()
         {
-            // get list of active items (not deleted)
-            var list = this.context.Categories
-                .AsNoTracking()
-                .Where(c => !c.IsDeleted);
+            try
+            {
+                // get list of active items (not deleted)
+                var list = this.context.Categories.AsNoTracking();
 
-            // sort
-            var ordering = $"Name {Constants.DefaultSortDirection}";
+                // sort
+                var ordering = $"{Constants.ColumnNames.Name} {Constants.DefaultSortDirection}";
 
-            list = list.OrderBy(ordering);
+                list = list.OrderBy(ordering);
 
-            var categories = await list.ProjectTo<CategoryLookup>().ToListAsync();
-            return categories;
+                var categories = await list.ProjectTo<CategoryLookup>(this.mapper.ConfigurationProvider).ToListAsync();
+                return categories;
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex.Message);
+                return StatusCode(StatusCodes.Status500InternalServerError);
+            }
         }
 
         /// <summary>
@@ -106,42 +122,54 @@ namespace OisysNew.Controllers
         [HttpGet("{id}", Name = "GetCategory")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<ActionResult<CategorySummary>> GetById(long id)
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<ActionResult<CategorySummary>> GetCategoryById(long id)
         {
-            var entity = await this.context.Categories
+            try
+            {
+                var entity = await this.context.Categories
                 .AsNoTracking()
                 .FirstOrDefaultAsync(c => c.Id == id);
 
-            if (entity == null)
-            {
-                return this.NotFound(id);
-            }
+                if (entity == null)
+                {
+                    return this.NotFound(id);
+                }
 
-            var category = this.mapper.Map<CategorySummary>(entity);
-            return category;
+                var category = this.mapper.Map<CategorySummary>(entity);
+                return category;
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex.Message);
+                return StatusCode(StatusCodes.Status500InternalServerError);
+            }
         }
 
         /// <summary>
         /// Creates a <see cref="Category"/>.
         /// </summary>
         /// <param name="entity">entity to be created</param>
-        /// <returns>Category</returns>
+        /// <returns>The new category</returns>
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult<SaveCategoryRequest>> Create([FromBody] SaveCategoryRequest entity)
         {
-            // TODO: Move to a filter
-            if(!ModelState.IsValid)
+            try
             {
-                return this.BadRequest(ModelState);
+                var category = this.mapper.Map<Category>(entity);
+                await this.context.Categories.AddAsync(category);
+                await this.context.SaveChangesAsync();
+
+                return this.CreatedAtRoute(nameof(this.GetCategoryById), new { id = category.Id }, entity);
             }
-
-            var category = this.mapper.Map<Category>(entity);
-            await this.context.Categories.AddAsync(category);
-            await this.context.SaveChangesAsync();
-
-            return this.CreatedAtRoute("GetCategory", new { id = category.Id }, entity);
+            catch (Exception ex)
+            {
+                logger.LogError(ex.Message);
+                return StatusCode(StatusCodes.Status500InternalServerError);
+            }
         }
 
         /// <summary>
@@ -154,30 +182,34 @@ namespace OisysNew.Controllers
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status409Conflict)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult> Update(long id, [FromBody] SaveCategoryRequest entity)
         {
-            var category = await this.context.Categories.SingleOrDefaultAsync(t => t.Id == id);
-            if (category == null)
-            {
-                return this.NotFound(id);
-            }
-
             try
             {
+                var category = await this.context.Categories.SingleOrDefaultAsync(t => t.Id == id);
+                if (category == null)
+                {
+                    return this.NotFound(id);
+                }
+
                 this.mapper.Map(entity, category);
                 this.context.Update(category);
                 await this.context.SaveChangesAsync();
+
+                return StatusCode(StatusCodes.Status204NoContent);
             }
             catch(DbUpdateConcurrencyException concurrencyEx)
             {
-                return this.BadRequest(concurrencyEx);
+                logger.LogError(concurrencyEx.Message);
+                return StatusCode(StatusCodes.Status409Conflict);
             }
             catch (Exception ex)
             {
-                return this.BadRequest(ex);
+                logger.LogError(ex.Message);
+                return StatusCode(StatusCodes.Status500InternalServerError);
             }
-
-            return new NoContentResult();
         }
 
         /// <summary>
@@ -188,19 +220,28 @@ namespace OisysNew.Controllers
         [HttpDelete("{id}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult> Delete(long id)
         {
-            var category = await this.context.Categories.SingleOrDefaultAsync(t => t.Id == id);
-            if (category == null)
+            try
             {
-                return this.NotFound(id);
+                var category = await this.context.Categories.SingleOrDefaultAsync(t => t.Id == id);
+                if (category == null)
+                {
+                    return this.NotFound(id);
+                }
+
+                category.IsDeleted = true;
+                this.context.Update(category);
+                await this.context.SaveChangesAsync();
+
+                return StatusCode(StatusCodes.Status204NoContent);
             }
-
-            category.IsDeleted = true;
-            this.context.Update(category);
-            await this.context.SaveChangesAsync();
-
-            return new NoContentResult();
+            catch (Exception ex)
+            {
+                logger.LogError(ex.Message);
+                return StatusCode(StatusCodes.Status500InternalServerError);
+            }
         }
     }
 }

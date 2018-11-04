@@ -1,4 +1,6 @@
-﻿namespace OisysNew.DTO.Item
+﻿using System.Collections.Generic;
+
+namespace OisysNew.DTO.Item
 {
     /// <summary>
     /// View model for the Item entity.
@@ -73,6 +75,6 @@
         /// <summary>
         /// Gets or sets the adjustments collection.
         /// </summary>
-        //public IEnumerable<ItemAdjustmentSummary> Adjustments { get; set; }
+        public IEnumerable<ItemAdjustmentSummary> Adjustments { get; set; }
     }
 }

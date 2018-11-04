@@ -1,11 +1,13 @@
-﻿namespace OisysNew.Models
-{
-    using System.ComponentModel.DataAnnotations;
+﻿using Newtonsoft.Json;
+using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 
+namespace OisysNew.DTO.Order
+{
     /// <summary>
     /// <see cref="OrderDetail"/> class represents the child of Order object.
     /// </summary>
-    public class OrderDetail : ModelBase
+    public class SaveOrderDetailRequest : DTOBase
     {
         /// <summary>
         /// Gets or sets property OrderId.
@@ -26,34 +28,25 @@
         public int ItemId { get; set; }
 
         /// <summary>
+        /// Gets or sets property DeliveryId.
+        /// </summary>
+        public int? DeliveryId { get; set; }
+
+        /// <summary>
         /// Gets or sets property Price.
         /// </summary>
         [Required]
         public decimal Price { get; set; }
 
         /// <summary>
-        /// Gets or sets property TotalPrice.
+        /// Gets or sets the TotalPrice. Quantity * Price.
         /// </summary>
         public decimal TotalPrice { get; set; }
 
         /// <summary>
-        /// Gets or sets property QuantityReturned.
+        /// Gets or sets a value indicating whether order detail is deleted.
         /// </summary>
-        public decimal QuantityReturned { get; set; }
-
-        /// <summary>
-        /// Gets or sets property QuantityDelivered.
-        /// </summary>
-        public decimal QuantityDelivered { get; set; }
-
-        /// <summary>
-        /// Gets or sets Order navigation property.
-        /// </summary>
-        public Order Order { get; set; }
-
-        /// <summary>
-        /// Gets or sets Item navigation property.
-        /// </summary>
-        public Item Item { get; set; }
+        [DefaultValue(false)]
+        public bool IsDeleted { get; set; }
     }
 }

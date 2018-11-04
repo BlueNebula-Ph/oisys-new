@@ -3,8 +3,10 @@ using AutoMapper.QueryableExtensions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using OisysNew.DTO;
 using OisysNew.DTO.Customer;
+using OisysNew.Extensions;
 using OisysNew.Helpers;
 using OisysNew.Models;
 using System;
@@ -19,9 +21,10 @@ namespace OisysNew.Controllers
     [ApiController]
     public class CustomerController : ControllerBase
     {
-        private readonly OisysDbContext context;
+        private readonly IOisysDbContext context;
         private readonly IMapper mapper;
         private readonly IListHelpers listHelpers;
+        private readonly ILogger logger;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="CustomerController"/> class.
@@ -29,14 +32,17 @@ namespace OisysNew.Controllers
         /// <param name="context">DbContext</param>
         /// <param name="mapper">Automapper</param>
         /// <param name="listHelpers">List helper</param>
+        /// <param name="logger">Logger</param>
         public CustomerController(
-            OisysDbContext context, 
+            IOisysDbContext context, 
             IMapper mapper, 
-            IListHelpers listHelpers)
+            IListHelpers listHelpers,
+            ILogger<CustomerController> logger)
         {
             this.context = context;
             this.mapper = mapper;
             this.listHelpers = listHelpers;
+            this.logger = logger;
         }
 
         /// <summary>
@@ -46,40 +52,47 @@ namespace OisysNew.Controllers
         /// <returns>List of Customer</returns>
         [HttpPost("search", Name = "GetAllCustomers")]
         [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult<PaginatedList<CustomerSummary>>> GetAll([FromBody]CustomerFilterRequest filter)
         {
-            // get list of active customers (not deleted)
-            var list = this.context.Customers
-                .AsNoTracking()
-                .Where(c => !c.IsDeleted);
-
-            // filter
-            if (!string.IsNullOrEmpty(filter?.SearchTerm))
+            try
             {
-                list = list.Where(c => c.Keywords.Contains(filter.SearchTerm, StringComparison.CurrentCultureIgnoreCase));
-            }
+                // get list of active customers (not deleted)
+                var list = this.context.Customers.AsNoTracking();
 
-            if (!(filter?.ProvinceId).IsNullOrZero())
+                // filter
+                if (!string.IsNullOrEmpty(filter?.SearchTerm))
+                {
+                    list = list.Where(c => c.Keywords.Contains(filter.SearchTerm, StringComparison.CurrentCultureIgnoreCase));
+                }
+
+                if (!(filter?.ProvinceId).IsNullOrZero())
+                {
+                    list = list.Where(c => c.ProvinceId == filter.ProvinceId);
+                }
+
+                if (!(filter?.CityId).IsNullOrZero())
+                {
+                    list = list.Where(c => c.CityId == filter.CityId);
+                }
+
+                // sort
+                var ordering = $"{Constants.ColumnNames.Name} {Constants.DefaultSortDirection}";
+                if (!string.IsNullOrEmpty(filter?.SortBy))
+                {
+                    ordering = $"{filter.SortBy} {filter.SortDirection}";
+                }
+
+                list = list.OrderBy(ordering);
+
+                var result = await this.listHelpers.CreatePaginatedListAsync<Customer, CustomerSummary>(list, filter.PageNumber, filter.PageSize);
+                return result;
+            }
+            catch (Exception e)
             {
-                list = list.Where(c => c.ProvinceId == filter.ProvinceId);
+                this.logger.LogError(e.Message);
+                return StatusCode(StatusCodes.Status500InternalServerError);
             }
-
-            if (!(filter?.CityId).IsNullOrZero())
-            {
-                list = list.Where(c => c.CityId == filter.CityId);
-            }
-
-            // sort
-            var ordering = $"Name {Constants.DefaultSortDirection}";
-            if (!string.IsNullOrEmpty(filter?.SortBy))
-            {
-                ordering = $"{filter.SortBy} {filter.SortDirection}";
-            }
-
-            list = list.OrderBy(ordering);
-
-            var result = await this.listHelpers.CreatePaginatedListAsync<Customer, CustomerSummary>(list, filter.PageNumber, filter.PageSize);
-            return result;
         }
 
         /// <summary>
@@ -88,20 +101,27 @@ namespace OisysNew.Controllers
         /// <returns>List of Customers</returns>
         [HttpGet("lookup", Name = "GetCustomerLookup")]
         [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult<IEnumerable<CustomerLookup>>> GetLookup()
         {
-            // get list of active items (not deleted)
-            var list = this.context.Customers
-                .AsNoTracking()
-                .Where(c => !c.IsDeleted);
+            try
+            {
+                // get list of active items (not deleted)
+                var list = this.context.Customers.AsNoTracking();
 
-            // sort
-            var ordering = $"Name {Constants.DefaultSortDirection}";
+                // sort
+                var ordering = $"{Constants.ColumnNames.Name} {Constants.DefaultSortDirection}";
 
-            list = list.OrderBy(ordering);
+                list = list.OrderBy(ordering);
 
-            var entities = await list.ProjectTo<CustomerLookup>(this.mapper.ConfigurationProvider).ToListAsync();
-            return entities;
+                var customers = await list.ProjectTo<CustomerLookup>(this.mapper.ConfigurationProvider).ToListAsync();
+                return customers;
+            }
+            catch (Exception e)
+            {
+                this.logger.LogError(e.Message);
+                return StatusCode(StatusCodes.Status500InternalServerError);
+            }
         }
 
         /// <summary>
@@ -154,30 +174,39 @@ namespace OisysNew.Controllers
         [HttpGet("{id}", Name = "GetCustomer")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<ActionResult<CustomerSummary>> GetById(long id)
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<ActionResult<CustomerSummary>> GetCustomerById(long id)
         {
-            var entity = await this.context.Customers
-                .AsNoTracking()
+            try
+            {
+                var entity = await this.context.Customers
                 .Include(c => c.City)
                 .Include(c => c.Province)
                 .Include(c => c.Transactions)
                 .Include(c => c.PriceList)
+                .AsNoTracking()
                 .FirstOrDefaultAsync(c => c.Id == id);
 
-            if (entity == null)
-            {
-                return this.NotFound(id);
+                if (entity == null)
+                {
+                    return this.NotFound(id);
+                }
+
+                // Sort the transactions by date desc
+                // Hacky! Find better solution if possible
+                entity.Transactions = entity.Transactions
+                    .OrderByDescending(t => t.Date)
+                    .Select(transaction => transaction)
+                    .ToList();
+
+                var customerSummary = this.mapper.Map<CustomerSummary>(entity);
+                return customerSummary;
             }
-
-            // Sort the transactions by date desc
-            // Hacky! Find better solution if possible
-            entity.Transactions = entity.Transactions
-                .OrderByDescending(t => t.Date)
-                .Select(transaction => transaction)
-                .ToList();
-
-            var mappedEntity = this.mapper.Map<CustomerSummary>(entity);
-            return mappedEntity;
+            catch (Exception e)
+            {
+                this.logger.LogError(e.Message);
+                return StatusCode(StatusCodes.Status500InternalServerError);
+            }
         }
 
         /// <summary>
@@ -188,13 +217,22 @@ namespace OisysNew.Controllers
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult<SaveCustomerRequest>> Create([FromBody] SaveCustomerRequest entity)
         {
-            var customer = this.mapper.Map<Customer>(entity);
-            await this.context.Customers.AddAsync(customer);
-            await this.context.SaveChangesAsync();
+            try
+            {
+                var customer = this.mapper.Map<Customer>(entity);
+                await this.context.Customers.AddAsync(customer);
+                await this.context.SaveChangesAsync();
 
-            return this.CreatedAtRoute("GetCustomer", new { id = customer.Id }, entity);
+                return this.CreatedAtRoute(nameof(this.GetCustomerById), new { id = customer.Id }, entity);
+            }
+            catch (Exception e)
+            {
+                this.logger.LogError(e.Message);
+                return StatusCode(StatusCodes.Status500InternalServerError);
+            }
         }
 
         /// <summary>
@@ -207,26 +245,34 @@ namespace OisysNew.Controllers
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status409Conflict)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult> Update(long id, [FromBody] SaveCustomerRequest entity)
         {
-            var customer = await this.context.Customers.SingleOrDefaultAsync(t => t.Id == id);
-            if (customer == null)
-            {
-                return this.NotFound(id);
-            }
-
             try
             {
+                var customer = await this.context.Customers.SingleOrDefaultAsync(t => t.Id == id);
+                if (customer == null)
+                {
+                    return this.NotFound(id);
+                }
+
                 this.mapper.Map(entity, customer);
                 this.context.Update(customer);
                 await this.context.SaveChangesAsync();
+
+                return StatusCode(StatusCodes.Status204NoContent);
+            }
+            catch (DbUpdateConcurrencyException concurrencyEx)
+            {
+                this.logger.LogError(concurrencyEx.Message);
+                return StatusCode(StatusCodes.Status409Conflict);
             }
             catch (Exception ex)
             {
-                return this.BadRequest(ex);
+                this.logger.LogError(ex.Message);
+                return StatusCode(StatusCodes.Status500InternalServerError);
             }
-
-            return new NoContentResult();
         }
 
         /// <summary>
@@ -237,19 +283,28 @@ namespace OisysNew.Controllers
         [HttpDelete("{id}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult> Delete(long id)
         {
-            var customer = await this.context.Customers.SingleOrDefaultAsync(t => t.Id == id);
-            if (customer == null)
+            try
             {
-                return this.NotFound(id);
+                var customer = await this.context.Customers.SingleOrDefaultAsync(t => t.Id == id);
+                if (customer == null)
+                {
+                    return this.NotFound(id);
+                }
+
+                customer.IsDeleted = true;
+                this.context.Update(customer);
+                await this.context.SaveChangesAsync();
+
+                return StatusCode(StatusCodes.Status204NoContent);
             }
-
-            customer.IsDeleted = true;
-            this.context.Update(customer);
-            await this.context.SaveChangesAsync();
-
-            return new NoContentResult();
+            catch (Exception e)
+            {
+                this.logger.LogError(e.Message);
+                return StatusCode(StatusCodes.Status500InternalServerError);
+            }
         }
 
         /// <summary>

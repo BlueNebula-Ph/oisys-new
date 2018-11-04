@@ -2,8 +2,9 @@
 using OisysNew.DTO.Category;
 using OisysNew.DTO.Customer;
 using OisysNew.DTO.Item;
+using OisysNew.DTO.Order;
 using OisysNew.DTO.Province;
-using OisysNew.Helpers;
+using OisysNew.Extensions;
 using OisysNew.Models;
 using System.Linq;
 
@@ -19,6 +20,11 @@ namespace OisysNew.Configuration
         /// </summary>
         public MappingConfig()
         {
+            // Adjustment
+            this.CreateMap<Adjustment, ItemAdjustmentSummary>()
+                .ForMember(d => d.Item, s => s.MapFrom(o => o.Item.Name))
+                .ForMember(d => d.AdjustmentType, s => s.MapFrom(o => $"{o.AdjustmentType}"));
+
             // Category
             this.CreateMap<Category, CategorySummary>();
             this.CreateMap<Category, CategoryLookup>();
@@ -53,16 +59,41 @@ namespace OisysNew.Configuration
 
             this.CreateMap<SaveItemRequest, Item>();
 
+            // Order
+            this.CreateMap<Order, OrderSummary>()
+                .ForMember(d => d.ProvinceName, s => s.MapFrom(o => o.Customer.Province.Name))
+                .ForMember(d => d.Date, s => s.MapFrom(o => o.Date.ToString("d")))
+                .ForMember(d => d.DueDate, s => s.MapFrom(o => o.DueDate.HasValue ? o.DueDate.Value.ToString("d") : string.Empty));
+
+            this.CreateMap<SaveOrderRequest, Order>();
+
+            this.CreateMap<Order, OrderLookup>();
+
+            // Order Detail
+            this.CreateMap<OrderDetail, OrderDetailSummary>()
+                .ForMember(d => d.ItemCode, s => s.MapFrom(o => o.Item.Code))
+                .ForMember(d => d.Item, s => s.MapFrom(o => o.Item.Name))
+                .ForMember(d => d.Unit, s => s.MapFrom(o => o.Item.Unit))
+                .ForMember(d => d.Description, s => s.MapFrom(o => o.Item.Description))
+                .ForMember(d => d.Category, s => s.MapFrom(o => o.Item.Category.Name));
+
+            this.CreateMap<SaveOrderDetailRequest, OrderDetail>();
+
+            this.CreateMap<OrderDetail, OrderDetailLookup>()
+                .ForMember(d => d.ItemName, s => s.MapFrom(o => o.Item.Name))
+                .ForMember(d => d.Unit, s => s.MapFrom(o => o.Item.Unit))
+                .ForMember(d => d.ItemCodeName, s => s.MapFrom(o => $"{o.Item.Code} - {o.Item.Name}"))
+                .ForMember(d => d.ItemCodeNameOrder, s => s.MapFrom(o => $"{o.Item.Code} - {o.Item.Name} ({o.Order.Code})"))
+                .ForMember(d => d.Category, s => s.MapFrom(o => o.Item.Category.Name))
+                .ForMember(d => d.QuantityDelivered, s => s.MapFrom(o => o.QuantityDelivered));
+
             // Province
             this.CreateMap<Province, ProvinceSummary>();
             this.CreateMap<Province, ProvinceLookup>()
                 .ForMember(d => d.Cities, s => s.MapFrom(o => o.Cities.OrderBy(c => c.Name)));
             this.CreateMap<SaveProvinceRequest, Province>();
 
-            // // Adjustment
-            // this.CreateMap<Adjustment, ItemAdjustmentSummary>()
-            //     .ForMember(d => d.Item, s => s.MapFrom(o => o.Item.Name))
-            //     .ForMember(d => d.AdjustmentType, s => s.MapFrom(o => $"{o.AdjustmentType} - {o.QuantityType}"));
+            
 
             // // Cash Voucher
             // this.CreateMap<CashVoucher, CashVoucherSummary>();
@@ -111,47 +142,6 @@ namespace OisysNew.Configuration
 
             // // Invoice Detail
             // this.CreateMap<SaveInvoiceDetailRequest, InvoiceDetail>();
-
-            // // Order
-            // this.CreateMap<Order, OrderSummary>()
-            //     .ForMember(d => d.ProvinceName, s => s.MapFrom(o => o.Customer.Province.Name))
-            //     .ForMember(d => d.Date, s => s.MapFrom(o => o.Date.ToString("d")))
-            //     .ForMember(d => d.DueDate, s => s.MapFrom(o => o.DueDate.HasValue ? o.DueDate.Value.ToString("d") : string.Empty));
-
-            // this.CreateMap<SaveOrderRequest, Order>();
-
-            // this.CreateMap<Order, OrderLookup>();
-
-            // // Order Detail
-            // this.CreateMap<OrderDetail, OrderDetailSummary>()
-            //     .ForMember(d => d.ItemCode, s => s.MapFrom(o => o.Item.Code))
-            //     .ForMember(d => d.Item, s => s.MapFrom(o => o.Item.Name))
-            //     .ForMember(d => d.Unit, s => s.MapFrom(o => o.Item.Unit))
-            //     .ForMember(d => d.Description, s => s.MapFrom(o => o.Item.Description))
-            //     .ForMember(d => d.Category, s => s.MapFrom(o => o.Item.Category.Name));
-
-            // this.CreateMap<SaveOrderDetailRequest, OrderDetail>();
-
-            // this.CreateMap<OrderDetail, OrderDetailLookup>()
-            //     .ForMember(d => d.ItemName, s => s.MapFrom(o => o.Item.Name))
-            //     .ForMember(d => d.Unit, s => s.MapFrom(o => o.Item.Unit))
-            //     .ForMember(d => d.ItemCodeName, s => s.MapFrom(o => $"{o.Item.Code} - {o.Item.Name}"))
-            //     .ForMember(d => d.ItemCodeNameOrder, s => s.MapFrom(o => $"{o.Item.Code} - {o.Item.Name} ({o.Order.Code})"))
-            //     .ForMember(d => d.Category, s => s.MapFrom(o => o.Item.Category.Name))
-            //     .ForMember(d => d.QuantityDelivered, s => s.MapFrom(o => o.QuantityDelivered));
-
-            // // Reference
-            // this.CreateMap<Reference, ReferenceLookup>();
-
-            // this.CreateMap<Reference, ReferenceSummary>()
-            //     .ForMember(d => d.ReferenceTypeCode, s => s.MapFrom(o => o.ReferenceType.Code));
-
-            // this.CreateMap<SaveReferenceRequest, Reference>();
-
-            // // ReferenceType
-            // this.CreateMap<ReferenceType, ReferenceTypeSummary>();
-
-            // this.CreateMap<SaveReferenceTypeRequest, ReferenceType>();
 
             // // Sales Quote
             // this.CreateMap<SalesQuote, SalesQuoteSummary>()

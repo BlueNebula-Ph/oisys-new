@@ -1,19 +1,14 @@
-﻿namespace OisysNew
-{
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using Microsoft.AspNetCore.Builder;
-    using Microsoft.AspNetCore.Identity;
-    using Microsoft.EntityFrameworkCore;
-    using Microsoft.Extensions.DependencyInjection;
-    using OisysNew.Models;
-    using OisysNew.SeedData;
+﻿using Microsoft.EntityFrameworkCore;
+using OisysNew.Models;
+using OisysNew.SeedData;
+using System;
 
+namespace OisysNew
+{
     /// <summary>
     /// <see cref="OisysDbContext"/> class DbContext.
     /// </summary>
-    public class OisysDbContext : DbContext, IDisposable
+    public class OisysDbContext : DbContext, IOisysDbContext, IDisposable
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="OisysDbContext"/> class.
@@ -24,110 +19,69 @@
         {
         }
 
-        /// <summary>
-        /// Gets or sets the adjustments db set.
-        /// </summary>
+        /// <inheritdoc />
         public DbSet<Adjustment> Adjustments { get; set; }
 
-        /// <summary>
-        /// Gets or sets the cash voucher db set.
-        /// </summary>
+        /// <inheritdoc />
         public DbSet<CashVoucher> CashVouchers { get; set; }
 
-        /// <summary>
-        /// Gets or sets the categories db set.
-        /// </summary>
+        /// <inheritdoc />
         public DbSet<Category> Categories { get; set; }
 
-        /// <summary>
-        /// Gets or sets the cities db set.
-        /// </summary>
+        /// <inheritdoc />
         public DbSet<City> Cities { get; set; }
 
-        /// <summary>
-        /// Gets or sets the credit memos db set.
-        /// </summary>
+        /// <inheritdoc />
         public DbSet<CreditMemo> CreditMemos { get; set; }
 
-        /// <summary>
-        /// Gets or sets the credit memo details db set.
-        /// </summary>
+        /// <inheritdoc />
         public DbSet<CreditMemoDetail> CreditMemoDetails { get; set; }
 
-        /// <summary>
-        /// Gets or sets the customers db set.
-        /// </summary>
+        /// <inheritdoc />
         public DbSet<Customer> Customers { get; set; }
 
-        /// <summary>
-        /// Gets or sets the customer transactions db set.
-        /// </summary>
+        /// <inheritdoc />
         public DbSet<CustomerTransaction> CustomerTransactions { get; set; }
 
-        /// <summary>
-        /// Gets or sets the deliveries db set.
-        /// </summary>
+        /// <inheritdoc />
         public DbSet<Delivery> Deliveries { get; set; }
 
-        /// <summary>
-        /// Gets or sets the delivery details db set.
-        /// </summary>
+        /// <inheritdoc />
         public DbSet<DeliveryDetail> DeliveryDetails { get; set; }
 
-        /// <summary>
-        /// Gets or sets the invoice db set.
-        /// </summary>
+        /// <inheritdoc />
         public DbSet<Invoice> Invoices { get; set; }
 
-        /// <summary>
-        /// Gets or sets the invoice details db set.
-        /// </summary>
+        /// <inheritdoc />
         public DbSet<InvoiceDetail> InvoiceDetails { get; set; }
 
-        /// <summary>
-        /// Gets or sets the items db set.
-        /// </summary>
+        /// <inheritdoc />
         public DbSet<Item> Items { get; set; }
 
-        /// <summary>
-        /// Gets or sets the orders db set.
-        /// </summary>
+        /// <inheritdoc />
         public DbSet<Order> Orders { get; set; }
 
-        /// <summary>
-        /// Gets or sets the order details db set.
-        /// </summary>
+        /// <inheritdoc />
         public DbSet<OrderDetail> OrderDetails { get; set; }
 
-        /// <summary>
-        /// Gets or sets the provinces db set.
-        /// </summary>
+        /// <inheritdoc />
         public DbSet<Province> Provinces { get; set; }
 
-        /// <summary>
-        /// Gets or sets the sales quotes db set.
-        /// </summary>
+        /// <inheritdoc />
         public DbSet<SalesQuote> SalesQuotes { get; set; }
 
-        /// <summary>
-        /// Gets or sets the sales quote details db set.
-        /// </summary>
+        /// <inheritdoc />
         public DbSet<SalesQuoteDetail> SalesQuoteDetails { get; set; }
 
-        /// <summary>
-        /// Gets or sets users db set.
-        /// </summary>
+        /// <inheritdoc />
         public DbSet<ApplicationUser> Users { get; set; }
 
-        /// <summary>
-        /// This method sets up the foreign keys of entities
-        /// </summary>
-        /// <param name="modelBuilder">ModelBuilder</param>
+        /// <inheritdoc />
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
 
-            // Item Adjustments
+            // Adjustments
             modelBuilder.Entity<Adjustment>()
                 .HasOne<Item>(d => d.Item)
                 .WithMany(p => p.Adjustments)
@@ -135,8 +89,15 @@
 
             // Category
             modelBuilder.Entity<Category>()
+                .HasQueryFilter(c => !c.IsDeleted);
+
+            modelBuilder.Entity<Category>()
                 .Property(p => p.RowVersion)
                 .IsRowVersion();
+
+            // City
+            modelBuilder.Entity<City>()
+                .HasQueryFilter(c => !c.IsDeleted);
 
             // Credit Memo Detail
             modelBuilder.Entity<CreditMemoDetail>()
@@ -145,6 +106,9 @@
                 .HasForeignKey(p => p.CreditMemoId);
 
             // Customer
+            modelBuilder.Entity<Customer>()
+                .HasQueryFilter(c => !c.IsDeleted);
+
             modelBuilder.Entity<CustomerTransaction>()
                 .HasOne<Customer>(d => d.Customer)
                 .WithMany(p => p.Transactions)
@@ -163,10 +127,17 @@
                 .HasForeignKey(p => p.InvoiceId);
 
             // Order
+            modelBuilder.Entity<Order>()
+                .HasQueryFilter(o => !o.IsDeleted);
+
             modelBuilder.Entity<OrderDetail>()
                 .HasOne<Order>(d => d.Order)
                 .WithMany(p => p.Details)
                 .HasForeignKey(p => p.OrderId);
+
+            // Province
+            modelBuilder.Entity<Province>()
+                .HasQueryFilter(p => !p.IsDeleted);
 
             // Sales Quote
             modelBuilder.Entity<SalesQuoteDetail>()

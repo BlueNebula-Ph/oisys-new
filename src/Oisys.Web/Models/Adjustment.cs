@@ -20,17 +20,12 @@
         /// <summary>
         /// Gets or sets the quantity property
         /// </summary>
-        public decimal Quantity { get; set; }
+        public int Quantity { get; set; }
 
         /// <summary>
         /// Gets or sets the adjustment type property.
         /// </summary>
         public string AdjustmentType { get; set; }
-
-        /// <summary>
-        /// Gets or sets the quantity type property.
-        /// </summary>
-        public string QuantityType { get; set; }
 
         /// <summary>
         /// Gets or sets the adjustment date property

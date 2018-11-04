@@ -11,14 +11,9 @@
         public string CodeName { get; set; }
 
         /// <summary>
-        /// Gets or sets property Current Quantity.
+        /// Gets or sets property Quantity.
         /// </summary>
-        public decimal CurrentQuantity { get; set; }
-
-        /// <summary>
-        /// Gets or sets property Actual Quantity.
-        /// </summary>
-        public decimal ActualQuantity { get; set; }
+        public int Quantity { get; set; }
 
         /// <summary>
         /// Gets or sets property Unit

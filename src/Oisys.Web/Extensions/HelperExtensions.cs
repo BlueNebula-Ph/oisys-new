@@ -3,9 +3,9 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Reflection;
 
-namespace OisysNew.Helpers
+namespace OisysNew.Extensions
 {
-    public static class Extensions
+    public static class HelperExtensions
     {
         public static bool IsNullOrZero(this int? number)
         {

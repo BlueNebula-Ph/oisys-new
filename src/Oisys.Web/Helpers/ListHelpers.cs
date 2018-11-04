@@ -31,6 +31,6 @@ namespace OisysNew.Helpers
 
     public interface IListHelpers
     {
-        Task<PaginatedList<T1>> CreatePaginatedListAsync<T, T1>(IQueryable<T> source, int pageNumber, int pageIndex);
+        Task<PaginatedList<T1>> CreatePaginatedListAsync<T, T1>(IQueryable<T> source, int pageNumber, int pageSize);
     }
 }

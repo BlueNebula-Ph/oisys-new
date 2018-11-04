@@ -64,6 +64,6 @@ namespace OisysNew.DTO.Item
         /// Gets or sets property Quantity.
         /// </summary>
         [Required]
-        public decimal Quantity { get; set; }
+        public int Quantity { get; set; }
     }
 }

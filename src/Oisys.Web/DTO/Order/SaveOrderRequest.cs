@@ -1,19 +1,18 @@
-﻿namespace OisysNew.Models
-{
-    using System;
-    using System.Collections.Generic;
-    using System.ComponentModel;
-    using System.ComponentModel.DataAnnotations;
+﻿using Newtonsoft.Json;
+using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
+namespace OisysNew.DTO.Order
+{
     /// <summary>
-    /// <see cref="Order"/> class represents the Order object.
+    /// <see cref="SaveOrderRequest"/> class Create/Update Order object.
     /// </summary>
-    public class Order : ModelBase
+    public class SaveOrderRequest : DTOBase
     {
         /// <summary>
         /// Gets or sets property Code.
         /// </summary>
-        [Required]
         public int Code { get; set; }
 
         /// <summary>
@@ -49,24 +48,8 @@
         public decimal TotalAmount { get; set; }
 
         /// <summary>
-        /// Gets or sets a value indicating whether order is invoiced.
-        /// </summary>
-        public bool IsInvoiced { get; set; }
-
-        /// <summary>
-        /// Gets or sets a value indicating whether order is deleted.
-        /// </summary>
-        [DefaultValue(false)]
-        public bool IsDeleted { get; set; }
-
-        /// <summary>
-        /// Gets or sets property Customer navigation property.
-        /// </summary>
-        public Customer Customer { get; set; }
-
-        /// <summary>
         /// Gets or sets property Details navigation property.
         /// </summary>
-        public ICollection<OrderDetail> Details { get; set; }
+        public ICollection<SaveOrderDetailRequest> Details { get; set; }
     }
 }

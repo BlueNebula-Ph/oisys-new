@@ -126,5 +126,21 @@
             /// </summary>
             public const string CreditMemoDetailDeleted = "Credit Memo detail deleted";
         }
+
+        /// <summary>
+        /// Column name constants
+        /// </summary>
+        public static class ColumnNames
+        {
+            /// <summary>
+            /// The name column name.
+            /// </summary>
+            public const string Name = "Name";
+
+            /// <summary>
+            /// The code column name.
+            /// </summary>
+            public const string Code = "Code";
+        }
     }
 }

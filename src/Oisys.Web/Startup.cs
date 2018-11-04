@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.SpaServices.AngularCli;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using OisysNew.Helpers;
+using OisysNew.Extensions;
 using Swashbuckle.AspNetCore.Swagger;
 
 namespace OisysNew
@@ -35,7 +35,7 @@ namespace OisysNew
 
             // App services
             services.AddAutoMapper();
-            services.AddTransient<IListHelpers, ListHelpers>();
+            services.AddCoreServices();
 
             // In production, the Angular files will be served from this directory
             services.AddSpaStaticFiles(configuration =>
