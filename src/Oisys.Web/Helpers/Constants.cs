@@ -133,14 +133,19 @@
         public static class ColumnNames
         {
             /// <summary>
+            /// The code column name.
+            /// </summary>
+            public const string Code = "Code";
+
+            /// <summary>
             /// The name column name.
             /// </summary>
             public const string Name = "Name";
 
             /// <summary>
-            /// The code column name.
+            /// The quote number column name.
             /// </summary>
-            public const string Code = "Code";
+            public const string QuoteNumber = "QuoteNumber";
         }
     }
 }

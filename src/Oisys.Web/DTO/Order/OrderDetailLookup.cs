@@ -57,7 +57,7 @@
         {
             get
             {
-                return this.Quantity - this.QuantityDelivered;
+                return Quantity - QuantityDelivered;
             }
         }
 
@@ -68,7 +68,7 @@
         {
             get
             {
-                return this.Quantity * this.Price;
+                return Quantity * Price;
             }
         }
     }

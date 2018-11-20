@@ -30,6 +30,7 @@ namespace OisysNew.Controllers
         private readonly IListHelpers listHelpers;
         private readonly IInventoryService inventoryService;
         private readonly ILogger logger;
+        private readonly IEqualityComparer<InventoryAdjustment> equalityComparer;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="OrderController"/> class.
@@ -39,17 +40,19 @@ namespace OisysNew.Controllers
         /// <param name="listHelpers">Summary list helpers</param>
         /// <param name="logger">Logger</param>
         public OrderController(
-            IOisysDbContext context, 
-            IMapper mapper, 
+            IOisysDbContext context,
+            IMapper mapper,
             IListHelpers listHelpers,
             IInventoryService inventoryService,
-            ILogger<OrderController> logger)
+            ILogger<OrderController> logger,
+            IEqualityComparer<InventoryAdjustment> equalityComparer)
         {
             this.context = context;
             this.mapper = mapper;
             this.listHelpers = listHelpers;
             this.inventoryService = inventoryService;
             this.logger = logger;
+            this.equalityComparer = equalityComparer;
         }
 
         /// <summary>
@@ -65,7 +68,7 @@ namespace OisysNew.Controllers
             try
             {
                 // get list of active orders (not deleted)
-                var list = this.context.Orders
+                var list = context.Orders
                     .Include(c => c.Customer)
                     .AsNoTracking();
 
@@ -94,7 +97,7 @@ namespace OisysNew.Controllers
 
                 if (!(filter?.ItemId).IsNullOrZero())
                 {
-                    list = list.Where(c => c.Details.Any(d => d.ItemId == filter.ItemId));
+                    list = list.Where(c => c.LineItems.Any(d => d.ItemId == filter.ItemId));
                 }
 
                 // sort
@@ -106,12 +109,12 @@ namespace OisysNew.Controllers
 
                 list = list.OrderBy(ordering);
 
-                var entities = await this.listHelpers.CreatePaginatedListAsync<Order, OrderSummary>(list, filter.PageNumber, filter.PageSize);
+                var entities = await listHelpers.CreatePaginatedListAsync<Order, OrderSummary>(list, filter.PageNumber, filter.PageSize);
                 return entities;
             }
             catch (Exception e)
             {
-                this.logger.LogError(e.Message);
+                logger.LogError(e.Message);
                 return StatusCode(StatusCodes.Status500InternalServerError);
             }
         }
@@ -126,12 +129,12 @@ namespace OisysNew.Controllers
         public async Task<ActionResult<IEnumerable<OrderLookup>>> GetLookup(int customerId)
         {
             // get list of active items (not deleted)
-            var list = this.context.Orders
+            var list = context.Orders
                 .AsNoTracking()
-                .Where(c => !c.IsDeleted && c.CustomerId == customerId)
+                .Where(c => c.CustomerId == customerId)
                 .OrderBy(c => c.Code);
 
-            var entities = await list.ProjectTo<OrderLookup>(this.mapper.ConfigurationProvider).ToListAsync();
+            var entities = await list.ProjectTo<OrderLookup>(mapper.ConfigurationProvider).ToListAsync();
             return entities;
         }
 
@@ -149,7 +152,7 @@ namespace OisysNew.Controllers
             try
             {
                 // get list of active items (not deleted)
-                var list = this.context.OrderDetails
+                var list = context.OrderDetails
                     .Include(c => c.Item)
                     .ThenInclude(c => c.Category)
                     .AsNoTracking()
@@ -162,12 +165,12 @@ namespace OisysNew.Controllers
 
                 list = list.OrderBy(c => c.Item.Code);
 
-                var entities = await list.ProjectTo<OrderDetailLookup>(this.mapper.ConfigurationProvider).ToListAsync();
+                var entities = await list.ProjectTo<OrderDetailLookup>(mapper.ConfigurationProvider).ToListAsync();
                 return entities;
             }
             catch (Exception e)
             {
-                this.logger.LogError(e.Message);
+                logger.LogError(e.Message);
                 return StatusCode(StatusCodes.Status500InternalServerError);
             }
         }
@@ -185,18 +188,18 @@ namespace OisysNew.Controllers
             try
             {
                 // get list of active items (not deleted)
-                var list = this.context.Orders
-                    .Include(c => c.Details)
+                var list = context.Orders
+                    .Include(c => c.LineItems)
                     .AsNoTracking()
                     .Where(c => c.CustomerId == customerId && !c.IsInvoiced)
                     .OrderBy(c => c.Code);
 
-                var orders = await list.ProjectTo<OrderLookup>(this.mapper.ConfigurationProvider).ToListAsync();
+                var orders = await list.ProjectTo<OrderLookup>(mapper.ConfigurationProvider).ToListAsync();
                 return orders;
             }
             catch (Exception e)
             {
-                this.logger.LogError(e.Message);
+                logger.LogError(e.Message);
                 return StatusCode(StatusCodes.Status500InternalServerError);
             }
         }
@@ -210,29 +213,28 @@ namespace OisysNew.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult<OrderSummary>> GetOrderById(long id)
+        public async Task<ActionResult<OrderSummary>> GetOrderById(int id)
         {
             try
             {
-                var entity = await this.context.Orders
-                .Include(c => c.Customer)
-                .Include(c => c.Details)
-                    .ThenInclude(d => d.Item)
-                        .ThenInclude(e => e.Category)
-                .AsNoTracking()
-                .SingleOrDefaultAsync(c => c.Id == id);
+                var entity = await context.Orders
+                    .Include(c => c.Customer).ThenInclude(c => c.Province)
+                    .Include(c => c.Customer).ThenInclude(c => c.City)
+                    .Include(c => c.LineItems).ThenInclude(d => d.Item).ThenInclude(e => e.Category)
+                    .AsNoTracking()
+                    .SingleOrDefaultAsync(c => c.Id == id);
 
                 if (entity == null)
                 {
                     return NotFound(id);
                 }
 
-                var orderSummary = this.mapper.Map<OrderSummary>(entity);
+                var orderSummary = mapper.Map<OrderSummary>(entity);
                 return orderSummary;
             }
             catch (Exception e)
             {
-                this.logger.LogError(e.Message);
+                logger.LogError(e.Message);
                 return StatusCode(StatusCodes.Status500InternalServerError);
             }
         }
@@ -250,22 +252,19 @@ namespace OisysNew.Controllers
         {
             try
             {
-                var order = this.mapper.Map<Order>(entity);
+                var order = mapper.Map<Order>(entity);
 
-                var itemsToAdjust = order.Details.ToDictionary(a => a.ItemId, a => a.Quantity);
-                var adjustments = CreateInventoryAdjustments(itemsToAdjust, AdjustmentType.Deduct, Constants.AdjustmentRemarks.OrderCreated);
-                await this.inventoryService.AdjustItemQuantities(adjustments);
+                // Deduct quantities from inventory
+                inventoryService.ProcessOrderDetails(order.LineItems);
 
-                await this.context.Orders.AddAsync(order);
-                await this.context.SaveChangesAsync();
+                await context.Orders.AddAsync(order);
+                await context.SaveChangesAsync();
 
-                var mappedOrder = this.mapper.Map<OrderSummary>(order);
-
-                return this.CreatedAtRoute(nameof(this.GetOrderById), new { id = order.Id }, mappedOrder);
+                return StatusCode(StatusCodes.Status201Created);
             }
             catch (Exception e)
             {
-                this.logger.LogError(e.Message);
+                logger.LogError(e.Message);
                 return StatusCode(StatusCodes.Status500InternalServerError);
             }
         }
@@ -286,42 +285,61 @@ namespace OisysNew.Controllers
         {
             try
             {
-                var order = await this.context.Orders
+                var order = await context.Orders
+                    .Include(a => a.Customer)
+                    .Include(a => a.LineItems).ThenInclude(detail => (detail as OrderLineItem).TransactionHistory)
                     .AsNoTracking()
-                    .Include(c => c.Details)
-                    .Include("Details.Item")
                     .SingleOrDefaultAsync(t => t.Id == id);
 
                 if (order == null)
                 {
-                    return this.NotFound(id);
+                    return NotFound();
                 }
 
-                var oldItemsToAdjust = order.Details.ToDictionary(a => a.ItemId, a => a.Quantity);
-                var itemsToAddBack = CreateInventoryAdjustments(oldItemsToAdjust, AdjustmentType.Add, Constants.AdjustmentRemarks.OrderUpdated);
+                // Adjustments
+                // TODO: figure out way for deleted details
+                //var oldItemsToAdjust = order.Details.ToDictionary(a => a.ItemId, a => a.Quantity);
+                //var itemsToAddBack = CreateInventoryAdjustments(oldItemsToAdjust, AdjustmentType.Add, Constants.AdjustmentRemarks.OrderUpdated);
 
-                var newItemsToAdjust = entity.Details.ToDictionary(a => a.ItemId, a => a.Quantity);
-                var itemsToDeduct = CreateInventoryAdjustments(newItemsToAdjust, AdjustmentType.Deduct, Constants.AdjustmentRemarks.OrderUpdated);
+                //var newItemsToAdjust = entity.Details.ToDictionary(a => a.ItemId, a => a.Quantity);
+                //var itemsToDeduct = CreateInventoryAdjustments(newItemsToAdjust, AdjustmentType.Deduct, Constants.AdjustmentRemarks.OrderUpdated);
 
-                await this.inventoryService.AdjustItemQuantities(itemsToAddBack.Concat(itemsToDeduct));
+                //var itemQuantities = itemsToAddBack.Except(itemsToDeduct, equalityComparer).Union(itemsToDeduct.Except(itemsToAddBack, equalityComparer));
+                //await inventoryService.AdjustItemQuantities(itemQuantities);
 
-                order = this.mapper.Map<Order>(entity);
-                
-                this.context.Update(order);
-                await this.context.SaveChangesAsync();
+                // Update the order values
+                mapper.Map(entity, order);
+
+                //foreach (var detail in entity.Details)
+                //{
+                //    var adj = mapper.Map<ItemTransactionHistoryOrder>(detail);
+                //    context.ItemTransactionHistories.Update(adj);
+                //}
+                //inventoryService.TestAdjustments();
+                inventoryService.ProcessOrderDetails(order.LineItems);
+
+                context.Update(order);
+                await context.SaveChangesAsync();
 
                 return StatusCode(StatusCodes.Status204NoContent);
             }
             catch (DbUpdateConcurrencyException concurrencyEx)
             {
-                this.logger.LogError(concurrencyEx.Message);
+                logger.LogError(concurrencyEx.Message);
                 return StatusCode(StatusCodes.Status409Conflict);
             }
             catch (Exception ex)
             {
-                this.logger.LogError(ex.Message);
+                logger.LogError(ex.Message);
                 return StatusCode(StatusCodes.Status500InternalServerError);
             }
+        }
+
+        [HttpGet("trans")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<ActionResult<List<ItemTransactionHistory>>> GetTransactionHistories()
+        {
+            return await context.ItemTransactionHistories.ToListAsync();
         }
 
         /// <summary>
@@ -337,31 +355,26 @@ namespace OisysNew.Controllers
         {
             try
             {
-                var order = await this.context.Orders
-                    .Include(c => c.Details)
-                    .Include("Details.Item")
-                    .SingleOrDefaultAsync(c => c.Id == id);
+                var order = await context.Orders
+                    .FindAsync(id);
 
                 if (order == null)
                 {
-                    return NotFound(id);
+                    return NotFound();
                 }
 
-                var itemsToAdjust = order.Details.ToDictionary(a => a.ItemId, a => a.Quantity);
-                var adjustments = CreateInventoryAdjustments(itemsToAdjust, AdjustmentType.Add, Constants.AdjustmentRemarks.OrderDeleted);
-                await this.inventoryService.AdjustItemQuantities(adjustments);
+                //var itemsToAdjust = order.Details.ToDictionary(a => a.ItemId, a => a.Quantity);
+                //var adjustments = CreateInventoryAdjustments(itemsToAdjust, AdjustmentType.Add, Constants.AdjustmentRemarks.OrderDeleted);
+                //await inventoryService.AdjustItemQuantities(adjustments);
 
-                order.IsDeleted = true;
-
-                this.context.RemoveRange(order.Details);
-
-                await this.context.SaveChangesAsync();
+                context.Remove(order);
+                await context.SaveChangesAsync();
 
                 return StatusCode(StatusCodes.Status204NoContent);
             }
             catch (Exception e)
             {
-                this.logger.LogError(e.Message);
+                logger.LogError(e.Message);
                 return StatusCode(StatusCodes.Status500InternalServerError);
             }
         }

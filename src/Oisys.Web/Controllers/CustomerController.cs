@@ -39,10 +39,10 @@ namespace OisysNew.Controllers
             IListHelpers listHelpers,
             ILogger<CustomerController> logger)
         {
-            this.context = context;
-            this.mapper = mapper;
-            this.listHelpers = listHelpers;
-            this.logger = logger;
+            context = context;
+            mapper = mapper;
+            listHelpers = listHelpers;
+            logger = logger;
         }
 
         /// <summary>
@@ -58,7 +58,7 @@ namespace OisysNew.Controllers
             try
             {
                 // get list of active customers (not deleted)
-                var list = this.context.Customers.AsNoTracking();
+                var list = context.Customers.AsNoTracking();
 
                 // filter
                 if (!string.IsNullOrEmpty(filter?.SearchTerm))
@@ -85,12 +85,12 @@ namespace OisysNew.Controllers
 
                 list = list.OrderBy(ordering);
 
-                var result = await this.listHelpers.CreatePaginatedListAsync<Customer, CustomerSummary>(list, filter.PageNumber, filter.PageSize);
+                var result = await listHelpers.CreatePaginatedListAsync<Customer, CustomerSummary>(list, filter.PageNumber, filter.PageSize);
                 return result;
             }
             catch (Exception e)
             {
-                this.logger.LogError(e.Message);
+                logger.LogError(e.Message);
                 return StatusCode(StatusCodes.Status500InternalServerError);
             }
         }
@@ -107,19 +107,19 @@ namespace OisysNew.Controllers
             try
             {
                 // get list of active items (not deleted)
-                var list = this.context.Customers.AsNoTracking();
+                var list = context.Customers.AsNoTracking();
 
                 // sort
                 var ordering = $"{Constants.ColumnNames.Name} {Constants.DefaultSortDirection}";
 
                 list = list.OrderBy(ordering);
 
-                var customers = await list.ProjectTo<CustomerLookup>(this.mapper.ConfigurationProvider).ToListAsync();
+                var customers = await list.ProjectTo<CustomerLookup>(mapper.ConfigurationProvider).ToListAsync();
                 return customers;
             }
             catch (Exception e)
             {
-                this.logger.LogError(e.Message);
+                logger.LogError(e.Message);
                 return StatusCode(StatusCodes.Status500InternalServerError);
             }
         }
@@ -133,7 +133,7 @@ namespace OisysNew.Controllers
         //public IActionResult GetLookupWithOrders(bool isDelivered = false)
         //{
         //    // get list of active items (not deleted)
-        //    var list = this.context.Customers
+        //    var list = context.Customers
         //        .AsNoTracking()
         //        .Where(c => !c.IsDeleted);
 
@@ -147,7 +147,7 @@ namespace OisysNew.Controllers
         //    // get the corresponding open orders of each customer
         //    foreach (var customer in customers)
         //    {
-        //        var orderDetails = this.context.OrderDetails
+        //        var orderDetails = context.OrderDetails
         //        .Include(c => c.Item)
         //        .ThenInclude(c => c.Category)
         //        .AsNoTracking()
@@ -163,7 +163,7 @@ namespace OisysNew.Controllers
         //        customer.OrderDetails = orderDetails.ProjectTo<OrderDetailLookup>().ToList();
         //    }
 
-        //    return this.Ok(customers);
+        //    return Ok(customers);
         //}
 
         /// <summary>
@@ -179,7 +179,7 @@ namespace OisysNew.Controllers
         {
             try
             {
-                var entity = await this.context.Customers
+                var entity = await context.Customers
                 .Include(c => c.City)
                 .Include(c => c.Province)
                 .Include(c => c.Transactions)
@@ -189,7 +189,7 @@ namespace OisysNew.Controllers
 
                 if (entity == null)
                 {
-                    return this.NotFound(id);
+                    return NotFound(id);
                 }
 
                 // Sort the transactions by date desc
@@ -199,12 +199,12 @@ namespace OisysNew.Controllers
                     .Select(transaction => transaction)
                     .ToList();
 
-                var customerSummary = this.mapper.Map<CustomerSummary>(entity);
+                var customerSummary = mapper.Map<CustomerSummary>(entity);
                 return customerSummary;
             }
             catch (Exception e)
             {
-                this.logger.LogError(e.Message);
+                logger.LogError(e.Message);
                 return StatusCode(StatusCodes.Status500InternalServerError);
             }
         }
@@ -222,15 +222,15 @@ namespace OisysNew.Controllers
         {
             try
             {
-                var customer = this.mapper.Map<Customer>(entity);
-                await this.context.Customers.AddAsync(customer);
-                await this.context.SaveChangesAsync();
+                var customer = mapper.Map<Customer>(entity);
+                await context.Customers.AddAsync(customer);
+                await context.SaveChangesAsync();
 
-                return this.CreatedAtRoute(nameof(this.GetCustomerById), new { id = customer.Id }, entity);
+                return CreatedAtRoute(nameof(GetCustomerById), new { id = customer.Id }, entity);
             }
             catch (Exception e)
             {
-                this.logger.LogError(e.Message);
+                logger.LogError(e.Message);
                 return StatusCode(StatusCodes.Status500InternalServerError);
             }
         }
@@ -251,26 +251,26 @@ namespace OisysNew.Controllers
         {
             try
             {
-                var customer = await this.context.Customers.SingleOrDefaultAsync(t => t.Id == id);
+                var customer = await context.Customers.SingleOrDefaultAsync(t => t.Id == id);
                 if (customer == null)
                 {
-                    return this.NotFound(id);
+                    return NotFound(id);
                 }
 
-                this.mapper.Map(entity, customer);
-                this.context.Update(customer);
-                await this.context.SaveChangesAsync();
+                mapper.Map(entity, customer);
+                context.Update(customer);
+                await context.SaveChangesAsync();
 
                 return StatusCode(StatusCodes.Status204NoContent);
             }
             catch (DbUpdateConcurrencyException concurrencyEx)
             {
-                this.logger.LogError(concurrencyEx.Message);
+                logger.LogError(concurrencyEx.Message);
                 return StatusCode(StatusCodes.Status409Conflict);
             }
             catch (Exception ex)
             {
-                this.logger.LogError(ex.Message);
+                logger.LogError(ex.Message);
                 return StatusCode(StatusCodes.Status500InternalServerError);
             }
         }
@@ -288,21 +288,21 @@ namespace OisysNew.Controllers
         {
             try
             {
-                var customer = await this.context.Customers.SingleOrDefaultAsync(t => t.Id == id);
+                var customer = await context.Customers.SingleOrDefaultAsync(t => t.Id == id);
                 if (customer == null)
                 {
-                    return this.NotFound(id);
+                    return NotFound(id);
                 }
 
                 customer.IsDeleted = true;
-                this.context.Update(customer);
-                await this.context.SaveChangesAsync();
+                context.Update(customer);
+                await context.SaveChangesAsync();
 
                 return StatusCode(StatusCodes.Status204NoContent);
             }
             catch (Exception e)
             {
-                this.logger.LogError(e.Message);
+                logger.LogError(e.Message);
                 return StatusCode(StatusCodes.Status500InternalServerError);
             }
         }
@@ -316,17 +316,17 @@ namespace OisysNew.Controllers
         //[HttpPost("{customerId}/transaction")]
         //public async Task<IActionResult> AddCustomerTransaction(long customerId, [FromBody] SaveCustomerTrxRequest entity)
         //{
-        //    if (entity == null || customerId == 0 || !this.ModelState.IsValid)
+        //    if (entity == null || customerId == 0 || !ModelState.IsValid)
         //    {
-        //        return this.BadRequest(this.ModelState);
+        //        return BadRequest(ModelState);
         //    }
 
-        //    var transaction = this.mapper.Map<CustomerTransaction>(entity);
+        //    var transaction = mapper.Map<CustomerTransaction>(entity);
 
-        //    await this.context.CustomerTransactions.AddAsync(transaction);
-        //    await this.context.SaveChangesAsync();
+        //    await context.CustomerTransactions.AddAsync(transaction);
+        //    await context.SaveChangesAsync();
 
-        //    return this.Ok(entity);
+        //    return Ok(entity);
         //}
 
         /// <summary>
@@ -337,12 +337,12 @@ namespace OisysNew.Controllers
         //[HttpPost("getTransactions")]
         //public async Task<IActionResult> GetCustomerTransactions([FromBody] CustomerTransactionFilterRequest filter)
         //{
-        //    if (!this.ModelState.IsValid)
+        //    if (!ModelState.IsValid)
         //    {
-        //        return this.BadRequest(this.ModelState);
+        //        return BadRequest(ModelState);
         //    }
 
-        //    var transactions = this.context.CustomerTransactions
+        //    var transactions = context.CustomerTransactions
         //        .AsNoTracking();
 
         //    if (!(filter?.CustomerId).IsNullOrZero())
@@ -367,9 +367,9 @@ namespace OisysNew.Controllers
 
         //    transactions = transactions.OrderBy(ordering);
 
-        //    var mappedTransactions = await this.transactionListBuilder.BuildAsync(transactions, filter);
+        //    var mappedTransactions = await transactionListBuilder.BuildAsync(transactions, filter);
 
-        //    return this.Ok(mappedTransactions);
+        //    return Ok(mappedTransactions);
         //}
     }
 }

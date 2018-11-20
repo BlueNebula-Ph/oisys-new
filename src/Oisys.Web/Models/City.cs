@@ -1,11 +1,9 @@
-﻿using System.ComponentModel.DataAnnotations;
-
-namespace OisysNew.Models
+﻿namespace OisysNew.Models
 {
     /// <summary>
     /// Entity model for city.
     /// </summary>
-    public class City : ModelBase
+    public class City : SoftDeletableModel
     {
         /// <summary>
         /// Gets or sets the name of the city.
@@ -18,19 +16,8 @@ namespace OisysNew.Models
         public int ProvinceId { get; set; }
 
         /// <summary>
-        /// Gets or sets a value indicating whether gets or sets property IsDeleted.
-        /// </summary>
-        public bool IsDeleted { get; set; }
-
-        /// <summary>
-        /// Gets or sets concurrency check.
-        /// </summary>
-        [Timestamp]
-        public byte[] RowVersion { get; set; }
-
-        /// <summary>
         /// Gets or sets the province navigation property.
         /// </summary>
-        public Province Province { get; set; }
+        public virtual Province Province { get; set; }
     }
 }

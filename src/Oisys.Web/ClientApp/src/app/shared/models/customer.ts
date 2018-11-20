@@ -5,26 +5,26 @@ import { City } from "./city";
 export class Customer {
   private _selectedProvince: Province;
   get selectedProvince() {
-    return this._selectedProvince;
+    return _selectedProvince;
   }
   set selectedProvince(prov: Province) {
     if (prov) {
-      this._selectedProvince = prov;
-      this.provinceId = prov.id;
+      _selectedProvince = prov;
+      provinceId = prov.id;
     }
   }
 
   private _selectedCity: City;
   get selectedCity() {
-    return this._selectedCity;
+    return _selectedCity;
   }
   set selectedCity(city: City) {
     if (city) {
-      this._selectedCity = city;
-      this.cityId = city.id;
+      _selectedCity = city;
+      cityId = city.id;
     } else {
-      this._selectedCity = undefined;
-      this.cityId = 0;
+      _selectedCity = undefined;
+      cityId = 0;
     }
   }
 
@@ -40,12 +40,12 @@ export class Customer {
     public discount?: number,
     public priceListId?: number)
   {
-    if (!this.id) {
-      this.id = 0;
+    if (!id) {
+      id = 0;
     }
 
-    if (!this.priceListId) {
-      this.priceListId = PriceList["Main Price"];
+    if (!priceListId) {
+      priceListId = PriceList["Main Price"];
     }
   }
 }

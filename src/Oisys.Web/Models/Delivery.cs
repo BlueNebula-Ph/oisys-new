@@ -17,7 +17,6 @@
         /// <summary>
         /// Gets or sets property Date.
         /// </summary>
-        [Required]
         public DateTime Date { get; set; }
 
         /// <summary>
@@ -36,23 +35,18 @@
         public int CityId { get; set; }
 
         /// <summary>
-        /// Gets or sets a value indicating whether gets or sets property IsDeleted.
-        /// </summary>
-        public bool IsDeleted { get; set; }
-
-        /// <summary>
-        /// Gets or sets property Details.
-        /// </summary>
-        public ICollection<DeliveryDetail> Details { get; set; }
-
-        /// <summary>
         /// Gets or sets the province nav property.
         /// </summary>
-        public Province Province { get; set; }
+        public virtual Province Province { get; set; }
 
         /// <summary>
         /// Gets or sets the city nav property.
         /// </summary>
-        public City City { get; set; }
+        public virtual City City { get; set; }
+
+        /// <summary>
+        /// Gets or sets property Details.
+        /// </summary>
+        public virtual ICollection<DeliveryDetail> Details { get; set; }
     }
 }

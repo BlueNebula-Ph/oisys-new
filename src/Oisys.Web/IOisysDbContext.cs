@@ -71,6 +71,11 @@ namespace OisysNew
         DbSet<Item> Items { get; set; }
 
         /// <summary>
+        /// Gets or sets the item transaction history db set.
+        /// </summary>
+        DbSet<ItemTransactionHistory> ItemTransactionHistories { get; set; }
+
+        /// <summary>
         /// Gets or sets the orders db set.
         /// </summary>
         DbSet<Order> Orders { get; set; }
@@ -78,7 +83,7 @@ namespace OisysNew
         /// <summary>
         /// Gets or sets the order details db set.
         /// </summary>
-        DbSet<OrderDetail> OrderDetails { get; set; }
+        DbSet<OrderLineItem> OrderDetails { get; set; }
 
         /// <summary>
         /// Gets or sets the provinces db set.
@@ -93,7 +98,7 @@ namespace OisysNew
         /// <summary>
         /// Gets or sets the sales quote details db set.
         /// </summary>
-        DbSet<SalesQuoteDetail> SalesQuoteDetails { get; set; }
+        DbSet<SalesQuoteLineItem> SalesQuoteDetails { get; set; }
 
         /// <summary>
         /// Gets or sets users db set.

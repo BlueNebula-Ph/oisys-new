@@ -1,10 +1,9 @@
-﻿namespace OisysNew.Models
-{
-    using System;
-    using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
+namespace OisysNew.Models
+{
     /// <summary>
-    /// Base class for models.
+    /// Base class for data models.
     /// </summary>
     public class ModelBase
     {
@@ -12,6 +11,12 @@
         /// Gets or sets property Id.
         /// </summary>
         [Key]
-        public int Id { get; set; }
+        public long Id { get; set; }
+
+        /// <summary>
+        /// Gets or sets concurrency check.
+        /// </summary>
+        [Timestamp]
+        public byte[] RowVersion { get; set; }
     }
 }

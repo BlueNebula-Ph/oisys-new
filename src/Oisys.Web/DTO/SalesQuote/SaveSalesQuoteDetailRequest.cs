@@ -1,11 +1,11 @@
-﻿namespace OisysNew.Models
-{
-    using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
+namespace OisysNew.DTO.SalesQuote
+{
     /// <summary>
-    /// <see cref="SalesQuote"/> class represents child of SalesQuote created in the application.
+    /// <see cref="SalesQuoteDetail"/> class represents the child of SalesQuote object.
     /// </summary>
-    public class SalesQuoteDetail : ModelBase
+    public class SaveSalesQuoteDetailRequest : DTOBase
     {
         /// <summary>
         /// Gets or sets property SalesQuoteId.
@@ -35,15 +35,5 @@
         /// Gets or sets property TotalPrice.
         /// </summary>
         public decimal TotalPrice { get; set; }
-
-        /// <summary>
-        /// Gets or sets SalesQuote navigation property.
-        /// </summary>
-        public SalesQuote SalesQuote { get; set; }
-
-        /// <summary>
-        /// Gets or sets Item navigation property.
-        /// </summary>
-        public Item Item { get; set; }
     }
 }

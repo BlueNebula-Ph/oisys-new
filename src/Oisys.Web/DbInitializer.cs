@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.AspNetCore.Hosting;
@@ -13,7 +14,7 @@ namespace OisysNew
             context.Database.EnsureDeleted();
             context.Database.EnsureCreated();
 
-            if(env.IsDevelopment())
+            if (env.IsDevelopment())
             {
                 SeedCategories(context);
                 SeedProvincesAndCities(context);
@@ -26,7 +27,7 @@ namespace OisysNew
             context.SaveChanges();
         }
 
-        
+
         private static void SeedCustomer(OisysDbContext context)
         {
             if (!context.Customers.Any())
@@ -166,12 +167,36 @@ namespace OisysNew
             {
                 var items = new List<Item>
                 {
-                    new Item { Code = "0001", Name = "Item Number 1", CategoryId = 1, Description = "Item 1. This is item 1", Quantity = 100, Unit = "pcs.", MainPrice = 1919.99m, NEPrice = 2929.99m, WalkInPrice = 3939.39m },
-                    new Item { Code = "0002", Name = "Item Number 2", CategoryId = 2, Description = "Item 2. This is item 2", Quantity = 200, Unit = "stacks", MainPrice = 919.99m, NEPrice = 929.99m, WalkInPrice = 939.39m },
-                    new Item { Code = "0003", Name = "Item Number 3", CategoryId = 1, Description = "Item 3. This is item 3", Quantity = 300, Unit = "makes", MainPrice = 111m, NEPrice = 222m, WalkInPrice = 333m },
-                    new Item { Code = "0004", Name = "Item Number 4", CategoryId = 3, Description = "Item 4. This is item 4", Quantity = 400, Unit = "pc", MainPrice = 12.50m, NEPrice = 29.50m, WalkInPrice = 39.50m },
-                    new Item { Code = "0005", Name = "Item Number 5", CategoryId = 4, Description = "Item 5. This is item 5", Quantity = 500, Unit = "shards", MainPrice = 400m, NEPrice = 500m, WalkInPrice = 600m },
-                    new Item { Code = "0006", Name = "Item Number 6", CategoryId = 4, Description = "Item 6. This is item 6", Quantity = 600, Unit = "rolls", MainPrice = 1211m, NEPrice = 1222m, WalkInPrice = 1233m },
+                    new Item
+                    {
+                        Code = "0001", Name = "Item Number 1", CategoryId = 1, Description = "Item 1. This is item 1", Quantity = 100, Unit = "pcs.", MainPrice = 1919.99m, NEPrice = 2929.99m, WalkInPrice = 3939.39m,
+                        TransactionHistory = new List<ItemTransactionHistory> { new ItemTransactionHistory { Date = DateTime.Now, Quantity = 100 } }
+                    },
+                    new Item
+                    {
+                        Code = "0002", Name = "Item Number 2", CategoryId = 2, Description = "Item 2. This is item 2", Quantity = 200, Unit = "stacks", MainPrice = 919.99m, NEPrice = 929.99m, WalkInPrice = 939.39m,
+                        TransactionHistory = new List<ItemTransactionHistory> { new ItemTransactionHistory { Date = DateTime.Now, Quantity = 200 } }
+                    },
+                    new Item
+                    {
+                        Code = "0003", Name = "Item Number 3", CategoryId = 1, Description = "Item 3. This is item 3", Quantity = 3000, Unit = "makes", MainPrice = 111m, NEPrice = 222m, WalkInPrice = 333m,
+                        TransactionHistory = new List<ItemTransactionHistory> { new ItemTransactionHistory { Date = DateTime.Now, Quantity = 3000 } }
+                    },
+                    new Item
+                    {
+                        Code = "0004", Name = "Item Number 4", CategoryId = 3, Description = "Item 4. This is item 4", Quantity = 1200, Unit = "pc", MainPrice = 12.50m, NEPrice = 29.50m, WalkInPrice = 39.50m,
+                        TransactionHistory = new List<ItemTransactionHistory> { new ItemTransactionHistory { Date = DateTime.Now, Quantity = 1200 } }
+                    },
+                    new Item
+                    {
+                        Code = "0005", Name = "Item Number 5", CategoryId = 4, Description = "Item 5. This is item 5", Quantity = 20020, Unit = "shards", MainPrice = 400m, NEPrice = 500m, WalkInPrice = 600m,
+                        TransactionHistory = new List<ItemTransactionHistory> { new ItemTransactionHistory { Date = DateTime.Now, Quantity = 20020 } }
+                    },
+                    new Item
+                    {
+                        Code = "0006", Name = "Item Number 6", CategoryId = 4, Description = "Item 6. This is item 6", Quantity = 2000, Unit = "rolls", MainPrice = 1211m, NEPrice = 1222m, WalkInPrice = 1233m,
+                        TransactionHistory = new List<ItemTransactionHistory> { new ItemTransactionHistory { Date = DateTime.Now, Quantity = 2000 } }
+                    },
                 };
                 context.Items.AddRange(items);
             }

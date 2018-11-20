@@ -9,10 +9,10 @@ export class NavMenuComponent {
   isExpanded = false;
 
   collapse() {
-    this.isExpanded = false;
+    isExpanded = false;
   }
 
   toggle() {
-    this.isExpanded = !this.isExpanded;
+    isExpanded = !isExpanded;
   }
 }

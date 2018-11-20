@@ -1,4 +1,5 @@
 ﻿using AutoFixture;
+using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using NSubstitute;
@@ -17,6 +18,7 @@ namespace Oisys.UnitTests.Services
         private readonly Fixture fixture = new Fixture();
         private readonly DbSet<Item> itemSet = Substitute.For<DbSet<Item>, IQueryable<Item>>();
         private readonly IOisysDbContext oisysDbContext = Substitute.For<IOisysDbContext>();
+        private readonly IMapper mapper = Substitute.For<IMapper>();
         private readonly ILogger<InventoryService> logger = Substitute.For<ILogger<InventoryService>>();
         private readonly List<InventoryAdjustment> adjustments = new List<InventoryAdjustment>();
         private readonly InventoryAdjustment adjustment;
@@ -26,19 +28,18 @@ namespace Oisys.UnitTests.Services
         public InventoryServiceTests()
         {
             // Setup the db context
-            this.item = fixture.Build<Item>()
+            item = fixture.Build<Item>()
                 .With(a => a.Quantity, 10)
-                .Without(a => a.Adjustments)
                 .Create();
-            this.oisysDbContext.Items.Returns(itemSet);
-            this.oisysDbContext.Items.FindAsync(Arg.Any<int>()).Returns(item);
+            oisysDbContext.Items.Returns(itemSet);
+            oisysDbContext.Items.FindAsync(Arg.Any<int>()).Returns(item);
 
             // Setup the adjustment
-            this.adjustment = fixture.Build<InventoryAdjustment>()
+            adjustment = fixture.Build<InventoryAdjustment>()
                 .With(a => a.Quantity, 5)
                 .Create();
 
-            this.service = new InventoryService(oisysDbContext, logger);
+            service = new InventoryService(oisysDbContext, mapper, logger);
         }
 
         [Fact]

@@ -15,16 +15,16 @@ export class EditCategoryComponent implements OnInit {
   constructor(private categoryService: CategoryService) { }
 
   ngOnInit() {
-    this.clearCategory();
+    clearCategory();
   }
 
   saveCategory(categoryForm: NgForm) {
     if (categoryForm.valid) {
-      this.categoryService
-        .saveCategory(this.category)
+      categoryService
+        .saveCategory(category)
         .subscribe(result => {
-          this.clearCategory();
-          this.onCategorySaved.emit(result);
+          clearCategory();
+          onCategorySaved.emit(result);
 
           categoryForm.resetForm();
         });
@@ -32,6 +32,6 @@ export class EditCategoryComponent implements OnInit {
   }
 
   clearCategory() {
-    this.category = new Category();
+    category = new Category();
   }
 }

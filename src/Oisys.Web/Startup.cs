@@ -14,11 +14,12 @@ namespace OisysNew
     public class Startup
     {
         private readonly IHostingEnvironment env;
+        private const string DatabaseName = "OisysDb";
 
         public Startup(IConfiguration configuration, IHostingEnvironment environment)
         {
             Configuration = configuration;
-            this.env = environment;
+            env = environment;
         }
 
         public IConfiguration Configuration { get; }
@@ -28,7 +29,16 @@ namespace OisysNew
         {
             services.AddDbContext<OisysDbContext>(opt =>
             {
-                opt.UseInMemoryDatabase("OisysDb");
+               opt.UseLazyLoadingProxies();
+
+                //if (env.IsDevelopment())
+                //{
+                //    opt.UseSqlServer(Configuration.GetConnectionString(DatabaseName));
+                //}
+                //else
+                //{
+                    opt.UseInMemoryDatabase(DatabaseName);
+                //}
             });
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
@@ -43,7 +53,7 @@ namespace OisysNew
                 configuration.RootPath = "ClientApp/dist";
             });
 
-            if(this.env.IsDevelopment())
+            if(env.IsDevelopment())
             {
                 services.AddSwaggerGen(opt =>
                 {

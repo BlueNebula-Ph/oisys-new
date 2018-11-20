@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using OisysNew.Helpers;
 using OisysNew.Services;
+using System.Collections.Generic;
 
 namespace OisysNew.Extensions
 {
@@ -11,7 +12,9 @@ namespace OisysNew.Extensions
             serviceCollection.AddScoped<IOisysDbContext>(provider => provider.GetService<OisysDbContext>());
             serviceCollection
                 .AddTransient<IListHelpers, ListHelpers>()
-                .AddTransient<IInventoryService, InventoryService>();
+                .AddTransient<IInventoryService, InventoryService>()
+                .AddTransient<IEntityListHelpers, EntityListHelpers>()
+                .AddSingleton<IEqualityComparer<InventoryAdjustment>, InventoryAdjustmentComparer>();
         }
     }
 }

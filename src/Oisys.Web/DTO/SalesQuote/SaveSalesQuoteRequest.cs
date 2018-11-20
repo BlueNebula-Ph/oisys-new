@@ -1,46 +1,44 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
-namespace OisysNew.Models
+namespace OisysNew.DTO.SalesQuote
 {
     /// <summary>
-    /// <see cref="SalesQuote"/> class represents SalesQuote created in the application.
+    /// <see cref="SaveSalesQuoteRequest"/> class Create/Update SalesQuote object.
     /// </summary>
-    public class SalesQuote : ModelBase
+    public class SaveSalesQuoteRequest : DTOBase
     {
         /// <summary>
-        /// Gets or sets property quote number.
+        /// Gets or sets property QuoteNumber.
         /// </summary>
         public int QuoteNumber { get; set; }
 
         /// <summary>
         /// Gets or sets property CustomerId.
         /// </summary>
-        public long? CustomerId { get; set; }
+        public int? CustomerId { get; set; }
 
         /// <summary>
         /// Gets or sets property Date.
         /// </summary>
+        [Required]
         public DateTime Date { get; set; }
 
         /// <summary>
         /// Gets or sets property DeliveryFee.
         /// </summary>
+        [Required]
         public decimal DeliveryFee { get; set; }
 
         /// <summary>
-        /// Gets or sets property TotalAmount
+        /// Gets or sets property TotalAmount.
         /// </summary>
         public decimal TotalAmount { get; set; }
 
         /// <summary>
-        /// Gets or sets Customer navigation property.
-        /// </summary>
-        public virtual Customer Customer { get; set; }
-
-        /// <summary>
         /// Gets or sets collection of SalesQuoteDetails navigation property.
         /// </summary>
-        public virtual ICollection<SalesQuoteLineItem> LineItems { get; set; }
+        public IEnumerable<SaveSalesQuoteDetailRequest> LineItems { get; set; }
     }
 }

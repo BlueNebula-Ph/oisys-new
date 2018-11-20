@@ -4,8 +4,10 @@ using OisysNew.DTO.Customer;
 using OisysNew.DTO.Item;
 using OisysNew.DTO.Order;
 using OisysNew.DTO.Province;
+using OisysNew.DTO.SalesQuote;
 using OisysNew.Extensions;
 using OisysNew.Models;
+using System;
 using System.Linq;
 
 namespace OisysNew.Configuration
@@ -21,65 +23,71 @@ namespace OisysNew.Configuration
         public MappingConfig()
         {
             // Adjustment
-            this.CreateMap<Adjustment, ItemAdjustmentSummary>()
+            CreateMap<Adjustment, ItemAdjustmentSummary>()
                 .ForMember(d => d.Item, s => s.MapFrom(o => o.Item.Name))
-                .ForMember(d => d.AdjustmentType, s => s.MapFrom(o => $"{o.AdjustmentType}"));
+                .ForMember(d => d.AdjustmentType, s => s.MapFrom(o => $"{o.AdjustmentType}"))
+                .ForMember(d => d.Quantity, s => s.MapFrom(o => o.Quantity));
 
             // Category
-            this.CreateMap<Category, CategorySummary>();
-            this.CreateMap<Category, CategoryLookup>();
-            this.CreateMap<SaveCategoryRequest, Category>();
+            CreateMap<Category, CategorySummary>();
+            CreateMap<Category, CategoryLookup>();
+            CreateMap<SaveCategoryRequest, Category>();
 
             // City
-            this.CreateMap<City, CitySummary>()
+            CreateMap<City, CitySummary>()
                 .ForMember(d => d.ProvinceName, s => s.MapFrom(o => o.Province.Name));
-            this.CreateMap<SaveCityRequest, City>();
+            CreateMap<SaveCityRequest, City>();
 
             // Customer
-            this.CreateMap<Customer, CustomerLookup>();
-            this.CreateMap<Customer, CustomerWithOrdersLookup>();
+            CreateMap<Customer, CustomerLookup>();
+            CreateMap<Customer, CustomerWithOrdersLookup>();
 
-            this.CreateMap<Customer, CustomerSummary>()
+            CreateMap<Customer, CustomerSummary>()
                 .ForMember(d => d.CityName, s => s.MapFrom(o => o.City.Name))
                 .ForMember(d => d.ProvinceName, s => s.MapFrom(o => o.Province.Name))
                 .ForMember(d => d.PriceList, s => s.MapFrom(o => o.PriceList.GetDisplayName()));
 
-            this.CreateMap<SaveCustomerRequest, Customer>()
+            CreateMap<SaveCustomerRequest, Customer>()
                 .ForMember(d => d.PriceList, s => s.MapFrom(o => o.PriceListId))
                 .ForMember(d => d.Keywords, s => s.MapFrom(o => $"{o.Name} {o.Address} {o.ContactNumber} {o.ContactPerson}"));
 
             // Item
-            this.CreateMap<Item, ItemLookup>()
+            CreateMap<Item, ItemLookup>()
                 .ForMember(d => d.CodeName, s => s.MapFrom(o => $"{o.Code} - {o.Name}"))
                 .ForMember(d => d.NameCategoryDescription, s => s.MapFrom(o => $"{o.Name} - {o.Category.Name} - {o.Description}"))
                 .ForMember(d => d.CategoryName, s => s.MapFrom(o => o.Category.Name));
 
-            this.CreateMap<Item, ItemSummary>()
+            CreateMap<Item, ItemSummary>()
                 .ForMember(d => d.CategoryName, s => s.MapFrom(o => o.Category.Name));
 
-            this.CreateMap<SaveItemRequest, Item>();
+            CreateMap<SaveItemRequest, Item>();
 
             // Order
-            this.CreateMap<Order, OrderSummary>()
+            CreateMap<Order, OrderSummary>()
                 .ForMember(d => d.ProvinceName, s => s.MapFrom(o => o.Customer.Province.Name))
                 .ForMember(d => d.Date, s => s.MapFrom(o => o.Date.ToString("d")))
                 .ForMember(d => d.DueDate, s => s.MapFrom(o => o.DueDate.HasValue ? o.DueDate.Value.ToString("d") : string.Empty));
 
-            this.CreateMap<SaveOrderRequest, Order>();
+            CreateMap<SaveOrderRequest, Order>();
 
-            this.CreateMap<Order, OrderLookup>();
+            CreateMap<Order, OrderLookup>();
 
-            // Order Detail
-            this.CreateMap<OrderDetail, OrderDetailSummary>()
+            // Order Line Item
+            CreateMap<OrderLineItem, OrderDetailSummary>()
                 .ForMember(d => d.ItemCode, s => s.MapFrom(o => o.Item.Code))
                 .ForMember(d => d.Item, s => s.MapFrom(o => o.Item.Name))
                 .ForMember(d => d.Unit, s => s.MapFrom(o => o.Item.Unit))
                 .ForMember(d => d.Description, s => s.MapFrom(o => o.Item.Description))
                 .ForMember(d => d.Category, s => s.MapFrom(o => o.Item.Category.Name));
 
-            this.CreateMap<SaveOrderDetailRequest, OrderDetail>();
+            CreateMap<SaveOrderDetailRequest, OrderLineItem>();
 
-            this.CreateMap<OrderDetail, OrderDetailLookup>()
+            CreateMap<SaveOrderDetailRequest, ItemTransactionHistoryOrder>()
+                .ForMember(d => d.Date, s => s.MapFrom(o => DateTime.Now))
+                .ForMember(d => d.Quantity, s => s.MapFrom(o => o.Quantity * -1))
+                .ForMember(d => d.OrderDetailId, s => s.MapFrom(o => o.Id));
+
+            CreateMap<OrderLineItem, OrderDetailLookup>()
                 .ForMember(d => d.ItemName, s => s.MapFrom(o => o.Item.Name))
                 .ForMember(d => d.Unit, s => s.MapFrom(o => o.Item.Unit))
                 .ForMember(d => d.ItemCodeName, s => s.MapFrom(o => $"{o.Item.Code} - {o.Item.Name}"))
@@ -88,44 +96,61 @@ namespace OisysNew.Configuration
                 .ForMember(d => d.QuantityDelivered, s => s.MapFrom(o => o.QuantityDelivered));
 
             // Province
-            this.CreateMap<Province, ProvinceSummary>();
-            this.CreateMap<Province, ProvinceLookup>()
+            CreateMap<Province, ProvinceSummary>();
+            CreateMap<Province, ProvinceLookup>()
                 .ForMember(d => d.Cities, s => s.MapFrom(o => o.Cities.OrderBy(c => c.Name)));
-            this.CreateMap<SaveProvinceRequest, Province>();
+            CreateMap<SaveProvinceRequest, Province>();
 
-            
+            // Sales Quote
+            CreateMap<SalesQuote, SalesQuoteSummary>()
+                .ForMember(d => d.QuoteNumber, s => s.MapFrom(o => o.QuoteNumber.ToString()))
+                .ForMember(d => d.CustomerName, s => s.MapFrom(o => o.Customer.Name))
+                .ForMember(d => d.CustomerAddress, s => s.MapFrom(o => $"{o.Customer.Address}, {o.Customer.City.Name} {o.Customer.Province.Name}"))
+                .ForMember(d => d.CustomerContact, s => s.MapFrom(o => o.Customer.ContactNumber));
+
+            CreateMap<SaveSalesQuoteRequest, SalesQuote>();
+
+            // Sales Quote Detail
+            CreateMap<SalesQuoteLineItem, SalesQuoteDetailSummary>()
+                .ForMember(d => d.ItemCode, s => s.MapFrom(o => o.Item.Code))
+                .ForMember(d => d.Item, s => s.MapFrom(o => o.Item.Name))
+                .ForMember(d => d.Unit, s => s.MapFrom(o => o.Item.Unit))
+                .ForMember(d => d.Description, s => s.MapFrom(o => o.Item.Description))
+                .ForMember(d => d.Category, s => s.MapFrom(o => o.Item.Category.Name));
+
+            CreateMap<SaveSalesQuoteDetailRequest, SalesQuoteLineItem>();
 
             // // Cash Voucher
-            // this.CreateMap<CashVoucher, CashVoucherSummary>();
-            // this.CreateMap<SaveCashVoucherRequest, CashVoucher>();
+            // CreateMap<CashVoucher, CashVoucherSummary>();
+            // CreateMap<SaveCashVoucherRequest, CashVoucher>();
 
             // // Credit Memo
-            // this.CreateMap<CreditMemo, CreditMemoSummary>();
-            // this.CreateMap<SaveCreditMemoRequest, CreditMemo>();
-            // this.CreateMap<CreditMemoDetail, CreditMemoDetailSummary>()
+            // CreateMap<CreditMemo, CreditMemoSummary>();
+            // CreateMap<SaveCreditMemoRequest, CreditMemo>();
+            // CreateMap<CreditMemoDetail, CreditMemoDetailSummary>()
             //     .ForMember(d => d.OrderCode, s => s.MapFrom(o => o.OrderDetail.Order.Code))
             //     .ForMember(d => d.ItemCode, s => s.MapFrom(o => o.OrderDetail.Item.Code))
             //     .ForMember(d => d.Item, s => s.MapFrom(o => o.OrderDetail.Item.Name))
             //     .ForMember(d => d.Price, s => s.MapFrom(o => o.OrderDetail.Price))
             //     .ForMember(d => d.ShouldAddBackToInventory, s => s.MapFrom(o => o.ReturnedToInventory));
-            // this.CreateMap<SaveCreditMemoDetailRequest, CreditMemoDetail>()
+            // CreateMap<SaveCreditMemoDetailRequest, CreditMemoDetail>()
             //     .ForMember(d => d.ReturnedToInventory, s => s.MapFrom(o => o.ShouldAddBackToInventory));
 
             // // Customer Transaction
             // // TODO: Create method to compute running balance
-            // this.CreateMap<SaveCustomerTrxRequest, CustomerTransaction>();
+            // CreateMap<SaveCustomerTrxRequest, CustomerTransaction>();
 
-            // this.CreateMap<CustomerTransaction, CustomerTransactionSummary>()
+            // CreateMap<CustomerTransaction, CustomerTransactionSummary>()
             //     .ForMember(d => d.Customer, s => s.MapFrom(o => o.Customer.Name));
 
             // // Delivery
-            // this.CreateMap<Delivery, DeliverySummary>()
+            // CreateMap<Delivery, DeliverySummary>()
             //     .ForMember(d => d.ProvinceName, s => s.MapFrom(o => o.Province.Name))
             //     .ForMember(d => d.CityName, s => s.MapFrom(o => o.City.Name));
-            // this.CreateMap<SaveDeliveryRequest, Delivery>();
+            // CreateMap<SaveDeliveryRequest, Delivery>();
 
             // // Delivery Detail
-            // this.CreateMap<DeliveryDetail, DeliveryDetailSummary>()
+            // CreateMap<DeliveryDetail, DeliveryDetailSummary>()
             //     .ForMember(d => d.CustomerName, s => s.MapFrom(o => o.OrderDetail.Order.Customer.Name))
             //     .ForMember(d => d.CategoryName, s => s.MapFrom(o => o.OrderDetail.Item.Category.Name))
             //     .ForMember(d => d.ItemCode, s => s.MapFrom(o => o.OrderDetail.Item.Code))
@@ -133,43 +158,26 @@ namespace OisysNew.Configuration
             //     .ForMember(d => d.OrderNumber, s => s.MapFrom(o => o.OrderDetail.Order.Code.ToString()))
             //     .ForMember(d => d.ItemCodeName, s => s.MapFrom(o => $"{o.OrderDetail.Item.Code} - {o.OrderDetail.Item.Name}"))
             //     .ForMember(d => d.Unit, s => s.MapFrom(o => o.OrderDetail.Item.Unit));
-            // this.CreateMap<SaveDeliveryDetailRequest, DeliveryDetail>();
+            // CreateMap<SaveDeliveryDetailRequest, DeliveryDetail>();
 
             // // Invoice
-            // this.CreateMap<Invoice, InvoiceSummary>()
+            // CreateMap<Invoice, InvoiceSummary>()
             //     .ForMember(d => d.Customer, s => s.MapFrom(o => o.Customer.Name));
-            // this.CreateMap<SaveInvoiceRequest, Invoice>();
+            // CreateMap<SaveInvoiceRequest, Invoice>();
 
             // // Invoice Detail
-            // this.CreateMap<SaveInvoiceDetailRequest, InvoiceDetail>();
+            // CreateMap<SaveInvoiceDetailRequest, InvoiceDetail>();
 
-            // // Sales Quote
-            // this.CreateMap<SalesQuote, SalesQuoteSummary>()
-            //     .ForMember(d => d.QuoteNumber, s => s.MapFrom(o => o.QuoteNumber.ToString()))
-            //     .ForMember(d => d.CustomerName, s => s.MapFrom(o => o.Customer.Name))
-            //     .ForMember(d => d.CustomerAddress, s => s.MapFrom(o => $"{o.Customer.Address}, {o.Customer.City.Name} {o.Customer.Province.Name}"))
-            //     .ForMember(d => d.CustomerContact, s => s.MapFrom(o => o.Customer.ContactNumber));
 
-            // this.CreateMap<SaveSalesQuoteRequest, SalesQuote>();
-
-            // // Sales Quote Detail
-            // this.CreateMap<SalesQuoteDetail, SalesQuoteDetailSummary>()
-            //     .ForMember(d => d.ItemCode, s => s.MapFrom(o => o.Item.Code))
-            //     .ForMember(d => d.Item, s => s.MapFrom(o => o.Item.Name))
-            //     .ForMember(d => d.Unit, s => s.MapFrom(o => o.Item.Unit))
-            //     .ForMember(d => d.Description, s => s.MapFrom(o => o.Item.Description))
-            //     .ForMember(d => d.Category, s => s.MapFrom(o => o.Item.Category.Name));
-
-            // this.CreateMap<SaveSalesQuoteDetailRequest, SalesQuoteDetail>();
 
             // // User
-            // this.CreateMap<User, UserSummary>()
+            // CreateMap<User, UserSummary>()
             //     .ForMember(d => d.Admin, o => o.MapFrom(s => s.AccessRights.Contains("admin")))
             //     .ForMember(d => d.CanView, o => o.MapFrom(s => s.AccessRights.Contains("canView")))
             //     .ForMember(d => d.CanWrite, o => o.MapFrom(s => s.AccessRights.Contains("canWrite")))
             //     .ForMember(d => d.CanDelete, o => o.MapFrom(s => s.AccessRights.Contains("canDelete")));
 
-            // this.CreateMap<SaveUserRequest, User>()
+            // CreateMap<SaveUserRequest, User>()
             //     .ForMember(d => d.PasswordHash, o => o.Ignore());
         }
     }

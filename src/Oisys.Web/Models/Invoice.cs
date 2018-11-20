@@ -54,11 +54,11 @@
         /// <summary>
         /// Gets or sets the customer navigation property.
         /// </summary>
-        public Customer Customer { get; set; }
+        public virtual Customer Customer { get; set; }
 
         /// <summary>
         /// Gets or sets the invoice details.
         /// </summary>
-        public ICollection<InvoiceDetail> Details { get; set; }
+        public virtual ICollection<InvoiceDetail> Details { get; set; }
     }
 }

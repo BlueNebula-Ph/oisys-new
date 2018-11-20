@@ -1,7 +1,5 @@
 ﻿namespace OisysNew.Models
 {
-    using System.ComponentModel.DataAnnotations;
-
     /// <summary>
     /// The <see cref="DeliveryDetail"/> models a delivery detail.
     /// </summary>
@@ -10,29 +8,26 @@
         /// <summary>
         /// Gets or sets property Delivery Id.
         /// </summary>
-        [Required]
-        public int DeliveryId { get; set; }
+        public long DeliveryId { get; set; }
 
         /// <summary>
         /// Gets or sets property Quantity.
         /// </summary>
-        [Required]
-        public decimal Quantity { get; set; }
+        public int Quantity { get; set; }
 
         /// <summary>
         /// Gets or sets property OrderDetailId.
         /// </summary>
-        [Required]
-        public int OrderDetailId { get; set; }
+        public long OrderDetailId { get; set; }
 
         /// <summary>
         /// Gets or sets property OrderDetail.
         /// </summary>
-        public OrderDetail OrderDetail { get; set; }
+        public virtual OrderLineItem OrderDetail { get; set; }
 
         /// <summary>
         /// Gets or sets property Delivery.
         /// </summary>
-        public Delivery Delivery { get; set; }
+        public virtual Delivery Delivery { get; set; }
     }
 }

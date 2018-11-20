@@ -22,7 +22,7 @@ namespace OisysNew.Helpers
             var count = await source.CountAsync();
             var items = await source
                 .Page(pageNumber, pageSize)
-                .ProjectTo<T1>(this.mapper.ConfigurationProvider)
+                .ProjectTo<T1>(mapper.ConfigurationProvider)
                 .ToListAsync();
 
             return new PaginatedList<T1>(items, count);

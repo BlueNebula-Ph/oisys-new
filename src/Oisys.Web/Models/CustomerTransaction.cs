@@ -12,13 +12,11 @@
         /// <summary>
         /// Gets or sets property Customer Id.
         /// </summary>
-        [Required]
         public int CustomerId { get; set; }
 
         /// <summary>
         /// Gets or sets property Date.
         /// </summary>
-        [Required]
         public DateTime Date { get; set; }
 
         /// <summary>
@@ -35,12 +33,6 @@
         /// Gets or sets property Description.
         /// </summary>
         public string Description { get; set; }
-
-        /// <summary>
-        /// Gets or sets a value indicating whether gets or sets property IsDeleted.
-        /// </summary>
-        [DefaultValue(false)]
-        public bool IsDeleted { get; set; }
 
         /// <summary>
         /// Gets or sets property Order Id.
@@ -60,12 +52,11 @@
         /// <summary>
         /// Gets or sets property Transaction type.
         /// </summary>
-        [Required]
         public string TransactionType { get; set; }
 
         /// <summary>
         /// Gets or sets property Customer.
         /// </summary>
-        public Customer Customer { get; set; }
+        public virtual Customer Customer { get; set; }
     }
 }

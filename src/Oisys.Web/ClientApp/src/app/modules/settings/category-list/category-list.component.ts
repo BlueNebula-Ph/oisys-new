@@ -31,71 +31,71 @@ export class CategoryListComponent implements AfterViewInit {
   @ViewChild('searchBox') input: ElementRef;
 
   ngAfterViewInit() {
-    this.loadCategories();
+    loadCategories();
   };
 
   loadCategories() {
     // If the user changes the sort order, reset back to the first page.
-    this.sort.sortChange.subscribe(() => this.paginator.pageIndex = 0);
+    sort.sortChange.subscribe(() => paginator.pageIndex = 0);
 
     merge(
-      this.sort.sortChange,
-      this.paginator.page,
-      fromEvent(this.input.nativeElement, 'keyup')
+      sort.sortChange,
+      paginator.page,
+      fromEvent(input.nativeElement, 'keyup')
         .pipe(
           debounceTime(350),
           distinctUntilChanged(),
           tap(() => {
-            this.paginator.pageIndex = 0;
+            paginator.pageIndex = 0;
           })
         )
     )
       .pipe(
         startWith({}),
         switchMap(() => {
-          this.isLoadingResults = true;
-          return this.fetchCategories();
+          isLoadingResults = true;
+          return fetchCategories();
         }),
         map(data => {
           // Flip flag to show that loading has finished.
-          this.isLoadingResults = false;
-          this.resultsLength = data.total_count;
+          isLoadingResults = false;
+          resultsLength = data.total_count;
 
           return data.items;
         }),
         catchError(() => {
-          this.isLoadingResults = false;
+          isLoadingResults = false;
 
           return of([]);
         })
       )
-      .subscribe(data => this.dataSource.data = data);
+      .subscribe(data => dataSource.data = data);
   }
 
   fetchCategories() {
-    return this.categoryService.getCategories(
-      this.paginator.pageIndex + 1,
-      this.paginator.pageSize,
-      this.sort.active,
-      this.sort.direction,
-      this.input.nativeElement.value);
+    return categoryService.getCategories(
+      paginator.pageIndex + 1,
+      paginator.pageSize,
+      sort.active,
+      sort.direction,
+      input.nativeElement.value);
   };
 
   onEditCategory(categoryToEdit: Category): void {
-    this.selectedCategory = categoryToEdit;
+    selectedCategory = categoryToEdit;
   };
 
   onDeleteCategory(id: number): void {
     if (confirm("Are you sure you want to delete this category?")) {
-      this.categoryService.deleteCategory(id).subscribe(() => {
-        this.loadCategories();
-        this.util.openSnackBar("Category deleted successfully.");
+      categoryService.deleteCategory(id).subscribe(() => {
+        loadCategories();
+        util.openSnackBar("Category deleted successfully.");
       });
     }
   };
 
   onCategorySaved(category: Category): void {
-    this.loadCategories();
-    this.util.openSnackBar("Category saved successfully.");
+    loadCategories();
+    util.openSnackBar("Category saved successfully.");
   };
 }

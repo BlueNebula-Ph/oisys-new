@@ -55,7 +55,7 @@ namespace OisysNew.DTO.Item
         /// <summary>
         /// Gets or sets property category id.
         /// </summary>
-        public int CategoryId { get; set; }
+        public long CategoryId { get; set; }
 
         /// <summary>
         /// Gets or sets property category name.

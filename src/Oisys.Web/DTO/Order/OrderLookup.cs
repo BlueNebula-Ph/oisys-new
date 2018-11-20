@@ -11,7 +11,7 @@ namespace OisysNew.DTO.Order
         /// <summary>
         /// Gets the order id property.
         /// </summary>
-        public int OrderId => this.Id;
+        public long OrderId { get; set; }
 
         /// <summary>
         /// Gets or sets code property.

@@ -29,46 +29,46 @@ export class EditCustomerComponent implements OnInit {
   constructor(private customerService: CustomerService, private provinceService: ProvinceService, private util: UtilitiesService, private location: Location) {}
 
   ngOnInit() {
-    this.fetchProvinces();
-    this.loadCustomer();
+    fetchProvinces();
+    loadCustomer();
 
-    fromEvent(this.provinceBox.nativeElement, 'keyup')
+    fromEvent(provinceBox.nativeElement, 'keyup')
       .subscribe(() => {
-        const searchVal = this.provinceBox.nativeElement.value;
-        this.filteredProvinces = this.filterProvinces(searchVal);
+        const searchVal = provinceBox.nativeElement.value;
+        filteredProvinces = filterProvinces(searchVal);
       });
 
-    fromEvent(this.cityBox.nativeElement, 'keyup')
+    fromEvent(cityBox.nativeElement, 'keyup')
       .subscribe(() => {
-        const searchVal = this.cityBox.nativeElement.value;
-        this.filteredCities = this.filterCities(searchVal);
+        const searchVal = cityBox.nativeElement.value;
+        filteredCities = filterCities(searchVal);
       });
   };
 
   backToSummary() {
-    this.location.back();
+    location.back();
   };
 
   saveCustomer(customerForm: NgForm) {
     if (customerForm.valid) {
-      this.customerService.saveCustomer(this.customer)
+      customerService.saveCustomer(customer)
         .subscribe(result => {
-          this.loadCustomer();
+          loadCustomer();
           customerForm.resetForm();
 
-          this.util.openSnackBar("Customer saved successfully.");
+          util.openSnackBar("Customer saved successfully.");
         });
     }
   };
 
   loadCustomer() {
-    this.customer = new Customer();
+    customer = new Customer();
   };
 
   fetchProvinces() {
-    this.provinceService.getProvinceLookup()
+    provinceService.getProvinceLookup()
       .subscribe(results => {
-        this.provinces = results;
+        provinces = results;
       });
   };
 
@@ -86,20 +86,20 @@ export class EditCustomerComponent implements OnInit {
 
   onProvinceSelected(prov: Province) {
     if (prov) {
-      this.customer.selectedCity = undefined;
-      this.cities = prov.cities;
+      customer.selectedCity = undefined;
+      cities = prov.cities;
     }
   };
 
   private filterProvinces(value: string): Province[] {
     const filterValue = value.toLowerCase();
 
-    return this.provinces.filter(province => province.name.toLowerCase().indexOf(filterValue) === 0);
+    return provinces.filter(province => province.name.toLowerCase().indexOf(filterValue) === 0);
   }
 
   private filterCities(value: string): Province[] {
     const filterValue = value.toLowerCase();
 
-    return this.cities.filter(city => city.name.toLowerCase().indexOf(filterValue) === 0);
+    return cities.filter(city => city.name.toLowerCase().indexOf(filterValue) === 0);
   }
 }

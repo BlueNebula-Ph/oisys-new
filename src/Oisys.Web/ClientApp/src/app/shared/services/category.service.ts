@@ -17,35 +17,35 @@ export class CategoryService {
 
   getCategories(pageNumber: number, pageSize: number, sortBy: string, sortDirection: string, searchTerm: string): Observable<SummaryItem<Category>> {
     var filter = { pageNumber, pageSize, sortBy, sortDirection, searchTerm };
-    var searchUrl = this.url + '/search';
+    var searchUrl = url + '/search';
 
-    return this.http.post<any>(searchUrl, filter)
+    return http.post<any>(searchUrl, filter)
       .pipe(
-        catchError(this.util.handleError('getCategories', []))
+        catchError(util.handleError('getCategories', []))
       );
   };
 
   getCategoryById(id: number): Observable<Category> {
-    var getUrl = this.url + "/" + id;
-    return this.http.get(getUrl);
+    var getUrl = url + "/" + id;
+    return http.get(getUrl);
   };
 
   getCategoryLookup(): Observable<Category[]> {
-    var lookupUrl = this.url + "/lookup";
-    return this.http.get<Category[]>(lookupUrl);
+    var lookupUrl = url + "/lookup";
+    return http.get<Category[]>(lookupUrl);
   };
 
   saveCategory(category: Category): Observable<Category> {
     if (category.id == 0) {
-      return this.http.post(this.url, category, this.util.httpOptions);
+      return http.post(url, category, util.httpOptions);
     } else {
-      var editUrl = this.url + "/" + category.id;
-      return this.http.put(editUrl, category, this.util.httpOptions);
+      var editUrl = url + "/" + category.id;
+      return http.put(editUrl, category, util.httpOptions);
     }
   };
 
   deleteCategory(id: number): Observable<any> {
-    var deleteUrl = this.url + "/" + id;
-    return this.http.delete(deleteUrl, this.util.httpOptions);
+    var deleteUrl = url + "/" + id;
+    return http.delete(deleteUrl, util.httpOptions);
   };
 }

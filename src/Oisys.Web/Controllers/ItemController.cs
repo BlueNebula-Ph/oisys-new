@@ -46,11 +46,11 @@ namespace OisysNew.Controllers
             IInventoryService inventoryService,
             ILogger<ItemController> logger)
         {
-            this.context = context;
-            this.mapper = mapper;
-            this.listHelpers = listHelpers;
-            this.inventoryService = inventoryService;
-            this.logger = logger;
+            context = context;
+            mapper = mapper;
+            listHelpers = listHelpers;
+            inventoryService = inventoryService;
+            logger = logger;
         }
 
         /// <summary>
@@ -66,7 +66,7 @@ namespace OisysNew.Controllers
             try
             {
                 // get list of active items (not deleted)
-                var list = this.context.Items.AsNoTracking();
+                var list = context.Items.AsNoTracking();
 
                 // filter
                 if (!string.IsNullOrEmpty(filter?.SearchTerm))
@@ -89,12 +89,12 @@ namespace OisysNew.Controllers
 
                 list = list.OrderBy(ordering);
 
-                var result = await this.listHelpers.CreatePaginatedListAsync<Item, ItemSummary>(list, filter.PageNumber, filter.PageSize);
+                var result = await listHelpers.CreatePaginatedListAsync<Item, ItemSummary>(list, filter.PageNumber, filter.PageSize);
                 return result;
             }
             catch (Exception e)
             {
-                this.logger.LogError(e.Message);
+                logger.LogError(e.Message);
                 return StatusCode(StatusCodes.Status500InternalServerError);
             }
         }
@@ -111,10 +111,11 @@ namespace OisysNew.Controllers
             try
             {
                 // get list of active items (not deleted)
-                var list = this.context.Items.AsNoTracking();
+                var list = context.Items
+                    .AsNoTracking();
 
                 // sort
-                var ordering = $"Name {Constants.DefaultSortDirection}";
+                var ordering = $"{Constants.ColumnNames.Name} {Constants.DefaultSortDirection}";
 
                 list = list.OrderBy(ordering);
 
@@ -123,7 +124,7 @@ namespace OisysNew.Controllers
             }
             catch (Exception e)
             {
-                this.logger.LogError(e.Message);
+                logger.LogError(e.Message);
                 return StatusCode(StatusCodes.Status500InternalServerError);
             }
         }
@@ -141,30 +142,22 @@ namespace OisysNew.Controllers
         {
             try
             {
-                var entity = await this.context.Items
-                .Include(c => c.Category)
-                .Include(c => c.Adjustments)
-                .AsNoTracking()
-                .FirstOrDefaultAsync(c => c.Id == id);
+                var entity = await context.Items
+                    .Include(a => a.Category)
+                    .AsNoTracking()
+                    .SingleOrDefaultAsync(c => c.Id == id);
 
                 if (entity == null)
                 {
-                    return this.NotFound(id);
+                    return NotFound();
                 }
 
-                // Sort the adjusments by date desc
-                // Hacky! Find better solution if possible
-                entity.Adjustments = entity.Adjustments
-                    .OrderByDescending(t => t.AdjustmentDate)
-                    .Select(adjustment => adjustment)
-                    .ToList();
-
-                var itemSummary = this.mapper.Map<ItemSummary>(entity);
+                var itemSummary = mapper.Map<ItemSummary>(entity);
                 return itemSummary;
             }
             catch (Exception e)
             {
-                this.logger.LogError(e.Message);
+                logger.LogError(e.Message);
                 return StatusCode(StatusCodes.Status500InternalServerError);
             }
         }
@@ -182,30 +175,25 @@ namespace OisysNew.Controllers
         {
             try
             {
-                var item = this.mapper.Map<Item>(entity);
+                var item = mapper.Map<Item>(entity);
 
-                await this.inventoryService.AdjustItemQuantities(new List<InventoryAdjustment>
+                context.ItemTransactionHistories.Add(new ItemTransactionHistory
                 {
-                    new InventoryAdjustment
-                    {
-                        ItemId = item.Id,
-                        AdjustmentType = AdjustmentType.Add,
-                        SaveAdjustmentDetails = true,
-                        Quantity = entity.Quantity,
-                        Remarks = Constants.AdjustmentRemarks.InitialQuantity
-                    }
+                    ItemId = item.Id,
+                    Date = DateTime.Now,
+                    Quantity = entity.Quantity
                 });
 
-                await this.context.Items.AddAsync(item);
-                await this.context.SaveChangesAsync();
+                await context.Items.AddAsync(item);
+                await context.SaveChangesAsync();
 
-                var mappedItem = this.mapper.Map<ItemSummary>(item);
+                var mappedItem = mapper.Map<ItemSummary>(item);
 
-                return this.CreatedAtRoute(nameof(this.GetItemById), new { id = item.Id }, mappedItem);
+                return CreatedAtRoute(nameof(GetItemById), new { id = item.Id }, mappedItem);
             }
             catch (Exception e)
             {
-                this.logger.LogError(e.Message);
+                logger.LogError(e.Message);
                 return StatusCode(StatusCodes.Status500InternalServerError);
             }
         }
@@ -226,26 +214,26 @@ namespace OisysNew.Controllers
         {
             try
             {
-                var item = await this.context.Items.SingleOrDefaultAsync(t => t.Id == id);
+                var item = await context.Items.SingleOrDefaultAsync(t => t.Id == id);
                 if (item == null)
                 {
-                    return this.NotFound(id);
+                    return NotFound(id);
                 }
 
-                this.mapper.Map(entity, item);
-                this.context.Update(item);
-                await this.context.SaveChangesAsync();
+                mapper.Map(entity, item);
+                context.Update(item);
+                await context.SaveChangesAsync();
 
                 return StatusCode(StatusCodes.Status204NoContent);
             }
             catch (DbUpdateConcurrencyException concurrencyEx)
             {
-                this.logger.LogError(concurrencyEx.Message);
+                logger.LogError(concurrencyEx.Message);
                 return StatusCode(StatusCodes.Status409Conflict);
             }
             catch (Exception ex)
             {
-                this.logger.LogError(ex.Message);
+                logger.LogError(ex.Message);
                 return StatusCode(StatusCodes.Status500InternalServerError);
             }
         }
@@ -263,21 +251,21 @@ namespace OisysNew.Controllers
         {
             try
             {
-                var entity = await this.context.Items.SingleOrDefaultAsync(t => t.Id == id);
+                var entity = await context.Items.SingleOrDefaultAsync(t => t.Id == id);
                 if (entity == null)
                 {
-                    return this.NotFound(id);
+                    return NotFound(id);
                 }
 
                 entity.IsDeleted = true;
-                this.context.Update(entity);
-                await this.context.SaveChangesAsync();
+                context.Update(entity);
+                await context.SaveChangesAsync();
 
                 return StatusCode(StatusCodes.Status204NoContent);
             }
             catch (Exception e)
             {
-                this.logger.LogError(e.Message);
+                logger.LogError(e.Message);
                 return StatusCode(StatusCodes.Status500InternalServerError);
             }
         }
@@ -297,14 +285,14 @@ namespace OisysNew.Controllers
         {
             try
             {
-                var item = await this.context.Items.SingleOrDefaultAsync(c => c.Id == id);
+                var item = await context.Items.SingleOrDefaultAsync(c => c.Id == id);
 
                 if (item == null)
                 {
                     return NotFound(id);
                 }
 
-                await this.inventoryService.AdjustItemQuantities(new List<InventoryAdjustment>
+                await inventoryService.AdjustItemQuantities(new List<InventoryAdjustment>
                 {
                     new InventoryAdjustment
                     {
@@ -318,13 +306,13 @@ namespace OisysNew.Controllers
                     }
                 });
 
-                await this.context.SaveChangesAsync();
+                await context.SaveChangesAsync();
 
                 return StatusCode(StatusCodes.Status204NoContent);
             }
             catch (Exception ex)
             {
-                return this.BadRequest(ex);
+                return BadRequest(ex);
             }
         }
     }

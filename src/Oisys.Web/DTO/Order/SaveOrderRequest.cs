@@ -50,6 +50,6 @@ namespace OisysNew.DTO.Order
         /// <summary>
         /// Gets or sets property Details navigation property.
         /// </summary>
-        public ICollection<SaveOrderDetailRequest> Details { get; set; }
+        public ICollection<SaveOrderDetailRequest> LineItems { get; set; }
     }
 }

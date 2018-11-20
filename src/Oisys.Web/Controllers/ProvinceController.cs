@@ -38,10 +38,10 @@ namespace OisysNew.Controllers
             IListHelpers listHelpers,
             ILogger<ProvinceController> logger)
         {
-            this.context = context;
-            this.mapper = mapper;
-            this.listHelpers = listHelpers;
-            this.logger = logger;
+            context = context;
+            mapper = mapper;
+            listHelpers = listHelpers;
+            logger = logger;
         }
 
         /// <summary>
@@ -57,7 +57,7 @@ namespace OisysNew.Controllers
             try
             {
                 // get list of active sales quote (not deleted)
-                var list = this.context.Provinces
+                var list = context.Provinces
                     .Include(c => c.Cities)
                     .AsNoTracking();
 
@@ -77,12 +77,12 @@ namespace OisysNew.Controllers
 
                 list = list.OrderBy(ordering);
 
-                var result = await this.listHelpers.CreatePaginatedListAsync<Province, ProvinceSummary>(list, filter.PageNumber, filter.PageSize);
+                var result = await listHelpers.CreatePaginatedListAsync<Province, ProvinceSummary>(list, filter.PageNumber, filter.PageSize);
                 return result;
             }
             catch (Exception e)
             {
-                this.logger.LogError(e.Message);
+                logger.LogError(e.Message);
                 return StatusCode(StatusCodes.Status500InternalServerError);
             }
         }
@@ -99,19 +99,19 @@ namespace OisysNew.Controllers
             try
             {
                 // get list of active items (not deleted)
-                var list = this.context.Provinces.AsNoTracking();
+                var list = context.Provinces.AsNoTracking();
 
                 // sort
                 var ordering = $"Name {Constants.DefaultSortDirection}";
 
                 list = list.OrderBy(ordering);
 
-                var provinces = await list.ProjectTo<ProvinceLookup>(this.mapper.ConfigurationProvider).ToListAsync();
+                var provinces = await list.ProjectTo<ProvinceLookup>(mapper.ConfigurationProvider).ToListAsync();
                 return provinces;
             }
             catch (Exception e)
             {
-                this.logger.LogError(e.Message);
+                logger.LogError(e.Message);
                 return StatusCode(StatusCodes.Status500InternalServerError);
             }
         }
@@ -129,22 +129,22 @@ namespace OisysNew.Controllers
         {
             try
             {
-                var entity = await this.context.Provinces
+                var entity = await context.Provinces
                     .Include(c => c.Cities)
                     .AsNoTracking()
                     .SingleOrDefaultAsync(c => c.Id == id);
 
                 if (entity == null)
                 {
-                    return this.NotFound(id);
+                    return NotFound(id);
                 }
 
-                var province = this.mapper.Map<ProvinceSummary>(entity);
+                var province = mapper.Map<ProvinceSummary>(entity);
                 return province;
             }
             catch (Exception e)
             {
-                this.logger.LogError(e.Message);
+                logger.LogError(e.Message);
                 return StatusCode(StatusCodes.Status500InternalServerError);
             }
         }
@@ -162,15 +162,15 @@ namespace OisysNew.Controllers
         {
             try
             {
-                var province = this.mapper.Map<Province>(entity);
-                await this.context.Provinces.AddAsync(province);
-                await this.context.SaveChangesAsync();
+                var province = mapper.Map<Province>(entity);
+                await context.Provinces.AddAsync(province);
+                await context.SaveChangesAsync();
 
-                return this.CreatedAtRoute(nameof(this.GetProvinceById), new { id = province.Id }, entity);
+                return CreatedAtRoute(nameof(GetProvinceById), new { id = province.Id }, entity);
             }
             catch (Exception e)
             {
-                this.logger.LogError(e.Message);
+                logger.LogError(e.Message);
                 return StatusCode(StatusCodes.Status500InternalServerError);
             }
         }
@@ -191,29 +191,29 @@ namespace OisysNew.Controllers
         {
             try
             {
-                var province = await this.context.Provinces
+                var province = await context.Provinces
                 .AsNoTracking()
                 .SingleOrDefaultAsync(t => t.Id == id);
 
                 if (province == null)
                 {
-                    return this.NotFound(id);
+                    return NotFound(id);
                 }
 
-                province = this.mapper.Map<Province>(entity);
-                this.context.Update(province);
-                await this.context.SaveChangesAsync();
+                province = mapper.Map<Province>(entity);
+                context.Update(province);
+                await context.SaveChangesAsync();
 
                 return StatusCode(StatusCodes.Status204NoContent);
             }
             catch (DbUpdateConcurrencyException concurrencyEx)
             {
-                this.logger.LogError(concurrencyEx.Message);
+                logger.LogError(concurrencyEx.Message);
                 return StatusCode(StatusCodes.Status409Conflict);
             }
             catch (Exception ex)
             {
-                this.logger.LogError(ex.Message);
+                logger.LogError(ex.Message);
                 return StatusCode(StatusCodes.Status500InternalServerError);
             }
         }
@@ -231,22 +231,22 @@ namespace OisysNew.Controllers
         {
             try
             {
-                var city = await this.context.Provinces
+                var city = await context.Provinces
                 .SingleOrDefaultAsync(c => c.Id == id);
 
                 if (city == null)
                 {
-                    return this.NotFound(id);
+                    return NotFound(id);
                 }
 
                 city.IsDeleted = true;
-                await this.context.SaveChangesAsync();
+                await context.SaveChangesAsync();
 
                 return StatusCode(StatusCodes.Status204NoContent);
             }
             catch (Exception e)
             {
-                this.logger.LogError(e.Message);
+                logger.LogError(e.Message);
                 return StatusCode(StatusCodes.Status500InternalServerError);
             }
         }

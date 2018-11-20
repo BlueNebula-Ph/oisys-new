@@ -25,7 +25,7 @@ namespace OisysNew.DTO.Item
         /// <summary>
         /// Gets or sets property quantity.
         /// </summary>
-        public decimal Quantity { get; set; }
+        public int Quantity { get; set; }
 
         /// <summary>
         /// Gets or sets property adjustment type.

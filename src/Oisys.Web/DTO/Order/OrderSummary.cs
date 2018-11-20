@@ -44,7 +44,7 @@ namespace OisysNew.DTO.Order
         /// </summary>
         public decimal GrossAmount
         {
-            get { return this.Details.Sum(c => c.TotalPrice); }
+            get { return LineItems.Sum(c => c.TotalPrice); }
         }
 
         /// <summary>
@@ -65,6 +65,6 @@ namespace OisysNew.DTO.Order
         /// <summary>
         /// Gets or sets Details navigation property.
         /// </summary>
-        public IEnumerable<OrderDetailSummary> Details { get; set; }
+        public IEnumerable<OrderDetailSummary> LineItems { get; set; }
     }
 }

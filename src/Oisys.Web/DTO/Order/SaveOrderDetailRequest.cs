@@ -1,5 +1,4 @@
 ﻿using Newtonsoft.Json;
-using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 
 namespace OisysNew.DTO.Order
@@ -12,8 +11,7 @@ namespace OisysNew.DTO.Order
         /// <summary>
         /// Gets or sets property OrderId.
         /// </summary>
-        [Required]
-        public int OrderId { get; set; }
+        public long OrderId { get; set; }
 
         /// <summary>
         /// Gets or sets property Quanity.
@@ -25,12 +23,12 @@ namespace OisysNew.DTO.Order
         /// Gets or sets property ItemId.
         /// </summary>
         [Required]
-        public int ItemId { get; set; }
+        public long ItemId { get; set; }
 
         /// <summary>
         /// Gets or sets property DeliveryId.
         /// </summary>
-        public int? DeliveryId { get; set; }
+        public long? DeliveryId { get; set; }
 
         /// <summary>
         /// Gets or sets property Price.
@@ -46,7 +44,6 @@ namespace OisysNew.DTO.Order
         /// <summary>
         /// Gets or sets a value indicating whether order detail is deleted.
         /// </summary>
-        [DefaultValue(false)]
         public bool IsDeleted { get; set; }
     }
 }

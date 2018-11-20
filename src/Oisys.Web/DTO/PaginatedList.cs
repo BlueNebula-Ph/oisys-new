@@ -10,8 +10,8 @@ namespace OisysNew.DTO
 
         public PaginatedList(List<T> items, int totalCount)
         {
-            this.Items = items;
-            this.Total_count = totalCount;
+            Items = items;
+            Total_count = totalCount;
         }
     }
 }

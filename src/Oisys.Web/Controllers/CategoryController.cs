@@ -58,7 +58,7 @@ namespace OisysNew.Controllers
         {
             try
             {
-                var list = this.context.Categories.AsNoTracking();
+                var list = context.Categories.AsNoTracking();
 
                 // filter
                 if (!string.IsNullOrEmpty(filter?.SearchTerm))
@@ -75,7 +75,7 @@ namespace OisysNew.Controllers
 
                 list = list.OrderBy(ordering);
 
-                var result = await this.listHelpers.CreatePaginatedListAsync<Category, CategorySummary>(list, filter.PageNumber, filter.PageSize);
+                var result = await listHelpers.CreatePaginatedListAsync<Category, CategorySummary>(list, filter.PageNumber, filter.PageSize);
                 return result;
             }
             catch (Exception e)
@@ -97,14 +97,14 @@ namespace OisysNew.Controllers
             try
             {
                 // get list of active items (not deleted)
-                var list = this.context.Categories.AsNoTracking();
+                var list = context.Categories.AsNoTracking();
 
                 // sort
                 var ordering = $"{Constants.ColumnNames.Name} {Constants.DefaultSortDirection}";
 
                 list = list.OrderBy(ordering);
 
-                var categories = await list.ProjectTo<CategoryLookup>(this.mapper.ConfigurationProvider).ToListAsync();
+                var categories = await list.ProjectTo<CategoryLookup>(mapper.ConfigurationProvider).ToListAsync();
                 return categories;
             }
             catch (Exception ex)
@@ -127,16 +127,16 @@ namespace OisysNew.Controllers
         {
             try
             {
-                var entity = await this.context.Categories
+                var entity = await context.Categories
                 .AsNoTracking()
                 .FirstOrDefaultAsync(c => c.Id == id);
 
                 if (entity == null)
                 {
-                    return this.NotFound(id);
+                    return NotFound(id);
                 }
 
-                var category = this.mapper.Map<CategorySummary>(entity);
+                var category = mapper.Map<CategorySummary>(entity);
                 return category;
             }
             catch (Exception ex)
@@ -159,11 +159,11 @@ namespace OisysNew.Controllers
         {
             try
             {
-                var category = this.mapper.Map<Category>(entity);
-                await this.context.Categories.AddAsync(category);
-                await this.context.SaveChangesAsync();
+                var category = mapper.Map<Category>(entity);
+                await context.Categories.AddAsync(category);
+                await context.SaveChangesAsync();
 
-                return this.CreatedAtRoute(nameof(this.GetCategoryById), new { id = category.Id }, entity);
+                return CreatedAtRoute(nameof(GetCategoryById), new { id = category.Id }, entity);
             }
             catch (Exception ex)
             {
@@ -188,15 +188,15 @@ namespace OisysNew.Controllers
         {
             try
             {
-                var category = await this.context.Categories.SingleOrDefaultAsync(t => t.Id == id);
+                var category = await context.Categories.SingleOrDefaultAsync(t => t.Id == id);
                 if (category == null)
                 {
-                    return this.NotFound(id);
+                    return NotFound(id);
                 }
 
-                this.mapper.Map(entity, category);
-                this.context.Update(category);
-                await this.context.SaveChangesAsync();
+                mapper.Map(entity, category);
+                context.Update(category);
+                await context.SaveChangesAsync();
 
                 return StatusCode(StatusCodes.Status204NoContent);
             }
@@ -225,15 +225,15 @@ namespace OisysNew.Controllers
         {
             try
             {
-                var category = await this.context.Categories.SingleOrDefaultAsync(t => t.Id == id);
+                var category = await context.Categories.SingleOrDefaultAsync(t => t.Id == id);
                 if (category == null)
                 {
-                    return this.NotFound(id);
+                    return NotFound(id);
                 }
 
                 category.IsDeleted = true;
-                this.context.Update(category);
-                await this.context.SaveChangesAsync();
+                context.Update(category);
+                await context.SaveChangesAsync();
 
                 return StatusCode(StatusCodes.Status204NoContent);
             }

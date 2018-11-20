@@ -3,7 +3,7 @@
     /// <summary>
     /// View model for the user entity.
     /// </summary>
-    public class ApplicationUser : ModelBase
+    public class ApplicationUser : SoftDeletableModel
     {
         /// <summary>
         /// Gets or sets the username.
@@ -30,10 +30,5 @@
         /// ex. CanRead, CanWrite, CanDelete or Admin
         /// </summary>
         public string AccessRights { get; set; }
-
-        /// <summary>
-        /// Gets or sets a value indicating whether the user is deleted.
-        /// </summary>
-        public bool IsDeleted { get; set; }
     }
 }

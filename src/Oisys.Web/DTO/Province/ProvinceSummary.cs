@@ -24,8 +24,8 @@ namespace OisysNew.DTO.Province
         /// </summary>
         public IEnumerable<CitySummary> Cities
         {
-            get { return this.cities.Where(a => !a.IsDeleted); }
-            set { this.cities = value; }
+            get { return cities.Where(a => !a.IsDeleted); }
+            set { cities = value; }
         }
     }
 }

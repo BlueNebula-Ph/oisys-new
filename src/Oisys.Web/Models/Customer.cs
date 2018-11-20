@@ -1,34 +1,21 @@
-﻿namespace OisysNew.Models
+﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+
+namespace OisysNew.Models
 {
-    using System.Collections.Generic;
-    using System.ComponentModel;
-    using System.ComponentModel.DataAnnotations;
-
-    public enum PriceList 
-    {
-        [Display(Name = "Main Price")]
-        MainPrice = 1,
-        [Display(Name = "Walk-In Price")]
-        WalkInPrice = 2,
-        [Display(Name = "N.E. Price")]
-        NEPrice = 3
-    }
-
     /// <summary>
     /// <see cref="Customer"/> class Customer object.
     /// </summary>
-    public class Customer : ModelBase
+    public class Customer : SoftDeletableModel
     {
         /// <summary>
         /// Gets or sets property Name.
         /// </summary>
-        [Required]
         public string Name { get; set; }
 
         /// <summary>
         /// Gets or sets property Phone Number.
         /// </summary>
-        [DataType(DataType.PhoneNumber)]
         public string ContactNumber { get; set; }
 
         /// <summary>
@@ -49,14 +36,12 @@
         /// <summary>
         /// Gets or sets property City.
         /// </summary>
-        [Required]
-        public int CityId { get; set; }
+        public long CityId { get; set; }
 
         /// <summary>
         /// Gets or sets property Province.
         /// </summary>
-        [Required]
-        public int ProvinceId { get; set; }
+        public long ProvinceId { get; set; }
 
         /// <summary>
         /// Gets or sets property Terms.
@@ -79,30 +64,28 @@
         public string Keywords { get; set; }
 
         /// <summary>
-        /// Gets or sets concurrency check.
-        /// </summary>
-        [Timestamp]
-        public byte[] RowVersion { get; set; }
-
-        /// <summary>
-        /// Gets or sets a value indicating whether gets or sets property IsDeleted.
-        /// </summary>
-        [DefaultValue(false)]
-        public bool IsDeleted { get; set; }
-
-        /// <summary>
         /// Gets or sets property City.
         /// </summary>
-        public City City { get; set; }
+        public virtual City City { get; set; }
 
         /// <summary>
         /// Gets or sets property Province.
         /// </summary>
-        public Province Province { get; set; }
+        public virtual Province Province { get; set; }
 
         /// <summary>
         /// Gets or sets property Customer transactions.
         /// </summary>
-        public ICollection<CustomerTransaction> Transactions { get; set; }
+        public virtual ICollection<CustomerTransaction> Transactions { get; set; }
+    }
+
+    public enum PriceList
+    {
+        [Display(Name = "Main Price")]
+        MainPrice = 1,
+        [Display(Name = "Walk-In Price")]
+        WalkInPrice = 2,
+        [Display(Name = "N.E. Price")]
+        NEPrice = 3
     }
 }

@@ -1,10 +1,8 @@
-﻿namespace OisysNew.Models
-{
-    using System;
-    using System.Collections.Generic;
-    using System.ComponentModel;
-    using System.ComponentModel.DataAnnotations;
+﻿using System;
+using System.Collections.Generic;
 
+namespace OisysNew.Models
+{
     /// <summary>
     /// <see cref="Order"/> class represents the Order object.
     /// </summary>
@@ -13,19 +11,16 @@
         /// <summary>
         /// Gets or sets property Code.
         /// </summary>
-        [Required]
         public int Code { get; set; }
 
         /// <summary>
         /// Gets or sets property CustomerId.
         /// </summary>
-        [Required]
-        public int CustomerId { get; set; }
+        public long CustomerId { get; set; }
 
         /// <summary>
         /// Gets or sets property Date.
         /// </summary>
-        [Required]
         public DateTime Date { get; set; }
 
         /// <summary>
@@ -56,17 +51,16 @@
         /// <summary>
         /// Gets or sets a value indicating whether order is deleted.
         /// </summary>
-        [DefaultValue(false)]
         public bool IsDeleted { get; set; }
 
         /// <summary>
         /// Gets or sets property Customer navigation property.
         /// </summary>
-        public Customer Customer { get; set; }
+        public virtual Customer Customer { get; set; }
 
         /// <summary>
-        /// Gets or sets property Details navigation property.
+        /// Gets or sets line items of the order.
         /// </summary>
-        public ICollection<OrderDetail> Details { get; set; }
+        public virtual ICollection<OrderLineItem> LineItems { get; set; }
     }
 }

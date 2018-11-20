@@ -10,20 +10,17 @@
         /// <summary>
         /// Gets or sets property CreditMemoId.
         /// </summary>
-        [Required]
-        public int CreditMemoId { get; set; }
+        public long CreditMemoId { get; set; }
 
         /// <summary>
         /// Gets or sets property Quantity.
         /// </summary>
-        [Required]
-        public decimal Quantity { get; set; }
+        public int Quantity { get; set; }
 
         /// <summary>
         /// Gets or sets property OrderDetailId.
         /// </summary>
-        [Required]
-        public int OrderDetailId { get; set; }
+        public long OrderDetailId { get; set; }
 
         /// <summary>
         /// Gets or sets a value indicating whether
@@ -34,11 +31,11 @@
         /// <summary>
         /// Gets or sets property OrderDetail.
         /// </summary>
-        public OrderDetail OrderDetail { get; set; }
+        public virtual OrderLineItem OrderDetail { get; set; }
 
         /// <summary>
         /// Gets or sets property CreditMemo.
         /// </summary>
-        public CreditMemo CreditMemo { get; set; }
+        public virtual CreditMemo CreditMemo { get; set; }
     }
 }

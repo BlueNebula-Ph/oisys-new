@@ -1,59 +1,53 @@
 ﻿namespace OisysNew.Models
 {
-    using System.ComponentModel.DataAnnotations;
-
     /// <summary>
-    /// <see cref="OrderDetail"/> class represents the child of Order object.
+    /// <see cref="OrderLineItem"/> class represents the child of Order object.
     /// </summary>
-    public class OrderDetail : ModelBase
+    public class OrderLineItem : ModelBase
     {
         /// <summary>
         /// Gets or sets property OrderId.
         /// </summary>
-        [Required]
-        public int OrderId { get; set; }
+        public long OrderId { get; set; }
 
         /// <summary>
         /// Gets or sets property Quanity.
         /// </summary>
-        [Required]
         public int Quantity { get; set; }
 
         /// <summary>
         /// Gets or sets property ItemId.
         /// </summary>
-        [Required]
-        public int ItemId { get; set; }
+        public long ItemId { get; set; }
 
         /// <summary>
         /// Gets or sets property Price.
         /// </summary>
-        [Required]
         public decimal Price { get; set; }
-
-        /// <summary>
-        /// Gets or sets property TotalPrice.
-        /// </summary>
-        public decimal TotalPrice { get; set; }
 
         /// <summary>
         /// Gets or sets property QuantityReturned.
         /// </summary>
-        public decimal QuantityReturned { get; set; }
+        public int QuantityReturned { get; set; }
 
         /// <summary>
         /// Gets or sets property QuantityDelivered.
         /// </summary>
-        public decimal QuantityDelivered { get; set; }
+        public int QuantityDelivered { get; set; }
 
         /// <summary>
         /// Gets or sets Order navigation property.
         /// </summary>
-        public Order Order { get; set; }
+        public virtual Order Order { get; set; }
 
         /// <summary>
         /// Gets or sets Item navigation property.
         /// </summary>
-        public Item Item { get; set; }
+        public virtual Item Item { get; set; }
+
+        /// <summary>
+        /// Gets or sets the transaction history navigation property.
+        /// </summary>
+        public virtual ItemTransactionHistoryOrder TransactionHistory { get; set; }
     }
 }

@@ -17,35 +17,35 @@ export class CustomerService {
 
   getCustomers(pageNumber: number, pageSize: number, sortBy: string, sortDirection: string, searchTerm: string): Observable<SummaryItem<Customer>> {
     var filter = { pageNumber, pageSize, sortBy, sortDirection, searchTerm };
-    var searchUrl = this.url + '/search';
+    var searchUrl = url + '/search';
 
-    return this.http.post<any>(searchUrl, filter)
+    return http.post<any>(searchUrl, filter)
       .pipe(
-        catchError(this.util.handleError('getCustomers', []))
+        catchError(util.handleError('getCustomers', []))
       );
   };
 
   getCustomerById(id: number): Observable<Customer> {
-    var getUrl = this.url + "/" + id;
-    return this.http.get<Customer>(getUrl);
+    var getUrl = url + "/" + id;
+    return http.get<Customer>(getUrl);
   };
 
   getCustomerLookup(): Observable<Customer[]> {
-    var lookupUrl = this.url + "/lookup";
-    return this.http.get<Customer[]>(lookupUrl);
+    var lookupUrl = url + "/lookup";
+    return http.get<Customer[]>(lookupUrl);
   };
 
   saveCustomer(customer: Customer): Observable<Customer> {
     if (customer.id == 0) {
-      return this.http.post<Customer>(this.url, customer, this.util.httpOptions);
+      return http.post<Customer>(url, customer, util.httpOptions);
     } else {
-      var editUrl = this.url + "/" + customer.id;
-      return this.http.put<Customer>(editUrl, customer, this.util.httpOptions);
+      var editUrl = url + "/" + customer.id;
+      return http.put<Customer>(editUrl, customer, util.httpOptions);
     }
   };
 
   deleteCustomer(id: number): Observable<any> {
-    var deleteUrl = this.url + "/" + id;
-    return this.http.delete(deleteUrl, this.util.httpOptions);
+    var deleteUrl = url + "/" + id;
+    return http.delete(deleteUrl, util.httpOptions);
   };
 }

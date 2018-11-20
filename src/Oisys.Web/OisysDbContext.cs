@@ -59,10 +59,13 @@ namespace OisysNew
         public DbSet<Item> Items { get; set; }
 
         /// <inheritdoc />
+        public DbSet<ItemTransactionHistory> ItemTransactionHistories { get; set; }
+
+        /// <inheritdoc />
         public DbSet<Order> Orders { get; set; }
 
         /// <inheritdoc />
-        public DbSet<OrderDetail> OrderDetails { get; set; }
+        public DbSet<OrderLineItem> OrderDetails { get; set; }
 
         /// <inheritdoc />
         public DbSet<Province> Provinces { get; set; }
@@ -71,7 +74,7 @@ namespace OisysNew
         public DbSet<SalesQuote> SalesQuotes { get; set; }
 
         /// <inheritdoc />
-        public DbSet<SalesQuoteDetail> SalesQuoteDetails { get; set; }
+        public DbSet<SalesQuoteLineItem> SalesQuoteDetails { get; set; }
 
         /// <inheritdoc />
         public DbSet<ApplicationUser> Users { get; set; }
@@ -81,38 +84,23 @@ namespace OisysNew
         {
             base.OnModelCreating(modelBuilder);
 
+            CreateCategoryModel(modelBuilder);
+            CreateCustomerModel(modelBuilder);
+            CreateItemModel(modelBuilder);
+            CreateOrderModel(modelBuilder);
+            CreateProvinceAndCityModels(modelBuilder);
+
             // Adjustments
-            modelBuilder.Entity<Adjustment>()
-                .HasOne<Item>(d => d.Item)
-                .WithMany(p => p.Adjustments)
-                .HasForeignKey(p => p.ItemId);
-
-            // Category
-            modelBuilder.Entity<Category>()
-                .HasQueryFilter(c => !c.IsDeleted);
-
-            modelBuilder.Entity<Category>()
-                .Property(p => p.RowVersion)
-                .IsRowVersion();
-
-            // City
-            modelBuilder.Entity<City>()
-                .HasQueryFilter(c => !c.IsDeleted);
+            //modelBuilder.Entity<Adjustment>()
+            //    .HasOne<Item>(d => d.Item)
+            //    .WithMany(p => p.Adjustments)
+            //    .HasForeignKey(p => p.ItemId);
 
             // Credit Memo Detail
             modelBuilder.Entity<CreditMemoDetail>()
                 .HasOne<CreditMemo>(d => d.CreditMemo)
                 .WithMany(p => p.Details)
                 .HasForeignKey(p => p.CreditMemoId);
-
-            // Customer
-            modelBuilder.Entity<Customer>()
-                .HasQueryFilter(c => !c.IsDeleted);
-
-            modelBuilder.Entity<CustomerTransaction>()
-                .HasOne<Customer>(d => d.Customer)
-                .WithMany(p => p.Transactions)
-                .HasForeignKey(p => p.CustomerId);
 
             // Delivery Details
             modelBuilder.Entity<DeliveryDetail>()
@@ -125,24 +113,11 @@ namespace OisysNew
                 .HasOne<Invoice>(d => d.Invoice)
                 .WithMany(p => p.Details)
                 .HasForeignKey(p => p.InvoiceId);
-
-            // Order
-            modelBuilder.Entity<Order>()
-                .HasQueryFilter(o => !o.IsDeleted);
-
-            modelBuilder.Entity<OrderDetail>()
-                .HasOne<Order>(d => d.Order)
-                .WithMany(p => p.Details)
-                .HasForeignKey(p => p.OrderId);
-
-            // Province
-            modelBuilder.Entity<Province>()
-                .HasQueryFilter(p => !p.IsDeleted);
-
+            
             // Sales Quote
-            modelBuilder.Entity<SalesQuoteDetail>()
+            modelBuilder.Entity<SalesQuoteLineItem>()
                 .HasOne<SalesQuote>(d => d.SalesQuote)
-                .WithMany(p => p.Details)
+                .WithMany(p => p.LineItems)
                 .HasForeignKey(p => p.SalesQuoteId);
 
             modelBuilder.HasSequence<int>("CreditMemoCode")
@@ -157,19 +132,6 @@ namespace OisysNew
             modelBuilder.Entity<CreditMemo>()
                 .Property(o => o.Code)
                 .HasValueGenerator(typeof(CreditMemoCodeGenerator));
-
-            modelBuilder.HasSequence<int>("OrderCode")
-               .StartsAt(100000)
-               .IncrementsBy(1);
-
-            modelBuilder.Entity<Order>()
-                .Property(o => o.Code)
-                .HasDefaultValueSql("NEXT VALUE FOR OrderCode");
-
-            // TODO: Remove when migrated to sql server
-            modelBuilder.Entity<Order>()
-                .Property(o => o.Code)
-                .HasValueGenerator(typeof(OrderCodeGenerator));
 
             modelBuilder.HasSequence<int>("VoucherNumber")
                .StartsAt(100000)
@@ -222,6 +184,123 @@ namespace OisysNew
             modelBuilder.Entity<Invoice>()
                 .Property(o => o.InvoiceNumber)
                 .HasValueGenerator(typeof(InvoiceNumberCodeGenerator));
+        }
+
+        private static void CreateCategoryModel(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<Category>(entity =>
+            {
+                // Setup required fields
+                entity.Property(p => p.Name).IsRequired();
+
+                // Setup query filters
+                entity.HasQueryFilter(c => !c.IsDeleted);
+
+                // Setup concurrency checks
+                entity.Property(p => p.RowVersion).IsRowVersion();
+            });
+        }
+
+        private static void CreateCustomerModel(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<Customer>(entity =>
+            {
+                // Setup required fields
+                entity.Property(p => p.Name).IsRequired();
+                entity.Property(p => p.CityId).IsRequired();
+                entity.Property(p => p.ProvinceId).IsRequired();
+
+                // Setup concurrency checks
+                entity.Property(p => p.RowVersion).IsRowVersion();
+
+                // Setup query filters
+                entity.HasQueryFilter(c => !c.IsDeleted);
+
+                // Setup value conversions
+                entity.Property(a => a.PriceList).HasConversion<string>();
+            });
+        }
+
+        private static void CreateItemModel(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<Item>(entity =>
+            {
+                // Setup required fields
+                entity.Property(p => p.Name).IsRequired();
+                entity.Property(p => p.Code).IsRequired();
+                entity.Property(p => p.CategoryId).IsRequired();
+
+                // Setup query filters
+                entity.HasQueryFilter(c => !c.IsDeleted);
+
+                // Setup concurrency checks
+                entity.Property(p => p.RowVersion).IsRowVersion();
+
+                // Setup default values
+                entity.Property(a => a.MainPrice).HasDefaultValue(0);
+                entity.Property(a => a.NEPrice).HasDefaultValue(0);
+                entity.Property(a => a.WalkInPrice).HasDefaultValue(0);
+            });
+        }
+
+        private static void CreateOrderModel(ModelBuilder modelBuilder)
+        {
+            modelBuilder.HasSequence<int>("OrderCode")
+              .StartsAt(100000)
+              .IncrementsBy(1);
+
+            // Order
+            modelBuilder.Entity<Order>(entity => 
+            {
+                // Setup required fields
+                entity.Property(p => p.Code).IsRequired();
+
+                // Setup concurrency checks
+                entity.Property(p => p.RowVersion).IsRowVersion();
+
+                // Setup auto numbering
+                entity.Property(p => p.Code)
+                    .HasDefaultValueSql("NEXT VALUE FOR OrderCode");
+
+                // TODO: Remove when migrated to sql server
+                entity.Property(o => o.Code)
+                    .HasValueGenerator(typeof(OrderCodeGenerator));
+            });
+
+            // Order Detail
+            modelBuilder.Entity<OrderLineItem>(entity =>
+            {
+                entity.HasOne(d => d.Order)
+                    .WithMany(p => p.LineItems)
+                    .HasForeignKey(p => p.OrderId);
+            });
+        }
+
+        private static void CreateProvinceAndCityModels(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<Province>(entity =>
+            {
+                // Setup required fields
+                entity.Property(p => p.Name).IsRequired();
+
+                // Setup query filters
+                entity.HasQueryFilter(c => !c.IsDeleted);
+
+                // Setup concurrency checks
+                entity.Property(p => p.RowVersion).IsRowVersion();
+            });
+
+            modelBuilder.Entity<City>(entity =>
+            {
+                // Setup required fields
+                entity.Property(p => p.Name).IsRequired();
+
+                // Setup query filters
+                entity.HasQueryFilter(c => !c.IsDeleted);
+
+                // Setup concurrency checks
+                entity.Property(p => p.RowVersion).IsRowVersion();
+            });
         }
     }
 }
