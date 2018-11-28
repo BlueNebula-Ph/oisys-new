@@ -40,17 +40,17 @@ namespace OisysNew.Controllers
         /// <param name="inventoryService">Inventory service</param>
         /// <param name="logger">Logger</param>
         public ItemController(
-            IOisysDbContext context, 
-            IMapper mapper, 
+            IOisysDbContext context,
+            IMapper mapper,
             IListHelpers listHelpers,
             IInventoryService inventoryService,
             ILogger<ItemController> logger)
         {
-            context = context;
-            mapper = mapper;
-            listHelpers = listHelpers;
-            inventoryService = inventoryService;
-            logger = logger;
+            this.context = context;
+            this.mapper = mapper;
+            this.listHelpers = listHelpers;
+            this.inventoryService = inventoryService;
+            this.logger = logger;
         }
 
         /// <summary>
@@ -144,6 +144,7 @@ namespace OisysNew.Controllers
             {
                 var entity = await context.Items
                     .Include(a => a.Category)
+                    .Include(a => a.TransactionHistory)
                     .AsNoTracking()
                     .SingleOrDefaultAsync(c => c.Id == id);
 
@@ -177,11 +178,12 @@ namespace OisysNew.Controllers
             {
                 var item = mapper.Map<Item>(entity);
 
-                context.ItemTransactionHistories.Add(new ItemTransactionHistory
+                context.ItemHistories.Add(new ItemHistory
                 {
                     ItemId = item.Id,
                     Date = DateTime.Now,
-                    Quantity = entity.Quantity
+                    Quantity = entity.Quantity,
+                    Remarks = Constants.AdjustmentRemarks.InitialQuantity
                 });
 
                 await context.Items.AddAsync(item);
@@ -274,14 +276,14 @@ namespace OisysNew.Controllers
         /// Adjusts the actual and current quantity a specific <see cref="Item"/>.
         /// </summary>
         /// <param name="id">Id</param>
-        /// <param name="entity"><see cref="SaveItemAdjustmentRequest"/></param>
+        /// <param name="saveAdjustmentRequest"><see cref="SaveItemAdjustmentRequest"/></param>
         /// <returns>None</returns>
         [HttpPost("{id}/adjust")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> AdjustItem(int id, [FromBody]SaveItemAdjustmentRequest entity)
+        public async Task<IActionResult> AdjustItem(long id, [FromBody]SaveItemAdjustmentRequest saveAdjustmentRequest)
         {
             try
             {
@@ -289,23 +291,18 @@ namespace OisysNew.Controllers
 
                 if (item == null)
                 {
-                    return NotFound(id);
+                    return NotFound();
                 }
 
-                await inventoryService.AdjustItemQuantities(new List<InventoryAdjustment>
-                {
-                    new InventoryAdjustment
-                    {
-                        SaveAdjustmentDetails = true,
-                        ItemId = id,
-                        Quantity = entity.AdjustmentQuantity,
-                        AdjustmentType = entity.AdjustmentType,
-                        MachineName = entity.Machine,
-                        OperatorName = entity.Operator,
-                        Remarks = entity.Remarks
-                    }
-                });
+                var adjustment = mapper.Map<Adjustment>(saveAdjustmentRequest);
 
+                // Perform adjustment
+                var adjustments = new List<Adjustment> { adjustment };
+                await inventoryService.ProcessAdjustments(
+                    saveAdjustmentRequest.AdjustmentType == AdjustmentType.Add ? adjustments : null,
+                    saveAdjustmentRequest.AdjustmentType == AdjustmentType.Deduct ? adjustments : null);
+
+                await context.AddAsync(adjustment);
                 await context.SaveChangesAsync();
 
                 return StatusCode(StatusCodes.Status204NoContent);

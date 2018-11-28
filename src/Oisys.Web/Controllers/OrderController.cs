@@ -28,9 +28,9 @@ namespace OisysNew.Controllers
         private readonly IOisysDbContext context;
         private readonly IMapper mapper;
         private readonly IListHelpers listHelpers;
+        private readonly IEntityListHelpers entityListHelpers;
         private readonly IInventoryService inventoryService;
         private readonly ILogger logger;
-        private readonly IEqualityComparer<InventoryAdjustment> equalityComparer;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="OrderController"/> class.
@@ -38,21 +38,23 @@ namespace OisysNew.Controllers
         /// <param name="context">DbContext</param>
         /// <param name="mapper">Automapper</param>
         /// <param name="listHelpers">Summary list helpers</param>
+        /// <param name="entityListHelpers">Helper for entities</param>
+        /// <param name="inventoryService">Inventory service</param>
         /// <param name="logger">Logger</param>
         public OrderController(
             IOisysDbContext context,
             IMapper mapper,
             IListHelpers listHelpers,
+            IEntityListHelpers entityListHelpers,
             IInventoryService inventoryService,
-            ILogger<OrderController> logger,
-            IEqualityComparer<InventoryAdjustment> equalityComparer)
+            ILogger<OrderController> logger)
         {
             this.context = context;
             this.mapper = mapper;
             this.listHelpers = listHelpers;
+            this.entityListHelpers = entityListHelpers;
             this.inventoryService = inventoryService;
             this.logger = logger;
-            this.equalityComparer = equalityComparer;
         }
 
         /// <summary>
@@ -255,7 +257,7 @@ namespace OisysNew.Controllers
                 var order = mapper.Map<Order>(entity);
 
                 // Deduct quantities from inventory
-                inventoryService.ProcessOrderDetails(order.LineItems);
+                await inventoryService.ProcessAdjustments(quantitiesDeducted: order.LineItems);
 
                 await context.Orders.AddAsync(order);
                 await context.SaveChangesAsync();
@@ -296,27 +298,14 @@ namespace OisysNew.Controllers
                     return NotFound();
                 }
 
-                // Adjustments
-                // TODO: figure out way for deleted details
-                //var oldItemsToAdjust = order.Details.ToDictionary(a => a.ItemId, a => a.Quantity);
-                //var itemsToAddBack = CreateInventoryAdjustments(oldItemsToAdjust, AdjustmentType.Add, Constants.AdjustmentRemarks.OrderUpdated);
+                // Process inventory adjustments
+                await inventoryService.ProcessAdjustments(order.LineItems, entity.LineItems);
 
-                //var newItemsToAdjust = entity.Details.ToDictionary(a => a.ItemId, a => a.Quantity);
-                //var itemsToDeduct = CreateInventoryAdjustments(newItemsToAdjust, AdjustmentType.Deduct, Constants.AdjustmentRemarks.OrderUpdated);
+                // Process deleted line items
+                entityListHelpers.CheckItemsForDeletion(order.LineItems, entity.LineItems);
 
-                //var itemQuantities = itemsToAddBack.Except(itemsToDeduct, equalityComparer).Union(itemsToDeduct.Except(itemsToAddBack, equalityComparer));
-                //await inventoryService.AdjustItemQuantities(itemQuantities);
-
-                // Update the order values
-                mapper.Map(entity, order);
-
-                //foreach (var detail in entity.Details)
-                //{
-                //    var adj = mapper.Map<ItemTransactionHistoryOrder>(detail);
-                //    context.ItemTransactionHistories.Update(adj);
-                //}
-                //inventoryService.TestAdjustments();
-                inventoryService.ProcessOrderDetails(order.LineItems);
+                // Update the order data
+                order = mapper.Map<Order>(entity);
 
                 context.Update(order);
                 await context.SaveChangesAsync();
@@ -333,13 +322,6 @@ namespace OisysNew.Controllers
                 logger.LogError(ex.Message);
                 return StatusCode(StatusCodes.Status500InternalServerError);
             }
-        }
-
-        [HttpGet("trans")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<ActionResult<List<ItemTransactionHistory>>> GetTransactionHistories()
-        {
-            return await context.ItemTransactionHistories.ToListAsync();
         }
 
         /// <summary>
@@ -363,9 +345,8 @@ namespace OisysNew.Controllers
                     return NotFound();
                 }
 
-                //var itemsToAdjust = order.Details.ToDictionary(a => a.ItemId, a => a.Quantity);
-                //var adjustments = CreateInventoryAdjustments(itemsToAdjust, AdjustmentType.Add, Constants.AdjustmentRemarks.OrderDeleted);
-                //await inventoryService.AdjustItemQuantities(adjustments);
+                // Process line items
+                await inventoryService.ProcessAdjustments(quantitiesAdded: order.LineItems);
 
                 context.Remove(order);
                 await context.SaveChangesAsync();
@@ -377,25 +358,6 @@ namespace OisysNew.Controllers
                 logger.LogError(e.Message);
                 return StatusCode(StatusCodes.Status500InternalServerError);
             }
-        }
-
-        private IEnumerable<InventoryAdjustment> CreateInventoryAdjustments(Dictionary<int, int> itemsToAdjust, AdjustmentType adjustmentType, string remarks)
-        {
-            var inventoryAdjustments = new List<InventoryAdjustment>();
-
-            foreach (var item in itemsToAdjust)
-            {
-                inventoryAdjustments.Add(new InventoryAdjustment
-                {
-                    ItemId = item.Key,
-                    AdjustmentType = adjustmentType,
-                    Quantity = item.Value,
-                    Remarks = remarks,
-                    SaveAdjustmentDetails = true
-                });
-            }
-
-            return inventoryAdjustments;
         }
     }
 }

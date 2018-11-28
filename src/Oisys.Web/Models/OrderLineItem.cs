@@ -48,6 +48,6 @@
         /// <summary>
         /// Gets or sets the transaction history navigation property.
         /// </summary>
-        public virtual ItemTransactionHistoryOrder TransactionHistory { get; set; }
+        public virtual ItemHistory TransactionHistory { get; set; }
     }
 }

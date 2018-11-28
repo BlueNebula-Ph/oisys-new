@@ -39,10 +39,10 @@ namespace OisysNew.Controllers
             IListHelpers listHelpers,
             ILogger<CustomerController> logger)
         {
-            context = context;
-            mapper = mapper;
-            listHelpers = listHelpers;
-            logger = logger;
+            this.context = context;
+            this.mapper = mapper;
+            this.listHelpers = listHelpers;
+            this.logger = logger;
         }
 
         /// <summary>

@@ -73,7 +73,7 @@ namespace OisysNew
         /// <summary>
         /// Gets or sets the item transaction history db set.
         /// </summary>
-        DbSet<ItemTransactionHistory> ItemTransactionHistories { get; set; }
+        DbSet<ItemHistory> ItemHistories { get; set; }
 
         /// <summary>
         /// Gets or sets the orders db set.

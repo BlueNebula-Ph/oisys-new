@@ -1,7 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using OisysNew.Helpers;
 using OisysNew.Services;
-using System.Collections.Generic;
 
 namespace OisysNew.Extensions
 {
@@ -13,8 +12,7 @@ namespace OisysNew.Extensions
             serviceCollection
                 .AddTransient<IListHelpers, ListHelpers>()
                 .AddTransient<IInventoryService, InventoryService>()
-                .AddTransient<IEntityListHelpers, EntityListHelpers>()
-                .AddSingleton<IEqualityComparer<InventoryAdjustment>, InventoryAdjustmentComparer>();
+                .AddTransient<IEntityListHelpers, EntityListHelpers>();
         }
     }
 }

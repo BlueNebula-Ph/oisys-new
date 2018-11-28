@@ -27,6 +27,7 @@ namespace OisysNew.Helpers
             {
                 if (!updatedList.Any(a => a.Id == item.Id))
                 {
+                    logger.LogInformation($"Marking {item.GetType()} with id # {item.Id} for deletion.");
                     context.Entry(item).State = EntityState.Deleted;
                 }
             }

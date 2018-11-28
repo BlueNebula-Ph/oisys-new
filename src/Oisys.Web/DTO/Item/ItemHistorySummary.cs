@@ -1,14 +1,9 @@
 ﻿using System;
 
-namespace OisysNew.Models
+namespace OisysNew.DTO.Item
 {
-    public class ItemTransactionHistory : ModelBase
+    public class ItemHistorySummary : DTOBase
     {
-        /// <summary>
-        /// Gets or sets the item id
-        /// </summary>
-        public long ItemId { get; set; }
-
         /// <summary>
         /// Gets or sets the item transaction date
         /// </summary>
@@ -18,5 +13,10 @@ namespace OisysNew.Models
         /// Gets or sets the item transaction quantity
         /// </summary>
         public int Quantity { get; set; }
+
+        /// <summary>
+        /// Gets or sets remarks for item history
+        /// </summary>
+        public string Remarks { get; set; }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using OisysNew.DTO;
 using OisysNew.DTO.Category;
 using OisysNew.DTO.Customer;
 using OisysNew.DTO.Item;
@@ -27,6 +28,8 @@ namespace OisysNew.Configuration
                 .ForMember(d => d.Item, s => s.MapFrom(o => o.Item.Name))
                 .ForMember(d => d.AdjustmentType, s => s.MapFrom(o => $"{o.AdjustmentType}"))
                 .ForMember(d => d.Quantity, s => s.MapFrom(o => o.Quantity));
+
+            CreateMap<SaveItemAdjustmentRequest, Adjustment>();
 
             // Category
             CreateMap<Category, CategorySummary>();
@@ -62,6 +65,9 @@ namespace OisysNew.Configuration
 
             CreateMap<SaveItemRequest, Item>();
 
+            // Item History
+            CreateMap<ItemHistory, ItemHistorySummary>();
+
             // Order
             CreateMap<Order, OrderSummary>()
                 .ForMember(d => d.ProvinceName, s => s.MapFrom(o => o.Customer.Province.Name))
@@ -81,11 +87,6 @@ namespace OisysNew.Configuration
                 .ForMember(d => d.Category, s => s.MapFrom(o => o.Item.Category.Name));
 
             CreateMap<SaveOrderDetailRequest, OrderLineItem>();
-
-            CreateMap<SaveOrderDetailRequest, ItemTransactionHistoryOrder>()
-                .ForMember(d => d.Date, s => s.MapFrom(o => DateTime.Now))
-                .ForMember(d => d.Quantity, s => s.MapFrom(o => o.Quantity * -1))
-                .ForMember(d => d.OrderDetailId, s => s.MapFrom(o => o.Id));
 
             CreateMap<OrderLineItem, OrderDetailLookup>()
                 .ForMember(d => d.ItemName, s => s.MapFrom(o => o.Item.Name))

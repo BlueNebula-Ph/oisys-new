@@ -71,6 +71,6 @@ namespace OisysNew.Models
         /// <summary>
         /// Gets or sets transaction history for the item.
         /// </summary>
-        public virtual ICollection<ItemTransactionHistory> TransactionHistory { get; set; }
+        public virtual ICollection<ItemHistory> TransactionHistory { get; set; }
     }
 }

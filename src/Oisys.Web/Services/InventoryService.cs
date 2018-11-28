@@ -2,12 +2,10 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using OisysNew.DTO.Order;
-using OisysNew.Extensions;
 using OisysNew.Helpers;
 using OisysNew.Models;
 using System;
-using System.Collections.Generic;
-using System.Linq;
+using System.Collections;
 using System.Threading.Tasks;
 
 namespace OisysNew.Services
@@ -23,103 +21,120 @@ namespace OisysNew.Services
             IMapper mapper,
             ILogger<InventoryService> logger)
         {
-            context = context;
-            mapper = mapper;
-            logger = logger;
+            this.context = context;
+            this.mapper = mapper;
+            this.logger = logger;
         }
 
-        public void ProcessOrderDetails(IEnumerable<OrderLineItem> orderDetails)
+        public async Task ProcessAdjustments(IEnumerable quantitiesAdded = null, IEnumerable quantitiesDeducted = null)
         {
-            foreach (var detail in orderDetails)
+            if (quantitiesAdded != null)
             {
-                var adjustmentQuantity = detail.Quantity * -1;
+                await UpdateItems(quantitiesAdded, AdjustmentType.Add);
+            }
 
-                var item = context.Items.Find(detail.ItemId);
+            if (quantitiesDeducted != null)
+            {
+                await UpdateItems(quantitiesDeducted, AdjustmentType.Deduct);
+            }
+        }
 
-                if (item != null)
+        private async Task UpdateItems(IEnumerable itemsToUpdate, AdjustmentType adjustmentType)
+        {
+            foreach (var item in itemsToUpdate)
+            {
+                switch (item)
                 {
-                    var transactions = item.TransactionHistory;
-                    var currentQty = transactions.Sum(a => a.Quantity);
-
-                    //item.Quantity = currentQty + adjustmentQuantity - 
-                    //    (transactions.FirstOrDefault(a => a.ItemId == item.Id && a.order)?.Quantity ?? 0);
-                }
-
-                if (detail.TransactionHistory == null)
-                {
-                    detail.TransactionHistory = new ItemTransactionHistoryOrder
-                    {
-                        Date = DateTime.Now,
-                        ItemId = detail.ItemId,
-                        Quantity = adjustmentQuantity
-                    };
-                }
-                else
-                {
-                    detail.TransactionHistory.Date = DateTime.Now;
-                    detail.TransactionHistory.ItemId = detail.ItemId;
-                    detail.TransactionHistory.Quantity = adjustmentQuantity;
+                    case OrderLineItem orderLineItem:
+                        await ProcessItemAdjustmentAsync(orderLineItem.ItemId, orderLineItem.Quantity, adjustmentType);
+                        await UpdateOrderLineItemHistory(orderLineItem, adjustmentType);
+                        break;
+                    case SaveOrderDetailRequest orderDetailRequest:
+                        await ProcessItemAdjustmentAsync(orderDetailRequest.ItemId, orderDetailRequest.Quantity, adjustmentType);
+                        var lineItem = mapper.Map<OrderLineItem>(orderDetailRequest);
+                        await UpdateOrderLineItemHistory(lineItem, adjustmentType);
+                        break;
+                    case Adjustment adjustment:
+                        await ProcessItemAdjustmentAsync(adjustment.ItemId, adjustment.Quantity, adjustmentType);
+                        UpdateAdjustmentItemHistory(adjustment);
+                        break;
+                    case null:
+                        break;
                 }
             }
         }
 
-        public async Task AdjustItemQuantities(IEnumerable<InventoryAdjustment> adjustments)
+        private async Task ProcessItemAdjustmentAsync(long itemId, int quantity, AdjustmentType adjustmentType)
         {
-            foreach (var adjustment in adjustments)
+            var item = await context.Items.FindAsync(itemId);
+            if (item == null)
             {
-                var item = await context.Items.FindAsync(adjustment.ItemId);
+                throw new ArgumentException("Item does not exist.");
+            }
 
-                if (item != null)
-                {
+            item.Quantity = adjustmentType == AdjustmentType.Add ?
+                item.Quantity + quantity : 
+                item.Quantity - quantity;
 
+            context.Entry(item).State = EntityState.Modified;
+        }
 
-                    //item.Quantity = adjustment.AdjustmentType == AdjustmentType.Add ?
-                    //    item.Quantity + adjustment.Quantity :
-                    //    item.Quantity - adjustment.Quantity;
+        private async Task UpdateOrderLineItemHistory(OrderLineItem orderLineItem, AdjustmentType adjustmentType)
+        {
+            var itemHistory = await context
+                    .ItemHistories
+                    .FirstOrDefaultAsync(a => a.OrderLineItemId == orderLineItem.Id);
 
-                    context.Update(item);
-
-                    if (adjustment.SaveAdjustmentDetails)
-                    {
-                        AddAdjusment(adjustment);
-                    }
-                }
+            if (itemHistory == null)
+            {
+                orderLineItem.TransactionHistory = CreateItemHistory(
+                    orderLineItem.ItemId,
+                    adjustmentType,
+                    orderLineItem.Quantity,
+                    Constants.AdjustmentRemarks.OrderUpdated);
+            }
+            else
+            {
+                UpdateItemHistory(itemHistory, 
+                    orderLineItem.Quantity, 
+                    adjustmentType, 
+                    Constants.AdjustmentRemarks.OrderUpdated);
             }
         }
 
-        public void TestAdjustments()
+        private void UpdateAdjustmentItemHistory(Adjustment adjustment)
         {
-            var x = context.ItemTransactionHistories.Local.AsQueryable();
-
-            foreach (var y in x)
-            {
-                var item = context.Items.Find(y.ItemId);
-                var oldTransactions = context.ItemTransactionHistories
-                    .Where(a => a.ItemId == y.ItemId)
-                    .Sum(a => a.Quantity);
-
-                var newTransactions = context.ItemTransactionHistories.Local
-                    .Where(a => a.ItemId == y.ItemId)
-                    .Sum(a => a.Quantity);
-
-                item.Quantity = oldTransactions + newTransactions;
-
-                context.Update(item);
-            }
-        }
-
-        private void AddAdjusment(InventoryAdjustment adjustment)
-        {
-            context.Add(new Adjustment
+            var itemHistory = new ItemHistory
             {
                 ItemId = adjustment.ItemId,
-                AdjustmentDate = DateTime.Now,
-                AdjustmentType = adjustment.AdjustmentType.GetDisplayName(),
-                Quantity = adjustment.Quantity,
-                Remarks = adjustment.Remarks,
-                Operator = adjustment.OperatorName,
-                Machine = adjustment.MachineName,
-            });
+                Date = DateTime.Now,
+                Quantity = adjustment.AdjustmentType == AdjustmentType.Add.ToString() ? adjustment.Quantity : adjustment.Quantity * -1,
+                Remarks = Constants.AdjustmentRemarks.OrderUpdated,
+                Adjustment = adjustment
+            };
+
+            context.Entry(itemHistory).State = EntityState.Modified;
+        }
+
+        private ItemHistory CreateItemHistory(long itemId, AdjustmentType adjustmentType, int quantity, string remarks)
+        {
+            return new ItemHistory
+            {
+                ItemId = itemId,
+                Quantity = adjustmentType == AdjustmentType.Add ? quantity : quantity * -1,
+                Date = DateTime.Now,
+                Remarks = remarks
+            };
+        }
+
+        private ItemHistory UpdateItemHistory(ItemHistory itemHistory, int quantity, AdjustmentType adjustmentType, string remarks)
+        {
+            itemHistory.Date = DateTime.Now;
+            itemHistory.Quantity = adjustmentType == AdjustmentType.Add ?
+                quantity : quantity * -1;
+            itemHistory.Remarks = remarks;
+
+            return itemHistory;
         }
     }
 }

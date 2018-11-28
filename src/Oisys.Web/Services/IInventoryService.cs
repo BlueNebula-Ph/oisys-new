@@ -1,15 +1,10 @@
-﻿using OisysNew.Models;
-using System.Collections.Generic;
+﻿using System.Collections;
 using System.Threading.Tasks;
 
 namespace OisysNew.Services
 {
     public interface IInventoryService
     {
-        Task AdjustItemQuantities(IEnumerable<InventoryAdjustment> adjustments);
-
-        void TestAdjustments();
-
-        void ProcessOrderDetails(IEnumerable<OrderLineItem> orderDetails);
+        Task ProcessAdjustments(IEnumerable quantitiesAdded = null, IEnumerable quantitiesDeducted = null);
     }
 }

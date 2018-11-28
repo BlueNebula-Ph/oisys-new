@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
 using OisysNew.Models;
 using OisysNew.SeedData;
 using System;
@@ -17,6 +18,12 @@ namespace OisysNew
         public OisysDbContext(DbContextOptions<OisysDbContext> options)
             : base(options)
         {
+            this.ChangeTracker.Tracked += ChangeTracker_Tracked;
+        }
+
+        private void ChangeTracker_Tracked(object sender, EntityTrackedEventArgs e)
+        {
+            Console.WriteLine($"Started tracking {e.Entry.Entity.GetType()}");
         }
 
         /// <inheritdoc />
@@ -59,7 +66,7 @@ namespace OisysNew
         public DbSet<Item> Items { get; set; }
 
         /// <inheritdoc />
-        public DbSet<ItemTransactionHistory> ItemTransactionHistories { get; set; }
+        public DbSet<ItemHistory> ItemHistories { get; set; }
 
         /// <inheritdoc />
         public DbSet<Order> Orders { get; set; }
@@ -241,6 +248,14 @@ namespace OisysNew
                 entity.Property(a => a.NEPrice).HasDefaultValue(0);
                 entity.Property(a => a.WalkInPrice).HasDefaultValue(0);
             });
+
+            modelBuilder.Entity<ItemHistory>(entity => 
+            {
+                // Setup foreign keys
+                entity.HasOne(a => a.Item)
+                    .WithMany(a => a.TransactionHistory)
+                    .HasForeignKey(a => a.ItemId);
+            });
         }
 
         private static void CreateOrderModel(ModelBuilder modelBuilder)
@@ -273,6 +288,10 @@ namespace OisysNew
                 entity.HasOne(d => d.Order)
                     .WithMany(p => p.LineItems)
                     .HasForeignKey(p => p.OrderId);
+
+                entity.HasOne(d => d.TransactionHistory)
+                    .WithOne(d => d.OrderLineItem)
+                    .OnDelete(DeleteBehavior.Cascade);
             });
         }
 
