@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using OisysNew.Helpers;
+using OisysNew.Helpers.Interfaces;
 using OisysNew.Services;
 
 namespace OisysNew.Extensions

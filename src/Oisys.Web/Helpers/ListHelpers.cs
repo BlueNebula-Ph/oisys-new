@@ -2,6 +2,7 @@ using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using Microsoft.EntityFrameworkCore;
 using OisysNew.DTO;
+using OisysNew.Helpers.Interfaces;
 using System.Linq;
 using System.Linq.Dynamic.Core;
 using System.Threading.Tasks;
@@ -27,10 +28,5 @@ namespace OisysNew.Helpers
 
             return new PaginatedList<T1>(items, count);
         }
-    }
-
-    public interface IListHelpers
-    {
-        Task<PaginatedList<T1>> CreatePaginatedListAsync<T, T1>(IQueryable<T> source, int pageNumber, int pageSize);
     }
 }
