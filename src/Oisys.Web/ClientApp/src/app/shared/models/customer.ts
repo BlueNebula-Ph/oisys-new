@@ -5,26 +5,26 @@ import { City } from "./city";
 export class Customer {
   private _selectedProvince: Province;
   get selectedProvince() {
-    return _selectedProvince;
+    return this._selectedProvince;
   }
   set selectedProvince(prov: Province) {
     if (prov) {
-      _selectedProvince = prov;
-      provinceId = prov.id;
+      this._selectedProvince = prov;
+      this.provinceId = prov.id;
     }
   }
 
   private _selectedCity: City;
   get selectedCity() {
-    return _selectedCity;
+    return this._selectedCity;
   }
   set selectedCity(city: City) {
     if (city) {
-      _selectedCity = city;
-      cityId = city.id;
+      this._selectedCity = city;
+      this.cityId = city.id;
     } else {
-      _selectedCity = undefined;
-      cityId = 0;
+      this._selectedCity = undefined;
+      this.cityId = 0;
     }
   }
 

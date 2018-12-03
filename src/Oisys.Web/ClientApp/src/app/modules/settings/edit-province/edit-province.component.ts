@@ -16,16 +16,16 @@ export class EditProvinceComponent implements OnInit {
   constructor(private provinceService: ProvinceService) { }
 
   ngOnInit() {
-    clearProvince();
+    this.clearProvince();
   }
 
   saveProvince(provinceForm: NgForm) {
     if (provinceForm.valid) {
-      provinceService
-        .saveProvince(province)
+      this.provinceService
+        .saveProvince(this.province)
         .subscribe(result => {
-          clearProvince();
-          onProvinceSaved.emit(result);
+          this.clearProvince();
+          this.onProvinceSaved.emit(result);
 
           provinceForm.resetForm();
         });
@@ -34,10 +34,10 @@ export class EditProvinceComponent implements OnInit {
 
   addNewCity() {
     var city = new City();
-    province.cities.push(city);
+    this.province.cities.push(city);
   }
 
   clearProvince() {
-    province = new Province();
+    this.province = new Province();
   }
 }

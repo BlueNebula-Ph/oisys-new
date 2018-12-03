@@ -30,7 +30,7 @@ export class CustomerListComponent implements AfterViewInit {
     new SummaryColumn("Contact #", "contactNumber"),
     new SummaryColumn("Contact Person", "contactPerson")
   ];
-  displayedColumns: string[] = summaryColumns.map(col => { return col.propName; }).concat(['buttons']);
+  displayedColumns: string[] = this.summaryColumns.map(col => { return col.propName; }).concat(['buttons']);
   dataSource = new MatTableDataSource();
   customers: Observable<SummaryItem<Customer>>;
   expandedElement: Customer;
@@ -45,59 +45,59 @@ export class CustomerListComponent implements AfterViewInit {
   @ViewChild('searchBox') input: ElementRef;
 
   ngAfterViewInit() {
-    loadCustomers();
+    this.loadCustomers();
   };
 
   loadCustomers() {
     // If the user changes the sort order, reset back to the first page.
-    sort.sortChange.subscribe(() => paginator.pageIndex = 0);
+    this.sort.sortChange.subscribe(() => this.paginator.pageIndex = 0);
 
     merge(
-      sort.sortChange,
-      paginator.page,
-      fromEvent(input.nativeElement, 'keyup')
+      this.sort.sortChange,
+      this.paginator.page,
+      fromEvent(this.input.nativeElement, 'keyup')
         .pipe(
           debounceTime(350),
           distinctUntilChanged(),
           tap(() => {
-            paginator.pageIndex = 0;
+            this.paginator.pageIndex = 0;
           })
         )
     )
       .pipe(
         startWith({}),
         switchMap(() => {
-          isLoadingResults = true;
-          return fetchCustomers();
+          this.isLoadingResults = true;
+          return this.fetchCustomers();
         }),
         map(data => {
           // Flip flag to show that loading has finished.
-          isLoadingResults = false;
-          resultsLength = data.total_count;
+          this.isLoadingResults = false;
+          this.resultsLength = data.total_count;
 
           return data.items;
         }),
         catchError(() => {
-          isLoadingResults = false;
+          this.isLoadingResults = false;
 
           return of([]);
         })
       )
-      .subscribe(data => dataSource.data = data);
+      .subscribe(data => this.dataSource.data = data);
   }
 
   fetchCustomers() {
-    return customerService.getCustomers(
-      paginator.pageIndex + 1,
-      paginator.pageSize,
-      sort.active,
-      sort.direction,
-      input.nativeElement.value);
+    return this.customerService.getCustomers(
+      this.paginator.pageIndex + 1,
+      this.paginator.pageSize,
+      this.sort.active,
+      this.sort.direction,
+      this.input.nativeElement.value);
   };
 
   addCustomer(id: number): void {
     var url = "/customers/edit/" + id;
-    router.navigateByUrl(url);
+    this.router.navigateByUrl(url);
   };
 
   //onEditCustomer(customerToEdit: Customer): void {

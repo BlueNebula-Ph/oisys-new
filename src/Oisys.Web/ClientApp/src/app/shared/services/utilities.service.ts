@@ -16,7 +16,7 @@ export class UtilitiesService {
   constructor(private snackBar: MatSnackBar) { }
 
   openSnackBar(message: string): void {
-    snackBar.open(message, "close", { duration: 2000 });
+    this.snackBar.open(message, "close", { duration: 2000 });
   };
 
   /**

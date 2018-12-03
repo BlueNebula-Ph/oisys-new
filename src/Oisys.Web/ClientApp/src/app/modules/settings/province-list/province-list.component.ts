@@ -31,35 +31,35 @@ export class ProvinceListComponent implements AfterViewInit {
   @ViewChild('searchBox') input: ElementRef;
 
   ngAfterViewInit() {
-    loadProvinces();
+    this.loadProvinces();
   };
 
   loadProvinces() {
     // If the user changes the sort order, reset back to the first page.
-    sort.sortChange.subscribe(() => paginator.pageIndex = 0);
+    this.sort.sortChange.subscribe(() => this.paginator.pageIndex = 0);
 
     merge(
-      sort.sortChange,
-      paginator.page,
-      fromEvent(input.nativeElement, 'keyup')
+      this.sort.sortChange,
+      this.paginator.page,
+      fromEvent(this.input.nativeElement, 'keyup')
         .pipe(
           debounceTime(350),
           distinctUntilChanged(),
           tap(() => {
-            paginator.pageIndex = 0;
+            this.paginator.pageIndex = 0;
           })
         )
     )
       .pipe(
         startWith({}),
         switchMap(() => {
-          isLoadingResults = true;
-          return fetchProvinces();
+          this.isLoadingResults = true;
+          return this.fetchProvinces();
         }),
         map(data => {
           // Flip flag to show that loading has finished.
-          isLoadingResults = false;
-          resultsLength = data.total_count;
+          this.isLoadingResults = false;
+          this.resultsLength = data.total_count;
 
           data.items.map((item) => {
             item.cityNames = item.cities.map((sc) => sc.name).join(', ');
@@ -68,38 +68,38 @@ export class ProvinceListComponent implements AfterViewInit {
           return data.items;
         }),
         catchError(() => {
-          isLoadingResults = false;
+          this.isLoadingResults = false;
 
           return of([]);
         })
       )
-      .subscribe(data => dataSource.data = data);
+      .subscribe(data => this.dataSource.data = data);
   }
 
   fetchProvinces() {
-    return provinceService.getProvinces(
-      paginator.pageIndex + 1,
-      paginator.pageSize,
-      sort.active,
-      sort.direction,
-      input.nativeElement.value);
+    return this.provinceService.getProvinces(
+      this.paginator.pageIndex + 1,
+      this.paginator.pageSize,
+      this.sort.active,
+      this.sort.direction,
+      this.input.nativeElement.value);
   };
 
   onEditProvince(provinceToEdit: Province): void {
-    selectedProvince = provinceToEdit;
+    this.selectedProvince = provinceToEdit;
   };
 
   onDeleteProvince(id: number): void {
     if (confirm("Are you sure you want to delete this province?")) {
-      provinceService.deleteProvince(id).subscribe(() => {
-        loadProvinces();
-        util.openSnackBar("Province deleted successfully.");
+      this.provinceService.deleteProvince(id).subscribe(() => {
+        this.loadProvinces();
+        this.util.openSnackBar("Province deleted successfully.");
       });
     }
   };
 
   onProvinceSaved(province: Province): void {
-    loadProvinces();
-    util.openSnackBar("Province saved successfully.");
+    this.loadProvinces();
+    this.util.openSnackBar("Province saved successfully.");
   };
 }

@@ -17,35 +17,35 @@ export class ProvinceService {
 
   getProvinces(pageNumber: number, pageSize: number, sortBy: string, sortDirection: string, searchTerm: string): Observable<SummaryItem<Province>> {
     var filter = { pageNumber, pageSize, sortBy, sortDirection, searchTerm };
-    var searchUrl = url + '/search';
+    var searchUrl = this.url + '/search';
 
-    return http.post<any>(searchUrl, filter)
+    return this.http.post<any>(searchUrl, filter)
       .pipe(
-        catchError(util.handleError('getProvinces', []))
+      catchError(this.util.handleError('getProvinces', []))
       );
   };
 
   getProvinceById(id: number): Observable<Province> {
-    var getUrl = url + "/" + id;
-    return http.get<Province>(getUrl);
+    var getUrl = this.url + "/" + id;
+    return this.http.get<Province>(getUrl);
   };
 
   getProvinceLookup(): Observable<Province[]> {
-    var lookupUrl = url + "/lookup";
-    return http.get<Province[]>(lookupUrl);
+    var lookupUrl = this.url + "/lookup";
+    return this.http.get<Province[]>(lookupUrl);
   };
 
   saveProvince(province: Province): Observable<Province> {
     if (province.id == 0) {
-      return http.post<Province>(url, province, util.httpOptions);
+      return this.http.post<Province>(this.url, province, this.util.httpOptions);
     } else {
-      var editUrl = url + "/" + province.id;
-      return http.put<Province>(editUrl, province, util.httpOptions);
+      var editUrl = this.url + "/" + province.id;
+      return this.http.put<Province>(editUrl, province, this.util.httpOptions);
     }
   };
 
   deleteProvince(id: number): Observable<any> {
-    var deleteUrl = url + "/" + id;
-    return http.delete(deleteUrl, util.httpOptions);
+    var deleteUrl = this.url + "/" + id;
+    return this.http.delete(deleteUrl, this.util.httpOptions);
   };
 }
