@@ -26,20 +26,20 @@ namespace OisysNew.Services
             this.logger = logger;
         }
 
-        public async Task ProcessAdjustments(IEnumerable quantitiesAdded = null, IEnumerable quantitiesDeducted = null)
+        public async Task ProcessAdjustments(IEnumerable quantitiesAdded = null, IEnumerable quantitiesDeducted = null, string remarks = "")
         {
             if (quantitiesAdded != null)
             {
-                await UpdateItems(quantitiesAdded, AdjustmentType.Add);
+                await UpdateItems(quantitiesAdded, AdjustmentType.Add, remarks);
             }
 
             if (quantitiesDeducted != null)
             {
-                await UpdateItems(quantitiesDeducted, AdjustmentType.Deduct);
+                await UpdateItems(quantitiesDeducted, AdjustmentType.Deduct, remarks);
             }
         }
 
-        private async Task UpdateItems(IEnumerable itemsToUpdate, AdjustmentType adjustmentType)
+        private async Task UpdateItems(IEnumerable itemsToUpdate, AdjustmentType adjustmentType, string remarks)
         {
             foreach (var item in itemsToUpdate)
             {
@@ -47,16 +47,20 @@ namespace OisysNew.Services
                 {
                     case OrderLineItem orderLineItem:
                         await ProcessItemAdjustmentAsync(orderLineItem.ItemId, orderLineItem.Quantity, adjustmentType);
-                        await UpdateOrderLineItemHistory(orderLineItem, adjustmentType);
+                        await UpdateOrderLineItemHistory(orderLineItem, adjustmentType, remarks);
                         break;
-                    case SaveOrderDetailRequest orderDetailRequest:
+                    case SaveOrderLineItemRequest orderDetailRequest:
                         await ProcessItemAdjustmentAsync(orderDetailRequest.ItemId, orderDetailRequest.Quantity, adjustmentType);
                         var lineItem = mapper.Map<OrderLineItem>(orderDetailRequest);
-                        await UpdateOrderLineItemHistory(lineItem, adjustmentType);
+                        await UpdateOrderLineItemHistory(lineItem, adjustmentType, remarks);
                         break;
                     case Adjustment adjustment:
                         await ProcessItemAdjustmentAsync(adjustment.ItemId, adjustment.Quantity, adjustmentType);
                         UpdateAdjustmentItemHistory(adjustment);
+                        break;
+                    case CreditMemoLineItem creditMemoLineItem:
+                        await ProcessItemAdjustmentAsync(creditMemoLineItem.OrderLineItem.ItemId, creditMemoLineItem.Quantity, adjustmentType);
+                        await UpdateCreditMemoItemHistory(creditMemoLineItem, adjustmentType, remarks);
                         break;
                     case null:
                         break;
@@ -79,7 +83,7 @@ namespace OisysNew.Services
             context.Entry(item).State = EntityState.Modified;
         }
 
-        private async Task UpdateOrderLineItemHistory(OrderLineItem orderLineItem, AdjustmentType adjustmentType)
+        private async Task UpdateOrderLineItemHistory(OrderLineItem orderLineItem, AdjustmentType adjustmentType, string remarks)
         {
             var itemHistory = await context
                     .ItemHistories
@@ -91,14 +95,14 @@ namespace OisysNew.Services
                     orderLineItem.ItemId,
                     adjustmentType,
                     orderLineItem.Quantity,
-                    Constants.AdjustmentRemarks.OrderUpdated);
+                    remarks);
             }
             else
             {
                 UpdateItemHistory(itemHistory, 
                     orderLineItem.Quantity, 
                     adjustmentType, 
-                    Constants.AdjustmentRemarks.OrderUpdated);
+                    remarks);
             }
         }
 
@@ -109,11 +113,34 @@ namespace OisysNew.Services
                 ItemId = adjustment.ItemId,
                 Date = DateTime.Now,
                 Quantity = adjustment.AdjustmentType == AdjustmentType.Add.ToString() ? adjustment.Quantity : adjustment.Quantity * -1,
-                Remarks = Constants.AdjustmentRemarks.OrderUpdated,
+                Remarks = adjustment.Remarks,
                 Adjustment = adjustment
             };
 
             context.Entry(itemHistory).State = EntityState.Modified;
+        }
+
+        private async Task UpdateCreditMemoItemHistory(CreditMemoLineItem creditMemoLineItem, AdjustmentType adjustmentType, string remarks)
+        {
+            var itemHistory = await context
+                   .ItemHistories
+                   .FirstOrDefaultAsync(a => a.CreditMemoLineItemId == creditMemoLineItem.Id);
+
+            if (itemHistory == null)
+            {
+                creditMemoLineItem.TransactionHistory = CreateItemHistory(
+                    creditMemoLineItem.ItemId,
+                    adjustmentType,
+                    creditMemoLineItem.Quantity,
+                    remarks);
+            }
+            else
+            {
+                UpdateItemHistory(itemHistory,
+                    creditMemoLineItem.Quantity,
+                    adjustmentType,
+                    remarks);
+            }
         }
 
         private ItemHistory CreateItemHistory(long itemId, AdjustmentType adjustmentType, int quantity, string remarks)

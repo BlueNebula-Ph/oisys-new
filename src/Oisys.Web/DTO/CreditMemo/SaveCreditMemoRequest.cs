@@ -10,9 +10,10 @@ namespace OisysNew.DTO.CreditMemo
     public class SaveCreditMemoRequest : DTOBase
     {
         /// <summary>
-        /// Gets or sets property Code.
+        /// Gets or sets property CustomerId.
         /// </summary>
-        public int Code { get; set; }
+        [Required(ErrorMessage = "Please select a customer.")]
+        public long CustomerId { get; set; }
 
         /// <summary>
         /// Gets or sets property Date.
@@ -26,14 +27,8 @@ namespace OisysNew.DTO.CreditMemo
         public string Driver { get; set; }
 
         /// <summary>
-        /// Gets or sets property CustomerId.
+        /// Gets or sets the line items associated to the credit memo.
         /// </summary>
-        [Required(ErrorMessage = "Please select a customer.")]
-        public int CustomerId { get; set; }
-
-        /// <summary>
-        /// Gets or sets property Details.
-        /// </summary>
-        public IEnumerable<SaveCreditMemoDetailRequest> Details { get; set; }
+        public IEnumerable<SaveCreditMemoDetailRequest> LineItems { get; set; }
     }
 }

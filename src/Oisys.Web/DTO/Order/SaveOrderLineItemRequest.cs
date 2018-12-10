@@ -6,7 +6,7 @@ namespace OisysNew.DTO.Order
     /// <summary>
     /// <see cref="OrderDetail"/> class represents the child of Order object.
     /// </summary>
-    public class SaveOrderDetailRequest : DTOBase
+    public class SaveOrderLineItemRequest : DTOBase
     {
         /// <summary>
         /// Gets or sets property OrderId.
@@ -40,10 +40,5 @@ namespace OisysNew.DTO.Order
         /// Gets or sets the TotalPrice. Quantity * Price.
         /// </summary>
         public decimal TotalPrice { get; set; }
-
-        /// <summary>
-        /// Gets or sets a value indicating whether order detail is deleted.
-        /// </summary>
-        public bool IsDeleted { get; set; }
     }
 }

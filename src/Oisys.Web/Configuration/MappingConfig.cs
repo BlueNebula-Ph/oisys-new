@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using OisysNew.DTO;
 using OisysNew.DTO.Category;
+using OisysNew.DTO.CreditMemo;
 using OisysNew.DTO.Customer;
 using OisysNew.DTO.Item;
 using OisysNew.DTO.Order;
@@ -40,6 +41,19 @@ namespace OisysNew.Configuration
             CreateMap<City, CitySummary>()
                 .ForMember(d => d.ProvinceName, s => s.MapFrom(o => o.Province.Name));
             CreateMap<SaveCityRequest, City>();
+
+            // Credit Memo
+            CreateMap<CreditMemo, CreditMemoSummary>();
+            CreateMap<SaveCreditMemoRequest, CreditMemo>();
+
+            CreateMap<CreditMemoLineItem, CreditMemoDetailSummary>()
+                .ForMember(d => d.OrderCode, s => s.MapFrom(o => o.OrderLineItem.Order.Code))
+                .ForMember(d => d.ItemCode, s => s.MapFrom(o => o.Item.Code))
+                .ForMember(d => d.Item, s => s.MapFrom(o => o.Item.Name))
+                .ForMember(d => d.Price, s => s.MapFrom(o => o.OrderLineItem.Price))
+                .ForMember(d => d.ShouldAddBackToInventory, s => s.MapFrom(o => o.ReturnedToInventory));
+            CreateMap<SaveCreditMemoDetailRequest, CreditMemoLineItem>()
+                .ForMember(d => d.ReturnedToInventory, s => s.MapFrom(o => o.ShouldAddBackToInventory));
 
             // Customer
             CreateMap<Customer, CustomerLookup>();
@@ -86,7 +100,7 @@ namespace OisysNew.Configuration
                 .ForMember(d => d.Description, s => s.MapFrom(o => o.Item.Description))
                 .ForMember(d => d.Category, s => s.MapFrom(o => o.Item.Category.Name));
 
-            CreateMap<SaveOrderDetailRequest, OrderLineItem>();
+            CreateMap<SaveOrderLineItemRequest, OrderLineItem>();
 
             CreateMap<OrderLineItem, OrderDetailLookup>()
                 .ForMember(d => d.ItemName, s => s.MapFrom(o => o.Item.Name))
@@ -125,17 +139,7 @@ namespace OisysNew.Configuration
             // CreateMap<CashVoucher, CashVoucherSummary>();
             // CreateMap<SaveCashVoucherRequest, CashVoucher>();
 
-            // // Credit Memo
-            // CreateMap<CreditMemo, CreditMemoSummary>();
-            // CreateMap<SaveCreditMemoRequest, CreditMemo>();
-            // CreateMap<CreditMemoDetail, CreditMemoDetailSummary>()
-            //     .ForMember(d => d.OrderCode, s => s.MapFrom(o => o.OrderDetail.Order.Code))
-            //     .ForMember(d => d.ItemCode, s => s.MapFrom(o => o.OrderDetail.Item.Code))
-            //     .ForMember(d => d.Item, s => s.MapFrom(o => o.OrderDetail.Item.Name))
-            //     .ForMember(d => d.Price, s => s.MapFrom(o => o.OrderDetail.Price))
-            //     .ForMember(d => d.ShouldAddBackToInventory, s => s.MapFrom(o => o.ReturnedToInventory));
-            // CreateMap<SaveCreditMemoDetailRequest, CreditMemoDetail>()
-            //     .ForMember(d => d.ReturnedToInventory, s => s.MapFrom(o => o.ShouldAddBackToInventory));
+            
 
             // // Customer Transaction
             // // TODO: Create method to compute running balance

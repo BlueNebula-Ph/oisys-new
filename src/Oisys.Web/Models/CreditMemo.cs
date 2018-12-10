@@ -1,10 +1,8 @@
-﻿namespace OisysNew.Models
-{
-    using System;
-    using System.Collections.Generic;
-    using System.ComponentModel;
-    using System.ComponentModel.DataAnnotations;
+﻿using System;
+using System.Collections.Generic;
 
+namespace OisysNew.Models
+{
     /// <summary>
     /// <see cref="CreditMemo"/> class CreditMemo object.
     /// </summary>
@@ -31,18 +29,18 @@
         public int CustomerId { get; set; }
 
         /// <summary>
-        /// Gets or sets property Customer.
-        /// </summary>
-        public virtual Customer Customer { get; set; }
-
-        /// <summary>
         /// Gets or sets a value indicating whether credit memo is invoiced.
         /// </summary>
         public bool IsInvoiced { get; set; }
 
         /// <summary>
-        /// Gets or sets property Details.
+        /// Gets or sets property Customer.
         /// </summary>
-        public virtual ICollection<CreditMemoDetail> Details { get; set; }
+        public virtual Customer Customer { get; set; }
+
+        /// <summary>
+        /// Gets or sets the Line Items for credit memo.
+        /// </summary>
+        public virtual ICollection<CreditMemoLineItem> LineItems { get; set; }
     }
 }

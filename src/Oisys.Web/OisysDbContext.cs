@@ -42,7 +42,7 @@ namespace OisysNew
         public DbSet<CreditMemo> CreditMemos { get; set; }
 
         /// <inheritdoc />
-        public DbSet<CreditMemoDetail> CreditMemoDetails { get; set; }
+        public DbSet<CreditMemoLineItem> CreditMemoLineItems { get; set; }
 
         /// <inheritdoc />
         public DbSet<Customer> Customers { get; set; }
@@ -72,7 +72,7 @@ namespace OisysNew
         public DbSet<Order> Orders { get; set; }
 
         /// <inheritdoc />
-        public DbSet<OrderLineItem> OrderDetails { get; set; }
+        public DbSet<OrderLineItem> OrderLineItems { get; set; }
 
         /// <inheritdoc />
         public DbSet<Province> Provinces { get; set; }
@@ -81,7 +81,7 @@ namespace OisysNew
         public DbSet<SalesQuote> SalesQuotes { get; set; }
 
         /// <inheritdoc />
-        public DbSet<SalesQuoteLineItem> SalesQuoteDetails { get; set; }
+        public DbSet<SalesQuoteLineItem> SalesQuoteLineItems { get; set; }
 
         /// <inheritdoc />
         public DbSet<ApplicationUser> Users { get; set; }
@@ -92,22 +92,18 @@ namespace OisysNew
             base.OnModelCreating(modelBuilder);
 
             CreateCategoryModel(modelBuilder);
+            CreateCreditMemoModel(modelBuilder);
             CreateCustomerModel(modelBuilder);
             CreateItemModel(modelBuilder);
             CreateOrderModel(modelBuilder);
             CreateProvinceAndCityModels(modelBuilder);
+            CreateSalesQuoteModels(modelBuilder);
 
             // Adjustments
             //modelBuilder.Entity<Adjustment>()
             //    .HasOne<Item>(d => d.Item)
             //    .WithMany(p => p.Adjustments)
             //    .HasForeignKey(p => p.ItemId);
-
-            // Credit Memo Detail
-            modelBuilder.Entity<CreditMemoDetail>()
-                .HasOne<CreditMemo>(d => d.CreditMemo)
-                .WithMany(p => p.Details)
-                .HasForeignKey(p => p.CreditMemoId);
 
             // Delivery Details
             modelBuilder.Entity<DeliveryDetail>()
@@ -121,25 +117,6 @@ namespace OisysNew
                 .WithMany(p => p.Details)
                 .HasForeignKey(p => p.InvoiceId);
             
-            // Sales Quote
-            modelBuilder.Entity<SalesQuoteLineItem>()
-                .HasOne<SalesQuote>(d => d.SalesQuote)
-                .WithMany(p => p.LineItems)
-                .HasForeignKey(p => p.SalesQuoteId);
-
-            modelBuilder.HasSequence<int>("CreditMemoCode")
-                .StartsAt(100000)
-                .IncrementsBy(1);
-
-            modelBuilder.Entity<CreditMemo>()
-                .Property(o => o.Code)
-                .HasDefaultValueSql("NEXT VALUE FOR CreditMemoCode");
-
-            // TODO: Remove when migrated to sql server
-            modelBuilder.Entity<CreditMemo>()
-                .Property(o => o.Code)
-                .HasValueGenerator(typeof(CreditMemoCodeGenerator));
-
             modelBuilder.HasSequence<int>("VoucherNumber")
                .StartsAt(100000)
                .IncrementsBy(1);
@@ -152,19 +129,6 @@ namespace OisysNew
             modelBuilder.Entity<CashVoucher>()
                 .Property(o => o.VoucherNumber)
                 .HasValueGenerator(typeof(VoucherNumberGenerator));
-
-            modelBuilder.HasSequence<int>("QuotationCode")
-                .StartsAt(100000)
-                .IncrementsBy(1);
-
-            modelBuilder.Entity<SalesQuote>()
-                .Property(o => o.QuoteNumber)
-                .HasDefaultValueSql("NEXT VALUE FOR QuotationCode");
-
-            // TODO: Remove when migrated to sql server
-            modelBuilder.Entity<SalesQuote>()
-                .Property(o => o.QuoteNumber)
-                .HasValueGenerator(typeof(SalesQuotationNumberGenerator));
 
             modelBuilder.HasSequence<int>("DeliveryNumber")
                 .StartsAt(100000)
@@ -193,6 +157,8 @@ namespace OisysNew
                 .HasValueGenerator(typeof(InvoiceNumberCodeGenerator));
         }
 
+        
+
         private static void CreateCategoryModel(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Category>(entity =>
@@ -205,6 +171,38 @@ namespace OisysNew
 
                 // Setup concurrency checks
                 entity.Property(p => p.RowVersion).IsRowVersion();
+            });
+        }
+
+        private static void CreateCreditMemoModel(ModelBuilder modelBuilder)
+        {
+            modelBuilder.HasSequence<int>("CreditMemoCode")
+                    .StartsAt(100000)
+                    .IncrementsBy(1);
+
+            modelBuilder.Entity<CreditMemo>(entity =>
+            {
+                // Setup concurrency checks
+                entity.Property(p => p.RowVersion).IsRowVersion();
+
+                // Setup auto numbering
+                entity.Property(o => o.Code)
+                    .HasDefaultValueSql("NEXT VALUE FOR CreditMemoCode");
+
+                // TODO: Remove when migrated to sql server
+                entity.Property(o => o.Code)
+                    .HasValueGenerator(typeof(CreditMemoCodeGenerator));
+            });
+
+            modelBuilder.Entity<CreditMemoLineItem>(entity =>
+            {
+                entity.HasOne(d => d.CreditMemo)
+                    .WithMany(p => p.LineItems)
+                    .HasForeignKey(p => p.CreditMemoId);
+
+                entity.HasOne(d => d.TransactionHistory)
+                     .WithOne(d => d.CreditMemoLineItem)
+                     .OnDelete(DeleteBehavior.Cascade);
             });
         }
 
@@ -319,6 +317,34 @@ namespace OisysNew
 
                 // Setup concurrency checks
                 entity.Property(p => p.RowVersion).IsRowVersion();
+            });
+        }
+
+        private static void CreateSalesQuoteModels(ModelBuilder modelBuilder)
+        {
+            modelBuilder.HasSequence<int>("QuotationCode")
+                .StartsAt(100000)
+                .IncrementsBy(1);
+
+            modelBuilder.Entity<SalesQuote>(entity =>
+            {
+                // Setup concurrency checks
+                entity.Property(p => p.RowVersion).IsRowVersion();
+
+                // Setup autonumbering
+                entity.Property(o => o.QuoteNumber)
+                    .HasDefaultValueSql("NEXT VALUE FOR QuotationCode");
+
+                // TODO: Remove when migrated to sql server
+                entity.Property(o => o.QuoteNumber)
+                    .HasValueGenerator(typeof(SalesQuotationNumberGenerator));
+            });
+
+            modelBuilder.Entity<SalesQuoteLineItem>(entity =>
+            {
+                entity.HasOne(d => d.SalesQuote)
+                    .WithMany(p => p.LineItems)
+                    .HasForeignKey(p => p.SalesQuoteId);
             });
         }
     }

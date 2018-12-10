@@ -155,7 +155,7 @@ namespace OisysNew.Controllers
             try
             {
                 // get list of active items (not deleted)
-                var list = context.OrderDetails
+                var list = context.OrderLineItems
                     .Include(c => c.Item)
                     .ThenInclude(c => c.Category)
                     .AsNoTracking()
@@ -258,7 +258,7 @@ namespace OisysNew.Controllers
                 var order = mapper.Map<Order>(entity);
 
                 // Deduct quantities from inventory
-                await inventoryService.ProcessAdjustments(quantitiesDeducted: order.LineItems);
+                await inventoryService.ProcessAdjustments(quantitiesDeducted: order.LineItems, remarks: Constants.AdjustmentRemarks.OrderCreated);
 
                 await context.Orders.AddAsync(order);
                 await context.SaveChangesAsync();
@@ -300,7 +300,7 @@ namespace OisysNew.Controllers
                 }
 
                 // Process inventory adjustments
-                await inventoryService.ProcessAdjustments(order.LineItems, entity.LineItems);
+                await inventoryService.ProcessAdjustments(order.LineItems, entity.LineItems, Constants.AdjustmentRemarks.OrderUpdated);
 
                 // Process deleted line items
                 entityListHelpers.CheckItemsForDeletion(order.LineItems, entity.LineItems);
@@ -347,7 +347,7 @@ namespace OisysNew.Controllers
                 }
 
                 // Process line items
-                await inventoryService.ProcessAdjustments(quantitiesAdded: order.LineItems);
+                await inventoryService.ProcessAdjustments(quantitiesAdded: order.LineItems, remarks: Constants.AdjustmentRemarks.OrderDeleted);
 
                 context.Remove(order);
                 await context.SaveChangesAsync();

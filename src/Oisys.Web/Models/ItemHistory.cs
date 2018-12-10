@@ -45,9 +45,14 @@ namespace OisysNew.Models
         public virtual Item Item { get; set; }
 
         /// <summary>
-        /// Gets or sets the order line item nav property
+        /// Gets or sets the order line item nav property.
         /// </summary>
         public virtual OrderLineItem OrderLineItem { get; set; }
+
+        /// <summary>
+        /// Gets or sets the credit memo line item navigation property.
+        /// </summary>
+        public virtual CreditMemoLineItem CreditMemoLineItem { get; set; }
 
         /// <summary>
         /// Gets or sets the adjustment nav property

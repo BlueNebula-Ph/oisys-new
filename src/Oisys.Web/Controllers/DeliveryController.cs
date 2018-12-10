@@ -165,7 +165,7 @@ namespace OisysNew.Controllers
                 foreach (var detail in entity.Details)
                 {
                     // Fetch the order detail associated
-                    var orderDetail = await this.context.OrderDetails
+                    var orderDetail = await this.context.OrderLineItems
                         .Include(a => a.Order)
                             .ThenInclude(a => a.Customer)
                         .Include(a => a.Item)

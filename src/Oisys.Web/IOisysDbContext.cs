@@ -33,7 +33,7 @@ namespace OisysNew
         /// <summary>
         /// Gets or sets the credit memo details db set.
         /// </summary>
-        DbSet<CreditMemoDetail> CreditMemoDetails { get; set; }
+        DbSet<CreditMemoLineItem> CreditMemoLineItems { get; set; }
 
         /// <summary>
         /// Gets or sets the customers db set.
@@ -83,7 +83,7 @@ namespace OisysNew
         /// <summary>
         /// Gets or sets the order details db set.
         /// </summary>
-        DbSet<OrderLineItem> OrderDetails { get; set; }
+        DbSet<OrderLineItem> OrderLineItems { get; set; }
 
         /// <summary>
         /// Gets or sets the provinces db set.
@@ -98,7 +98,7 @@ namespace OisysNew
         /// <summary>
         /// Gets or sets the sales quote details db set.
         /// </summary>
-        DbSet<SalesQuoteLineItem> SalesQuoteDetails { get; set; }
+        DbSet<SalesQuoteLineItem> SalesQuoteLineItems { get; set; }
 
         /// <summary>
         /// Gets or sets users db set.

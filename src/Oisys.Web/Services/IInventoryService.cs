@@ -5,6 +5,6 @@ namespace OisysNew.Services
 {
     public interface IInventoryService
     {
-        Task ProcessAdjustments(IEnumerable quantitiesAdded = null, IEnumerable quantitiesDeducted = null);
+        Task ProcessAdjustments(IEnumerable quantitiesAdded = null, IEnumerable quantitiesDeducted = null, string remarks = "");
     }
 }

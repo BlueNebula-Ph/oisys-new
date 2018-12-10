@@ -1,9 +1,8 @@
-﻿namespace OisysNew.Models
-{
-    using System;
-    using System.ComponentModel;
-    using System.ComponentModel.DataAnnotations;
+﻿using System;
+using System.ComponentModel.DataAnnotations;
 
+namespace OisysNew.Models
+{
     /// <summary>
     /// <see cref="CustomerTransaction"/> class.
     /// </summary>
@@ -20,19 +19,14 @@
         public DateTime Date { get; set; }
 
         /// <summary>
-        /// Gets or sets property Debit.
+        /// Gets or sets property Amount.
         /// </summary>
-        public decimal? Debit { get; set; }
+        public decimal Amount { get; set; }
 
         /// <summary>
-        /// Gets or sets property Credit.
+        /// Gets or sets property Transaction Type.
         /// </summary>
-        public decimal? Credit { get; set; }
-
-        /// <summary>
-        /// Gets or sets property Description.
-        /// </summary>
-        public string Description { get; set; }
+        public TransactionType TransactionType { get; set; }
 
         /// <summary>
         /// Gets or sets property Order Id.
@@ -50,13 +44,16 @@
         public int InvoiceId { get; set; }
 
         /// <summary>
-        /// Gets or sets property Transaction type.
-        /// </summary>
-        public string TransactionType { get; set; }
-
-        /// <summary>
         /// Gets or sets property Customer.
         /// </summary>
         public virtual Customer Customer { get; set; }
+    }
+
+    public enum TransactionType
+    {
+        [Display(Name = "Debit")]
+        Debit = 1,
+        [Display(Name = "Credit")]
+        Credit = 2
     }
 }

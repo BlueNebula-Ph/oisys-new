@@ -228,9 +228,8 @@ namespace OisysNew.Controllers
         {
             try
             {
-                var invoice = await this.context.Deliveries
+                var invoice = await this.context.Invoices
                     .Include(c => c.Details)
-                    .Include("Details.Item")
                     .SingleOrDefaultAsync(c => c.Id == id);
 
                 if (invoice == null)
