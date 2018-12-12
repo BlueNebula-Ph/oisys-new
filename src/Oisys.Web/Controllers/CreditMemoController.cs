@@ -174,25 +174,9 @@ namespace OisysNew.Controllers
                 await inventoryService.ProcessAdjustments(quantitiesAdded: itemsToBeReturned, remarks: Constants.AdjustmentRemarks.CreditMemoCreated);
 
                 // Update the order line item for quantity returned
-                await orderService.ProcessReturns(creditMemo.LineItems);
+                await orderService.ProcessReturns(creditMemo.LineItems, AdjustmentType.Add);
 
                 // TODO: Add a customer transaction record for crediting
-
-                //var totalAmountReturned = 0m;
-                //foreach (var detail in entity.LineItems)
-                //{
-                //    var item = await context.Items.FindAsync(detail.ItemId);
-                //    var orderDetail = await context.OrderLineItems.FindAsync(detail.OrderLineItemId);
-
-                //    totalAmountReturned += detail.Quantity * orderDetail.Price;
-
-                //    // update quantity returned on order detail
-                //    //await orderService.UpdateQuantityReturnedForOrderDetail(entity.Id, detail.OrderDetailId, detail.Quantity);
-                //}
-
-                // Add customer transaction
-                //var customerTransaction = customerService.AddCustomerTransaction(entity.CustomerId, TransactionType.Credit, totalAmountReturned, Constants.AdjustmentRemarks.CreditMemoCreated);
-                //customerTransaction.CreditMemoId = creditMemo.Id;
 
                 await context.SaveChangesAsync();
 
@@ -216,7 +200,7 @@ namespace OisysNew.Controllers
         /// Updates a specific <see cref="CreditMemo"/>.
         /// </summary>
         /// <param name="id">id</param>
-        /// <param name="entity">entity</param>
+        /// <param name="updatedCreditMemo">the updated credit memo</param>
         /// <returns>None</returns>
         [HttpPut("{id}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
@@ -224,86 +208,38 @@ namespace OisysNew.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status409Conflict)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult> Update(long id, [FromBody]SaveCreditMemoRequest entity)
+        public async Task<ActionResult> Update(long id, [FromBody]SaveCreditMemoRequest updatedCreditMemo)
         {
             try
             {
-                var cm = context.CreditMemos
+                var creditMemo = context.CreditMemos
                         .AsNoTracking()
                         .Include(c => c.Customer)
                         .Include(c => c.LineItems)
                         .Include("Details.OrderDetail.Item")
                         .SingleOrDefault(c => c.Id == id);
 
-                if (cm == null)
+                if (creditMemo == null)
                 {
                     return NotFound();
                 }
 
-                decimal totalAmountToDeduct = 0;
-                decimal totalAmountToAdd = 0;
+                // Adjust inventory quantities
+                var itemsToBeCleared = creditMemo.LineItems.Select(a => a.ReturnedToInventory);
+                var itemsToBeReturned = updatedCreditMemo.LineItems.Select(a => a.ShouldAddBackToInventory);
+                await inventoryService.ProcessAdjustments(itemsToBeReturned, itemsToBeCleared, Constants.AdjustmentRemarks.CreditMemoUpdated);
 
-                foreach (var detail in entity.LineItems)
-                {
-                    // get updated detail
-                    var oldDetail = context.CreditMemoLineItems
-                                        .Include(c => c.OrderLineItem)
-                                        .AsNoTracking()
-                                        .SingleOrDefault(c => c.Id == detail.Id);
+                // Update order line items for quantity returned
+                await orderService.ProcessReturns(creditMemo.LineItems, AdjustmentType.Deduct);
+                await orderService.ProcessReturns(updatedCreditMemo.LineItems, AdjustmentType.Add);
 
-                    if (oldDetail != null)
-                    {
-                        // for existing and deleted details
-                        if (oldDetail.Quantity != detail.Quantity)
-                        {
-                            // deduct original quantity
-                            //adjustmentService.ModifyQuantity(QuantityType.CurrentQuantity, oldDetail.OrderDetail.Item, detail.Quantity, AdjustmentType.Deduct, detail.IsDeleted ? Constants.AdjustmentRemarks.CreditMemoDetailDeleted : Constants.AdjustmentRemarks.CreditMemoUpdated);
-                            //adjustmentService.ModifyQuantity(QuantityType.ActualQuantity, oldDetail.OrderDetail.Item, detail.Quantity, AdjustmentType.Deduct, detail.IsDeleted ? Constants.AdjustmentRemarks.CreditMemoDetailDeleted : Constants.AdjustmentRemarks.CreditMemoUpdated);
+                // Update the credit memo values
+                creditMemo = mapper.Map<CreditMemo>(updatedCreditMemo);
 
-                            // Amount to add to customer balance
-                            totalAmountToAdd = totalAmountToAdd + (oldDetail.OrderLineItem.Price * detail.Quantity);
-                        }
+                // TODO: Update customer transaction record for crediting
 
-                        if (oldDetail.Quantity != detail.Quantity)
-                        {
-                            // add new quantity
-                            //adjustmentService.ModifyQuantity(QuantityType.CurrentQuantity, oldDetail.OrderDetail.Item, detail.Quantity, AdjustmentType.Add, Constants.AdjustmentRemarks.CreditMemoUpdated);
-                            //adjustmentService.ModifyQuantity(QuantityType.ActualQuantity, oldDetail.OrderDetail.Item, detail.Quantity, AdjustmentType.Add, Constants.AdjustmentRemarks.CreditMemoUpdated);
 
-                            // Deduct amount from Customer Account
-                            totalAmountToDeduct = totalAmountToDeduct + (oldDetail.OrderLineItem.Price * oldDetail.Quantity);
-                        }
-                    }
-
-                    // for added details
-                    else
-                    {
-                        var orderDetail = context.OrderLineItems
-                                                .Include(c => c.Item)
-                                                .AsNoTracking()
-                                                .SingleOrDefault(c => c.Id == detail.OrderLineItemId);
-
-                        //adjustmentService.ModifyQuantity(QuantityType.Both, orderDetail.Item, detail.Quantity, AdjustmentType.Deduct, Constants.AdjustmentRemarks.CreditMemoDetailCreated);
-
-                        // Deduct amount from Customer Account
-                        totalAmountToDeduct = totalAmountToDeduct + (orderDetail.Price * detail.Quantity);
-                    }
-                }
-
-                // get customer transaction
-                var customerTransaction = context.CustomerTransactions
-                                                .SingleOrDefault(c => c.CustomerId == cm.CustomerId && c.CreditMemoId == cm.Id);
-
-                // update customer transaction record
-                if (customerTransaction != null)
-                {
-                   // customerService.ModifyCustomerTransaction(customerTransaction, TransactionType.Credit, totalAmountToAdd, Constants.AdjustmentRemarks.CreditMemoUpdated);
-                }
-
-                cm = mapper.Map<CreditMemo>(entity);
-
-                context.Update(cm);
-
+                context.Update(creditMemo);
                 await context.SaveChangesAsync();
 
                 return StatusCode(StatusCodes.Status204NoContent);
@@ -331,44 +267,30 @@ namespace OisysNew.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult> Delete(long id)
         {
-            var creditMemo = await context.CreditMemos
+            try
+            {
+                var creditMemo = await context.CreditMemos
                                 .Include(c => c.LineItems)
                                 .Include("Details.OrderDetail.Item")
                                 .AsNoTracking()
                                 .SingleOrDefaultAsync(c => c.Id == id);
 
-            if (creditMemo == null)
-            {
-                return NotFound(id);
-            }
-
-            try
-            {
-                // Delete credit memo
-                //creditMemo.IsDeleted = true;
-
-                decimal totalAmountReturnedToBalance = 0;
-
-                foreach (var detail in creditMemo.LineItems)
+                if (creditMemo == null)
                 {
-                   // adjustmentService.ModifyQuantity(QuantityType.Both, detail.OrderDetail.Item, detail.Quantity, AdjustmentType.Deduct, Constants.AdjustmentRemarks.CreditMemoDeleted);
-
-                    // compute amount to add to customer's balance
-                    totalAmountReturnedToBalance = totalAmountReturnedToBalance + (detail.OrderLineItem.Price * detail.Quantity);
+                    return NotFound(id);
                 }
 
-                // Remove credit memo details
-                context.RemoveRange(creditMemo.LineItems);
+                // Adjust inventory quantities
+                var itemsToBeCleared = creditMemo.LineItems.Select(a => a.ReturnedToInventory);
+                await inventoryService.ProcessAdjustments(quantitiesDeducted: itemsToBeCleared, remarks: Constants.AdjustmentRemarks.CreditMemoDeleted);
 
-                // get customer transaction
-                var customerTransaction = context.CustomerTransactions
-                                                .SingleOrDefault(c => c.CustomerId == creditMemo.CustomerId && c.CreditMemoId == creditMemo.Id);
+                // Update order line items for quantity returned
+                await orderService.ProcessReturns(creditMemo.LineItems, AdjustmentType.Deduct);
 
-                if (customerTransaction != null)
-                {
-                    //customerService.ModifyCustomerTransaction(customerTransaction, TransactionType.Debit, totalAmountReturnedToBalance, Constants.AdjustmentRemarks.CreditMemoDeleted);
-                }
+                // TODO: Update customer transaction record for crediting
 
+
+                context.Remove(creditMemo);
                 await context.SaveChangesAsync();
 
                 return StatusCode(StatusCodes.Status204NoContent);

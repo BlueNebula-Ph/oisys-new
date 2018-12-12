@@ -1,7 +1,10 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using AutoMapper;
+using Microsoft.Extensions.Logging;
+using OisysNew.DTO.CreditMemo;
+using OisysNew.Helpers;
 using OisysNew.Models;
 using System;
-using System.Collections.Generic;
+using System.Collections;
 using System.Threading.Tasks;
 
 namespace OisysNew.Services
@@ -9,13 +12,16 @@ namespace OisysNew.Services
     public class OrderService : IOrderService
     {
         private readonly IOisysDbContext context;
+        private readonly IMapper mapper;
         private readonly ILogger logger;
 
         public OrderService(
             IOisysDbContext context,
+            IMapper mapper,
             ILogger<OrderService> logger)
         {
             this.context = context;
+            this.mapper = mapper;
             this.logger = logger;
         }
 
@@ -24,19 +30,36 @@ namespace OisysNew.Services
             throw new NotImplementedException();
         }
 
-        public async Task ProcessReturns(IEnumerable<CreditMemoLineItem> creditMemoLineItems)
+        public async Task ProcessReturns(IEnumerable creditMemoLineItems, AdjustmentType adjustmentType)
         {
             foreach (var lineItem in creditMemoLineItems)
             {
-                var orderLineItem = await context.OrderLineItems.FindAsync(lineItem.OrderLineItemId);
-                if (orderLineItem == null)
+                switch (lineItem)
                 {
-                    logger.LogWarning($"Order line item with id {lineItem.OrderLineItemId} not found.");
-                    continue;
+                    case CreditMemoLineItem creditMemoLineItem:
+                        await UpdateOrderLineItem(creditMemoLineItem, adjustmentType);
+                        break;
+                    case SaveCreditMemoLineItemRequest request:
+                        var cmLineItem = mapper.Map<CreditMemoLineItem>(request);
+                        await UpdateOrderLineItem(cmLineItem, adjustmentType);
+                        break;
+                    case null:
+                        break;
                 }
-
-                orderLineItem.QuantityReturned = lineItem.Quantity;
             }
+        }
+
+        private async Task UpdateOrderLineItem(CreditMemoLineItem lineItem, AdjustmentType adjustmentType)
+        {
+            var orderLineItem = await context.OrderLineItems.FindAsync(lineItem.OrderLineItemId);
+            if (orderLineItem == null)
+            {
+                logger.LogWarning($"Order line item with id {lineItem.OrderLineItemId} not found.");
+            }
+
+            orderLineItem.QuantityReturned = adjustmentType == AdjustmentType.Add ?
+                orderLineItem.QuantityReturned + lineItem.Quantity :
+                orderLineItem.QuantityReturned - lineItem.Quantity;
         }
     }
 }

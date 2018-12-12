@@ -52,7 +52,7 @@ namespace OisysNew.Configuration
                 .ForMember(d => d.Item, s => s.MapFrom(o => o.Item.Name))
                 .ForMember(d => d.Price, s => s.MapFrom(o => o.OrderLineItem.Price))
                 .ForMember(d => d.ShouldAddBackToInventory, s => s.MapFrom(o => o.ReturnedToInventory));
-            CreateMap<SaveCreditMemoDetailRequest, CreditMemoLineItem>()
+            CreateMap<SaveCreditMemoLineItemRequest, CreditMemoLineItem>()
                 .ForMember(d => d.ReturnedToInventory, s => s.MapFrom(o => o.ShouldAddBackToInventory));
 
             // Customer

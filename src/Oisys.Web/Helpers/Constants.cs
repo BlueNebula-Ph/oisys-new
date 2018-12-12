@@ -104,27 +104,27 @@
             /// <summary>
             /// The creditmemo created text.
             /// </summary>
-            public const string CreditMemoCreated = "Credit Memo created";
+            public const string CreditMemoCreated = "Credit memo created";
 
             /// <summary>
             /// The creditmemo detail created text.
             /// </summary>
-            public const string CreditMemoDetailCreated = "Credit Memo detail created";
+            public const string CreditMemoDetailCreated = "Credit memo detail created";
 
             /// <summary>
             /// The creditmemo updated text.
             /// </summary>
-            public const string CreditMemoUpdated = "Credit Memo updated";
+            public const string CreditMemoUpdated = "Credit memo updated";
 
             /// <summary>
             /// The creditmemo deleted text.
             /// </summary>
-            public const string CreditMemoDeleted = "Credit Memo deleted";
+            public const string CreditMemoDeleted = "Credit memo deleted";
 
             /// <summary>
             /// The creditmemo detail deleted text.
             /// </summary>
-            public const string CreditMemoDetailDeleted = "Credit Memo detail deleted";
+            public const string CreditMemoDetailDeleted = "Credit memo detail deleted";
         }
 
         /// <summary>

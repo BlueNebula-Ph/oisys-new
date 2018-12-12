@@ -29,6 +29,6 @@ namespace OisysNew.DTO.CreditMemo
         /// <summary>
         /// Gets or sets the line items associated to the credit memo.
         /// </summary>
-        public IEnumerable<SaveCreditMemoDetailRequest> LineItems { get; set; }
+        public IEnumerable<SaveCreditMemoLineItemRequest> LineItems { get; set; }
     }
 }

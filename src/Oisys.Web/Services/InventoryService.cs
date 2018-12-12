@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using OisysNew.DTO.CreditMemo;
 using OisysNew.DTO.Order;
 using OisysNew.Helpers;
 using OisysNew.Models;
@@ -49,9 +50,9 @@ namespace OisysNew.Services
                         await ProcessItemAdjustmentAsync(orderLineItem.ItemId, orderLineItem.Quantity, adjustmentType);
                         await UpdateOrderLineItemHistory(orderLineItem, adjustmentType, remarks);
                         break;
-                    case SaveOrderLineItemRequest orderDetailRequest:
-                        await ProcessItemAdjustmentAsync(orderDetailRequest.ItemId, orderDetailRequest.Quantity, adjustmentType);
-                        var lineItem = mapper.Map<OrderLineItem>(orderDetailRequest);
+                    case SaveOrderLineItemRequest orderDetailLineItemRequest:
+                        await ProcessItemAdjustmentAsync(orderDetailLineItemRequest.ItemId, orderDetailLineItemRequest.Quantity, adjustmentType);
+                        var lineItem = mapper.Map<OrderLineItem>(orderDetailLineItemRequest);
                         await UpdateOrderLineItemHistory(lineItem, adjustmentType, remarks);
                         break;
                     case Adjustment adjustment:
@@ -61,6 +62,11 @@ namespace OisysNew.Services
                     case CreditMemoLineItem creditMemoLineItem:
                         await ProcessItemAdjustmentAsync(creditMemoLineItem.OrderLineItem.ItemId, creditMemoLineItem.Quantity, adjustmentType);
                         await UpdateCreditMemoItemHistory(creditMemoLineItem, adjustmentType, remarks);
+                        break;
+                    case SaveCreditMemoLineItemRequest creditMemoLineItemRequest:
+                        await ProcessItemAdjustmentAsync(creditMemoLineItemRequest.ItemId, creditMemoLineItemRequest.Quantity, adjustmentType);
+                        var cmLineItem = mapper.Map<CreditMemoLineItem>(creditMemoLineItemRequest);
+                        await UpdateCreditMemoItemHistory(cmLineItem, adjustmentType, remarks);
                         break;
                     case null:
                         break;

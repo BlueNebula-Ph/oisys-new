@@ -1,12 +1,11 @@
-﻿using System.ComponentModel;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace OisysNew.DTO.CreditMemo
 {
     /// <summary>
-    /// <see cref="SaveCreditMemoDetailRequest"/> class represents the child of CreditMemo object.
+    /// <see cref="SaveCreditMemoLineItemRequest"/> class represents the child of CreditMemo object.
     /// </summary>
-    public class SaveCreditMemoDetailRequest : DTOBase
+    public class SaveCreditMemoLineItemRequest : DTOBase
     {
         /// <summary>
         /// Gets or sets property CreditMemoId.
