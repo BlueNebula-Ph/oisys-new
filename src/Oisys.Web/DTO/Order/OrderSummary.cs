@@ -65,6 +65,6 @@ namespace OisysNew.DTO.Order
         /// <summary>
         /// Gets or sets Details navigation property.
         /// </summary>
-        public IEnumerable<OrderDetailSummary> LineItems { get; set; }
+        public IEnumerable<OrderLineItemSummary> LineItems { get; set; }
     }
 }

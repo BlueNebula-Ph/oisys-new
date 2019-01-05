@@ -258,7 +258,7 @@ namespace OisysNew.Controllers
                 var order = mapper.Map<Order>(entity);
 
                 // Deduct quantities from inventory
-                await inventoryService.ProcessAdjustments(quantitiesDeducted: order.LineItems, remarks: Constants.AdjustmentRemarks.OrderCreated);
+                await inventoryService.ProcessAdjustments(order.LineItems, AdjustmentType.Deduct, Constants.AdjustmentRemarks.OrderCreated);
 
                 await context.Orders.AddAsync(order);
                 await context.SaveChangesAsync();
@@ -300,7 +300,8 @@ namespace OisysNew.Controllers
                 }
 
                 // Process inventory adjustments
-                await inventoryService.ProcessAdjustments(order.LineItems, entity.LineItems, Constants.AdjustmentRemarks.OrderUpdated);
+                await inventoryService.ProcessAdjustments(order.LineItems, AdjustmentType.Add, Constants.AdjustmentRemarks.OrderUpdated);
+                await inventoryService.ProcessAdjustments(entity.LineItems, AdjustmentType.Deduct, Constants.AdjustmentRemarks.OrderUpdated);
 
                 // Process deleted line items
                 entityListHelpers.CheckItemsForDeletion(order.LineItems, entity.LineItems);
@@ -347,7 +348,7 @@ namespace OisysNew.Controllers
                 }
 
                 // Process line items
-                await inventoryService.ProcessAdjustments(quantitiesAdded: order.LineItems, remarks: Constants.AdjustmentRemarks.OrderDeleted);
+                await inventoryService.ProcessAdjustments(order.LineItems, AdjustmentType.Add, Constants.AdjustmentRemarks.OrderDeleted);
 
                 context.Remove(order);
                 await context.SaveChangesAsync();

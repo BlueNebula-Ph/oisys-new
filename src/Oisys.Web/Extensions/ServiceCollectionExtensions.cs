@@ -13,7 +13,8 @@ namespace OisysNew.Extensions
             serviceCollection
                 .AddTransient<IListHelpers, ListHelpers>()
                 .AddTransient<IInventoryService, InventoryService>()
-                .AddTransient<IEntityListHelpers, EntityListHelpers>();
+                .AddTransient<IEntityListHelpers, EntityListHelpers>()
+                .AddTransient<IOrderService, OrderService>();
         }
     }
 }

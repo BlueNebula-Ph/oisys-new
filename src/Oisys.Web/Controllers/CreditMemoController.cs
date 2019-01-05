@@ -131,10 +131,11 @@ namespace OisysNew.Controllers
         {
             try
             {
-                var entity = await this.context.CreditMemos
-                .Include(c => c.Customer)
-                .Include(c => c.LineItems).ThenInclude(d => d.OrderLineItem.Order)
-                .Include(c => c.LineItems).ThenInclude(d => d.OrderLineItem.Item)
+                var entity = await context.CreditMemos
+                .Include(c => c.Customer).ThenInclude(c => c.Province)
+                .Include(c => c.Customer).ThenInclude(c => c.City)
+                .Include(c => c.LineItems).ThenInclude(lineItem => (lineItem as CreditMemoLineItem).Item)
+                .Include(c => c.LineItems).ThenInclude(lineItem => (lineItem as CreditMemoLineItem).OrderLineItem).ThenInclude(orderLineItem => orderLineItem.Order)
                 .AsNoTracking()
                 .SingleOrDefaultAsync(c => c.Id == id);
 
@@ -143,7 +144,7 @@ namespace OisysNew.Controllers
                     return NotFound();
                 }
 
-                var creditMemoSummary = this.mapper.Map<CreditMemoSummary>(entity);
+                var creditMemoSummary = mapper.Map<CreditMemoSummary>(entity);
                 return creditMemoSummary;
             }
             catch (Exception e)
@@ -170,8 +171,8 @@ namespace OisysNew.Controllers
                 await context.CreditMemos.AddAsync(creditMemo);
 
                 // Adjust the inventory quantities for items returned
-                var itemsToBeReturned = creditMemo.LineItems.Select(a => a.ReturnedToInventory);
-                await inventoryService.ProcessAdjustments(quantitiesAdded: itemsToBeReturned, remarks: Constants.AdjustmentRemarks.CreditMemoCreated);
+                var itemsToBeReturned = creditMemo.LineItems.Where(a => a.ReturnedToInventory);
+                await inventoryService.ProcessAdjustments(itemsToBeReturned, AdjustmentType.Add, Constants.AdjustmentRemarks.CreditMemoCreated);
 
                 // Update the order line item for quantity returned
                 await orderService.ProcessReturns(creditMemo.LineItems, AdjustmentType.Add);
@@ -213,10 +214,10 @@ namespace OisysNew.Controllers
             try
             {
                 var creditMemo = context.CreditMemos
-                        .AsNoTracking()
                         .Include(c => c.Customer)
-                        .Include(c => c.LineItems)
-                        .Include("Details.OrderDetail.Item")
+                        .Include(c => c.LineItems).ThenInclude(detail => (detail as CreditMemoLineItem).TransactionHistory)
+                        .Include(c => c.LineItems).ThenInclude(detail => (detail as CreditMemoLineItem).OrderLineItem).ThenInclude(orderLineItem => orderLineItem.Item)
+                        .AsNoTracking()
                         .SingleOrDefault(c => c.Id == id);
 
                 if (creditMemo == null)
@@ -225,9 +226,11 @@ namespace OisysNew.Controllers
                 }
 
                 // Adjust inventory quantities
-                var itemsToBeCleared = creditMemo.LineItems.Select(a => a.ReturnedToInventory);
-                var itemsToBeReturned = updatedCreditMemo.LineItems.Select(a => a.ShouldAddBackToInventory);
-                await inventoryService.ProcessAdjustments(itemsToBeReturned, itemsToBeCleared, Constants.AdjustmentRemarks.CreditMemoUpdated);
+                var itemsToBeCleared = creditMemo.LineItems.Where(a => a.ReturnedToInventory);
+                await inventoryService.ProcessAdjustments(itemsToBeCleared, AdjustmentType.Deduct, Constants.AdjustmentRemarks.CreditMemoUpdated);
+
+                var itemsToBeReturned = updatedCreditMemo.LineItems.Where(a => a.ShouldAddBackToInventory);
+                await inventoryService.ProcessAdjustments(itemsToBeReturned, AdjustmentType.Add, Constants.AdjustmentRemarks.CreditMemoUpdated);
 
                 // Update order line items for quantity returned
                 await orderService.ProcessReturns(creditMemo.LineItems, AdjustmentType.Deduct);
@@ -243,6 +246,13 @@ namespace OisysNew.Controllers
                 await context.SaveChangesAsync();
 
                 return StatusCode(StatusCodes.Status204NoContent);
+            }
+            catch (QuantityReturnedException qEx)
+            {
+                logger.LogError(qEx.Message);
+                ModelState.AddModelError(Constants.ErrorMessage, qEx.Message);
+
+                return BadRequest(ModelState);
             }
             catch (DbUpdateConcurrencyException concurrencyEx)
             {
@@ -281,8 +291,8 @@ namespace OisysNew.Controllers
                 }
 
                 // Adjust inventory quantities
-                var itemsToBeCleared = creditMemo.LineItems.Select(a => a.ReturnedToInventory);
-                await inventoryService.ProcessAdjustments(quantitiesDeducted: itemsToBeCleared, remarks: Constants.AdjustmentRemarks.CreditMemoDeleted);
+                var itemsToBeCleared = creditMemo.LineItems.Where(a => a.ReturnedToInventory);
+                await inventoryService.ProcessAdjustments(itemsToBeCleared, AdjustmentType.Deduct, Constants.AdjustmentRemarks.CreditMemoDeleted);
 
                 // Update order line items for quantity returned
                 await orderService.ProcessReturns(creditMemo.LineItems, AdjustmentType.Deduct);

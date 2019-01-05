@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.Extensions.Logging;
 using OisysNew.DTO.CreditMemo;
+using OisysNew.Exceptions;
 using OisysNew.Helpers;
 using OisysNew.Models;
 using System;
@@ -55,11 +56,18 @@ namespace OisysNew.Services
             if (orderLineItem == null)
             {
                 logger.LogWarning($"Order line item with id {lineItem.OrderLineItemId} not found.");
+                return;
             }
 
             orderLineItem.QuantityReturned = adjustmentType == AdjustmentType.Add ?
                 orderLineItem.QuantityReturned + lineItem.Quantity :
                 orderLineItem.QuantityReturned - lineItem.Quantity;
+
+            // Quantity returned cannot be more than original order quantity
+            if (orderLineItem.QuantityReturned > orderLineItem.Quantity)
+            {
+                throw new QuantityReturnedException($"Quantity returned cannot be more than original quantity.");
+            }
         }
     }
 }

@@ -3,9 +3,9 @@
 namespace OisysNew.DTO.CreditMemo
 {
     /// <summary>
-    /// <see cref="CreditMemoDetailSummary"/> class represents the child of CreditSummary object.
+    /// <see cref="CreditMemoLineItemSummary"/> class represents the child of CreditSummary object.
     /// </summary>
-    public class CreditMemoDetailSummary : DTOBase
+    public class CreditMemoLineItemSummary : DTOBase
     {
         /// <summary>
         /// Gets or sets property Ordercode.
@@ -15,7 +15,7 @@ namespace OisysNew.DTO.CreditMemo
         /// <summary>
         /// Gets or sets property OrderDetail
         /// </summary>
-        public OrderDetailSummary OrderDetail { get; set; }
+        //public OrderLineItemSummary OrderDetail { get; set; }
 
         /// <summary>
         /// Gets or sets property ItemCode.
@@ -30,7 +30,7 @@ namespace OisysNew.DTO.CreditMemo
         /// <summary>
         /// Gets or sets property Quantity.
         /// </summary>
-        public decimal Quantity { get; set; }
+        public int Quantity { get; set; }
 
         /// <summary>
         /// Gets or sets property Price.

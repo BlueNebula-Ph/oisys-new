@@ -43,10 +43,11 @@ namespace OisysNew.Configuration
             CreateMap<SaveCityRequest, City>();
 
             // Credit Memo
-            CreateMap<CreditMemo, CreditMemoSummary>();
+            CreateMap<CreditMemo, CreditMemoSummary>()
+                .ForMember(d => d.Date, s => s.MapFrom(o => o.Date.ToShortDateString()));
             CreateMap<SaveCreditMemoRequest, CreditMemo>();
 
-            CreateMap<CreditMemoLineItem, CreditMemoDetailSummary>()
+            CreateMap<CreditMemoLineItem, CreditMemoLineItemSummary>()
                 .ForMember(d => d.OrderCode, s => s.MapFrom(o => o.OrderLineItem.Order.Code))
                 .ForMember(d => d.ItemCode, s => s.MapFrom(o => o.Item.Code))
                 .ForMember(d => d.Item, s => s.MapFrom(o => o.Item.Name))
@@ -85,15 +86,15 @@ namespace OisysNew.Configuration
             // Order
             CreateMap<Order, OrderSummary>()
                 .ForMember(d => d.ProvinceName, s => s.MapFrom(o => o.Customer.Province.Name))
-                .ForMember(d => d.Date, s => s.MapFrom(o => o.Date.ToString("d")))
-                .ForMember(d => d.DueDate, s => s.MapFrom(o => o.DueDate.HasValue ? o.DueDate.Value.ToString("d") : string.Empty));
+                .ForMember(d => d.Date, s => s.MapFrom(o => o.Date.ToShortDateString()))
+                .ForMember(d => d.DueDate, s => s.MapFrom(o => o.DueDate.HasValue ? o.DueDate.Value.ToShortDateString() : string.Empty));
 
             CreateMap<SaveOrderRequest, Order>();
 
             CreateMap<Order, OrderLookup>();
 
             // Order Line Item
-            CreateMap<OrderLineItem, OrderDetailSummary>()
+            CreateMap<OrderLineItem, OrderLineItemSummary>()
                 .ForMember(d => d.ItemCode, s => s.MapFrom(o => o.Item.Code))
                 .ForMember(d => d.Item, s => s.MapFrom(o => o.Item.Name))
                 .ForMember(d => d.Unit, s => s.MapFrom(o => o.Item.Unit))

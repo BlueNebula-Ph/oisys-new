@@ -1,9 +1,9 @@
 ﻿namespace OisysNew.DTO.Order
 {
     /// <summary>
-    /// <see cref="OrderDetailSummary"/> class represents the child of OrderSummary object.
+    /// <see cref="OrderLineItemSummary"/> class represents the child of OrderSummary object.
     /// </summary>
-    public class OrderDetailSummary : DTOBase
+    public class OrderLineItemSummary : DTOBase
     {
         /// <summary>
         /// Gets or sets property Quanity.
@@ -49,5 +49,10 @@
         /// Gets or sets property ItemCode.
         /// </summary>
         public string ItemCode { get; set; }
+
+        /// <summary>
+        /// Gets or sets the quantity returned for this line item.
+        /// </summary>
+        public int QuantityReturned { get; set; }
     }
 }

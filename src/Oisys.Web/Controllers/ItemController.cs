@@ -284,7 +284,7 @@ namespace OisysNew.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> AdjustItem(long id, [FromBody]SaveItemAdjustmentRequest saveAdjustmentRequest)
+        public async Task<ActionResult> AdjustItem(long id, [FromBody]SaveItemAdjustmentRequest saveAdjustmentRequest)
         {
             try
             {
@@ -299,9 +299,7 @@ namespace OisysNew.Controllers
 
                 // Perform adjustment
                 var adjustments = new List<Adjustment> { adjustment };
-                await inventoryService.ProcessAdjustments(
-                    saveAdjustmentRequest.AdjustmentType == AdjustmentType.Add ? adjustments : null,
-                    saveAdjustmentRequest.AdjustmentType == AdjustmentType.Deduct ? adjustments : null);
+                await inventoryService.ProcessAdjustments(adjustments, saveAdjustmentRequest.AdjustmentType, saveAdjustmentRequest.Remarks);
 
                 await context.AddAsync(adjustment);
                 await context.SaveChangesAsync();

@@ -27,20 +27,7 @@ namespace OisysNew.Services
             this.logger = logger;
         }
 
-        public async Task ProcessAdjustments(IEnumerable quantitiesAdded = null, IEnumerable quantitiesDeducted = null, string remarks = "")
-        {
-            if (quantitiesAdded != null)
-            {
-                await UpdateItems(quantitiesAdded, AdjustmentType.Add, remarks);
-            }
-
-            if (quantitiesDeducted != null)
-            {
-                await UpdateItems(quantitiesDeducted, AdjustmentType.Deduct, remarks);
-            }
-        }
-
-        private async Task UpdateItems(IEnumerable itemsToUpdate, AdjustmentType adjustmentType, string remarks)
+        public async Task ProcessAdjustments(IEnumerable itemsToUpdate, AdjustmentType adjustmentType, string remarks)
         {
             foreach (var item in itemsToUpdate)
             {
@@ -60,7 +47,7 @@ namespace OisysNew.Services
                         UpdateAdjustmentItemHistory(adjustment);
                         break;
                     case CreditMemoLineItem creditMemoLineItem:
-                        await ProcessItemAdjustmentAsync(creditMemoLineItem.OrderLineItem.ItemId, creditMemoLineItem.Quantity, adjustmentType);
+                        await ProcessItemAdjustmentAsync(creditMemoLineItem.ItemId, creditMemoLineItem.Quantity, adjustmentType);
                         await UpdateCreditMemoItemHistory(creditMemoLineItem, adjustmentType, remarks);
                         break;
                     case SaveCreditMemoLineItemRequest creditMemoLineItemRequest:
@@ -134,18 +121,28 @@ namespace OisysNew.Services
 
             if (itemHistory == null)
             {
-                creditMemoLineItem.TransactionHistory = CreateItemHistory(
-                    creditMemoLineItem.ItemId,
-                    adjustmentType,
-                    creditMemoLineItem.Quantity,
-                    remarks);
+                var newItemHistory = CreateItemHistory(
+                        creditMemoLineItem.ItemId,
+                        adjustmentType,
+                        creditMemoLineItem.Quantity,
+                        remarks);
+
+                creditMemoLineItem.TransactionHistory = newItemHistory;
+                context.Entry(newItemHistory).State = EntityState.Added;
             }
             else
             {
-                UpdateItemHistory(itemHistory,
-                    creditMemoLineItem.Quantity,
-                    adjustmentType,
-                    remarks);
+                if (adjustmentType == AdjustmentType.Deduct)
+                {
+                    DeleteItemHistory(itemHistory);
+                }
+                else if(adjustmentType == AdjustmentType.Add)
+                {
+                    UpdateItemHistory(itemHistory,
+                        creditMemoLineItem.Quantity,
+                        adjustmentType,
+                        remarks);
+                }
             }
         }
 
@@ -160,14 +157,19 @@ namespace OisysNew.Services
             };
         }
 
-        private ItemHistory UpdateItemHistory(ItemHistory itemHistory, int quantity, AdjustmentType adjustmentType, string remarks)
+        private void UpdateItemHistory(ItemHistory itemHistory, int quantity, AdjustmentType adjustmentType, string remarks)
         {
             itemHistory.Date = DateTime.Now;
             itemHistory.Quantity = adjustmentType == AdjustmentType.Add ?
                 quantity : quantity * -1;
             itemHistory.Remarks = remarks;
 
-            return itemHistory;
+            context.Entry(itemHistory).State = EntityState.Modified;
+        }
+
+        private void DeleteItemHistory(ItemHistory itemHistory)
+        {
+            context.Entry(itemHistory).State = EntityState.Deleted;
         }
     }
 }

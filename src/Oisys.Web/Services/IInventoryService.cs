@@ -1,10 +1,11 @@
-﻿using System.Collections;
+﻿using OisysNew.Helpers;
+using System.Collections;
 using System.Threading.Tasks;
 
 namespace OisysNew.Services
 {
     public interface IInventoryService
     {
-        Task ProcessAdjustments(IEnumerable quantitiesAdded = null, IEnumerable quantitiesDeducted = null, string remarks = "");
+        Task ProcessAdjustments(IEnumerable itemsToUpdate, AdjustmentType adjustmentType, string remarks);
     }
 }

@@ -184,7 +184,6 @@ namespace OisysNew.Controllers
                 .Include(c => c.City)
                 .Include(c => c.Province)
                 .Include(c => c.Transactions)
-                .Include(c => c.PriceList)
                 .AsNoTracking()
                 .FirstOrDefaultAsync(c => c.Id == id);
 
@@ -195,10 +194,10 @@ namespace OisysNew.Controllers
 
                 // Sort the transactions by date desc
                 // Hacky! Find better solution if possible
-                entity.Transactions = entity.Transactions
-                    .OrderByDescending(t => t.Date)
-                    .Select(transaction => transaction)
-                    .ToList();
+                //entity.Transactions = entity.Transactions
+                //    .OrderByDescending(t => t.Date)
+                //    .Select(transaction => transaction)
+                //    .ToList();
 
                 var customerSummary = mapper.Map<CustomerSummary>(entity);
                 return customerSummary;

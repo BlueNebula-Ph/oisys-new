@@ -14,6 +14,11 @@ namespace OisysNew.Models
         public int Code { get; set; }
 
         /// <summary>
+        /// Gets or sets property CustomerId.
+        /// </summary>
+        public long CustomerId { get; set; }
+
+        /// <summary>
         /// Gets or sets property Date.
         /// </summary>
         public DateTime Date { get; set; }
@@ -22,11 +27,6 @@ namespace OisysNew.Models
         /// Gets or sets property Driver.
         /// </summary>
         public string Driver { get; set; }
-
-        /// <summary>
-        /// Gets or sets property CustomerId.
-        /// </summary>
-        public int CustomerId { get; set; }
 
         /// <summary>
         /// Gets or sets a value indicating whether credit memo is invoiced.
