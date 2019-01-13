@@ -93,13 +93,13 @@ export class ProvinceListComponent implements AfterViewInit {
     if (confirm("Are you sure you want to delete this province?")) {
       this.provinceService.deleteProvince(id).subscribe(() => {
         this.loadProvinces();
-        this.util.openSnackBar("Province deleted successfully.");
+        this.util.showSuccessMessage("Province deleted successfully.");
       });
     }
   };
 
   onProvinceSaved(province: Province): void {
     this.loadProvinces();
-    this.util.openSnackBar("Province saved successfully.");
+    this.util.showSuccessMessage("Province saved successfully.");
   };
 }

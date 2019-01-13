@@ -3,6 +3,7 @@ using AutoMapper.QueryableExtensions;
 using Microsoft.EntityFrameworkCore;
 using OisysNew.DTO;
 using OisysNew.Helpers.Interfaces;
+using System;
 using System.Linq;
 using System.Linq.Dynamic.Core;
 using System.Threading.Tasks;
@@ -20,13 +21,18 @@ namespace OisysNew.Helpers
 
         public async Task<PaginatedList<T1>> CreatePaginatedListAsync<T, T1>(IQueryable<T> source, int pageNumber, int pageSize)
         {
+            // 0 based paging system. So always add 1.
+            var newPageNumber = pageNumber + 1;
+
             var count = await source.CountAsync();
+            var totalPages = (int)Math.Ceiling(count / (double)pageSize);
+
             var items = await source
-                .Page(pageNumber, pageSize)
+                .Page(newPageNumber, pageSize)
                 .ProjectTo<T1>(mapper.ConfigurationProvider)
                 .ToListAsync();
 
-            return new PaginatedList<T1>(items, count);
+            return new PaginatedList<T1>(items, pageSize, count, totalPages, pageNumber);
         }
     }
 }

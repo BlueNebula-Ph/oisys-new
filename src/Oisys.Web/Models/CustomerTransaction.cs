@@ -11,7 +11,7 @@ namespace OisysNew.Models
         /// <summary>
         /// Gets or sets property Customer Id.
         /// </summary>
-        public int CustomerId { get; set; }
+        public long CustomerId { get; set; }
 
         /// <summary>
         /// Gets or sets property Date.
@@ -31,17 +31,17 @@ namespace OisysNew.Models
         /// <summary>
         /// Gets or sets property Order Id.
         /// </summary>
-        public int OrderId { get; set; }
+        public long OrderId { get; set; }
 
         /// <summary>
         /// Gets or sets property CreditMemoId.
         /// </summary>
-        public int CreditMemoId { get; set; }
+        public long CreditMemoId { get; set; }
 
         /// <summary>
         /// Gets or sets property InvoiceId.
         /// </summary>
-        public int InvoiceId { get; set; }
+        public long InvoiceId { get; set; }
 
         /// <summary>
         /// Gets or sets property Customer.

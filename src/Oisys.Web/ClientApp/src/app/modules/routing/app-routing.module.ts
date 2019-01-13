@@ -8,15 +8,27 @@ import { OrderListComponent } from '../../shared/components/order-list/order-lis
 import { CustomerListComponent } from '../customer/customer-list/customer-list.component';
 import { ViewSettingsComponent } from '../settings/view-settings/view-settings.component';
 import { EditCustomerComponent } from '../customer/edit-customer/edit-customer.component';
+import { CategoryListComponent } from '../settings/category-list/category-list.component';
+import { ProvinceListComponent } from '../settings/province-list/province-list.component';
+import { UserListComponent } from '../settings/user-list/user-list.component';
+import { OrderDetailComponent } from '../order/order-detail/order-detail.component';
 
 const routes: Routes = [
   { path: '', component: HomeComponent, pathMatch: 'full' },
+  // Examples
   { path: 'counter', component: CounterComponent },
   { path: 'fetch-data', component: FetchDataComponent },
-  { path: 'order-list', component: OrderListComponent },
+  // Orders
+  { path: 'orders', component: OrderListComponent },
+  { path: 'orders', component: OrderDetailComponent },
+  { path: 'orders', component: OrderListComponent },
+  // Customers
   { path: 'customers', component: CustomerListComponent },
   { path: 'customers/edit/:id', component: EditCustomerComponent },
-  { path: 'settings', component: ViewSettingsComponent}
+  // Admin
+  { path: 'categories', component: CategoryListComponent, pathMatch: 'full' },
+  { path: 'cities', component: ProvinceListComponent, pathMatch: 'full' },
+  { path: 'users', component: UserListComponent, pathMatch: 'full' },
 ];
  
 @NgModule({

@@ -13,6 +13,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Dynamic.Core;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace OisysNew.Controllers
@@ -120,7 +121,7 @@ namespace OisysNew.Controllers
         /// </summary>
         /// <param name="id">id</param>
         /// <returns>Category</returns>
-        [HttpGet("{id}", Name = "GetCategory")]
+        [HttpGet("{id}", Name = "GetCategoryById")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]

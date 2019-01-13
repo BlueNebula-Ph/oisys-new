@@ -6,12 +6,22 @@ namespace OisysNew.DTO
     {
         public List<T> Items { get; set; }
 
-        public int Total_count { get; set; }
+        public PageInfo PageInfo { get; set; }
 
-        public PaginatedList(List<T> items, int totalCount)
+        public PaginatedList(List<T> items, 
+            int size,
+            int totalElements,
+            int totalPages,
+            int pageNumber)
         {
             Items = items;
-            Total_count = totalCount;
+            PageInfo = new PageInfo
+            {
+                PageNumber = pageNumber,
+                Size = size,
+                TotalElements = totalElements,
+                TotalPages = totalPages
+            };
         }
     }
 }

@@ -6,6 +6,8 @@ namespace OisysNew.Services
 {
     public interface IOrderService
     {
+        //Task InvoiceItems();
+
         Task ProcessReturns(IEnumerable creditMemoLineItems, AdjustmentType adjustmentType);
 
         Task ProcessDeliveries();

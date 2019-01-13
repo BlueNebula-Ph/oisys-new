@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
-import { MatSnackBar } from '@angular/material';
 import { HttpHeaders } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
+import { ToastrService } from 'ngx-toastr'
 
 @Injectable({
   providedIn: 'root'
@@ -13,10 +13,14 @@ export class UtilitiesService {
     })
   };
 
-  constructor(private snackBar: MatSnackBar) { }
+  constructor(private toastrService: ToastrService) { }
 
-  openSnackBar(message: string): void {
-    this.snackBar.open(message, "close", { duration: 2000 });
+  showSuccessMessage(message: string): void {
+    this.toastrService.success(message, "Success!");
+  };
+
+  showErrorMessage(message: string): void {
+    this.toastrService.error(message, "Error!");
   };
 
   /**

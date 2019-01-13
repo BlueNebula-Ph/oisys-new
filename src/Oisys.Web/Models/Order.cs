@@ -49,11 +49,6 @@ namespace OisysNew.Models
         public bool IsInvoiced { get; set; }
 
         /// <summary>
-        /// Gets or sets a value indicating whether order is deleted.
-        /// </summary>
-        public bool IsDeleted { get; set; }
-
-        /// <summary>
         /// Gets or sets property Customer navigation property.
         /// </summary>
         public virtual Customer Customer { get; set; }

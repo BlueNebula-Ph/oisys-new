@@ -1,8 +1,39 @@
-<div class='container-fluid'>
-  <div class="row">
-    <app-nav-menu></app-nav-menu>
-    <div class="main-panel">
+<app-header
+  [fixed]="true"
+  [navbarBrandFull]="{src: '', width: 89, height: 25, alt: ''}"
+  [navbarBrandMinimized]="{src: '', width: 30, height: 30, alt: 'My Logo'}"
+  [sidebarToggler]="false"
+  [mobileSidebarToggler]="false"
+  [asideMenuToggler]="false"
+  [mobileAsideMenuToggler]="false">
+  Test
+</app-header>
+<div class="app-body">
+  <app-sidebar [fixed]="true" [display]="'lg'">
+    <app-sidebar-nav [navItems]="navItems" [perfectScrollbar]></app-sidebar-nav>
+    <!--<app-sidebar-minimizer></app-sidebar-minimizer>-->
+  </app-sidebar>
+  <!-- Main content -->
+  <main class="main">
+
+    <!-- Breadcrumb -->
+    <ol class="breadcrumb">
+      <app-breadcrumb></app-breadcrumb>
+      <!-- Breadcrumb Menu-->
+      <li class="breadcrumb-menu d-md-down-none">
+        <div class="btn-group" role="group" aria-label="Button group with nested dropdown">
+          <a class="btn" [routerLink]="['/']"><i class="cui-home"></i>&nbsp;Home</a>
+          <a class="btn" href="#"><i class="cui-settings"></i>&nbsp;Settings</a>
+        </div>
+      </li>
+    </ol>
+
+    <div class="container-fluid">
       <router-outlet></router-outlet>
     </div>
-  </div>
+  </main>
 </div>
+<app-footer [fixed]="false">
+  <span>&copy; 2018 Ace Plastic Center.</span>
+  <span class="ml-auto">Powered by <a href="https://coreui.io/angular">CoreUI for Angular</a></span>
+</app-footer>

@@ -1,11 +1,12 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Category } from '../models/category';
 import { Observable } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import { catchError } from 'rxjs/operators';
-import { SummaryItem } from '../models/summary-item';
+
 import { UtilitiesService } from './utilities.service';
+import { Category } from '../models/category';
+import { PagedData } from '../models/paged-data';
 
 @Injectable({
   providedIn: 'root'
@@ -15,7 +16,7 @@ export class CategoryService {
 
   constructor(private http: HttpClient, private util: UtilitiesService) { }
 
-  getCategories(pageNumber: number, pageSize: number, sortBy: string, sortDirection: string, searchTerm: string): Observable<SummaryItem<Category>> {
+  getCategories(pageNumber: number, pageSize: number, sortBy: string, sortDirection: string, searchTerm: string): Observable<PagedData<Category>> {
     var filter = { pageNumber, pageSize, sortBy, sortDirection, searchTerm };
     var searchUrl = this.url + '/search';
 
@@ -39,7 +40,7 @@ export class CategoryService {
     if (category.id == 0) {
       return this.http.post(this.url, category, this.util.httpOptions);
     } else {
-      var editUrl = this.url + "/" + category.id;
+      var editUrl = this.url + '/' + category.id;
       return this.http.put(editUrl, category, this.util.httpOptions);
     }
   };

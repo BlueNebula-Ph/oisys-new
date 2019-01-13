@@ -47,6 +47,6 @@
         /// <summary>
         /// Gets or sets property Details.
         /// </summary>
-        public virtual ICollection<DeliveryDetail> Details { get; set; }
+        public virtual ICollection<DeliveryLineItem> Details { get; set; }
     }
 }

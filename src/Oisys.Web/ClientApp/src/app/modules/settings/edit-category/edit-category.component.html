@@ -1,18 +1,24 @@
-<form #categoryForm="ngForm" (ngSubmit)="saveCategory(categoryForm)">
-  <mat-card>
-    <mat-card-header>
-      <h4><i class="fa fa-pencil"></i> Add / Edit Category.</h4>
-    </mat-card-header>
-    <mat-card-content>
-      <mat-form-field appearance="outline">
-        <mat-label>Category Name</mat-label>
-        <input name="categoryName" [(ngModel)]="category.name" (keyup.enter)="saveCategory(categoryForm)" matInput required>
-      </mat-form-field>
-      <div class="button-row">
-        <button type="submit" mat-flat-button color="primary" [disabled]="!categoryForm.form.valid">
-          <i class="fa fa-save"></i> Save
+<div class="card">
+  <div class="card-header">
+    Save Category Information.
+  </div>
+  <div class="card-body">
+    <form #categoryForm="ngForm" (ngSubmit)="saveCategory(categoryForm)">
+      <div class="form-group">
+        <div class="input-group">
+          <div class="input-group-prepend">
+            <span class="input-group-text"><i class="fa fa-asterisk"></i></span>
+          </div>
+          <input type="text" class="form-control" name="categoryName" placeholder="Category name" [(ngModel)]="category.name" (keyup.enter)="saveCategory(categoryForm)" required>
+        </div>
+      </div>
+      <div class="form-group form-actions">
+        <button type="submit" class="btn btn-primary btn-square" [disabled]="!categoryForm.form.valid || isSaving">
+          <i *ngIf="!isSaving" class="fa fa-save"></i>
+          <i *ngIf="isSaving" class="fa fa-spinner fa-spin"></i>
+          &nbsp;Save
         </button>
       </div>
-    </mat-card-content>
-  </mat-card>
-</form>
+    </form>
+  </div>
+</div>

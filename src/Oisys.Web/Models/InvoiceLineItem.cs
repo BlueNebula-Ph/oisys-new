@@ -1,9 +1,9 @@
 ﻿namespace OisysNew.Models
 {
     /// <summary>
-    /// <see cref="InvoiceDetail"/> for recording invoice details
+    /// <see cref="InvoiceLineItem"/> for recording invoice details
     /// </summary>
-    public class InvoiceDetail : ModelBase
+    public class InvoiceLineItem : ModelBase
     {
         /// <summary>
         /// Gets or sets property invoice id.

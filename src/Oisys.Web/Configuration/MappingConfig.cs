@@ -3,6 +3,7 @@ using OisysNew.DTO;
 using OisysNew.DTO.Category;
 using OisysNew.DTO.CreditMemo;
 using OisysNew.DTO.Customer;
+using OisysNew.DTO.Invoice;
 using OisysNew.DTO.Item;
 using OisysNew.DTO.Order;
 using OisysNew.DTO.Province;
@@ -68,6 +69,17 @@ namespace OisysNew.Configuration
             CreateMap<SaveCustomerRequest, Customer>()
                 .ForMember(d => d.PriceList, s => s.MapFrom(o => o.PriceListId))
                 .ForMember(d => d.Keywords, s => s.MapFrom(o => $"{o.Name} {o.Address} {o.ContactNumber} {o.ContactPerson}"));
+
+            // Customer Transaction
+            CreateMap<CustomerTransaction, CustomerTransactionSummary>();
+
+            // Invoice
+            CreateMap<Invoice, InvoiceSummary>()
+                .ForMember(d => d.Customer, s => s.MapFrom(o => o.Customer.Name));
+            CreateMap<SaveInvoiceRequest, Invoice>();
+
+            // Invoice Detail
+            CreateMap<SaveInvoiceLineItemRequest, InvoiceLineItem>();
 
             // Item
             CreateMap<Item, ItemLookup>()
@@ -166,13 +178,7 @@ namespace OisysNew.Configuration
             //     .ForMember(d => d.Unit, s => s.MapFrom(o => o.OrderDetail.Item.Unit));
             // CreateMap<SaveDeliveryDetailRequest, DeliveryDetail>();
 
-            // // Invoice
-            // CreateMap<Invoice, InvoiceSummary>()
-            //     .ForMember(d => d.Customer, s => s.MapFrom(o => o.Customer.Name));
-            // CreateMap<SaveInvoiceRequest, Invoice>();
-
-            // // Invoice Detail
-            // CreateMap<SaveInvoiceDetailRequest, InvoiceDetail>();
+            
 
 
 

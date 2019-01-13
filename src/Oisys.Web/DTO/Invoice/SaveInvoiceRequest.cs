@@ -39,6 +39,6 @@ namespace OisysNew.DTO.Invoice
         /// <summary>
         /// Gets or sets a list of invoice details.
         /// </summary>
-        public List<SaveInvoiceDetailRequest> Details { get; set; }
+        public List<SaveInvoiceLineItemRequest> LineItems { get; set; }
     }
 }

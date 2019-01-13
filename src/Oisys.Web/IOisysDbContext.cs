@@ -53,7 +53,7 @@ namespace OisysNew
         /// <summary>
         /// Gets or sets the delivery details db set.
         /// </summary>
-        DbSet<DeliveryDetail> DeliveryDetails { get; set; }
+        DbSet<DeliveryLineItem> DeliveryDetails { get; set; }
 
         /// <summary>
         /// Gets or sets the invoice db set.
@@ -63,7 +63,7 @@ namespace OisysNew
         /// <summary>
         /// Gets or sets the invoice details db set.
         /// </summary>
-        DbSet<InvoiceDetail> InvoiceDetails { get; set; }
+        DbSet<InvoiceLineItem> InvoiceDetails { get; set; }
 
         /// <summary>
         /// Gets or sets the items db set.

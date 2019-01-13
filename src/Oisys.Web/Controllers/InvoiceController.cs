@@ -9,6 +9,7 @@ using OisysNew.Extensions;
 using OisysNew.Helpers;
 using OisysNew.Helpers.Interfaces;
 using OisysNew.Models;
+using OisysNew.Services;
 using System;
 using System.Linq;
 using System.Linq.Dynamic.Core;
@@ -27,6 +28,7 @@ namespace OisysNew.Controllers
         private readonly IMapper mapper;
         private readonly IListHelpers listHelpers;
         private readonly IEntityListHelpers entityListHelpers;
+        private readonly IOrderService orderService;
         private readonly ILogger logger;
 
         /// <summary>
@@ -41,12 +43,14 @@ namespace OisysNew.Controllers
             IMapper mapper, 
             IListHelpers listHelpers,
             IEntityListHelpers entityListHelpers,
+            IOrderService orderService,
             ILogger<InvoiceController> logger)
         {
             this.context = context;
             this.mapper = mapper;
             this.listHelpers = listHelpers;
             this.entityListHelpers = entityListHelpers;
+            this.orderService = orderService;
             this.logger = logger;
         }
 
@@ -63,7 +67,7 @@ namespace OisysNew.Controllers
             try
             {
                 // get list of active customers (not deleted)
-                var list = this.context.Invoices
+                var list = context.Invoices
                     .Include(c => c.Customer)
                     .AsNoTracking();
 
@@ -86,7 +90,7 @@ namespace OisysNew.Controllers
                 }
 
                 // sort
-                var ordering = $"InvoiceNumber {Constants.DefaultSortDirection}";
+                var ordering = $"{Constants.ColumnNames.InvoiceNumber} {Constants.DefaultSortDirection}";
                 if (!string.IsNullOrEmpty(filter?.SortBy))
                 {
                     ordering = $"{filter.SortBy} {filter.SortDirection}";
@@ -126,7 +130,7 @@ namespace OisysNew.Controllers
                     return NotFound();
                 }
 
-                var invoiceSummary = this.mapper.Map<InvoiceSummary>(entity);
+                var invoiceSummary = mapper.Map<InvoiceSummary>(entity);
                 return invoiceSummary;
             }
             catch (Exception e)
@@ -150,17 +154,17 @@ namespace OisysNew.Controllers
         {
             try
             {
-                var invoice = this.mapper.Map<Invoice>(entity);
+                var invoice = mapper.Map<Invoice>(entity);
 
-                foreach (var detail in entity.Details)
+                foreach (var lineItem in entity.LineItems)
                 {
                     // Set the order to invoiced to prevent it from showing up in future invoicing.
-                    var order = await this.context.Orders.FindAsync(detail.OrderId);
+                    var order = await this.context.Orders.FindAsync(lineItem.OrderId);
                     order.IsInvoiced = true;
                 }
 
-                await this.context.Invoices.AddAsync(invoice);
-                await this.context.SaveChangesAsync();
+                await context.Invoices.AddAsync(invoice);
+                await context.SaveChangesAsync();
 
                 return StatusCode(StatusCodes.Status201Created);
             }
@@ -185,7 +189,7 @@ namespace OisysNew.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult> Update(long id, [FromBody]SaveInvoiceRequest entity)
         {
-            var invoiceExists = await this.context.Deliveries
+            var invoiceExists = await this.context.Invoices
                 .AnyAsync(c => c.Id == id);
 
             if (!invoiceExists)
@@ -229,7 +233,7 @@ namespace OisysNew.Controllers
             try
             {
                 var invoice = await this.context.Invoices
-                    .Include(c => c.Details)
+                    .Include(c => c.LineItems)
                     .SingleOrDefaultAsync(c => c.Id == id);
 
                 if (invoice == null)

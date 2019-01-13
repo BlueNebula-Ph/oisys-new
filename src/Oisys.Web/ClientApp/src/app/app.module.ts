@@ -3,6 +3,19 @@ import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 
+import { AppHeaderModule, AppSidebarModule, AppBreadcrumbModule, AppFooterModule } from '@coreui/angular';
+
+import { PerfectScrollbarModule } from 'ngx-perfect-scrollbar';
+import { PERFECT_SCROLLBAR_CONFIG } from 'ngx-perfect-scrollbar';
+import { PerfectScrollbarConfigInterface } from 'ngx-perfect-scrollbar';
+
+const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
+  suppressScrollX: true
+};
+
+import { NgxDatatableModule } from '@swimlane/ngx-datatable';
+import { ToastrModule } from 'ngx-toastr';
+
 import { AppRoutingModule } from './modules/routing/app-routing.module';
 
 import { AppComponent } from './shared/components/app/app.component';
@@ -48,7 +61,14 @@ import { CustomMaterialModule } from './modules/custom-material/custom-material.
     QuotationModule,
     CategoryModule,
     SettingsModule,
-    CustomMaterialModule
+    CustomMaterialModule,
+    AppHeaderModule,
+    AppSidebarModule,
+    AppFooterModule,
+    AppBreadcrumbModule.forRoot(),
+    PerfectScrollbarModule,
+    NgxDatatableModule,
+    ToastrModule.forRoot()
   ],
   providers: [],
   bootstrap: [AppComponent]

@@ -8,7 +8,7 @@ namespace OisysNew.Models
         Electrical,
         Hardware,
         Industrial,
-        Other,
+        Other
     }
 
     /// <summary>
@@ -50,10 +50,5 @@ namespace OisysNew.Models
         /// Gets or sets category
         /// </summary>
         public VoucherCategory Category { get; set; }
-
-        /// <summary>
-        /// Gets or sets a value indicating whether cash voucher is deleted.
-        /// </summary>
-        public bool IsDeleted { get; set; }
     }
 }

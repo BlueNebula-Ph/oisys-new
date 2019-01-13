@@ -56,7 +56,7 @@ export class EditCustomerComponent implements OnInit {
           this.loadCustomer();
           customerForm.resetForm();
 
-          this.util.openSnackBar("Customer saved successfully.");
+          this.util.showSuccessMessage("Customer saved successfully.");
         });
     }
   };

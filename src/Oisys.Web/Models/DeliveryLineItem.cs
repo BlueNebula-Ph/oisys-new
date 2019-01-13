@@ -1,9 +1,9 @@
 ﻿namespace OisysNew.Models
 {
     /// <summary>
-    /// The <see cref="DeliveryDetail"/> models a delivery detail.
+    /// The <see cref="DeliveryLineItem"/> models a delivery detail.
     /// </summary>
-    public class DeliveryDetail : ModelBase
+    public class DeliveryLineItem : ModelBase
     {
         /// <summary>
         /// Gets or sets property Delivery Id.

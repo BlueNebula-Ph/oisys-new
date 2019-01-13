@@ -1,85 +1,68 @@
-import { Component, ViewChild, AfterViewInit, ElementRef } from '@angular/core';
+import { Component, ViewChild, AfterViewInit, ElementRef, AfterContentInit } from '@angular/core';
 
-import { MatPaginator, MatTableDataSource, MatSort } from '@angular/material';
+import { of } from 'rxjs';
+import { catchError, map } from 'rxjs/operators';
+
 import { CategoryService } from '../../../shared/services/category.service';
-
-import { Observable, of, merge, fromEvent } from 'rxjs';
-import { catchError, map, startWith, switchMap, debounceTime, distinctUntilChanged, tap } from 'rxjs/operators';
-import { SummaryItem } from '../../../shared/models/summary-item';
-import { Category } from '../../../shared/models/category';
 import { UtilitiesService } from '../../../shared/services/utilities.service';
+
+import { Category } from '../../../shared/models/category';
+import { Page } from '../../../shared/models/page';
+import { Sort } from '../../../shared/models/sort';
 
 @Component({
   selector: 'app-category-list',
   templateUrl: './category-list.component.html',
   styleUrls: ['./category-list.component.css']
 })
-export class CategoryListComponent implements AfterViewInit {
-  displayedColumns: string[] = ['name', 'buttons'];
-  dataSource = new MatTableDataSource();
-  categories: Observable<SummaryItem<Category>>;
+export class CategoryListComponent implements AfterContentInit {
+  page: Page = new Page();
+  sort: Sort = new Sort();
+  rows = new Array<Category>();
 
-  resultsLength = 0;
-  isLoadingResults = false;
+  isLoading: boolean = false;
 
   selectedCategory: Category;
 
-  constructor(private categoryService: CategoryService, private util: UtilitiesService) { }
+  constructor(private categoryService: CategoryService, private util: UtilitiesService) {
+    this.page.pageNumber = 0;
+    this.page.size = 20;
+    this.sort.prop = 'name';
+    this.sort.dir = 'asc';
+  }
 
-  @ViewChild(MatPaginator) paginator: MatPaginator;
-  @ViewChild(MatSort) sort: MatSort;
   @ViewChild('searchBox') input: ElementRef;
 
-  ngAfterViewInit() {
+  ngAfterContentInit() {
+    this.setPage({ offset: 0 });
     this.loadCategories();
   };
 
   loadCategories() {
-    // If the user changes the sort order, reset back to the first page.
-    this.sort.sortChange.subscribe(() => this.paginator.pageIndex = 0);
-
-    merge(
-      this.sort.sortChange,
-      this.paginator.page,
-      fromEvent(this.input.nativeElement, 'keyup')
-        .pipe(
-          debounceTime(350),
-          distinctUntilChanged(),
-          tap(() => {
-            this.paginator.pageIndex = 0;
-          })
-        )
-    )
+    this.isLoading = true;
+    this.categoryService.getCategories(
+      this.page.pageNumber,
+      this.page.size,
+      this.sort.prop,
+      this.sort.dir,
+      this.input.nativeElement.value)
       .pipe(
-        startWith({}),
-        switchMap(() => {
-          this.isLoadingResults = true;
-          return this.fetchCategories();
-        }),
         map(data => {
           // Flip flag to show that loading has finished.
-          this.isLoadingResults = false;
-          this.resultsLength = data.total_count;
+          this.isLoading = false;
+
+          this.page = data.pageInfo;
 
           return data.items;
         }),
         catchError(() => {
-          this.isLoadingResults = false;
+          this.isLoading = false;
 
           return of([]);
         })
       )
-      .subscribe(data => this.dataSource.data = data);
+      .subscribe(data => this.rows = data);
   }
-
-  fetchCategories() {
-    return this.categoryService.getCategories(
-      this.paginator.pageIndex + 1,
-      this.paginator.pageSize,
-      this.sort.active,
-      this.sort.direction,
-      this.input.nativeElement.value);
-  };
 
   onEditCategory(categoryToEdit: Category): void {
     this.selectedCategory = categoryToEdit;
@@ -89,13 +72,33 @@ export class CategoryListComponent implements AfterViewInit {
     if (confirm("Are you sure you want to delete this category?")) {
       this.categoryService.deleteCategory(id).subscribe(() => {
         this.loadCategories();
-        this.util.openSnackBar("Category deleted successfully.");
+        this.util.showSuccessMessage("Category deleted successfully.");
       });
     }
   };
 
   onCategorySaved(category: Category): void {
     this.loadCategories();
-    this.util.openSnackBar("Category saved successfully.");
+    this.util.showSuccessMessage("Category saved successfully.");
   };
+
+  setPage(pageInfo): void {
+    this.page.pageNumber = pageInfo.offset;
+    this.loadCategories();
+  }
+
+  onSort(event) {
+    if (event) {
+      // On sort change, update to 1st page.
+      this.page.pageNumber = 0;
+      this.sort = event.sorts[0];
+      this.loadCategories();
+    }
+  }
+
+  search() {
+    // Reset page number on search.
+    this.page.pageNumber = 0;
+    this.loadCategories();
+  }
 }

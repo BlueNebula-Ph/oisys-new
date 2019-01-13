@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 
 namespace OisysNew.DTO.Customer
 {
@@ -36,7 +35,7 @@ namespace OisysNew.DTO.Customer
         /// <summary>
         /// Gets or sets property city id.
         /// </summary>
-        public int CityId { get; set; }
+        public long CityId { get; set; }
 
         /// <summary>
         /// Gets or sets property City Name.
@@ -46,7 +45,7 @@ namespace OisysNew.DTO.Customer
         /// <summary>
         /// Gets or sets property province id.
         /// </summary>
-        public int ProvinceId { get; set; }
+        public long ProvinceId { get; set; }
 
         /// <summary>
         /// Gets or sets property Province Name.
@@ -77,20 +76,6 @@ namespace OisysNew.DTO.Customer
         /// Gets or sets concurrency check.
         /// </summary>
         public byte[] RowVersion { get; set; }
-
-        /// <summary>
-        /// Gets property RunningBalance.
-        /// </summary>
-        //public decimal Balance
-        //{
-        //    get
-        //    {
-        //        var totalDebit = Transactions?.Sum(a => a.Debit) ?? 0;
-        //        var totalCredit = Transactions?.Sum(a => a.Credit) ?? 0;
-
-        //        return totalDebit - totalCredit;
-        //    }
-        //}
 
         /// <summary>
         /// Gets or sets property Customer transactions.

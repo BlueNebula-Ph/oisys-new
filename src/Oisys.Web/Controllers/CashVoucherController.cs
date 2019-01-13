@@ -63,7 +63,7 @@ namespace OisysNew.Controllers
             try
             {
                 // get list of active cashVouchers (not deleted)
-                var list = this.context.CashVouchers.AsNoTracking();
+                var list = context.CashVouchers.AsNoTracking();
 
                 // filter
                 if (!string.IsNullOrEmpty(filter?.SearchTerm))
@@ -142,9 +142,9 @@ namespace OisysNew.Controllers
         {
             try
             {
-                var cashVoucher = this.mapper.Map<CashVoucher>(entity);
-                await this.context.CashVouchers.AddAsync(cashVoucher);
-                await this.context.SaveChangesAsync();
+                var cashVoucher = mapper.Map<CashVoucher>(entity);
+                await context.CashVouchers.AddAsync(cashVoucher);
+                await context.SaveChangesAsync();
 
                 return StatusCode(StatusCodes.Status201Created);
             }
@@ -169,17 +169,17 @@ namespace OisysNew.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult> Update(long id, [FromBody]SaveCashVoucherRequest entity)
         {
-            var cashVoucher = await this.context.CashVouchers.SingleOrDefaultAsync(t => t.Id == id);
+            var cashVoucher = await context.CashVouchers.SingleOrDefaultAsync(t => t.Id == id);
             if (cashVoucher == null)
             {
-                return this.NotFound(id);
+                return NotFound();
             }
 
             try
             {
-                this.mapper.Map(entity, cashVoucher);
-                this.context.Update(cashVoucher);
-                await this.context.SaveChangesAsync();
+                mapper.Map(entity, cashVoucher);
+                context.Update(cashVoucher);
+                await context.SaveChangesAsync();
 
                 return StatusCode(StatusCodes.Status204NoContent);
             }
@@ -208,15 +208,14 @@ namespace OisysNew.Controllers
         {
             try
             {
-                var cashVoucher = await this.context.CashVouchers.SingleOrDefaultAsync(t => t.Id == id);
+                var cashVoucher = await context.CashVouchers.SingleOrDefaultAsync(t => t.Id == id);
                 if (cashVoucher == null)
                 {
-                    return this.NotFound(id);
+                    return NotFound();
                 }
 
-                cashVoucher.IsDeleted = true;
-                this.context.Update(cashVoucher);
-                await this.context.SaveChangesAsync();
+                context.Remove(cashVoucher);
+                await context.SaveChangesAsync();
 
                 return StatusCode(StatusCodes.Status204NoContent);
             }

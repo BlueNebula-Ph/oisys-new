@@ -7,6 +7,6 @@ namespace OisysNew.Services
 {
     public interface ICustomerTransactionService
     {
-        Task UpdateCustomerTransaction();
+        Task CreateCustomerTransaction(object itemToProcess);
     }
 }
