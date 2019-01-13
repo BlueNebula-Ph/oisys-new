@@ -27,7 +27,7 @@ const routes: Routes = [
   { path: 'customers/edit/:id', component: EditCustomerComponent },
   // Admin
   { path: 'categories', component: CategoryListComponent, pathMatch: 'full' },
-  { path: 'cities', component: ProvinceListComponent, pathMatch: 'full' },
+  { path: 'provinces', component: ProvinceListComponent, pathMatch: 'full' },
   { path: 'users', component: UserListComponent, pathMatch: 'full' },
 ];
  

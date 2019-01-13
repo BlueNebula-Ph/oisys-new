@@ -62,7 +62,7 @@ export const navItems = [
   },
   {
     name: 'Cities / Provinces',
-    url: '/pages',
+    url: '/provinces',
     icon: 'cui-map'
   },
   {

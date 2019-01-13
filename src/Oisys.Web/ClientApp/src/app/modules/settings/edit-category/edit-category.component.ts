@@ -51,6 +51,6 @@ export class EditCategoryComponent implements OnInit {
   }
 
   clearCategory() {
-    this.category = new Category(0);
+    this.category = new Category();
   }
 }

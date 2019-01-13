@@ -13,10 +13,8 @@
         </div>
       </div>
       <div class="form-group form-actions">
-        <button type="submit" class="btn btn-primary btn-square" [disabled]="!categoryForm.form.valid || isSaving">
-          <i *ngIf="!isSaving" class="fa fa-save"></i>
-          <i *ngIf="isSaving" class="fa fa-spinner fa-spin"></i>
-          &nbsp;Save
+        <button type="submit" class="btn btn-primary btn-square" [disabled]="!categoryForm.form.valid || isSaving" title="Save category information.">
+          <i *ngIf="!isSaving" class="fa fa-save"></i><i *ngIf="isSaving" class="fa fa-spinner fa-spin"></i>&nbsp;Save
         </button>
       </div>
     </form>

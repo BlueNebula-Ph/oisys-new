@@ -3,9 +3,9 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import { catchError } from 'rxjs/operators';
-import { SummaryItem } from '../models/summary-item';
 import { UtilitiesService } from './utilities.service';
 import { Province } from '../models/Province';
+import { PagedData } from '../models/paged-data';
 
 @Injectable({
   providedIn: 'root'
@@ -15,7 +15,7 @@ export class ProvinceService {
 
   constructor(private http: HttpClient, private util: UtilitiesService) { }
 
-  getProvinces(pageNumber: number, pageSize: number, sortBy: string, sortDirection: string, searchTerm: string): Observable<SummaryItem<Province>> {
+  getProvinces(pageNumber: number, pageSize: number, sortBy: string, sortDirection: string, searchTerm: string): Observable<PagedData<Province>> {
     var filter = { pageNumber, pageSize, sortBy, sortDirection, searchTerm };
     var searchUrl = this.url + '/search';
 

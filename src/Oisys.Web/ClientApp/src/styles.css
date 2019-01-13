@@ -20,3 +20,11 @@ body {
   margin: 20px 0 40px 0;
   width: 100%;
 }
+
+.prog-bar {
+  height: 5px;
+}
+
+.strikethrough {
+  text-decoration: line-through;
+}

@@ -1,4 +1,4 @@
-import { Component, ViewChild, AfterViewInit, ElementRef, AfterContentInit } from '@angular/core';
+import { Component, ViewChild, ElementRef, AfterContentInit } from '@angular/core';
 
 import { of } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';

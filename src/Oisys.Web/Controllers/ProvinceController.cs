@@ -122,7 +122,7 @@ namespace OisysNew.Controllers
         /// </summary>
         /// <param name="id">id</param>
         /// <returns>Province</returns>
-        [HttpGet("{id}", Name = "GetProvince")]
+        [HttpGet("{id}", Name = "GetProvinceById")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]

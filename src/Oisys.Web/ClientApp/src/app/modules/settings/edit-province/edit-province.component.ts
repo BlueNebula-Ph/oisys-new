@@ -1,8 +1,11 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
-import { ProvinceService } from '../../../shared/services/province.service';
-import { Province } from '../../../shared/models/Province';
-import { City } from '../../../shared/models/city';
 import { NgForm } from '@angular/forms';
+
+import { ProvinceService } from '../../../shared/services/province.service';
+import { UtilitiesService } from '../../../shared/services/utilities.service';
+
+import { Province } from '../../../shared/models/province';
+import { City } from '../../../shared/models/city';
 
 @Component({
   selector: 'app-edit-province',
@@ -10,10 +13,12 @@ import { NgForm } from '@angular/forms';
   styleUrls: ['./edit-province.component.css']
 })
 export class EditProvinceComponent implements OnInit {
-  @Input() province: Province;
+  @Input() province: Province = new Province();
   @Output() onProvinceSaved: EventEmitter<Province> = new EventEmitter<Province>();
 
-  constructor(private provinceService: ProvinceService) { }
+  isSaving: boolean = false;
+
+  constructor(private provinceService: ProvinceService, private util: UtilitiesService) { }
 
   ngOnInit() {
     this.clearProvince();
@@ -39,5 +44,14 @@ export class EditProvinceComponent implements OnInit {
 
   clearProvince() {
     this.province = new Province();
+    this.addNewCity();
+  }
+
+  deleteCity(city) {
+    city.isDeleted = true;
+  }
+
+  undoDelete(city) {
+    city.isDeleted = false;
   }
 }
