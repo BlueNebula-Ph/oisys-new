@@ -41,11 +41,11 @@ export class Customer {
     public priceListId?: number)
   {
     if (!id) {
-      id = 0;
+      this.id = 0;
     }
 
     if (!priceListId) {
-      priceListId = PriceList["Main Price"];
+      this.priceListId = PriceList["Main Price"];
     }
   }
 }

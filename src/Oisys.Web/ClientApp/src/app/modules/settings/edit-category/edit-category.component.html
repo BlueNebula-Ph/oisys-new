@@ -1,15 +1,16 @@
-<div class="card">
+<div class="card no-radius">
   <div class="card-header">
     Save Category Information.
   </div>
   <div class="card-body">
     <form #categoryForm="ngForm" (ngSubmit)="saveCategory(categoryForm)">
       <div class="form-group">
+        <label>Category Name.</label>
         <div class="input-group">
-          <div class="input-group-prepend">
-            <span class="input-group-text"><i class="fa fa-asterisk"></i></span>
-          </div>
           <input type="text" class="form-control" name="categoryName" placeholder="Category name" [(ngModel)]="category.name" (keyup.enter)="saveCategory(categoryForm)" required>
+          <div class="input-group-append">
+            <span class="input-group-text">* Required</span>
+          </div>
         </div>
       </div>
       <div class="form-group form-actions">

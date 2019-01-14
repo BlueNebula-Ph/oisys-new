@@ -1,7 +1,7 @@
 <div class="animated fadeIn">
+  <h3>Province / City Management.</h3>
   <div class="row">
-    <div class="col-md-6">
-      <h1>Province / City Management.</h1>
+    <div class="col">
       <div class="input-group">
         <input class="form-control" placeholder="Search provinces and cities" #searchBox autofocus>
         <div class="input-group-append">
@@ -11,7 +11,7 @@
         </div>
       </div>
 
-      <div class="datatable-container">
+      <div class="datatable-container margin-top">
         <div class="progress-bar progress-bar-striped progress-bar-animated prog-bar" [hidden]="!isLoading"></div>
         <ngx-datatable class="bootstrap"
                        [rows]="rows"
@@ -39,7 +39,7 @@
               <button class="btn btn-sm btn-info btn-square" (click)="onEditProvince(row)" title="Edit this province.">
                 <i class="fa fa-pencil"></i>
               </button>&nbsp;
-              <button class="btn btn-sm btn-danger btn-square" (click)="onDeleteProvince(row['id'])" title="Delete this province.">
+              <button class="btn btn-sm btn-danger btn-square" (click)="onDeleteProvince(row.id)" title="Delete this province.">
                 <i class="fa fa-trash-o"></i>
               </button>
             </ng-template>
@@ -48,7 +48,7 @@
       </div>
     </div>
 
-    <div class="col-md-6">
+    <div class="col">
       <app-edit-province [province]="selectedProvince" (onProvinceSaved)="onProvinceSaved($event)"></app-edit-province>
     </div>
   </div>

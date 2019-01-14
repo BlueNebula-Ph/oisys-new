@@ -1,120 +1,99 @@
-import { AfterViewInit, Component, ElementRef, ViewChild } from '@angular/core';
-import { MatPaginator, MatSort, MatTableDataSource } from '@angular/material';
-import { fromEvent, merge, Observable, of } from 'rxjs';
-import { catchError, debounceTime, distinctUntilChanged, map, startWith, switchMap, tap } from 'rxjs/operators';
-import { Customer } from '../../../shared/models/customer';
-import { SummaryItem } from '../../../shared/models/summary-item';
+import { Component, ElementRef, ViewChild, AfterContentInit } from '@angular/core';
+import { Router } from '@angular/router';
+
+import { of } from 'rxjs';
+import { catchError, map } from 'rxjs/operators';
+
 import { CustomerService } from '../../../shared/services/customer.service';
 import { UtilitiesService } from '../../../shared/services/utilities.service';
-import { Router } from '@angular/router';
-import { trigger, state, transition, style, animate } from '@angular/animations';
-import { SummaryColumn } from '../../../shared/models/summary-column';
+
+import { Customer } from '../../../shared/models/customer';
+import { Page } from '../../../shared/models/page';
+import { Sort } from '../../../shared/models/sort';
 
 @Component({
   selector: 'app-customer-list',
   templateUrl: './customer-list.component.html',
-  styleUrls: ['./customer-list.component.css'],
-  animations: [
-    trigger('detailExpand', [
-      state('collapsed', style({ height: '0px', minHeight: '0', display: 'none' })),
-      state('expanded', style({ height: '*' })),
-      transition('expanded <=> collapsed', animate('225ms cubic-bezier(0.4, 0.0, 0.2, 1)')),
-    ]),
-  ],
+  styleUrls: ['./customer-list.component.css']
 })
-export class CustomerListComponent implements AfterViewInit {
-  summaryColumns: SummaryColumn[] = [
-    new SummaryColumn("Name", "name"),
-    new SummaryColumn("Email", "email"),
-    new SummaryColumn("Address", "address"),
-    new SummaryColumn("Contact #", "contactNumber"),
-    new SummaryColumn("Contact Person", "contactPerson")
-  ];
-  displayedColumns: string[] = this.summaryColumns.map(col => { return col.propName; }).concat(['buttons']);
-  dataSource = new MatTableDataSource();
-  customers: Observable<SummaryItem<Customer>>;
-  expandedElement: Customer;
+export class CustomerListComponent implements AfterContentInit {
+  page: Page = new Page();
+  sort: Sort = new Sort();
+  rows = new Array<Customer>();
 
-  resultsLength = 0;
-  isLoadingResults = false;
+  isLoading: boolean = false;
 
-  constructor(private customerService: CustomerService, private util: UtilitiesService, private router: Router) { }
+  constructor(private customerService: CustomerService, private util: UtilitiesService, private router: Router) {
+    this.page.pageNumber = 0;
+    this.page.size = 20;
+    this.sort.prop = 'name';
+    this.sort.dir = 'asc';
+  }
 
-  @ViewChild(MatPaginator) paginator: MatPaginator;
-  @ViewChild(MatSort) sort: MatSort;
   @ViewChild('searchBox') input: ElementRef;
 
-  ngAfterViewInit() {
+  ngAfterContentInit() {
+    this.setPage({ offset: 0 });
     this.loadCustomers();
   };
 
   loadCustomers() {
-    // If the user changes the sort order, reset back to the first page.
-    this.sort.sortChange.subscribe(() => this.paginator.pageIndex = 0);
-
-    merge(
-      this.sort.sortChange,
-      this.paginator.page,
-      fromEvent(this.input.nativeElement, 'keyup')
-        .pipe(
-          debounceTime(350),
-          distinctUntilChanged(),
-          tap(() => {
-            this.paginator.pageIndex = 0;
-          })
-        )
-    )
+    this.isLoading = true;
+    this.customerService.getCustomers(
+      this.page.pageNumber,
+      this.page.size,
+      this.sort.prop,
+      this.sort.dir,
+      this.input.nativeElement.value)
       .pipe(
-        startWith({}),
-        switchMap(() => {
-          this.isLoadingResults = true;
-          return this.fetchCustomers();
-        }),
         map(data => {
           // Flip flag to show that loading has finished.
-          this.isLoadingResults = false;
-          this.resultsLength = data.total_count;
+          this.isLoading = false;
+
+          this.page = data.pageInfo;
 
           return data.items;
         }),
         catchError(() => {
-          this.isLoadingResults = false;
+          this.isLoading = false;
 
           return of([]);
         })
       )
-      .subscribe(data => this.dataSource.data = data);
+      .subscribe(data => this.rows = data);
   }
-
-  fetchCustomers() {
-    return this.customerService.getCustomers(
-      this.paginator.pageIndex + 1,
-      this.paginator.pageSize,
-      this.sort.active,
-      this.sort.direction,
-      this.input.nativeElement.value);
-  };
 
   addCustomer(id: number): void {
     var url = "/customers/edit/" + id;
     this.router.navigateByUrl(url);
   };
 
-  //onEditCustomer(customerToEdit: Customer): void {
-  //  selectedCustomer = customerToEdit;
-  //};
+  onDeleteCustomer(id: number): void {
+    if (confirm("Are you sure you want to delete this customer?")) {
+      this.customerService.deleteCustomer(id).subscribe(() => {
+        this.loadCustomers();
+        this.util.showSuccessMessage("Customer deleted successfully.");
+      });
+    }
+  }
 
-  //onDeleteCustomer(id: number): void {
-  //  if (confirm("Are you sure you want to delete this customer?")) {
-  //    customerService.deleteCustomer(id).subscribe(() => {
-  //      loadCustomers();
-  //      util.openSnackBar("Customer deleted successfully.");
-  //    });
-  //  }
-  //};
+  setPage(pageInfo): void {
+    this.page.pageNumber = pageInfo.offset;
+    this.loadCustomers();
+  }
 
-  //onCustomerSaved(customer: Customer): void {
-  //  loadCustomers();
-  //  util.openSnackBar("Customer saved successfully.");
-  //};
+  onSort(event) {
+    if (event) {
+      // On sort change, update to 1st page.
+      this.page.pageNumber = 0;
+      this.sort = event.sorts[0];
+      this.loadCustomers();
+    }
+  }
+
+  search() {
+    // Reset page number on search.
+    this.page.pageNumber = 0;
+    this.loadCustomers();
+  }
 }

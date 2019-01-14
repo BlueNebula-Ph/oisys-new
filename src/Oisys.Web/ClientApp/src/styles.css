@@ -17,8 +17,15 @@ body {
 
 .datatable-container {
   border: 1px solid #aaa;
-  margin: 20px 0 40px 0;
-  width: 100%;
+  margin-bottom: 40px;
+}
+
+  .datatable-container.margin-top {
+    margin-top: 20px; 
+  }
+
+.no-radius {
+  border-radius: 0;
 }
 
 .prog-bar {

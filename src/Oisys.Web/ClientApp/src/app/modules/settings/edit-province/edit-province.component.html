@@ -1,26 +1,25 @@
-<div class="card">
+<div class="card no-radius">
   <div class="card-header">
     Save Province &amp; City Information.
   </div>
   <div class="card-body">
     <form #provinceForm="ngForm" (ngSubmit)="saveProvince(provinceForm)">
       <div class="form-group">
+        <label>Province Name.</label>
         <div class="input-group">
-          <div class="input-group-prepend">
-            <span class="input-group-text"><i class="fa fa-asterisk"></i></span>
-          </div>
           <input type="text" class="form-control" name="provinceName" placeholder="Province name" [(ngModel)]="province.name" required>
+          <div class="input-group-append">
+            <span class="input-group-text">* Required</span>
+          </div>
         </div>
       </div>
 
-      <label>Cities:</label>
       <div class="form-group" *ngFor="let city of province.cities; index as i;">
+        <label>City {{ i + 1 }}.</label>
         <div class="input-group">
-          <div class="input-group-prepend">
-            <span class="input-group-text"><i class="fa fa-asterisk"></i></span>
-          </div>
           <input type="text" class="form-control" name="cityName" placeholder="City # {{ i + 1 }}" [ngClass]="{ 'strikethrough': city.isDeleted }" [(ngModel)]="city.name" [ngModelOptions]="{standalone: true}" required>
           <div class="input-group-append">
+            <span class="input-group-text">* Required</span>
             <button *ngIf="province.id && province.id != 0 && !city.isDeleted" type="button" class="btn btn-danger" title="Delete this city." (click)="deleteCity(city)">
               <i class="fa fa-times"></i>
             </button>

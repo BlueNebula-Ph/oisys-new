@@ -1,63 +1,98 @@
-<h1 class="main-header">Save Customer. <small>Create or update customer information.</small></h1>
-<form #customerForm="ngForm" (ngSubmit)="saveCustomer(customerForm)">
-  <div class="col-md-6">
-    <mat-form-field appearance="outline">
-      <mat-label>Customer Name</mat-label>
-      <input name="customerName" [(ngModel)]="customer.name" matInput appFocusMe required>
-    </mat-form-field>
-    <mat-form-field appearance="outline">
-      <mat-label>Email</mat-label>
-      <input type="email" name="email" [(ngModel)]="customer.email" matInput required>
-    </mat-form-field>
-    <mat-form-field appearance="outline">
-      <mat-label>Address</mat-label>
-      <textarea name="address" [(ngModel)]="customer.address" rows="4" matInput></textarea>
-    </mat-form-field>
-    <mat-form-field appearance="outline">
-      <mat-label>Province</mat-label>
-      <input #provinceBox [(ngModel)]="customer.selectedProvince" [ngModelOptions]="{standalone: true}" matInput [matAutocomplete]="autoProvince">
-      <mat-autocomplete #autoProvince="matAutocomplete" [displayWith]="displayProvince" (optionSelected)="onProvinceSelected($event.option.value)">
-        <mat-option *ngFor="let prov of filteredProvinces" [value]="prov">{{ prov.name }}</mat-option>
-      </mat-autocomplete>
-    </mat-form-field>
-    <mat-form-field appearance="outline">
-      <mat-label>City</mat-label>
-      <input #cityBox [(ngModel)]="customer.selectedCity" [ngModelOptions]="{standalone: true}" matInput [matAutocomplete]="autoCity"
-             [disabled]="!cities || cities.length == 0">
-      <mat-autocomplete #autoCity="matAutocomplete" [displayWith]="displayCity">
-        <mat-option *ngFor="let city of filteredCities" [value]="city">{{ city.name }}</mat-option>
-      </mat-autocomplete>
-    </mat-form-field>
-    <mat-form-field appearance="outline">
-      <mat-label>Contact Number</mat-label>
-      <input name="contactNumber" [(ngModel)]="customer.contactNumber" matInput>
-    </mat-form-field>
-    <mat-form-field appearance="outline">
-      <mat-label>Contact Person</mat-label>
-      <input name="contactPerson" [(ngModel)]="customer.contactPerson" matInput>
-    </mat-form-field>
-  </div>
-  <div class="col-md-6">
-    <mat-form-field appearance="outline">
-      <mat-label>Discount</mat-label>
-      <input type="number" name="discount" [(ngModel)]="customer.discount" matInput>
-    </mat-form-field>
-    <mat-form-field appearance="outline">
-      <mat-label>Terms</mat-label>
-      <input name="terms" [(ngModel)]="customer.terms" matInput required>
-    </mat-form-field>
-    <mat-radio-group class="price-list-radio-group" [(ngModel)]="customer.priceListId" [ngModelOptions]="{standalone: true}">
-      <mat-radio-button class="price-list-radio-button" color="primary" *ngFor="let p of priceList | enumToArray" [value]="p.value">
-        {{ p.key }}
-      </mat-radio-button>
-    </mat-radio-group>
-    <div class="button-row">
-      <button mat-flat-button color="background" (click)="backToSummary()">
-        <i class="fa fa-angle-double-left"></i> Back
-      </button>
-      <button type="submit" mat-flat-button color="primary" [disabled]="!customerForm.form.valid">
-        <i class="fa fa-save"></i> Save
-      </button>
+<div class="animated fadeIn">
+  <h3>Customer Management.</h3>
+  <div class="card no-radius">
+    <div class="card-header">
+      Save Customer Information.
+    </div>
+    <div class="card-body">
+      <form #customerForm="ngForm" (ngSubmit)="saveCustomer(customerForm)">
+        <div class="row">
+          <div class="col-4">
+            <div class="form-group">
+              <label>Customer Name.</label>
+              <div class="input-group">
+                <input class="form-control" name="customerName" placeholder="Customer name" [(ngModel)]="customer.name" appFocusMe required>
+                <div class="input-group-append">
+                  <span class="input-group-text">* Required</span>
+                </div>
+              </div>
+            </div>
+            <div class="form-group">
+              <label>Email.</label>
+              <div class="input-group">
+                <input type="email" class="form-control" name="email" placeholder="Customer email address" [(ngModel)]="customer.email" required email>
+                <div class="input-group-append">
+                  <span class="input-group-text">* Required</span>
+                </div>
+              </div>
+            </div>
+            <div class="form-group">
+              <label>Contact Number.</label>
+              <input class="form-control" name="contactNumber" placeholder="Contact Number" [(ngModel)]="customer.contactNumber">
+            </div>
+            <div class="form-group">
+              <label>Contact Person.</label>
+              <input class="form-control" name="contactPerson" placeholder="Contact Person" [(ngModel)]="customer.contactPerson">
+            </div>
+
+            <!--<mat-form-field appearance="outline">
+              <mat-label>Province</mat-label>
+              <input #provinceBox [(ngModel)]="customer.selectedProvince" [ngModelOptions]="{standalone: true}" matInput [matAutocomplete]="autoProvince">
+              <mat-autocomplete #autoProvince="matAutocomplete" [displayWith]="displayProvince" (optionSelected)="onProvinceSelected($event.option.value)">
+                <mat-option *ngFor="let prov of filteredProvinces" [value]="prov">{{ prov.name }}</mat-option>
+              </mat-autocomplete>
+            </mat-form-field>
+            <mat-form-field appearance="outline">
+              <mat-label>City</mat-label>
+              <input #cityBox [(ngModel)]="customer.selectedCity" [ngModelOptions]="{standalone: true}" matInput [matAutocomplete]="autoCity"
+                     [disabled]="!cities || cities.length == 0">
+              <mat-autocomplete #autoCity="matAutocomplete" [displayWith]="displayCity">
+                <mat-option *ngFor="let city of filteredCities" [value]="city">{{ city.name }}</mat-option>
+              </mat-autocomplete>
+            </mat-form-field>-->
+            
+          </div>
+          <div class="col-4">
+            <div class="form-group">
+              <label>Address.</label>
+              <textarea class="form-control" name="address" placeholder="Customer address" [(ngModel)]="customer.address" rows="4"></textarea>
+            </div>
+            <div class="form-group">
+              <label>Province.</label>
+              <input class="form-control" name="province" placeholder="Province" [(ngModel)]="customer.provinceId">
+            </div>
+            <div class="form-group">
+              <label>City.</label>
+              <input class="form-control" name="city" placeholder="City" [(ngModel)]="customer.cityId">
+            </div>
+          </div>
+          <div class="col-4">
+            <div class="form-group">
+              <label>Discount.</label>
+              <input class="form-control" type="number" name="discount" [(ngModel)]="customer.discount">
+            </div>
+            <div class="form-group">
+              <label>Terms.</label>
+              <input class="form-control" name="terms" [(ngModel)]="customer.terms">
+            </div>
+            <div class="form-group form-check">
+              <div *ngFor="let p of priceList | enumToArray">
+                <input class="form-check-input" type="radio" name="priceList"
+                       [(ngModel)]="customer.priceListId" [ngModelOptions]="{standalone: true}" [value]="p.value">
+                <label class="form-check-label">{{ p.key }}</label>
+              </div>
+            </div>
+            <div class="form-group form-actions">
+              <button type="button" class="btn btn-secondary btn-square" (click)="backToSummary()">
+                <i class="fa fa-angle-double-left"></i> Back
+              </button>&nbsp;
+              <button type="submit" class="btn btn-primary btn-square" [disabled]="!customerForm.form.valid || isSaving" title="Save customer information.">
+                <i *ngIf="!isSaving" class="fa fa-save"></i><i *ngIf="isSaving" class="fa fa-spinner fa-spin"></i>&nbsp;Save
+              </button>
+            </div>
+          </div>
+        </div>
+      </form>
     </div>
   </div>
-</form>
+</div>

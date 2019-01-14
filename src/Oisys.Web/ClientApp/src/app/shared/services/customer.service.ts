@@ -4,8 +4,8 @@ import { Observable } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { environment } from '../../../environments/environment';
 import { Customer } from '../models/customer';
-import { SummaryItem } from '../models/summary-item';
 import { UtilitiesService } from './utilities.service';
+import { PagedData } from '../models/paged-data';
 
 @Injectable({
   providedIn: 'root'
@@ -15,7 +15,7 @@ export class CustomerService {
 
   constructor(private http: HttpClient, private util: UtilitiesService) { }
 
-  getCustomers(pageNumber: number, pageSize: number, sortBy: string, sortDirection: string, searchTerm: string): Observable<SummaryItem<Customer>> {
+  getCustomers(pageNumber: number, pageSize: number, sortBy: string, sortDirection: string, searchTerm: string): Observable<PagedData<Customer>> {
     var filter = { pageNumber, pageSize, sortBy, sortDirection, searchTerm };
     var searchUrl = this.url + '/search';
 
