@@ -6,7 +6,6 @@ import { CounterComponent } from '../../shared/components/counter/counter.compon
 import { FetchDataComponent } from '../../shared/components/fetch-data/fetch-data.component';
 import { OrderListComponent } from '../../shared/components/order-list/order-list.component';
 import { CustomerListComponent } from '../customer/customer-list/customer-list.component';
-import { ViewSettingsComponent } from '../settings/view-settings/view-settings.component';
 import { EditCustomerComponent } from '../customer/edit-customer/edit-customer.component';
 import { CategoryListComponent } from '../settings/category-list/category-list.component';
 import { ProvinceListComponent } from '../settings/province-list/province-list.component';

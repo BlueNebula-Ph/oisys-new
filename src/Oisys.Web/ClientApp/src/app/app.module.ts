@@ -15,16 +15,9 @@ const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
 
 import { NgxDatatableModule } from '@swimlane/ngx-datatable';
 import { ToastrModule } from 'ngx-toastr';
+import { TypeaheadModule } from 'ngx-bootstrap';
 
 import { AppRoutingModule } from './modules/routing/app-routing.module';
-
-import { AppComponent } from './shared/components/app/app.component';
-import { NavMenuComponent } from './shared/components/nav-menu/nav-menu.component';
-
-import { HomeComponent } from './shared/components/home/home.component';
-import { FetchDataComponent } from './shared/components/fetch-data/fetch-data.component';
-import { OrderListComponent } from './shared/components/order-list/order-list.component';
-import { CounterComponent } from './shared/components/counter/counter.component';
 import { CustomerModule } from './modules/customer/customer.module';
 import { InventoryModule } from './modules/inventory/inventory.module';
 import { OrderModule } from './modules/order/order.module';
@@ -33,9 +26,16 @@ import { DeliveryModule } from './modules/delivery/delivery.module';
 import { CreditMemoModule } from './modules/credit-memo/credit-memo.module';
 import { VoucherModule } from './modules/voucher/voucher.module';
 import { QuotationModule } from './modules/quotation/quotation.module';
-import { CategoryModule } from './modules/category/category.module';
 import { SettingsModule } from './modules/settings/settings.module';
-import { CustomMaterialModule } from './modules/custom-material/custom-material.module';
+
+import { AppComponent } from './shared/components/app/app.component';
+import { NavMenuComponent } from './shared/components/nav-menu/nav-menu.component';
+
+import { HomeComponent } from './shared/components/home/home.component';
+import { FetchDataComponent } from './shared/components/fetch-data/fetch-data.component';
+import { OrderListComponent } from './shared/components/order-list/order-list.component';
+import { CounterComponent } from './shared/components/counter/counter.component';
+
 
 @NgModule({
   declarations: [
@@ -59,16 +59,15 @@ import { CustomMaterialModule } from './modules/custom-material/custom-material.
     CreditMemoModule,
     VoucherModule,
     QuotationModule,
-    CategoryModule,
     SettingsModule,
-    CustomMaterialModule,
     AppHeaderModule,
     AppSidebarModule,
     AppFooterModule,
     AppBreadcrumbModule.forRoot(),
     PerfectScrollbarModule,
     NgxDatatableModule,
-    ToastrModule.forRoot()
+    ToastrModule.forRoot(),
+    TypeaheadModule
   ],
   providers: [],
   bootstrap: [AppComponent]
