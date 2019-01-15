@@ -34,46 +34,48 @@
               <label>Contact Person.</label>
               <input class="form-control" name="contactPerson" placeholder="Contact Person" [(ngModel)]="customer.contactPerson">
             </div>
-
-            <!--<mat-form-field appearance="outline">
-              <mat-label>Province</mat-label>
-              <input #provinceBox [(ngModel)]="customer.selectedProvince" [ngModelOptions]="{standalone: true}" matInput [matAutocomplete]="autoProvince">
-              <mat-autocomplete #autoProvince="matAutocomplete" [displayWith]="displayProvince" (optionSelected)="onProvinceSelected($event.option.value)">
-                <mat-option *ngFor="let prov of filteredProvinces" [value]="prov">{{ prov.name }}</mat-option>
-              </mat-autocomplete>
-            </mat-form-field>
-            <mat-form-field appearance="outline">
-              <mat-label>City</mat-label>
-              <input #cityBox [(ngModel)]="customer.selectedCity" [ngModelOptions]="{standalone: true}" matInput [matAutocomplete]="autoCity"
-                     [disabled]="!cities || cities.length == 0">
-              <mat-autocomplete #autoCity="matAutocomplete" [displayWith]="displayCity">
-                <mat-option *ngFor="let city of filteredCities" [value]="city">{{ city.name }}</mat-option>
-              </mat-autocomplete>
-            </mat-form-field>-->
-            
           </div>
           <div class="col-4">
-            <div class="form-group">
+            <div class="form-group custom-margin">
               <label>Address.</label>
-              <textarea class="form-control" name="address" placeholder="Customer address" [(ngModel)]="customer.address" rows="4"></textarea>
+              <textarea class="form-control" name="address" placeholder="Customer address" [(ngModel)]="customer.address" rows="5"></textarea>
             </div>
             <div class="form-group">
               <label>Province.</label>
-              <input class="form-control" name="province" placeholder="Province" [(ngModel)]="customer.provinceId">
+              <div class="input-group">
+                <input class="form-control" name="province" placeholder="Province"
+                       [(ngModel)]="customer.selectedProvince" [ngbTypeahead]="searchProvince"
+                       [inputFormatter]="provinceFormatter" [resultTemplate]="provTemplate" required>
+                <div class="input-group-append">
+                  <span class="input-group-text">* Required</span>
+                </div>
+              </div>
             </div>
             <div class="form-group">
               <label>City.</label>
-              <input class="form-control" name="city" placeholder="City" [(ngModel)]="customer.cityId">
+              <div class="input-group">
+                <input class="form-control" name="city" placeholder="City" [disabled]="!customer.provinceId || customer.provinceId == 0"
+                       [(ngModel)]="customer.selectedCity" [ngbTypeahead]="searchCity"
+                       [inputFormatter]="cityFormatter" [resultTemplate]="cityTemplate" required>
+                <div class="input-group-append">
+                  <span class="input-group-text">* Required</span>
+                </div>
+              </div>
             </div>
           </div>
           <div class="col-4">
             <div class="form-group">
               <label>Discount.</label>
-              <input class="form-control" type="number" name="discount" [(ngModel)]="customer.discount">
+              <div class="input-group">
+                <input class="form-control" type="number" name="discount" placeholder="Discount in %" [(ngModel)]="customer.discount">
+                <div class="input-group-append">
+                  <span class="input-group-text">%</span>
+                </div>
+              </div>
             </div>
             <div class="form-group">
               <label>Terms.</label>
-              <input class="form-control" name="terms" [(ngModel)]="customer.terms">
+              <input class="form-control" name="terms" placeholder="Terms" [(ngModel)]="customer.terms">
             </div>
             <div class="form-group form-check">
               <div *ngFor="let p of priceList | enumToArray">
@@ -96,3 +98,10 @@
     </div>
   </div>
 </div>
+<!-- templates -->
+<ng-template #provTemplate let-province="result" let-t="term">
+  <ngb-highlight [result]="province.name" [term]="t"></ngb-highlight>
+</ng-template>
+<ng-template #cityTemplate let-city="result" let-t="term">
+  <ngb-highlight [result]="city.name" [term]="t"></ngb-highlight>
+</ng-template>

@@ -15,7 +15,7 @@ const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
 
 import { NgxDatatableModule } from '@swimlane/ngx-datatable';
 import { ToastrModule } from 'ngx-toastr';
-import { TypeaheadModule } from 'ngx-bootstrap';
+import { NgbTypeaheadModule } from '@ng-bootstrap/ng-bootstrap';
 
 import { AppRoutingModule } from './modules/routing/app-routing.module';
 import { CustomerModule } from './modules/customer/customer.module';
@@ -35,6 +35,7 @@ import { HomeComponent } from './shared/components/home/home.component';
 import { FetchDataComponent } from './shared/components/fetch-data/fetch-data.component';
 import { OrderListComponent } from './shared/components/order-list/order-list.component';
 import { CounterComponent } from './shared/components/counter/counter.component';
+import { SharedModule } from './shared/modules/shared.module';
 
 
 @NgModule({
@@ -60,6 +61,7 @@ import { CounterComponent } from './shared/components/counter/counter.component'
     VoucherModule,
     QuotationModule,
     SettingsModule,
+    SharedModule,
     AppHeaderModule,
     AppSidebarModule,
     AppFooterModule,
@@ -67,7 +69,7 @@ import { CounterComponent } from './shared/components/counter/counter.component'
     PerfectScrollbarModule,
     NgxDatatableModule,
     ToastrModule.forRoot(),
-    TypeaheadModule
+    NgbTypeaheadModule
   ],
   providers: [],
   bootstrap: [AppComponent]

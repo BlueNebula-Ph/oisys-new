@@ -14,6 +14,10 @@ import { EditCustomerComponent } from './edit-customer/edit-customer.component';
     FormsModule,
     SharedModule
   ],
-  declarations: [CustomerListComponent, CustomerDetailComponent, EditCustomerComponent],
+  declarations: [
+    CustomerListComponent,
+    CustomerDetailComponent,
+    EditCustomerComponent
+  ],
 })
 export class CustomerModule { }

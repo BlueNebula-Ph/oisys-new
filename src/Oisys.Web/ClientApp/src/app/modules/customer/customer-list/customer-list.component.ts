@@ -5,11 +5,14 @@ import { of } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 
 import { CustomerService } from '../../../shared/services/customer.service';
+import { ProvinceService } from '../../../shared/services/province.service';
 import { UtilitiesService } from '../../../shared/services/utilities.service';
 
 import { Customer } from '../../../shared/models/customer';
 import { Page } from '../../../shared/models/page';
 import { Sort } from '../../../shared/models/sort';
+import { Province } from '../../../shared/models/province';
+import { City } from '../../../shared/models/city';
 
 @Component({
   selector: 'app-customer-list',
@@ -21,19 +24,23 @@ export class CustomerListComponent implements AfterContentInit {
   sort: Sort = new Sort();
   rows = new Array<Customer>();
 
+  searchTerm: string = '';
+  selectedProvince: Province = new Province();
+  selectedCity: City = new City();
+  provinces: Province[];
+
   isLoading: boolean = false;
 
-  constructor(private customerService: CustomerService, private util: UtilitiesService, private router: Router) {
+  constructor(private customerService: CustomerService, private provinceService: ProvinceService, private util: UtilitiesService, private router: Router) {
     this.page.pageNumber = 0;
     this.page.size = 20;
     this.sort.prop = 'name';
     this.sort.dir = 'asc';
   }
 
-  @ViewChild('searchBox') input: ElementRef;
-
   ngAfterContentInit() {
     this.setPage({ offset: 0 });
+    this.fetchProvinces();
     this.loadCustomers();
   };
 
@@ -44,7 +51,9 @@ export class CustomerListComponent implements AfterContentInit {
       this.page.size,
       this.sort.prop,
       this.sort.dir,
-      this.input.nativeElement.value)
+      this.searchTerm,
+      this.selectedProvince.id,
+      this.selectedCity.id)
       .pipe(
         map(data => {
           // Flip flag to show that loading has finished.
@@ -62,6 +71,13 @@ export class CustomerListComponent implements AfterContentInit {
       )
       .subscribe(data => this.rows = data);
   }
+
+  fetchProvinces() {
+    this.provinceService.getProvinceLookup()
+      .subscribe(results => {
+        this.provinces = results;
+      });
+  };
 
   addCustomer(id: number): void {
     var url = "/customers/edit/" + id;
@@ -95,5 +111,11 @@ export class CustomerListComponent implements AfterContentInit {
     // Reset page number on search.
     this.page.pageNumber = 0;
     this.loadCustomers();
+  }
+
+  clear() {
+    this.searchTerm = '';
+    this.selectedProvince = new Province();
+    this.selectedCity = new City();
   }
 }

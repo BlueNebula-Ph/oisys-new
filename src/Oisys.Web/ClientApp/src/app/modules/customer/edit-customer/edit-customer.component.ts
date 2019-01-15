@@ -1,8 +1,10 @@
-import { Component, OnInit, ViewChild, ElementRef, AfterViewInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { NgForm } from '@angular/forms';
 
-import { fromEvent, Observable } from 'rxjs';
+import { Observable } from 'rxjs';
+import { debounceTime, distinctUntilChanged, map } from 'rxjs/operators';
+import { NgbTypeaheadConfig } from '@ng-bootstrap/ng-bootstrap';
 
 import { CustomerService } from '../../../shared/services/customer.service';
 import { ProvinceService } from '../../../shared/services/province.service';
@@ -22,30 +24,14 @@ export class EditCustomerComponent implements OnInit {
   customer: Customer = new Customer();
   priceList = PriceList;
   provinces: Province[];
-  filteredProvinces: Province[];
-  cities: City[];
-  filteredCities: City[];
 
-  @ViewChild('provinceBox') provinceBox: ElementRef;
-  @ViewChild('cityBox') cityBox: ElementRef;
-
-  constructor(private customerService: CustomerService, private provinceService: ProvinceService, private util: UtilitiesService, private router: Router) {}
+  constructor(private customerService: CustomerService, private provinceService: ProvinceService, private util: UtilitiesService, private router: Router, private config: NgbTypeaheadConfig) {
+    this.config.showHint = true;
+  }
 
   ngOnInit() {
     this.fetchProvinces();
     this.loadCustomer();
-
-    //fromEvent(this.provinceBox.nativeElement, 'keyup')
-    //  .subscribe(() => {
-    //    const searchVal = this.provinceBox.nativeElement.value;
-    //    this.filteredProvinces = this.filterProvinces(searchVal);
-    //  });
-
-    //fromEvent(this.cityBox.nativeElement, 'keyup')
-    //  .subscribe(() => {
-    //    const searchVal = this.cityBox.nativeElement.value;
-    //    this.filteredCities = this.filterCities(searchVal);
-    //  });
   };
 
   backToSummary() {
@@ -60,6 +46,9 @@ export class EditCustomerComponent implements OnInit {
           customerForm.resetForm();
 
           this.util.showSuccessMessage("Customer saved successfully.");
+        }, error => {
+          console.error(error);
+          this.util.showErrorMessage("An error occurred.");
         });
     }
   };
@@ -75,34 +64,33 @@ export class EditCustomerComponent implements OnInit {
       });
   };
 
-  displayProvince(prov: Province) {
-    if (prov) {
-      return prov.name;
-    }
-  };
+  // Autocomplete
+  searchProvince = (text$: Observable<string>) =>
+    text$.pipe(
+      debounceTime(200),
+      distinctUntilChanged(),
+      map(term => term.length < 2 ? [] : this.filterProvinces(term))
+    );
 
-  displayCity(city: City) {
-    if (city) {
-      return city.name;
-    }
-  };
+  searchCity = (text$: Observable<string>) =>
+    text$.pipe(
+      debounceTime(200),
+      distinctUntilChanged(),
+      map(term => term.length < 2 ? [] : this.filterCities(term))
+    );
 
-  onProvinceSelected(prov: Province) {
-    if (prov) {
-      this.customer.selectedCity = undefined;
-      this.cities = prov.cities;
-    }
-  };
+  provinceFormatter = (x: { name: string }) => x.name;
+  cityFormatter = (x: { name: string }) => x.name;
 
   private filterProvinces(value: string): Province[] {
     const filterValue = value.toLowerCase();
 
-    return this.provinces.filter(province => province.name.toLowerCase().indexOf(filterValue) === 0);
+    return this.provinces.filter(province => province.name.toLowerCase().startsWith(filterValue)).splice(0, 10);
   }
 
   private filterCities(value: string): City[] {
     const filterValue = value.toLowerCase();
 
-    return this.cities.filter(city => city.name.toLowerCase().indexOf(filterValue) === 0);
+    return this.customer.selectedProvince.cities.filter(city => city.name.toLowerCase().startsWith(filterValue)).splice(0, 10);
   }
 }

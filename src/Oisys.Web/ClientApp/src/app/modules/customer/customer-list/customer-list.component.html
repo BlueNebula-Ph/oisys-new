@@ -47,10 +47,13 @@
           </ngx-datatable-column>
           <ngx-datatable-column name="" [flexGrow]="2">
             <ng-template ngx-datatable-cell-template let-row="row">
-              <button class="btn btn-sm btn-info btn-square" (click)="addCustomer(row.id)" title="Edit this category.">
-                <i class="fa fa-pencil"></i>
+              <button class="btn btn-sm btn-info btn-square" title="View customer information.">
+                <i class="fa fa-sticky-note-o"></i>
               </button>&nbsp;
-              <button class="btn btn-sm btn-danger btn-square" (click)="onDeleteCustomer(row.id)" title="Delete this category.">
+              <button class="btn btn-sm btn-info btn-square" (click)="addCustomer(row.id)" title="Edit this customer.">
+                <i class="fa fa-edit"></i>
+              </button>&nbsp;
+              <button class="btn btn-sm btn-danger btn-square" (click)="onDeleteCustomer(row.id)" title="Delete this customer.">
                 <i class="fa fa-trash-o"></i>
               </button>
             </ng-template>
@@ -59,31 +62,38 @@
       </div>
     </div>
     <div class="col-3">
-      <div class="card no-radius">
+      <button type="button" class="btn btn-block btn-primary" (click)="addCustomer(0)">
+        <i class="fa fa-plus"></i> New Customer
+      </button>
+      <div class="card margin-top-sm">
         <div class="card-header">
           <i class="fa fa-search"></i> Search Customers.
         </div>
         <div class="card-body">
           <div class="form-group">
             <label>Keywords.</label>
-            <input class="form-control" #searchBox />
+            <input class="form-control" placeholder="Search by keywords." [(ngModel)]="searchTerm" />
           </div>
           <div class="form-group">
             <label>Province.</label>
-            <select class="form-control"></select>
+            <select class="form-control" [(ngModel)]="selectedProvince">
+              <option *ngFor="let prov of provinces" [ngValue]="prov">{{ prov.name }}</option>
+            </select>
           </div>
           <div class="form-group">
             <label>City.</label>
-            <select class="form-control"></select>
+            <select class="form-control" [(ngModel)]="selectedCity">
+              <option *ngFor="let city of selectedProvince.cities" [ngValue]="city">{{ city.name }}</option>
+            </select>
           </div>
           <button type="button" class="btn btn-sm btn-primary" (click)="search()">
             <i class="fa fa-search"></i> Search
+          </button>&nbsp;
+          <button type="button" class="btn btn-sm btn-secondary" (click)="clear()">
+            <i class="fa fa-eraser"></i> Clear
           </button>
         </div>
       </div>
-      <button type="button" class="btn btn-block btn-primary" (click)="addCustomer(0)">
-        <i class="fa fa-plus"></i> New Customer
-      </button>
     </div>
   </div>
 </div>

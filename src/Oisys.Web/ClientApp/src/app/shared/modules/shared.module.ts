@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 import { NgxDatatableModule } from '@swimlane/ngx-datatable';
-import { TypeaheadModule } from 'ngx-bootstrap';
+import { NgbTypeaheadModule } from '@ng-bootstrap/ng-bootstrap';
 
 import { EnumToArrayPipe } from '../pipes/enum-to-array.pipe';
 import { FocusMeDirective } from '../directives/focus-me.directive';
@@ -13,7 +13,7 @@ import { FocusMeDirective } from '../directives/focus-me.directive';
     CommonModule,
     BrowserAnimationsModule,
     NgxDatatableModule,
-    TypeaheadModule
+    NgbTypeaheadModule
   ],
   declarations: [
     EnumToArrayPipe,
@@ -24,7 +24,7 @@ import { FocusMeDirective } from '../directives/focus-me.directive';
     FocusMeDirective,
     BrowserAnimationsModule,
     NgxDatatableModule,
-    TypeaheadModule
+    NgbTypeaheadModule
   ]
 })
 export class SharedModule {}
