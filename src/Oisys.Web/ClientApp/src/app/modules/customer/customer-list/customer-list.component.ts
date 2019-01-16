@@ -1,4 +1,4 @@
-import { Component, ElementRef, ViewChild, AfterContentInit } from '@angular/core';
+import { Component, AfterContentInit } from '@angular/core';
 import { Router } from '@angular/router';
 
 import { of } from 'rxjs';

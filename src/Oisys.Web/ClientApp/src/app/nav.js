@@ -7,7 +7,7 @@ exports.navItems = [
     },
     {
         name: 'Items',
-        url: '/items',
+        url: '/inventory',
         icon: 'fa fa-database'
     },
     {

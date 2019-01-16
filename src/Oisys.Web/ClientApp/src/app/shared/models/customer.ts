@@ -28,7 +28,8 @@ export class Customer {
     }
   }
 
-  constructor(public id?: number,
+  constructor(
+    public id?: number,
     public name?: string,
     public email?: string,
     public contactNumber?: string,
@@ -38,14 +39,9 @@ export class Customer {
     public provinceId?: number,
     public terms?: string,
     public discount?: number,
-    public priceListId?: number)
-  {
-    if (!id) {
-      this.id = 0;
-    }
-
-    if (!priceListId) {
-      this.priceListId = PriceList["Main Price"];
-    }
+    public priceListId?: number
+  ) {
+    this.id = this.id || 0;
+    this.priceListId = this.priceListId || PriceList["Main Price"];
   }
 }

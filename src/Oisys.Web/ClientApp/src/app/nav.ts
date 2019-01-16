@@ -5,7 +5,7 @@ export const navItems = [
   },
   {
     name: 'Items',
-    url: '/items',
+    url: '/inventory',
     icon: 'fa fa-database'
   },
   {

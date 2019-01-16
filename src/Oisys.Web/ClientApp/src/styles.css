@@ -36,6 +36,11 @@ body {
   text-decoration: line-through;
 }
 
+/* Margins */
 .margin-top-sm {
   margin-top: 10px;
+}
+
+.margin-bottom-none {
+  margin-bottom: 0;
 }

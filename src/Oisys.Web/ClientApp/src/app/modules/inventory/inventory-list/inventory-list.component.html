@@ -1,3 +1,106 @@
-<p>
-  inventory-list works!
-</p>
+<div class="animated fadeIn">
+  <h3>Inventory Management.</h3>
+  <div class="row">
+    <div class="col-9">
+      <div class="datatable-container">
+        <div class="progress-bar progress-bar-striped progress-bar-animated prog-bar" [hidden]="!isLoading"></div>
+        <ngx-datatable class="bootstrap"
+                       [rows]="rows"
+                       [columnMode]="'flex'"
+                       [headerHeight]="40"
+                       [summaryRow]="false"
+                       [footerHeight]="40"
+                       [rowHeight]="'auto'"
+                       [reorderable]="true"
+                       [externalPaging]="true"
+                       [count]="page.totalElements"
+                       [offset]="page.pageNumber"
+                       [limit]="page.size"
+                       [externalSorting]="true"
+                       (page)="setPage($event)"
+                       (sort)="onSort($event)">
+          <ngx-datatable-column name="Code" prop="code" [flexGrow]="1">
+            <ng-template let-value="value" ngx-datatable-cell-template>
+              {{ value }}
+            </ng-template>
+          </ngx-datatable-column>
+          <ngx-datatable-column name="Item Name" prop="name" [flexGrow]="3">
+            <ng-template let-item="row" ngx-datatable-cell-template>
+              <div>{{ item.name | uppercase }}</div>
+              <div><span class="badge badge-secondary badge-custom">{{ item.categoryName }}</span>&nbsp;{{ item.description }}</div>
+            </ng-template>
+          </ngx-datatable-column>
+          <ngx-datatable-column name="Quantity" prop="quantity" [flexGrow]="2">
+            <ng-template let-column="column" let-sort="sortFn" ngx-datatable-header-template>
+              <span class="datatable-header-cell-wrapper header-right">
+                <span class="datatable-header-cell-label draggable" (click)="sort()">{{ column.name }}</span>
+              </span>
+            </ng-template>
+            <ng-template let-item="row" ngx-datatable-cell-template>
+              <div class="text-right">
+                {{ item.quantity | number: 0 }} {{ item.unit }}
+              </div>
+            </ng-template>
+          </ngx-datatable-column>
+          <ngx-datatable-column name="Pricing" prop="mainPrice" [flexGrow]="2">
+            <ng-template let-column="column" let-sort="sortFn" ngx-datatable-header-template>
+              <span class="datatable-header-cell-wrapper header-right">
+                <span class="datatable-header-cell-label draggable" (click)="sort()">{{ column.name }}</span>
+              </span>
+            </ng-template>
+            <ng-template let-item="row" ngx-datatable-cell-template>
+              <ul class="list-unstyled text-right margin-bottom-none">
+                <li><em>Main : </em>{{ item.mainPrice | currency:'PHP':'symbol-narrow' }}</li>
+                <li><em>Walk-In : </em>{{ item.walkInPrice | currency:'PHP':'symbol-narrow' }}</li>
+                <li><em>N.E : </em>{{ item.nePrice | currency:'PHP':'symbol-narrow' }}</li>
+              </ul>
+            </ng-template>
+          </ngx-datatable-column>
+          <ngx-datatable-column name="" [flexGrow]="2">
+            <ng-template ngx-datatable-cell-template let-row="row">
+              <div class="text-center">
+                <button class="btn btn-sm btn-info btn-square" title="View item information.">
+                  <i class="fa fa-sticky-note-o"></i>
+                </button>&nbsp;
+                <button class="btn btn-sm btn-info btn-square" (click)="addItem(row.id)" title="Edit this item.">
+                  <i class="fa fa-edit"></i>
+                </button>&nbsp;
+                <button class="btn btn-sm btn-danger btn-square" (click)="onDeleteItem(row.id)" title="Delete this item.">
+                  <i class="fa fa-trash-o"></i>
+                </button>
+              </div>
+            </ng-template>
+          </ngx-datatable-column>
+        </ngx-datatable>
+      </div>
+    </div>
+    <div class="col-3">
+      <button type="button" class="btn btn-block btn-primary" (click)="addItem(0)">
+        <i class="fa fa-plus"></i> New Item
+      </button>
+      <div class="card margin-top-sm">
+        <div class="card-header">
+          <i class="fa fa-search"></i> Search Items.
+        </div>
+        <div class="card-body">
+          <div class="form-group">
+            <label>Keywords.</label>
+            <input class="form-control" placeholder="Search by keywords." [(ngModel)]="searchTerm" />
+          </div>
+          <div class="form-group">
+            <label>Category.</label>
+            <select class="form-control" [(ngModel)]="selectedCategory">
+              <option *ngFor="let category of categories" [ngValue]="category">{{ category.name }}</option>
+            </select>
+          </div>
+          <button type="button" class="btn btn-sm btn-primary" (click)="search()">
+            <i class="fa fa-search"></i> Search
+          </button>&nbsp;
+          <button type="button" class="btn btn-sm btn-secondary" (click)="clear()">
+            <i class="fa fa-eraser"></i> Clear
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -11,6 +11,8 @@ import { CategoryListComponent } from '../settings/category-list/category-list.c
 import { ProvinceListComponent } from '../settings/province-list/province-list.component';
 import { UserListComponent } from '../settings/user-list/user-list.component';
 import { OrderDetailComponent } from '../order/order-detail/order-detail.component';
+import { InventoryListComponent } from '../inventory/inventory-list/inventory-list.component';
+import { InventoryFormComponent } from '../inventory/inventory-form/inventory-form.component';
 
 const routes: Routes = [
   { path: '', component: HomeComponent, pathMatch: 'full' },
@@ -24,6 +26,9 @@ const routes: Routes = [
   // Customers
   { path: 'customers', component: CustomerListComponent },
   { path: 'customers/edit/:id', component: EditCustomerComponent },
+  // Items
+  { path: 'inventory', component: InventoryListComponent },
+  { path: 'inventory/edit/:id', component: InventoryFormComponent },
   // Admin
   { path: 'categories', component: CategoryListComponent, pathMatch: 'full' },
   { path: 'provinces', component: ProvinceListComponent, pathMatch: 'full' },
