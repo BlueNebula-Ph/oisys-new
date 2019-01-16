@@ -13,6 +13,8 @@ import { UserListComponent } from '../settings/user-list/user-list.component';
 import { OrderDetailComponent } from '../order/order-detail/order-detail.component';
 import { InventoryListComponent } from '../inventory/inventory-list/inventory-list.component';
 import { InventoryFormComponent } from '../inventory/inventory-form/inventory-form.component';
+import { CustomerDetailComponent } from '../customer/customer-detail/customer-detail.component';
+import { InventoryDetailComponent } from '../inventory/inventory-detail/inventory-detail.component';
 
 const routes: Routes = [
   { path: '', component: HomeComponent, pathMatch: 'full' },
@@ -26,9 +28,11 @@ const routes: Routes = [
   // Customers
   { path: 'customers', component: CustomerListComponent },
   { path: 'customers/edit/:id', component: EditCustomerComponent },
+  { path: 'customers/info/:id', component: CustomerDetailComponent },
   // Items
   { path: 'inventory', component: InventoryListComponent },
   { path: 'inventory/edit/:id', component: InventoryFormComponent },
+  { path: 'inventory/info/:id', component: InventoryDetailComponent },
   // Admin
   { path: 'categories', component: CategoryListComponent, pathMatch: 'full' },
   { path: 'provinces', component: ProvinceListComponent, pathMatch: 'full' },

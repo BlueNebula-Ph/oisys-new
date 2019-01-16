@@ -47,13 +47,13 @@
           </ngx-datatable-column>
           <ngx-datatable-column name="" [flexGrow]="2">
             <ng-template ngx-datatable-cell-template let-row="row">
-              <button class="btn btn-sm btn-info btn-square" title="View customer information.">
+              <a routerLink="/customers/info/{{ row.id }}" class="btn btn-sm btn-info btn-square" title="View customer information.">
                 <i class="fa fa-sticky-note-o"></i>
-              </button>&nbsp;
-              <button class="btn btn-sm btn-info btn-square" (click)="addCustomer(row.id)" title="Edit this customer.">
+              </a>
+              <a routerLink="/customers/edit/{{ row.id }}" class="btn btn-sm btn-info btn-square ml-1" title="Edit this customer.">
                 <i class="fa fa-edit"></i>
-              </button>&nbsp;
-              <button class="btn btn-sm btn-danger btn-square" (click)="onDeleteCustomer(row.id)" title="Delete this customer.">
+              </a>
+              <button class="btn btn-sm btn-danger btn-square ml-1" (click)="onDeleteCustomer(row.id)" title="Delete this customer.">
                 <i class="fa fa-trash-o"></i>
               </button>
             </ng-template>
@@ -62,9 +62,9 @@
       </div>
     </div>
     <div class="col-3">
-      <button type="button" class="btn btn-block btn-primary" (click)="addCustomer(0)">
+      <a routerLink="/customers/edit/0" class="btn btn-block btn-primary">
         <i class="fa fa-plus"></i> New Customer
-      </button>
+      </a>
       <div class="card margin-top-sm">
         <div class="card-header">
           <i class="fa fa-search"></i> Search Customers.

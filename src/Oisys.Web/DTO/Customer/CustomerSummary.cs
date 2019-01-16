@@ -63,6 +63,11 @@ namespace OisysNew.DTO.Customer
         public string Discount { get; set; }
 
         /// <summary>
+        /// Gets or sets price list id.
+        /// </summary>
+        public int PriceListId { get; set; }
+
+        /// <summary>
         /// Gets or sets property price list.
         /// </summary>
         public string PriceList { get; set; }

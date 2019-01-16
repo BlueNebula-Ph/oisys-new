@@ -64,6 +64,7 @@ namespace OisysNew.Configuration
             CreateMap<Customer, CustomerSummary>()
                 .ForMember(d => d.CityName, s => s.MapFrom(o => o.City.Name))
                 .ForMember(d => d.ProvinceName, s => s.MapFrom(o => o.Province.Name))
+                .ForMember(d => d.PriceListId, s => s.MapFrom(o => (int)o.PriceList))
                 .ForMember(d => d.PriceList, s => s.MapFrom(o => o.PriceList.GetDisplayName()));
 
             CreateMap<SaveCustomerRequest, Customer>()

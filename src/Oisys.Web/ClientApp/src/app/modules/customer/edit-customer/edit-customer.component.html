@@ -1,11 +1,9 @@
 <div class="animated fadeIn">
   <h3>Customer Management.</h3>
-  <div class="card no-radius">
-    <div class="card-header">
-      Save Customer Information.
-    </div>
-    <div class="card-body">
-      <form #customerForm="ngForm" (ngSubmit)="saveCustomer(customerForm)">
+  <form #customerForm="ngForm" (ngSubmit)="saveCustomer(customerForm)">
+    <div class="card no-radius">
+      <h6 class="card-header">Save Customer Information.</h6>
+      <div class="card-body">
         <div class="row">
           <div class="col-4">
             <div class="form-group">
@@ -28,22 +26,32 @@
             </div>
             <div class="form-group">
               <label>Contact Number.</label>
-              <input class="form-control" name="contactNumber" placeholder="Contact Number" [(ngModel)]="customer.contactNumber">
+              <div class="input-group">
+                <input class="form-control" name="contactNumber" placeholder="Contact Number" [(ngModel)]="customer.contactNumber" required>
+                <div class="input-group-append">
+                  <span class="input-group-text">* Required</span>
+                </div>
+              </div>
             </div>
             <div class="form-group">
               <label>Contact Person.</label>
-              <input class="form-control" name="contactPerson" placeholder="Contact Person" [(ngModel)]="customer.contactPerson">
+              <div class="input-group">
+                <input class="form-control" name="contactPerson" placeholder="Contact Person" [(ngModel)]="customer.contactPerson" required>
+                <div class="input-group-append">
+                  <span class="input-group-text">* Required</span>
+                </div>
+              </div>
             </div>
           </div>
           <div class="col-4">
             <div class="form-group custom-margin">
               <label>Address.</label>
-              <textarea class="form-control" name="address" placeholder="Customer address" [(ngModel)]="customer.address" rows="5"></textarea>
+              <textarea class="form-control" name="address" placeholder="Customer address" [(ngModel)]="customer.address" rows="5" required></textarea>
             </div>
             <div class="form-group">
               <label>Province.</label>
               <div class="input-group">
-                <input class="form-control" name="province" placeholder="Province"
+                <input class="form-control" name="province" placeholder="Province" (ngModelChange)="provinceUpdated()"
                        [(ngModel)]="customer.selectedProvince" [ngbTypeahead]="searchProvince"
                        [inputFormatter]="provinceFormatter" [resultTemplate]="provTemplate" required>
                 <div class="input-group-append">
@@ -70,12 +78,18 @@
                 <input class="form-control" type="number" name="discount" placeholder="Discount in %" [(ngModel)]="customer.discount">
                 <div class="input-group-append">
                   <span class="input-group-text">%</span>
+                  <span class="input-group-text">* Required</span>
                 </div>
               </div>
             </div>
             <div class="form-group">
               <label>Terms.</label>
-              <input class="form-control" name="terms" placeholder="Terms" [(ngModel)]="customer.terms">
+              <div class="input-group">
+                <input class="form-control" name="terms" placeholder="Terms" [(ngModel)]="customer.terms" required>
+                <div class="input-group-append">
+                  <span class="input-group-text">* Required</span>
+                </div>
+              </div>
             </div>
             <div class="form-group form-check">
               <div *ngFor="let p of priceList | enumToArray">
@@ -84,19 +98,20 @@
                 <label class="form-check-label">{{ p.key }}</label>
               </div>
             </div>
-            <div class="form-group form-actions">
-              <button type="button" class="btn btn-secondary btn-square" (click)="backToSummary()">
-                <i class="fa fa-angle-double-left"></i> Back
-              </button>&nbsp;
-              <button type="submit" class="btn btn-primary btn-square" [disabled]="!customerForm.form.valid || isSaving" title="Save customer information.">
-                <i *ngIf="!isSaving" class="fa fa-save"></i><i *ngIf="isSaving" class="fa fa-spinner fa-spin"></i>&nbsp;Save
-              </button>
-            </div>
           </div>
         </div>
-      </form>
+      </div>
+      <div class="card-footer">
+        <a routerLink="/customers" class="btn btn-secondary btn-square">
+          <i class="fa fa-angle-double-left mr-1"></i>Back
+        </a>
+        <button type="submit" class="btn btn-primary btn-square ml-1" title="Save customer information."
+                [disabled]="!customerForm.form.valid || customer.provinceId == 0 || !customer.provinceId || customer.cityId == 0 || !customer.cityId || isSaving">
+          <i *ngIf="!isSaving" class="fa fa-save mr-1"></i><i *ngIf="isSaving" class="fa fa-spinner fa-spin mr-1"></i>Save
+        </button>
+      </div>
     </div>
-  </div>
+  </form>
 </div>
 <!-- templates -->
 <ng-template #provTemplate let-province="result" let-t="term">

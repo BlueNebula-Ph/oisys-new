@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 import { NgForm } from '@angular/forms';
 
 import { Observable } from 'rxjs';
@@ -25,7 +25,7 @@ export class EditCustomerComponent implements OnInit {
   priceList = PriceList;
   provinces: Province[];
 
-  constructor(private customerService: CustomerService, private provinceService: ProvinceService, private util: UtilitiesService, private router: Router, private config: NgbTypeaheadConfig) {
+  constructor(private customerService: CustomerService, private provinceService: ProvinceService, private util: UtilitiesService, private route: ActivatedRoute, private config: NgbTypeaheadConfig) {
     this.config.showHint = true;
   }
 
@@ -34,17 +34,14 @@ export class EditCustomerComponent implements OnInit {
     this.loadCustomer();
   };
 
-  backToSummary() {
-    this.router.navigateByUrl('/customers');
-  };
-
   saveCustomer(customerForm: NgForm) {
     if (customerForm.valid) {
-      this.customerService.saveCustomer(this.customer)
-        .subscribe(result => {
-          this.loadCustomer();
-          customerForm.resetForm();
-
+      this.customerService
+        .saveCustomer(this.customer)
+        .subscribe(() => {
+          if (this.customer.id == 0) {
+            this.loadCustomer();
+          }
           this.util.showSuccessMessage("Customer saved successfully.");
         }, error => {
           console.error(error);
@@ -54,7 +51,32 @@ export class EditCustomerComponent implements OnInit {
   };
 
   loadCustomer() {
-    this.customer = new Customer();
+    this.route.paramMap.subscribe(params => {
+      var routeParam = params.get("id");
+      var id = parseInt(routeParam);
+
+      if (id == 0) {
+        this.customer = new Customer();
+      } else {
+        this.customerService
+          .getCustomerById(id)
+          .subscribe(c => {
+            this.customer = new Customer(c.id,
+              c.name,
+              c.email,
+              c.contactNumber,
+              c.contactPerson,
+              c.address,
+              c.cityId,
+              c.provinceId,
+              c.terms,
+              c.discount,
+              c.priceListId);
+            this.customer.selectedProvince = this.filterProvinces(c.provinceName)[0];
+            this.customer.selectedCity = this.filterCities(c.cityName)[0];
+          });
+      }
+    });
   };
 
   fetchProvinces() {
@@ -62,6 +84,10 @@ export class EditCustomerComponent implements OnInit {
       .subscribe(results => {
         this.provinces = results;
       });
+  };
+
+  provinceUpdated() {
+    this.customer.selectedCity = new City(); 
   };
 
   // Autocomplete

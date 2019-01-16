@@ -27,7 +27,7 @@
           <ngx-datatable-column name="Item Name" prop="name" [flexGrow]="3">
             <ng-template let-item="row" ngx-datatable-cell-template>
               <div>{{ item.name | uppercase }}</div>
-              <div><span class="badge badge-secondary badge-custom">{{ item.categoryName }}</span>&nbsp;{{ item.description }}</div>
+              <div><span class="badge badge-secondary badge-custom mr-1">{{ item.categoryName }}</span>{{ item.description }}</div>
             </ng-template>
           </ngx-datatable-column>
           <ngx-datatable-column name="Quantity" prop="quantity" [flexGrow]="2">
@@ -59,13 +59,13 @@
           <ngx-datatable-column name="" [flexGrow]="2">
             <ng-template ngx-datatable-cell-template let-row="row">
               <div class="text-center">
-                <button class="btn btn-sm btn-info btn-square" title="View item information.">
+                <a routerLink="/inventory/info/{{ row.id }}" class="btn btn-sm btn-info btn-square" title="View item information.">
                   <i class="fa fa-sticky-note-o"></i>
-                </button>&nbsp;
-                <button class="btn btn-sm btn-info btn-square" (click)="addItem(row.id)" title="Edit this item.">
+                </a>
+                <a routerLink="/inventory/edit/{{ row.id }}" class="btn btn-sm btn-info btn-square ml-1" title="Edit this item.">
                   <i class="fa fa-edit"></i>
-                </button>&nbsp;
-                <button class="btn btn-sm btn-danger btn-square" (click)="onDeleteItem(row.id)" title="Delete this item.">
+                </a>
+                <button class="btn btn-sm btn-danger btn-square ml-1" (click)="onDeleteItem(row.id)" title="Delete this item.">
                   <i class="fa fa-trash-o"></i>
                 </button>
               </div>
@@ -75,9 +75,9 @@
       </div>
     </div>
     <div class="col-3">
-      <button type="button" class="btn btn-block btn-primary" (click)="addItem(0)">
+      <a routerLink="/inventory/edit/0" class="btn btn-block btn-primary">
         <i class="fa fa-plus"></i> New Item
-      </button>
+      </a>
       <div class="card margin-top-sm">
         <div class="card-header">
           <i class="fa fa-search"></i> Search Items.

@@ -76,11 +76,6 @@ export class InventoryListComponent implements AfterContentInit {
       });
   };
 
-  addItem(id: number): void {
-    var url = "/items/edit/" + id;
-    this.router.navigateByUrl(url);
-  };
-
   onDeleteItem(id: number): void {
     if (confirm("Are you sure you want to delete this item?")) {
       this.inventoryService.deleteItem(id).subscribe(() => {

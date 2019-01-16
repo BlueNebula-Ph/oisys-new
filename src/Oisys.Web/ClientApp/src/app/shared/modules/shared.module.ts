@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { RouterModule } from '@angular/router';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 import { NgxDatatableModule } from '@swimlane/ngx-datatable';
@@ -12,6 +13,7 @@ import { FocusMeDirective } from '../directives/focus-me.directive';
   imports: [
     CommonModule,
     BrowserAnimationsModule,
+    RouterModule,
     NgxDatatableModule,
     NgbTypeaheadModule
   ],
@@ -23,6 +25,7 @@ import { FocusMeDirective } from '../directives/focus-me.directive';
     EnumToArrayPipe,
     FocusMeDirective,
     BrowserAnimationsModule,
+    RouterModule,
     NgxDatatableModule,
     NgbTypeaheadModule
   ]

@@ -1,5 +1,4 @@
 import { Component, AfterContentInit } from '@angular/core';
-import { Router } from '@angular/router';
 
 import { of } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
@@ -31,7 +30,7 @@ export class CustomerListComponent implements AfterContentInit {
 
   isLoading: boolean = false;
 
-  constructor(private customerService: CustomerService, private provinceService: ProvinceService, private util: UtilitiesService, private router: Router) {
+  constructor(private customerService: CustomerService, private provinceService: ProvinceService, private util: UtilitiesService) {
     this.page.pageNumber = 0;
     this.page.size = 20;
     this.sort.prop = 'name';
@@ -77,11 +76,6 @@ export class CustomerListComponent implements AfterContentInit {
       .subscribe(results => {
         this.provinces = results;
       });
-  };
-
-  addCustomer(id: number): void {
-    var url = "/customers/edit/" + id;
-    this.router.navigateByUrl(url);
   };
 
   onDeleteCustomer(id: number): void {
