@@ -11,7 +11,7 @@ import { ProvinceService } from '../../../shared/services/province.service';
 import { UtilitiesService } from '../../../shared/services/utilities.service';
 
 import { Customer } from '../../../shared/models/customer';
-import { Province } from '../../../shared/models/Province';
+import { Province } from '../../../shared/models/province';
 import { City } from '../../../shared/models/city';
 import { PriceList } from '../../../shared/models/price-list';
 
@@ -60,20 +60,10 @@ export class EditCustomerComponent implements OnInit {
       } else {
         this.customerService
           .getCustomerById(id)
-          .subscribe(c => {
-            this.customer = new Customer(c.id,
-              c.name,
-              c.email,
-              c.contactNumber,
-              c.contactPerson,
-              c.address,
-              c.cityId,
-              c.provinceId,
-              c.terms,
-              c.discount,
-              c.priceListId);
-            this.customer.selectedProvince = this.filterProvinces(c.provinceName)[0];
-            this.customer.selectedCity = this.filterCities(c.cityName)[0];
+          .subscribe(cust => {
+            this.customer = new Customer(cust);
+            this.customer.selectedProvince = this.filterProvinces(cust.provinceName)[0];
+            this.customer.selectedCity = this.filterCities(cust.cityName)[0];
           });
       }
     });

@@ -35,7 +35,7 @@ export class CustomerService {
     return this.http.get<Customer[]>(lookupUrl);
   };
 
-  saveCustomer(customer: Customer): Observable<any> {
+  saveCustomer(customer: Customer): Observable<Customer> {
     if (customer.id == 0) {
       return this.http.post<Customer>(this.url, customer, this.util.httpOptions);
     } else {

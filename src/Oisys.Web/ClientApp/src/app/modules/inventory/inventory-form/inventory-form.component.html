@@ -1,3 +1,126 @@
-<p>
-  inventory-form works!
-</p>
+<div class="animated fadeIn">
+  <h3>Inventory Management.</h3>
+  <form #itemForm="ngForm" (ngSubmit)="saveItem(itemForm)">
+    <div class="card no-radius">
+      <h6 class="card-header">Save Item Information.</h6>
+      <div class="card-body">
+        <div class="row">
+          <div class="col-4">
+            <div class="form-group">
+              <label>Item Code.</label>
+              <div class="input-group">
+                <input class="form-control" name="itemCode" placeholder="Item code" [(ngModel)]="item.code" appFocusMe required>
+                <div class="input-group-append">
+                  <span class="input-group-text">* Required</span>
+                </div>
+              </div>
+            </div>
+            <div class="form-group">
+              <label>Item Name.</label>
+              <div class="input-group">
+                <input class="form-control" name="itemName" placeholder="Item name" [(ngModel)]="item.name" required>
+                <div class="input-group-append">
+                  <span class="input-group-text">* Required</span>
+                </div>
+              </div>
+            </div>
+            <div class="form-group">
+              <label>Description.</label>
+              <div class="input-group">
+                <input class="form-control" name="description" placeholder="Description" [(ngModel)]="item.description">
+                <div class="input-group-append">
+                  <span class="input-group-text">* Required</span>
+                </div>
+              </div>
+            </div>
+            <div class="form-group">
+              <label>Category.</label>
+              <div class="input-group">
+                <input class="form-control" name="category" placeholder="Category"
+                       [(ngModel)]="item.selectedCategory" [ngbTypeahead]="searchCategory"
+                       [inputFormatter]="categoryFormatter" [resultTemplate]="categoryTemplate" required>
+                <div class="input-group-append">
+                  <span class="input-group-text">* Required</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-4">
+            <div class="form-group">
+              <label>Quantity.</label>
+              <div class="input-group">
+                <input type="number" class="form-control" name="quantity" placeholder="Quantity" [(ngModel)]="item.quantity" [disabled]="item.id != 0">
+                <div class="input-group-append">
+                  <span class="input-group-text">* Required</span>
+                </div>
+              </div>
+            </div>
+            <div class="form-group">
+              <label>Unit.</label>
+              <input class="form-control" name="unit" placeholder="Unit" [(ngModel)]="item.unit">
+            </div>
+            <div class="form-group">
+              <label>Weight.</label>
+              <input class="form-control" name="weight" placeholder="Item Weight" [(ngModel)]="item.weight">
+            </div>
+            <div class="form-group">
+              <label>Thickness.</label>
+              <input class="form-control" name="thickness" placeholder="Item Thickness" [(ngModel)]="item.thickness">
+            </div>
+          </div>
+          <div class="col-4">
+            <div class="form-group">
+              <label>Main Price.</label>
+              <div class="input-group">
+                <div class="input-group-prepend">
+                  <span class="input-group-text">₱</span>
+                </div>
+                <input class="form-control" type="number" name="mainPrice" placeholder="Main Price" step="0.01" [(ngModel)]="item.mainPrice">
+                <div class="input-group-append">
+                  <span class="input-group-text">* Required</span>
+                </div>
+              </div>
+            </div>
+            <div class="form-group">
+              <label>Walk-In Price.</label>
+              <div class="input-group">
+                <div class="input-group-prepend">
+                  <span class="input-group-text">₱</span>
+                </div>
+                <input class="form-control" type="number" name="walkInPrice" placeholder="Walk-In Price" [(ngModel)]="item.walkInPrice">
+                <div class="input-group-append">
+                  <span class="input-group-text">* Required</span>
+                </div>
+              </div>
+            </div>
+            <div class="form-group">
+              <label>N.E. Price.</label>
+              <div class="input-group">
+                <div class="input-group-prepend">
+                  <span class="input-group-text">₱</span>
+                </div>
+                <input class="form-control" type="number" name="nePrice" placeholder="N.E. Price" [(ngModel)]="item.nePrice">
+                <div class="input-group-append">
+                  <span class="input-group-text">* Required</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="card-footer">
+        <a routerLink="/inventory" class="btn btn-secondary btn-square">
+          <i class="fa fa-angle-double-left mr-1"></i>Back
+        </a>
+        <button type="submit" class="btn btn-primary btn-square ml-1" title="Save item information."
+                [disabled]="!itemForm.form.valid || item.categoryId == 0 || !item.categoryId || isSaving">
+          <i *ngIf="!isSaving" class="fa fa-save mr-1"></i><i *ngIf="isSaving" class="fa fa-spinner fa-spin mr-1"></i>Save
+        </button>
+      </div>
+    </div>
+  </form>
+</div>
+<!-- templates -->
+<ng-template #categoryTemplate let-category="result" let-t="term">
+  <ngb-highlight [result]="category.name" [term]="t"></ngb-highlight>
+</ng-template>

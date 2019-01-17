@@ -37,8 +37,6 @@ import { OrderListComponent } from './shared/components/order-list/order-list.co
 import { CounterComponent } from './shared/components/counter/counter.component';
 import { SharedModule } from './shared/modules/shared.module';
 
-
-
 @NgModule({
   declarations: [
     AppComponent,

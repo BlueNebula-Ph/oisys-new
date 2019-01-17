@@ -39,7 +39,6 @@
     <None Remove="ClientApp\src\app\shared\models\paged-data.ts" />
     <None Remove="ClientApp\src\app\shared\models\Province.ts" />
     <None Remove="ClientApp\src\app\shared\models\sort.ts" />
-    <None Remove="ClientApp\src\app\shared\services\inventory.service.ts" />
   </ItemGroup>
 
   <ItemGroup>
@@ -50,7 +49,6 @@
     <TypeScriptCompile Include="ClientApp\src\app\shared\models\paged-data.ts" />
     <TypeScriptCompile Include="ClientApp\src\app\shared\models\province.ts" />
     <TypeScriptCompile Include="ClientApp\src\app\shared\models\sort.ts" />
-    <TypeScriptCompile Include="ClientApp\src\app\shared\services\inventory.service.ts" />
   </ItemGroup>
 
   <Target Name="DebugEnsureNodeEnv" BeforeTargets="Build" Condition=" '$(Configuration)' == 'Debug' And !Exists('$(SpaRoot)node_modules') ">
