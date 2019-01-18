@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, AfterContentInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { NgForm } from '@angular/forms';
 
@@ -20,7 +20,7 @@ import { PriceList } from '../../../shared/models/price-list';
   templateUrl: './edit-customer.component.html',
   styleUrls: ['./edit-customer.component.css']
 })
-export class EditCustomerComponent implements OnInit {
+export class EditCustomerComponent implements AfterContentInit {
   customer: Customer = new Customer();
   priceList = PriceList;
   provinces: Province[];
@@ -29,7 +29,7 @@ export class EditCustomerComponent implements OnInit {
     this.config.showHint = true;
   }
 
-  ngOnInit() {
+  ngAfterContentInit() {
     this.fetchProvinces();
     this.loadCustomer();
   };

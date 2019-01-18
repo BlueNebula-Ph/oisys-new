@@ -72,10 +72,7 @@
             <div class="form-group">
               <label>Main Price.</label>
               <div class="input-group">
-                <div class="input-group-prepend">
-                  <span class="input-group-text">₱</span>
-                </div>
-                <input class="form-control" type="number" name="mainPrice" placeholder="Main Price" step="0.01" [(ngModel)]="item.mainPrice">
+                <input currencyMask class="form-control" name="mainPrice" placeholder="Main Price" [(ngModel)]="item.mainPrice">
                 <div class="input-group-append">
                   <span class="input-group-text">* Required</span>
                 </div>
@@ -84,10 +81,7 @@
             <div class="form-group">
               <label>Walk-In Price.</label>
               <div class="input-group">
-                <div class="input-group-prepend">
-                  <span class="input-group-text">₱</span>
-                </div>
-                <input class="form-control" type="number" name="walkInPrice" placeholder="Walk-In Price" [(ngModel)]="item.walkInPrice">
+                <input currencyMask class="form-control" name="walkInPrice" placeholder="Walk-In Price" [(ngModel)]="item.walkInPrice">
                 <div class="input-group-append">
                   <span class="input-group-text">* Required</span>
                 </div>
@@ -96,10 +90,7 @@
             <div class="form-group">
               <label>N.E. Price.</label>
               <div class="input-group">
-                <div class="input-group-prepend">
-                  <span class="input-group-text">₱</span>
-                </div>
-                <input class="form-control" type="number" name="nePrice" placeholder="N.E. Price" [(ngModel)]="item.nePrice">
+                <input currencyMask class="form-control" name="nePrice" placeholder="N.E. Price" [(ngModel)]="item.nePrice">
                 <div class="input-group-append">
                   <span class="input-group-text">* Required</span>
                 </div>

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, AfterContentInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { NgForm } from '@angular/forms';
 
@@ -18,7 +18,7 @@ import { Category } from '../../../shared/models/category';
   templateUrl: './inventory-form.component.html',
   styleUrls: ['./inventory-form.component.css']
 })
-export class InventoryFormComponent implements OnInit {
+export class InventoryFormComponent implements AfterContentInit {
   item: Item = new Item();
   categories: Category[];
 
@@ -26,7 +26,7 @@ export class InventoryFormComponent implements OnInit {
     this.config.showHint = true;
   }
 
-  ngOnInit() {
+  ngAfterContentInit() {
     this.fetchCategories();
     this.loadItem();
   };

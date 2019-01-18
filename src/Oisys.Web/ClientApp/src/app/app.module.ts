@@ -5,17 +5,14 @@ import { HttpClientModule } from '@angular/common/http';
 
 import { AppHeaderModule, AppSidebarModule, AppBreadcrumbModule, AppFooterModule } from '@coreui/angular';
 
-import { PerfectScrollbarModule } from 'ngx-perfect-scrollbar';
-import { PERFECT_SCROLLBAR_CONFIG } from 'ngx-perfect-scrollbar';
-import { PerfectScrollbarConfigInterface } from 'ngx-perfect-scrollbar';
-
-const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
-  suppressScrollX: true
-};
+import { PerfectScrollbarModule, PERFECT_SCROLLBAR_CONFIG, PerfectScrollbarConfigInterface } from 'ngx-perfect-scrollbar';
 
 import { NgxDatatableModule } from '@swimlane/ngx-datatable';
 import { ToastrModule } from 'ngx-toastr';
 import { NgbTypeaheadModule } from '@ng-bootstrap/ng-bootstrap';
+
+import { CurrencyMaskModule } from 'ng2-currency-mask';
+import { CurrencyMaskConfig, CURRENCY_MASK_CONFIG } from "ng2-currency-mask/src/currency-mask.config";
 
 import { AppRoutingModule } from './modules/routing/app-routing.module';
 import { CustomerModule } from './modules/customer/customer.module';
@@ -36,6 +33,21 @@ import { FetchDataComponent } from './shared/components/fetch-data/fetch-data.co
 import { OrderListComponent } from './shared/components/order-list/order-list.component';
 import { CounterComponent } from './shared/components/counter/counter.component';
 import { SharedModule } from './shared/modules/shared.module';
+
+export const CustomScrollConfig: PerfectScrollbarConfigInterface = {
+  suppressScrollX: true
+};
+
+export const CustomCurrencyMaskConfig: CurrencyMaskConfig = {
+  align: "left",
+  allowNegative: false,
+  decimal: ".",
+  precision: 2,
+  prefix: "₱ ",
+  suffix: "",
+  thousands: ","
+};
+
 
 @NgModule({
   declarations: [
@@ -68,9 +80,13 @@ import { SharedModule } from './shared/modules/shared.module';
     PerfectScrollbarModule,
     NgxDatatableModule,
     ToastrModule.forRoot(),
-    NgbTypeaheadModule
+    NgbTypeaheadModule,
+    CurrencyMaskModule
   ],
-  providers: [],
+  providers: [
+    { provide: PERFECT_SCROLLBAR_CONFIG, useValue: CustomScrollConfig },
+    { provide: CURRENCY_MASK_CONFIG, useValue: CustomCurrencyMaskConfig }
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

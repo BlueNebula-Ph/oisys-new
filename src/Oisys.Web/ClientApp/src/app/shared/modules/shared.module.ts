@@ -5,6 +5,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 import { NgxDatatableModule } from '@swimlane/ngx-datatable';
 import { NgbTypeaheadModule } from '@ng-bootstrap/ng-bootstrap';
+import { CurrencyMaskModule } from 'ng2-currency-mask';
 
 import { EnumToArrayPipe } from '../pipes/enum-to-array.pipe';
 import { FocusMeDirective } from '../directives/focus-me.directive';
@@ -15,7 +16,8 @@ import { FocusMeDirective } from '../directives/focus-me.directive';
     BrowserAnimationsModule,
     RouterModule,
     NgxDatatableModule,
-    NgbTypeaheadModule
+    NgbTypeaheadModule,
+    CurrencyMaskModule
   ],
   declarations: [
     EnumToArrayPipe,
@@ -27,7 +29,8 @@ import { FocusMeDirective } from '../directives/focus-me.directive';
     BrowserAnimationsModule,
     RouterModule,
     NgxDatatableModule,
-    NgbTypeaheadModule
+    NgbTypeaheadModule,
+    CurrencyMaskModule
   ]
 })
 export class SharedModule {}
