@@ -17,7 +17,7 @@ namespace OisysNew.DTO.Order
         /// <summary>
         /// Gets or sets property CustomerId.
         /// </summary>
-        public int CustomerId { get; set; }
+        public long CustomerId { get; set; }
 
         /// <summary>
         /// Gets or sets property Date.

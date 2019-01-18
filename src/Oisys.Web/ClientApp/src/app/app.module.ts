@@ -30,7 +30,6 @@ import { NavMenuComponent } from './shared/components/nav-menu/nav-menu.componen
 
 import { HomeComponent } from './shared/components/home/home.component';
 import { FetchDataComponent } from './shared/components/fetch-data/fetch-data.component';
-import { OrderListComponent } from './shared/components/order-list/order-list.component';
 import { CounterComponent } from './shared/components/counter/counter.component';
 import { SharedModule } from './shared/modules/shared.module';
 
@@ -55,7 +54,6 @@ export const CustomCurrencyMaskConfig: CurrencyMaskConfig = {
     NavMenuComponent,
     HomeComponent,
     FetchDataComponent,
-    OrderListComponent,
     CounterComponent
   ],
   imports: [

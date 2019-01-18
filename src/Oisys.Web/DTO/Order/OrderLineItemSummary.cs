@@ -6,9 +6,9 @@
     public class OrderLineItemSummary : DTOBase
     {
         /// <summary>
-        /// Gets or sets property Quanity.
+        /// Gets or sets property Quantity.
         /// </summary>
-        public decimal Quantity { get; set; }
+        public int Quantity { get; set; }
 
         /// <summary>
         /// Gets or sets property Unit.
@@ -18,7 +18,7 @@
         /// <summary>
         /// Gets or sets property ItemId.
         /// </summary>
-        public int ItemId { get; set; }
+        public long ItemId { get; set; }
 
         /// <summary>
         /// Gets or sets property Item.

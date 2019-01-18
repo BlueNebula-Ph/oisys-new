@@ -35,6 +35,8 @@
     <None Remove="ClientApp\src\app\nav.ts" />
     <None Remove="ClientApp\src\app\shared\models\city.ts" />
     <None Remove="ClientApp\src\app\shared\models\item.ts" />
+    <None Remove="ClientApp\src\app\shared\models\order-line-item.ts" />
+    <None Remove="ClientApp\src\app\shared\models\order.ts" />
     <None Remove="ClientApp\src\app\shared\models\page.ts" />
     <None Remove="ClientApp\src\app\shared\models\paged-data.ts" />
     <None Remove="ClientApp\src\app\shared\models\Province.ts" />
@@ -45,6 +47,8 @@
     <TypeScriptCompile Include="ClientApp\src\app\nav.ts" />
     <TypeScriptCompile Include="ClientApp\src\app\shared\models\city.ts" />
     <TypeScriptCompile Include="ClientApp\src\app\shared\models\item.ts" />
+    <TypeScriptCompile Include="ClientApp\src\app\shared\models\order-line-item.ts" />
+    <TypeScriptCompile Include="ClientApp\src\app\shared\models\order.ts" />
     <TypeScriptCompile Include="ClientApp\src\app\shared\models\page.ts" />
     <TypeScriptCompile Include="ClientApp\src\app\shared\models\paged-data.ts" />
     <TypeScriptCompile Include="ClientApp\src\app\shared\models\province.ts" />

@@ -21,7 +21,7 @@ exports.navItems = [
     },
     {
         name: 'Orders',
-        url: '/orders-list',
+        url: '/orders',
         icon: 'fa fa-file'
     },
     {

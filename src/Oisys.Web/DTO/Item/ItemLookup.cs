@@ -6,12 +6,17 @@
     public class ItemLookup : DTOBase
     {
         /// <summary>
-        /// Gets or sets property Code - Name.
+        /// Gets or sets item code.
         /// </summary>
-        public string CodeName { get; set; }
+        public string Code { get; set; }
 
         /// <summary>
-        /// Gets or sets property Quantity.
+        /// Gets or sets item Name.
+        /// </summary>
+        public string Name { get; set; }
+
+        /// <summary>
+        /// Gets or sets current quantity.
         /// </summary>
         public int Quantity { get; set; }
 
@@ -19,6 +24,11 @@
         /// Gets or sets property Unit
         /// </summary>
         public string Unit { get; set; }
+
+        /// <summary>
+        /// Gets or sets property category name.
+        /// </summary>
+        public string CategoryName { get; set; }
 
         /// <summary>
         /// Gets or sets property Main Price
@@ -34,15 +44,5 @@
         /// Gets or sets property Walk-In Price
         /// </summary>
         public decimal WalkInPrice { get; set; }
-
-        /// <summary>
-        /// Gets or sets property Category
-        /// </summary>
-        public string NameCategoryDescription { get; set; }
-
-        /// <summary>
-        /// Gets or sets property category name.
-        /// </summary>
-        public string CategoryName { get; set; }
     }
 }
