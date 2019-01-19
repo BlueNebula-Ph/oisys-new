@@ -25,9 +25,9 @@ export class CustomerService {
       );
   };
 
-  getCustomerById(id: number): Observable<any> {
+  getCustomerById(id: number): Observable<Customer> {
     var getUrl = this.url + "/" + id;
-    return this.http.get<any>(getUrl);
+    return this.http.get<Customer>(getUrl);
   };
 
   getCustomerLookup(): Observable<Customer[]> {

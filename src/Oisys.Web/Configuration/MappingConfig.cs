@@ -58,7 +58,8 @@ namespace OisysNew.Configuration
                 .ForMember(d => d.ReturnedToInventory, s => s.MapFrom(o => o.ShouldAddBackToInventory));
 
             // Customer
-            CreateMap<Customer, CustomerLookup>();
+            CreateMap<Customer, CustomerLookup>()
+                .ForMember(d => d.PriceListId, s => s.MapFrom(o => (int)o.PriceList));
             CreateMap<Customer, CustomerWithOrdersLookup>();
 
             CreateMap<Customer, CustomerSummary>()

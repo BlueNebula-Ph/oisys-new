@@ -50,14 +50,9 @@ export class ProvinceListComponent implements AfterContentInit {
         map(data => {
           // Flip flag to show that loading has finished.
           this.isLoading = false;
-
           this.page = data.pageInfo;
 
-          data.items.map((item) => {
-            item.cityNames = item.cities.map((sc) => sc.name).join(', ');
-          });
-
-          return data.items;
+          return data.items.map(prov => new Province(prov));
         }),
         catchError(() => {
           this.isLoading = false;
@@ -69,10 +64,7 @@ export class ProvinceListComponent implements AfterContentInit {
   }
 
   onEditProvince(provinceToEdit: Province): void {
-    this.selectedProvince = new Province(provinceToEdit.id,
-      provinceToEdit.name,
-      provinceToEdit.rowVersion,
-      provinceToEdit.cities);
+    this.selectedProvince = new Province(provinceToEdit);
   };
 
   onDeleteProvince(id: number): void {

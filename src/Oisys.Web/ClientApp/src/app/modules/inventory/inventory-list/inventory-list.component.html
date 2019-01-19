@@ -49,23 +49,26 @@
               </span>
             </ng-template>
             <ng-template let-item="row" ngx-datatable-cell-template>
-              <ul class="list-unstyled text-right margin-bottom-none">
+              <ul class="list-unstyled text-right mb-0">
                 <li><em>Main : </em>{{ item.mainPrice | currency:'PHP':'symbol-narrow' }}</li>
                 <li><em>Walk-In : </em>{{ item.walkInPrice | currency:'PHP':'symbol-narrow' }}</li>
                 <li><em>N.E : </em>{{ item.nePrice | currency:'PHP':'symbol-narrow' }}</li>
               </ul>
             </ng-template>
           </ngx-datatable-column>
-          <ngx-datatable-column name="" [flexGrow]="2">
+          <ngx-datatable-column name="" [flexGrow]="2" [sortable]="false">
+            <ng-template ngx-datatable-header-template>
+              <a routerLink="/inventory/edit/0" class="btn btn-sm btn-primary ml-5"><i class="fa fa-plus"></i> New Item</a>
+            </ng-template>
             <ng-template ngx-datatable-cell-template let-row="row">
               <div class="text-center">
-                <a routerLink="/inventory/info/{{ row.id }}" class="btn btn-sm btn-info btn-square" title="View item information.">
+                <a routerLink="/inventory/info/{{ row.id }}" class="btn btn-ghost-primary" title="View item information.">
                   <i class="fa fa-sticky-note-o"></i>
                 </a>
-                <a routerLink="/inventory/edit/{{ row.id }}" class="btn btn-sm btn-info btn-square ml-1" title="Edit this item.">
-                  <i class="fa fa-edit"></i>
+                <a routerLink="/inventory/edit/{{ row.id }}" class="btn btn-ghost-primary ml-1" title="Edit this item.">
+                  <i class="fa fa-pencil"></i>
                 </a>
-                <button class="btn btn-sm btn-danger btn-square ml-1" (click)="onDeleteItem(row.id)" title="Delete this item.">
+                <button class="btn btn-ghost-danger ml-1" (click)="onDeleteItem(row.id)" title="Delete this item.">
                   <i class="fa fa-trash-o"></i>
                 </button>
               </div>
@@ -75,10 +78,7 @@
       </div>
     </div>
     <div class="col-3">
-      <a routerLink="/inventory/edit/0" class="btn btn-block btn-primary">
-        <i class="fa fa-plus"></i> New Item
-      </a>
-      <div class="card margin-top-sm">
+      <div class="card">
         <div class="card-header">
           <i class="fa fa-search"></i> Search Items.
         </div>

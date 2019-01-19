@@ -11,7 +11,7 @@
         </div>
       </div>
 
-      <div class="datatable-container margin-top">
+      <div class="datatable-container mt-3">
         <div class="progress-bar progress-bar-striped progress-bar-animated prog-bar" [hidden]="!isLoading"></div>
         <ngx-datatable class="bootstrap"
                        [rows]="rows"
@@ -35,10 +35,10 @@
           </ngx-datatable-column>
           <ngx-datatable-column name="" [flexGrow]="1">
             <ng-template ngx-datatable-cell-template let-row="row">
-              <button class="btn btn-sm btn-info btn-square" (click)="onEditCategory(row)" title="Edit this category.">
+              <button class="btn btn-sm btn-ghost-primary" (click)="onEditCategory(row)" title="Edit this category.">
                 <i class="fa fa-pencil"></i>
               </button>
-              <button class="btn btn-sm btn-danger btn-square ml-1" (click)="onDeleteCategory(row.id)" title="Delete this category.">
+              <button class="btn btn-sm btn-ghost-danger ml-1" (click)="onDeleteCategory(row.id)" title="Delete this category.">
                 <i class="fa fa-trash-o"></i>
               </button>
             </ng-template>

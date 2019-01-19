@@ -1,3 +1,108 @@
-<p>
-  order-form works!
-</p>
+<div class="animated fadeIn">
+  <h3>Order Management.</h3>
+  <form #orderForm="ngForm" (ngSubmit)="saveOrder(orderForm)">
+    <div class="col-10 px-0">
+      <div class="card no-radius">
+        <h6 class="card-header">Save Order Information.</h6>
+        <div class="card-body">
+          <div class="row">
+            <div class="col-4">
+              <div class="form-group">
+                <label>Customer.</label>
+                <div class="input-group">
+                  <input class="form-control" name="customer" placeholder="Select customer..."
+                         [(ngModel)]="order.selectedCustomer" [ngbTypeahead]="searchCustomer"
+                         [inputFormatter]="customerFormatter" [resultTemplate]="customerTemplate" required>
+                  <div class="input-group-append">
+                    <span class="input-group-text">* Required</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-4">
+              <div class="form-group">
+                <label>Date.</label>
+                <div class="input-group">
+                  <input type="date" class="form-control" name="date" placeholder="Order date" [ngModel]="order.date | date:'yyyy-MM-dd'" (ngModelChange)="order.date=$event" required>
+                  <div class="input-group-append">
+                    <span class="input-group-text">* Required</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-4">
+              <div class="form-group">
+                <label>Due Date.</label>
+                <div class="input-group">
+                  <input type="date" class="form-control" name="dueDate" placeholder="Order due date" [value]="order.dueDate | date:'yyyy-MM-dd'" (input)="order.dueDate=parseDate($event.target.value)" required>
+                  <div class="input-group-append">
+                    <span class="input-group-text">* Required</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <table class="table form-table border-bottom">
+              <thead>
+                <tr>
+                  <td width="10%" class="font-weight-bold text-right align-middle">Quantity</td>
+                  <td width="10%" class="font-weight-bold align-middle">Unit</td>
+                  <td width="25%" class="font-weight-bold align-middle">Item</td>
+                  <td width="15%" class="font-weight-bold align-middle">Category</td>
+                  <td width="15%" class="font-weight-bold align-middle text-right">Unit Price</td>
+                  <td width="15%" class="font-weight-bold align-middle text-right">Total Price</td>
+                  <td width="10%" class="text-center">
+                    <button type="button" class="btn btn-sm btn-primary" (click)="addLineItem()">
+                      <i class="fa fa-plus"></i> Item
+                    </button>
+                  </td>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let lineItem of order.lineItems">
+                  <td><input type="number" class="form-control form-control-sm text-right" [(ngModel)]="lineItem.quantity" [ngModelOptions]="{standalone: true}" /></td>
+                  <td><input class="form-control form-control-sm" [(ngModel)]="lineItem.unit" [ngModelOptions]="{standalone: true}" readonly /></td>
+                  <td>
+                    <input class="form-control form-control-sm" name="orderLineItem" placeholder="Select item..."
+                           [ngbTypeahead]="searchItem" [inputFormatter]="itemFormatter" [resultTemplate]="itemTemplate"
+                           [(ngModel)]="lineItem.selectedItem" [ngModelOptions]="{standalone: true}">
+                  </td>
+                  <td><input class="form-control form-control-sm" [(ngModel)]="lineItem.categoryName" [ngModelOptions]="{standalone: true}" readonly /></td>
+                  <td><input currencyMask class="form-control form-control-sm text-right" [(ngModel)]="lineItem.unitPrice" [ngModelOptions]="{standalone: true}" /></td>
+                  <td><input currencyMask class="form-control form-control-sm text-right" [(ngModel)]="lineItem.totalPrice" [ngModelOptions]="{standalone: true}" readonly /></td>
+                  <td class="text-center">
+                    <button class="btn btn-ghost-danger btn-sm"><i class="fa fa-fw fa-trash"></i></button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div class="card-footer">
+          <a routerLink="/orders" class="btn btn-secondary btn-square">
+            <i class="fa fa-angle-double-left mr-1"></i>Back
+          </a>
+          <button type="submit" class="btn btn-primary btn-square ml-1" title="Save order information."
+                  [disabled]="!orderForm.form.valid || order.customerId == 0 || !order.customerId || isSaving">
+            <i *ngIf="!isSaving" class="fa fa-save mr-1"></i><i *ngIf="isSaving" class="fa fa-spinner fa-spin mr-1"></i>Save
+          </button>
+        </div>
+      </div>
+    </div>
+    <div class="col-2">
+
+    </div>
+  </form>
+</div>
+<!-- templates -->
+<ng-template #customerTemplate let-customer="result" let-t="term">
+  <ngb-highlight [result]="customer.name" [term]="t"></ngb-highlight>
+</ng-template>
+<ng-template #itemTemplate let-item="result" let-t="term">
+  {{ item.code }}
+  <ngb-highlight [result]="item.name" [term]="t"></ngb-highlight>
+  <div>
+    {{ item.mainPrice | currency:'PHP':'symbol-narrow' }}
+  </div>
+</ng-template>

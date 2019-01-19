@@ -1,14 +1,11 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var City = /** @class */ (function () {
-    function City(id, name, rowVersion) {
-        this.id = id;
-        this.name = name;
-        this.rowVersion = rowVersion;
+    function City(city) {
         this.isDeleted = false;
-        this.id = this.id || 0;
-        this.name = this.name || '';
-        this.rowVersion = this.rowVersion || '';
+        this.id = city && city.id || 0;
+        this.name = city && city.name || '';
+        this.rowVersion = city && city.rowVersion || '';
     }
     ;
     return City;

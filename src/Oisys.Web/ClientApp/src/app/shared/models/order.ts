@@ -6,6 +6,7 @@ export class Order {
   public code: string;
   public customerId: number;
   public customer: Customer;
+  public customerName: string;
   public date: Date;
   public dueDate: Date;
   public discountPercent: number;
@@ -22,6 +23,7 @@ export class Order {
     if (customer) {
       this._selectedCustomer = customer;
       this.customerId = customer.id;
+      this.updateLineItems();
     }
   }
 
@@ -36,5 +38,14 @@ export class Order {
     this.dueDate = order && order.dueDate || new Date();
 
     this.discountPercent = order && order.discountPercent || 0;
+    this.lineItems = order && order.lineItems || new Array<OrderLineItem>();
   }
+
+  updateLineItems() {
+    if (this.customerId && this.customerId != 0) {
+      this.lineItems.forEach((lineItem) => {
+        lineItem.updatePriceList(this._selectedCustomer.priceListId);
+      });
+    }
+  };
 }

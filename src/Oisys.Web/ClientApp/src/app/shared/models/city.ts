@@ -1,9 +1,14 @@
 export class City {
+  public id: number;
+  public name: string;
+  public rowVersion: string;
   public isDeleted: boolean = false;
 
-  constructor(public id?: number, public name?: string, public rowVersion?: string) {
-    this.id = this.id || 0;
-    this.name = this.name || '';
-    this.rowVersion = this.rowVersion || '';
+  constructor();
+  constructor(city: City);
+  constructor(city?: any) {
+    this.id = city && city.id || 0;
+    this.name = city && city.name || '';
+    this.rowVersion = city && city.rowVersion || '';
   };
 }

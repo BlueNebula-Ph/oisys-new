@@ -28,7 +28,7 @@ export class CategoryService {
 
   getCategoryById(id: number): Observable<Category> {
     var getUrl = this.url + "/" + id;
-    return this.http.get(getUrl);
+    return this.http.get<Category>(getUrl);
   };
 
   getCategoryLookup(): Observable<Category[]> {
@@ -38,10 +38,10 @@ export class CategoryService {
 
   saveCategory(category: Category): Observable<Category> {
     if (category.id == 0) {
-      return this.http.post(this.url, category, this.util.httpOptions);
+      return this.http.post<Category>(this.url, category, this.util.httpOptions);
     } else {
       var editUrl = this.url + '/' + category.id;
-      return this.http.put(editUrl, category, this.util.httpOptions);
+      return this.http.put<Category>(editUrl, category, this.util.httpOptions);
     }
   };
 

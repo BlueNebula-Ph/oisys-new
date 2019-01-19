@@ -20,10 +20,6 @@ body {
   margin-bottom: 40px;
 }
 
-  .datatable-container.margin-top {
-    margin-top: 20px; 
-  }
-
 .no-radius {
   border-radius: 0;
 }
@@ -36,11 +32,7 @@ body {
   text-decoration: line-through;
 }
 
-/* Margins */
-.margin-top-sm {
-  margin-top: 10px;
-}
-
-.margin-bottom-none {
-  margin-bottom: 0;
+/* Form tables */
+table.form-table td {
+  padding: 5px 10px;
 }
