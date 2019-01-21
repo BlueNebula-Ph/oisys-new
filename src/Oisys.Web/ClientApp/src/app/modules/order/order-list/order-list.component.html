@@ -32,8 +32,8 @@
           </ngx-datatable-column>
           <ngx-datatable-column name="Customer" prop="customer.name" [flexGrow]="2">
             <ng-template let-order="row" ngx-datatable-cell-template>
-              <div>{{ order.customer.name }}</div>
-              <div class="small">{{ order.customer.address }}, {{ order.customer.cityName }}, {{ order.customer.provinceName }}</div>
+              <div>{{ order.customerName }}</div>
+              <div class="small">{{ order.customerAddress }}</div>
             </ng-template>
           </ngx-datatable-column>
           <ngx-datatable-column name="Total Amount" prop="totalAmount" [flexGrow]="2">

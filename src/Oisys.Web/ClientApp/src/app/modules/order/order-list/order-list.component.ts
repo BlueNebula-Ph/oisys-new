@@ -15,6 +15,7 @@ import { Customer } from '../../../shared/models/customer';
 import { Order } from '../../../shared/models/order';
 import { Item } from '../../../shared/models/item';
 import { Province } from '../../../shared/models/province';
+import { OrderLineItem } from '../../../shared/models/order-line-item';
 
 @Component({
   selector: 'app-order-list',
@@ -46,8 +47,8 @@ export class OrderListComponent implements AfterContentInit {
     private util: UtilitiesService) {
     this.page.pageNumber = 0;
     this.page.size = 20;
-    this.sort.prop = 'code';
-    this.sort.dir = 'asc';
+    this.sort.prop = 'date';
+    this.sort.dir = 'desc';
   }
 
   ngAfterContentInit() {
@@ -75,7 +76,10 @@ export class OrderListComponent implements AfterContentInit {
           this.isLoading = false;
           this.page = data.pageInfo;
 
-          return data.items.map(order => new Order(order));
+          return data.items.map(order => {
+            order.lineItems = order.lineItems.map(lineItem => new OrderLineItem(lineItem));
+            return new Order(order);
+          });
         }),
         catchError(() => {
           this.isLoading = false;

@@ -14,22 +14,19 @@ var __extends = (this && this.__extends) || (function () {
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
 var model_base_1 = require("./model-base");
-var customer_1 = require("./customer");
 var Order = /** @class */ (function (_super) {
     __extends(Order, _super);
     function Order(order) {
         var _this = _super.call(this) || this;
         _this.id = order && order.id || 0;
-        _this.code = order && order.code || '';
+        _this.code = order && order.code || 0;
         _this.customerId = order && order.customerId || 0;
-        _this.customer = order && new customer_1.Customer(order.customer) || new customer_1.Customer();
+        _this.customerName = order && order.customerName || '';
+        _this.customerAddress = order && order.customerAddress || '';
         _this.date = order && order.date || new Date();
         _this.dueDate = order && order.dueDate || new Date();
         _this.discountPercent = order && order.discountPercent || 0;
         _this.lineItems = order && order.lineItems || new Array();
-        _this._grossAmount = order && order.grossAmount || 0;
-        _this._discountAmount = order && order.discountAmount || 0;
-        _this._totalAmount = order && order.totalAmount || 0;
         return _this;
     }
     Object.defineProperty(Order.prototype, "selectedCustomer", {
@@ -46,12 +43,24 @@ var Order = /** @class */ (function (_super) {
         enumerable: true,
         configurable: true
     });
+    Object.defineProperty(Order.prototype, "discountPercent", {
+        get: function () {
+            if (this._discountPercent) {
+                return this._discountPercent;
+            }
+            if (this.selectedCustomer && this.customerId && this.customerId != 0) {
+                return this.selectedCustomer.discount;
+            }
+            return 0;
+        },
+        set: function (value) {
+            this._discountPercent = value;
+        },
+        enumerable: true,
+        configurable: true
+    });
     Object.defineProperty(Order.prototype, "grossAmount", {
         get: function () {
-            if (this._grossAmount) {
-                return this._grossAmount;
-            }
-            ;
             var totalGrossAmount = 0;
             if (this.lineItems) {
                 this.lineItems.forEach(function (val) {
@@ -67,19 +76,13 @@ var Order = /** @class */ (function (_super) {
     });
     Object.defineProperty(Order.prototype, "discountAmount", {
         get: function () {
-            if (this._discountAmount) {
-                return this._discountAmount;
-            }
-            return this.grossAmount * this.discountPercent / 100;
+            return parseFloat((this.grossAmount * this.discountPercent / 100).toFixed(2));
         },
         enumerable: true,
         configurable: true
     });
     Object.defineProperty(Order.prototype, "totalAmount", {
         get: function () {
-            if (this._totalAmount && this._totalAmount != 0) {
-                return this._totalAmount;
-            }
             return this.grossAmount - this.discountAmount;
         },
         enumerable: true,
@@ -87,7 +90,7 @@ var Order = /** @class */ (function (_super) {
     });
     Object.defineProperty(Order.prototype, "lineItemsValid", {
         get: function () {
-            return this.lineItems.every(function (lineItem) { return lineItem.itemId != 0; });
+            return this.lineItems.length > 0 && this.lineItems.every(function (lineItem) { return lineItem.itemId != 0; });
         },
         enumerable: true,
         configurable: true

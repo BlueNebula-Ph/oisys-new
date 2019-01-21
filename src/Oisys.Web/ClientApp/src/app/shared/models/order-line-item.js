@@ -22,9 +22,9 @@ var OrderLineItem = /** @class */ (function (_super) {
         _this.id = orderLineItem && orderLineItem.id || 0;
         _this.quantity = orderLineItem && orderLineItem.quantity || 0;
         _this.itemId = orderLineItem && orderLineItem.itemId || 0;
+        _this.itemName = orderLineItem && orderLineItem.itemName || '';
         _this.priceList = orderLineItem && orderLineItem.priceList || price_list_1.PriceList["Main Price"];
         _this.unitPrice = orderLineItem && orderLineItem.unitPrice || 0;
-        _this.totalPrice = orderLineItem && orderLineItem.totalPrice || 0;
         return _this;
     }
     Object.defineProperty(OrderLineItem.prototype, "selectedItem", {
@@ -83,13 +83,7 @@ var OrderLineItem = /** @class */ (function (_super) {
     });
     Object.defineProperty(OrderLineItem.prototype, "totalPrice", {
         get: function () {
-            if (this._totalPrice && this._totalPrice != 0) {
-                return this._totalPrice;
-            }
             return this.quantity * this.unitPrice;
-        },
-        set: function (value) {
-            this._totalPrice = value;
         },
         enumerable: true,
         configurable: true

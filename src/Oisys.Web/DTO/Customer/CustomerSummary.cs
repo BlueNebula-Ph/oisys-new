@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-namespace OisysNew.DTO.Customer
+﻿namespace OisysNew.DTO.Customer
 {
     /// <summary>
     /// View model for the customer entity.
@@ -81,10 +79,5 @@ namespace OisysNew.DTO.Customer
         /// Gets or sets concurrency check.
         /// </summary>
         public byte[] RowVersion { get; set; }
-
-        /// <summary>
-        /// Gets or sets property Customer transactions.
-        /// </summary>
-        //public IEnumerable<CustomerTransactionSummary> Transactions { get; set; }
     }
 }

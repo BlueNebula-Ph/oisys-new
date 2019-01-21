@@ -1,6 +1,4 @@
-﻿using OisysNew.DTO.Item;
-
-namespace OisysNew.DTO.Order
+﻿namespace OisysNew.DTO.Order
 {
     /// <summary>
     /// <see cref="OrderLineItemSummary"/> class represents the child of OrderSummary object.
@@ -13,14 +11,24 @@ namespace OisysNew.DTO.Order
         public int Quantity { get; set; }
 
         /// <summary>
-        /// Gets or sets property ItemId.
+        /// Gets or sets the item id of the line item.
         /// </summary>
         public long ItemId { get; set; }
 
         /// <summary>
-        /// Gets or sets property Item.
+        /// Gets or sets the item name of the line item.
         /// </summary>
-        public ItemSummary Item { get; set; }
+        public string ItemName { get; set; }
+
+        /// <summary>
+        /// Gets or sets the item unit of the line item.
+        /// </summary>
+        public string Unit { get; set; }
+
+        /// <summary>
+        /// Gets or sets the item category of the line item.
+        /// </summary>
+        public string CategoryName { get; set; }
 
         /// <summary>
         /// Gets or sets property Price.

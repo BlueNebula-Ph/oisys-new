@@ -4,13 +4,12 @@ import { OrderLineItem } from "./order-line-item";
 
 export class Order extends ModelBase {
   public id: number;
-  public code: string;
+  public code: number;
   public customerId: number;
-  public customer: Customer;
   public customerName: string;
+  public customerAddress: string;
   public date: Date;
   public dueDate: Date;
-  public discountPercent: number;
   public lineItems: OrderLineItem[];
 
   private _selectedCustomer: Customer;
@@ -25,12 +24,22 @@ export class Order extends ModelBase {
     }
   }
 
-  private _grossAmount: number;
-  get grossAmount() {
-    if (this._grossAmount) {
-      return this._grossAmount;
-    };
+  private _discountPercent: number;
+  get discountPercent() {
+    if (this._discountPercent) {
+      return this._discountPercent;
+    }
+    if (this.selectedCustomer && this.customerId && this.customerId != 0) {
+      return this.selectedCustomer.discount;
+    }
+    return 0;
+  }
+  set discountPercent(value: number) {
+    this._discountPercent = value;
+  }
 
+
+  get grossAmount() {
     var totalGrossAmount = 0;
     if (this.lineItems) {
       this.lineItems.forEach(val => {
@@ -42,25 +51,16 @@ export class Order extends ModelBase {
     return totalGrossAmount;
   }
 
-  private _discountAmount: number;
   get discountAmount() {
-    if (this._discountAmount) {
-      return this._discountAmount;
-    }
-
-    return this.grossAmount * this.discountPercent / 100;
+    return parseFloat((this.grossAmount * this.discountPercent / 100).toFixed(2));
   }
 
-  private _totalAmount: number;
   get totalAmount() {
-    if (this._totalAmount && this._totalAmount != 0) {
-      return this._totalAmount;
-    }
     return this.grossAmount - this.discountAmount;
   }
 
   get lineItemsValid() {
-    return this.lineItems.every(lineItem => lineItem.itemId != 0);
+    return this.lineItems.length > 0 && this.lineItems.every(lineItem => lineItem.itemId != 0);
   }
 
   constructor();
@@ -69,19 +69,16 @@ export class Order extends ModelBase {
     super();
 
     this.id = order && order.id || 0;
-    this.code = order && order.code || '';
+    this.code = order && order.code || 0;
     this.customerId = order && order.customerId || 0;
-    this.customer = order && new Customer(order.customer) || new Customer();
+    this.customerName = order && order.customerName || '';
+    this.customerAddress = order && order.customerAddress || '';
 
     this.date = order && order.date || new Date();
     this.dueDate = order && order.dueDate || new Date();
 
     this.discountPercent = order && order.discountPercent || 0;
     this.lineItems = order && order.lineItems || new Array<OrderLineItem>();
-
-    this._grossAmount = order && order.grossAmount || 0;
-    this._discountAmount = order && order.discountAmount || 0;
-    this._totalAmount = order && order.totalAmount || 0;
   }
 
   updateLineItems() {

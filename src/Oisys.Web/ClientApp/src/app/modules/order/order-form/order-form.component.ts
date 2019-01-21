@@ -38,14 +38,11 @@ export class OrderFormComponent implements AfterContentInit {
   }
 
   ngAfterContentInit() {
-    this.fetchAutocomplete();
-    this.loadOrder();
+    this.fetchLists();
+    setTimeout(() => this.loadOrder(), 3000);
   };
 
   saveOrder(orderForm: NgForm) {
-    console.log(this.order);
-    console.log(JSON.stringify(this.order));
-
     if (orderForm.valid) {
       this.orderService
         .saveOrder(this.order)
@@ -68,26 +65,30 @@ export class OrderFormComponent implements AfterContentInit {
 
       if (id == 0) {
         this.order = new Order();
-        console.log(this.order);
       } else {
         this.orderService
           .getOrderById(id)
           .subscribe(order => {
             this.order = new Order(order);
+            this.order.lineItems = order.lineItems.map(lineItem => {
+              var orderLineItem = new OrderLineItem(lineItem);
+              orderLineItem.selectedItem = this.filterItems(lineItem.itemName)[0];
+              return orderLineItem;
+            });
             this.order.selectedCustomer = this.filterCustomers(order.customerName)[0];
           });
       }
     });
   };
 
-  fetchAutocomplete() {
+  fetchLists() {
     forkJoin(
-      this.inventoryService.getItemLookup(),
       this.customerService.getCustomerLookup(),
-    ).subscribe(([inventoryResponse, customerResponse]) => {
-        this.customers = customerResponse;
-        this.items = inventoryResponse;
-      });
+      this.inventoryService.getItemLookup()
+    ).subscribe(([customerResponse, inventoryResponse]) => {
+      this.customers = customerResponse;
+      this.items = inventoryResponse;
+    });
   };
 
   // Line items
@@ -116,6 +117,8 @@ export class OrderFormComponent implements AfterContentInit {
 
   private filterCustomers(value: string): Customer[] {
     const filterValue = value.toLowerCase();
+
+    console.log(this.customers);
 
     return this.customers.filter(customer => customer.name.toLowerCase().startsWith(filterValue)).splice(0, 10);
   }

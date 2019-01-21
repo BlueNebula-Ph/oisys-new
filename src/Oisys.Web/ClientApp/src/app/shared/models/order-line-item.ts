@@ -6,6 +6,7 @@ export class OrderLineItem extends ModelBase {
   public id: number;
   public quantity: number;
   public itemId: number;
+  public itemName: string;
 
   public priceList: PriceList;
 
@@ -54,15 +55,8 @@ export class OrderLineItem extends ModelBase {
     this._unitPrice = value;
   }
 
-  private _totalPrice: number;
   get totalPrice() {
-    if (this._totalPrice && this._totalPrice != 0) {
-      return this._totalPrice;
-    }
     return this.quantity * this.unitPrice;
-  }
-  set totalPrice(value: number) {
-    this._totalPrice = value;
   }
 
   constructor();
@@ -73,11 +67,11 @@ export class OrderLineItem extends ModelBase {
     this.id = orderLineItem && orderLineItem.id || 0;
     this.quantity = orderLineItem && orderLineItem.quantity || 0;
     this.itemId = orderLineItem && orderLineItem.itemId || 0;
+    this.itemName = orderLineItem && orderLineItem.itemName || '';
 
     this.priceList = orderLineItem && orderLineItem.priceList || PriceList["Main Price"];
 
     this.unitPrice = orderLineItem && orderLineItem.unitPrice || 0;
-    this.totalPrice = orderLineItem && orderLineItem.totalPrice || 0;
   }
 
   updatePriceList(priceList?: PriceList) {

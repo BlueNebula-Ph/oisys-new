@@ -1,5 +1,4 @@
-﻿using OisysNew.DTO.Customer;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 namespace OisysNew.DTO.Order
 {
@@ -10,13 +9,24 @@ namespace OisysNew.DTO.Order
     {
         /// <summary>
         /// Gets or sets property Code.
+        /// This property is auto generated.
         /// </summary>
-        public string Code { get; set; }
+        public int Code { get; set; }
 
         /// <summary>
-        /// Gets or sets property CustomerId.
+        /// Gets or sets the customer id.
         /// </summary>
         public long CustomerId { get; set; }
+
+        /// <summary>
+        /// Gets or sets the customer name.
+        /// </summary>
+        public string CustomerName { get; set; }
+
+        /// <summary>
+        /// Gets or sets the customer address.
+        /// </summary>
+        public string CustomerAddress { get; set; }
 
         /// <summary>
         /// Gets or sets property Date.
@@ -48,11 +58,6 @@ namespace OisysNew.DTO.Order
         /// GrossAmount - DiscountAmount
         /// </summary>
         public decimal TotalAmount { get; set; }
-
-        /// <summary>
-        /// Gets or sets Customer navigation property.
-        /// </summary>
-        public CustomerSummary Customer { get; set; }
 
         /// <summary>
         /// Gets or sets Details navigation property.
