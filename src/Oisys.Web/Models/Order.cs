@@ -29,6 +29,11 @@ namespace OisysNew.Models
         public DateTime? DueDate { get; set; }
 
         /// <summary>
+        /// Gets or sets property GrossAmount.
+        /// </summary>
+        public decimal GrossAmount { get; set; }
+
+        /// <summary>
         /// Gets or sets property DiscountPercent.
         /// </summary>
         public decimal DiscountPercent { get; set; }

@@ -38,13 +38,13 @@ export const CustomScrollConfig: PerfectScrollbarConfigInterface = {
 };
 
 export const CustomCurrencyMaskConfig: CurrencyMaskConfig = {
-  align: "left",
+  align: 'left',
   allowNegative: false,
-  decimal: ".",
+  decimal: '.',
   precision: 2,
-  prefix: "₱ ",
-  suffix: "",
-  thousands: ","
+  prefix: '₱ ',
+  suffix: '',
+  thousands: ','
 };
 
 

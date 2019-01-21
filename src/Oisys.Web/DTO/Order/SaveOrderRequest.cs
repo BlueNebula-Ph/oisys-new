@@ -11,11 +11,6 @@ namespace OisysNew.DTO.Order
     public class SaveOrderRequest : DTOBase
     {
         /// <summary>
-        /// Gets or sets property Code.
-        /// </summary>
-        public int Code { get; set; }
-
-        /// <summary>
         /// Gets or sets property CustomerId.
         /// </summary>
         [Required]
@@ -41,6 +36,11 @@ namespace OisysNew.DTO.Order
         /// Gets or sets property DiscountAmount.
         /// </summary>
         public decimal DiscountAmount { get; set; }
+
+        /// <summary>
+        /// Gets or sets the gross total amount of the order.
+        /// </summary>
+        public decimal GrossAmount { get; set; }
 
         /// <summary>
         /// Gets or sets property TotalAmount.

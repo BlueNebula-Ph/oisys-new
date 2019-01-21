@@ -73,10 +73,9 @@ export class OrderListComponent implements AfterContentInit {
         map(data => {
           // Flip flag to show that loading has finished.
           this.isLoading = false;
-
           this.page = data.pageInfo;
 
-          return data.items;
+          return data.items.map(order => new Order(order));
         }),
         catchError(() => {
           this.isLoading = false;
@@ -93,10 +92,10 @@ export class OrderListComponent implements AfterContentInit {
       this.inventoryService.getItemLookup(),
       this.provinceService.getProvinceLookup()
     ).subscribe(([customerResponse, inventoryResponse, provinceResponse]) => {
-        this.customers = customerResponse;
-        this.items = inventoryResponse;
-        this.provinces = provinceResponse;
-      });
+      this.customers = customerResponse;
+      this.items = inventoryResponse;
+      this.provinces = provinceResponse;
+    });
   };
 
   onDeleteOrder(id: number): void {

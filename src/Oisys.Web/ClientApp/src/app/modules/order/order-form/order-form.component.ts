@@ -43,6 +43,9 @@ export class OrderFormComponent implements AfterContentInit {
   };
 
   saveOrder(orderForm: NgForm) {
+    console.log(this.order);
+    console.log(JSON.stringify(this.order));
+
     if (orderForm.valid) {
       this.orderService
         .saveOrder(this.order)

@@ -44,24 +44,24 @@
           </ngx-datatable-column>
           <ngx-datatable-column name="Pricing" prop="mainPrice" [flexGrow]="2">
             <ng-template let-column="column" let-sort="sortFn" ngx-datatable-header-template>
-              <span class="datatable-header-cell-wrapper header-right">
+              <span class="datatable-header-cell-wrapper float-right">
                 <span class="datatable-header-cell-label draggable" (click)="sort()">{{ column.name }}</span>
               </span>
             </ng-template>
             <ng-template let-item="row" ngx-datatable-cell-template>
               <ul class="list-unstyled text-right mb-0">
-                <li><em>Main : </em>{{ item.mainPrice | currency:'PHP':'symbol-narrow' }}</li>
-                <li><em>Walk-In : </em>{{ item.walkInPrice | currency:'PHP':'symbol-narrow' }}</li>
-                <li><em>N.E : </em>{{ item.nePrice | currency:'PHP':'symbol-narrow' }}</li>
+                <li><em>Main : </em>{{ item.mainPrice | currency:'PHP':'₱ ' }}</li>
+                <li><em>Walk-In : </em>{{ item.walkInPrice | currency:'PHP':'₱ ' }}</li>
+                <li><em>N.E : </em>{{ item.nePrice | currency:'PHP':'₱ ' }}</li>
               </ul>
             </ng-template>
           </ngx-datatable-column>
           <ngx-datatable-column name="" [flexGrow]="2" [sortable]="false">
             <ng-template ngx-datatable-header-template>
-              <a routerLink="/inventory/edit/0" class="btn btn-sm btn-primary ml-5"><i class="fa fa-plus"></i> New Item</a>
+              <a routerLink="/inventory/edit/0" class="btn btn-sm btn-primary float-right"><i class="fa fa-plus"></i> New Item</a>
             </ng-template>
             <ng-template ngx-datatable-cell-template let-row="row">
-              <div class="text-center">
+              <div class="text-right">
                 <a routerLink="/inventory/info/{{ row.id }}" class="btn btn-ghost-primary" title="View item information.">
                   <i class="fa fa-sticky-note-o"></i>
                 </a>

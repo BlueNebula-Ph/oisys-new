@@ -31,10 +31,10 @@ namespace OisysNew.DTO.Order
         public long? DeliveryId { get; set; }
 
         /// <summary>
-        /// Gets or sets property Price.
+        /// Gets or sets the unit price of an item.
         /// </summary>
         [Required]
-        public decimal Price { get; set; }
+        public decimal UnitPrice { get; set; }
 
         /// <summary>
         /// Gets or sets the TotalPrice. Quantity * Price.

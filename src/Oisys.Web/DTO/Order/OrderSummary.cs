@@ -1,6 +1,5 @@
 ﻿using OisysNew.DTO.Customer;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace OisysNew.DTO.Order
 {
@@ -40,15 +39,13 @@ namespace OisysNew.DTO.Order
         public decimal DiscountAmount { get; set; }
 
         /// <summary>
-        /// Gets property gross amount.
+        /// Gets or sets property gross amount.
         /// </summary>
-        public decimal GrossAmount
-        {
-            get { return LineItems.Sum(c => c.TotalPrice); }
-        }
+        public decimal GrossAmount { get; set; }
 
         /// <summary>
         /// Gets or sets property total amount.
+        /// GrossAmount - DiscountAmount
         /// </summary>
         public decimal TotalAmount { get; set; }
 
@@ -56,11 +53,6 @@ namespace OisysNew.DTO.Order
         /// Gets or sets Customer navigation property.
         /// </summary>
         public CustomerSummary Customer { get; set; }
-
-        /// <summary>
-        /// Gets or sets Province name property.
-        /// </summary>
-        public string ProvinceName { get; set; }
 
         /// <summary>
         /// Gets or sets Details navigation property.

@@ -52,7 +52,7 @@ namespace OisysNew.Configuration
                 .ForMember(d => d.OrderCode, s => s.MapFrom(o => o.OrderLineItem.Order.Code))
                 .ForMember(d => d.ItemCode, s => s.MapFrom(o => o.Item.Code))
                 .ForMember(d => d.Item, s => s.MapFrom(o => o.Item.Name))
-                .ForMember(d => d.Price, s => s.MapFrom(o => o.OrderLineItem.Price))
+                .ForMember(d => d.Price, s => s.MapFrom(o => o.OrderLineItem.UnitPrice))
                 .ForMember(d => d.ShouldAddBackToInventory, s => s.MapFrom(o => o.ReturnedToInventory));
             CreateMap<SaveCreditMemoLineItemRequest, CreditMemoLineItem>()
                 .ForMember(d => d.ReturnedToInventory, s => s.MapFrom(o => o.ShouldAddBackToInventory));
@@ -97,7 +97,6 @@ namespace OisysNew.Configuration
 
             // Order
             CreateMap<Order, OrderSummary>()
-                .ForMember(d => d.ProvinceName, s => s.MapFrom(o => o.Customer.Province.Name))
                 .ForMember(d => d.Date, s => s.MapFrom(o => o.Date.ToShortDateString()))
                 .ForMember(d => d.DueDate, s => s.MapFrom(o => o.DueDate.HasValue ? o.DueDate.Value.ToShortDateString() : string.Empty));
 
@@ -106,13 +105,7 @@ namespace OisysNew.Configuration
             CreateMap<Order, OrderLookup>();
 
             // Order Line Item
-            CreateMap<OrderLineItem, OrderLineItemSummary>()
-                .ForMember(d => d.ItemCode, s => s.MapFrom(o => o.Item.Code))
-                .ForMember(d => d.Item, s => s.MapFrom(o => o.Item.Name))
-                .ForMember(d => d.Unit, s => s.MapFrom(o => o.Item.Unit))
-                .ForMember(d => d.Description, s => s.MapFrom(o => o.Item.Description))
-                .ForMember(d => d.Category, s => s.MapFrom(o => o.Item.Category.Name));
-
+            CreateMap<OrderLineItem, OrderLineItemSummary>();
             CreateMap<SaveOrderLineItemRequest, OrderLineItem>();
 
             CreateMap<OrderLineItem, OrderDetailLookup>()

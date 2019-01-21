@@ -35,6 +35,7 @@
     <None Remove="ClientApp\src\app\nav.ts" />
     <None Remove="ClientApp\src\app\shared\models\city.ts" />
     <None Remove="ClientApp\src\app\shared\models\item.ts" />
+    <None Remove="ClientApp\src\app\shared\models\model-base.ts" />
     <None Remove="ClientApp\src\app\shared\models\order-line-item.ts" />
     <None Remove="ClientApp\src\app\shared\models\order.ts" />
     <None Remove="ClientApp\src\app\shared\models\page.ts" />
@@ -45,6 +46,7 @@
 
   <ItemGroup>
     <TypeScriptCompile Include="ClientApp\src\app\nav.ts" />
+    <TypeScriptCompile Include="ClientApp\src\app\shared\models\model-base.ts" />
     <TypeScriptCompile Include="ClientApp\src\app\shared\models\city.ts" />
     <TypeScriptCompile Include="ClientApp\src\app\shared\models\item.ts" />
     <TypeScriptCompile Include="ClientApp\src\app\shared\models\order-line-item.ts" />

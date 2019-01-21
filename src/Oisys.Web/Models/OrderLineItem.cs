@@ -23,7 +23,7 @@
         /// <summary>
         /// Gets or sets property Price.
         /// </summary>
-        public decimal Price { get; set; }
+        public decimal UnitPrice { get; set; }
 
         /// <summary>
         /// Gets or sets property QuantityReturned.

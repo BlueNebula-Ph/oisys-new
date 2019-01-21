@@ -1,12 +1,31 @@
 "use strict";
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = function (d, b) {
+        extendStatics = Object.setPrototypeOf ||
+            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+        return extendStatics(d, b);
+    }
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
 Object.defineProperty(exports, "__esModule", { value: true });
+var model_base_1 = require("./model-base");
 var price_list_1 = require("./price-list");
-var OrderLineItem = /** @class */ (function () {
+var OrderLineItem = /** @class */ (function (_super) {
+    __extends(OrderLineItem, _super);
     function OrderLineItem(orderLineItem) {
-        this.id = orderLineItem && orderLineItem.id || 0;
-        this.quantity = orderLineItem && orderLineItem.quantity || 0;
-        this.itemId = orderLineItem && orderLineItem.itemId || 0;
-        this.priceList = orderLineItem && orderLineItem.priceList || price_list_1.PriceList["Main Price"];
+        var _this = _super.call(this) || this;
+        _this.id = orderLineItem && orderLineItem.id || 0;
+        _this.quantity = orderLineItem && orderLineItem.quantity || 0;
+        _this.itemId = orderLineItem && orderLineItem.itemId || 0;
+        _this.priceList = orderLineItem && orderLineItem.priceList || price_list_1.PriceList["Main Price"];
+        _this.unitPrice = orderLineItem && orderLineItem.unitPrice || 0;
+        _this.totalPrice = orderLineItem && orderLineItem.totalPrice || 0;
+        return _this;
     }
     Object.defineProperty(OrderLineItem.prototype, "selectedItem", {
         get: function () {
@@ -37,8 +56,11 @@ var OrderLineItem = /** @class */ (function () {
     });
     Object.defineProperty(OrderLineItem.prototype, "unitPrice", {
         get: function () {
+            if (this._unitPrice && this._unitPrice != 0) {
+                return this._unitPrice;
+            }
             var unitPrice = 0;
-            if (this._selectedItem) {
+            if (this._selectedItem && this.itemId != 0) {
                 switch (this.priceList) {
                     case price_list_1.PriceList["Main Price"]:
                         unitPrice = this._selectedItem.mainPrice;
@@ -53,12 +75,21 @@ var OrderLineItem = /** @class */ (function () {
             }
             return unitPrice;
         },
+        set: function (value) {
+            this._unitPrice = value;
+        },
         enumerable: true,
         configurable: true
     });
     Object.defineProperty(OrderLineItem.prototype, "totalPrice", {
         get: function () {
+            if (this._totalPrice && this._totalPrice != 0) {
+                return this._totalPrice;
+            }
             return this.quantity * this.unitPrice;
+        },
+        set: function (value) {
+            this._totalPrice = value;
         },
         enumerable: true,
         configurable: true
@@ -68,6 +99,6 @@ var OrderLineItem = /** @class */ (function () {
     };
     ;
     return OrderLineItem;
-}());
+}(model_base_1.ModelBase));
 exports.OrderLineItem = OrderLineItem;
 //# sourceMappingURL=order-line-item.js.map
