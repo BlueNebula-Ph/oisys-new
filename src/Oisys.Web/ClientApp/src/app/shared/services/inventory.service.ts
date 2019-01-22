@@ -3,6 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { environment } from '../../../environments/environment';
+
 import { Item } from '../models/item';
 import { UtilitiesService } from './utilities.service';
 import { PagedData } from '../models/paged-data';
@@ -12,7 +13,7 @@ import { Adjustment } from '../models/adjustment';
   providedIn: 'root'
 })
 export class InventoryService {
-  private url = environment.apiHost + 'api/item';
+  private url = `${environment.apiHost}api/item`;
 
   constructor(private http: HttpClient, private util: UtilitiesService) { }
 

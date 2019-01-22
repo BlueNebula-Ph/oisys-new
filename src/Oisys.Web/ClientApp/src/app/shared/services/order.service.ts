@@ -3,6 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { environment } from '../../../environments/environment';
+
 import { Order } from '../models/order';
 import { UtilitiesService } from './utilities.service';
 import { PagedData } from '../models/paged-data';
@@ -11,7 +12,7 @@ import { PagedData } from '../models/paged-data';
   providedIn: 'root'
 })
 export class OrderService {
-  private url = environment.apiHost + 'api/order';
+  private url = `${environment.apiHost}api/order`;
 
   constructor(private http: HttpClient, private util: UtilitiesService) { }
 
@@ -28,7 +29,7 @@ export class OrderService {
     dateTo?: Date
   ): Observable<PagedData<Order>> {
     var filter = { pageNumber, pageSize, sortBy, sortDirection, searchTerm, customerId, provinceId, itemId, dateFrom, dateTo };
-    var searchUrl = this.url + '/search';
+    var searchUrl = `${this.url}/search`;
 
     return this.http.post<any>(searchUrl, filter)
       .pipe(
@@ -37,12 +38,12 @@ export class OrderService {
   };
 
   getOrderById(id: number): Observable<any> {
-    var getUrl = this.url + "/" + id;
+    var getUrl = `${this.url}/${id}`;
     return this.http.get<any>(getUrl);
   };
 
   getOrderLookup(): Observable<Order[]> {
-    var lookupUrl = this.url + "/lookup";
+    var lookupUrl = `${this.url}/lookup`;
     return this.http.get<Order[]>(lookupUrl);
   };
 
@@ -50,13 +51,13 @@ export class OrderService {
     if (order.id == 0) {
       return this.http.post<Order>(this.url, order, this.util.httpOptions);
     } else {
-      var editUrl = this.url + "/" + order.id;
+      var editUrl = `${this.url}/${order.id}`;
       return this.http.put<Order>(editUrl, order, this.util.httpOptions);
     }
   };
 
   deleteOrder(id: number): Observable<any> {
-    var deleteUrl = this.url + "/" + id;
+    var deleteUrl = `${this.url}/${id}`;
     return this.http.delete(deleteUrl, this.util.httpOptions);
   };
 }

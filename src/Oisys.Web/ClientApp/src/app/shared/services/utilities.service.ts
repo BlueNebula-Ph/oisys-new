@@ -16,11 +16,11 @@ export class UtilitiesService {
   constructor(private toastrService: ToastrService) { }
 
   showSuccessMessage(message: string): void {
-    this.toastrService.success(message, "Success!");
+    this.toastrService.success(message, 'Success!');
   };
 
   showErrorMessage(message: string): void {
-    this.toastrService.error(message, "Error!");
+    this.toastrService.error(message, 'Error!');
   };
 
   /**

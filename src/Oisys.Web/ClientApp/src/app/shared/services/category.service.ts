@@ -12,13 +12,13 @@ import { PagedData } from '../models/paged-data';
   providedIn: 'root'
 })
 export class CategoryService {
-  private url = environment.apiHost + 'api/category';
+  private url = `${environment.apiHost}api/category`;
 
   constructor(private http: HttpClient, private util: UtilitiesService) { }
 
   getCategories(pageNumber: number, pageSize: number, sortBy: string, sortDirection: string, searchTerm: string): Observable<PagedData<Category>> {
     var filter = { pageNumber, pageSize, sortBy, sortDirection, searchTerm };
-    var searchUrl = this.url + '/search';
+    var searchUrl = `${this.url}/search`;
 
     return this.http.post<any>(searchUrl, filter)
       .pipe(
@@ -27,12 +27,12 @@ export class CategoryService {
   };
 
   getCategoryById(id: number): Observable<Category> {
-    var getUrl = this.url + "/" + id;
+    var getUrl = `${this.url}/${id}`;
     return this.http.get<Category>(getUrl);
   };
 
   getCategoryLookup(): Observable<Category[]> {
-    var lookupUrl = this.url + "/lookup";
+    var lookupUrl = `${this.url}/lookup`;
     return this.http.get<Category[]>(lookupUrl);
   };
 
@@ -40,13 +40,13 @@ export class CategoryService {
     if (category.id == 0) {
       return this.http.post<Category>(this.url, category, this.util.httpOptions);
     } else {
-      var editUrl = this.url + '/' + category.id;
+      var editUrl = `${this.url}/${category.id}`;
       return this.http.put<Category>(editUrl, category, this.util.httpOptions);
     }
   };
 
   deleteCategory(id: number): Observable<any> {
-    var deleteUrl = this.url + "/" + id;
+    var deleteUrl = `${this.url}/${id}`;
     return this.http.delete(deleteUrl, this.util.httpOptions);
   };
 }
