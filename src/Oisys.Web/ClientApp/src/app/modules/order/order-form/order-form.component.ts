@@ -97,6 +97,12 @@ export class OrderFormComponent implements AfterContentInit {
     this.order.updateLineItems();
   };
 
+  removeLineItem(index: number) {
+    if(confirm('Are you sure you want to remove this item?')) {
+      this.order.lineItems.splice(index, 1);
+    }
+  };
+
   // Autocomplete
   searchCustomer = (text$: Observable<string>) =>
     text$.pipe(

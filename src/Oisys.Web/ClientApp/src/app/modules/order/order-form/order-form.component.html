@@ -83,7 +83,7 @@
                     <td><input currencyMask class="form-control form-control-sm text-right" [(ngModel)]="lineItem.unitPrice" [ngModelOptions]="{standalone: true}" /></td>
                     <td><input currencyMask class="form-control form-control-sm text-right" [(ngModel)]="lineItem.totalPrice" [ngModelOptions]="{standalone: true}" readonly /></td>
                     <td class="text-center">
-                      <button class="btn btn-ghost-danger btn-sm"><i class="fa fa-fw fa-trash"></i></button>
+                      <button type="button" class="btn btn-ghost-danger btn-sm" (click)="removeLineItem($index)"><i class="fa fa-fw fa-trash"></i></button>
                     </td>
                   </tr>
                 </tbody>
@@ -139,9 +139,10 @@
   <ngb-highlight [result]="customer.name" [term]="t"></ngb-highlight>
 </ng-template>
 <ng-template #itemTemplate let-item="result" let-t="term">
-  {{ item.code }}
-  <ngb-highlight [result]="item.name" [term]="t"></ngb-highlight>
-  <div>
-    {{ item.mainPrice | currency:'PHP':'₱ ' }}
+  <span>{{ item.code }}</span> - 
+  <ngb-highlight [result]="item.name" [term]="t"></ngb-highlight>&nbsp;
+  <small>({{ item.quantity }} {{ item.unit }})</small>
+  <div class="small">
+    <em>Main: {{ item.mainPrice | currency:'PHP':'₱ '}} | Walk-In: {{ item.mainPrice | currency:'PHP':'₱ '}} | N.E: {{ item.mainPrice | currency:'PHP':'₱ '}}</em>
   </div>
 </ng-template>
