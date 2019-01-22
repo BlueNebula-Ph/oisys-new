@@ -7,6 +7,7 @@ import { SharedModule } from '../../shared/modules/shared.module';
 import { InventoryListComponent } from './inventory-list/inventory-list.component';
 import { InventoryFormComponent } from './inventory-form/inventory-form.component';
 import { InventoryDetailComponent } from './inventory-detail/inventory-detail.component';
+import { AdjustItemComponent } from './adjust-item/adjust-item.component';
 
 @NgModule({
   imports: [
@@ -17,7 +18,8 @@ import { InventoryDetailComponent } from './inventory-detail/inventory-detail.co
   declarations: [
     InventoryListComponent,
     InventoryFormComponent,
-    InventoryDetailComponent
+    InventoryDetailComponent,
+    AdjustItemComponent,
   ]
 })
 export class InventoryModule { }

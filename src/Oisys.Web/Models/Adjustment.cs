@@ -1,7 +1,7 @@
-﻿namespace OisysNew.Models
-{
-    using System;
+﻿using System;
 
+namespace OisysNew.Models
+{
     /// <summary>
     /// <see cref="Adjustment"/> class.
     /// </summary>

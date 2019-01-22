@@ -1,5 +1,5 @@
-﻿using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
+﻿using OisysNew.Helpers;
+using System.Collections.Generic;
 
 namespace OisysNew.Models
 {
@@ -77,15 +77,5 @@ namespace OisysNew.Models
         /// Gets or sets property Customer transactions.
         /// </summary>
         public virtual ICollection<CustomerTransaction> Transactions { get; set; }
-    }
-
-    public enum PriceList
-    {
-        [Display(Name = "Main Price")]
-        MainPrice = 1,
-        [Display(Name = "Walk-In Price")]
-        WalkInPrice = 2,
-        [Display(Name = "N.E. Price")]
-        NEPrice = 3
     }
 }

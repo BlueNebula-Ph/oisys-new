@@ -1,7 +1,7 @@
-﻿namespace OisysNew.Helpers
-{
-    using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
+namespace OisysNew.Helpers
+{
     /// <summary>
     /// Values to define different adjustment types
     /// </summary>
@@ -11,12 +11,12 @@
         /// AdjustmentType Add
         /// </summary>
         [Display(Name = "Add")]
-        Add,
+        Add = 1,
 
         /// <summary>
         /// AdjustmentType Subtract
         /// </summary>
         [Display(Name = "Deduct")]
-        Deduct,
+        Deduct = 2,
     }
 }

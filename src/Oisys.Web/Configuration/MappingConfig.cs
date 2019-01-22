@@ -31,7 +31,8 @@ namespace OisysNew.Configuration
                 .ForMember(d => d.AdjustmentType, s => s.MapFrom(o => $"{o.AdjustmentType}"))
                 .ForMember(d => d.Quantity, s => s.MapFrom(o => o.Quantity));
 
-            CreateMap<SaveItemAdjustmentRequest, Adjustment>();
+            CreateMap<SaveItemAdjustmentRequest, Adjustment>()
+                .ForMember(d => d.Quantity, s => s.MapFrom(o => o.AdjustmentQuantity));
 
             // Category
             CreateMap<Category, CategorySummary>();

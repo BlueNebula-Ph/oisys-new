@@ -105,12 +105,14 @@ namespace OisysNew.Services
             {
                 ItemId = adjustment.ItemId,
                 Date = DateTime.Now,
-                Quantity = adjustment.AdjustmentType == AdjustmentType.Add.ToString() ? adjustment.Quantity : adjustment.Quantity * -1,
+                Quantity = adjustment.AdjustmentType == AdjustmentType.Add.ToString() ? 
+                    adjustment.Quantity : 
+                    adjustment.Quantity * -1,
                 Remarks = adjustment.Remarks,
                 Adjustment = adjustment
             };
 
-            context.Entry(itemHistory).State = EntityState.Modified;
+            context.Entry(itemHistory).State = EntityState.Added;
         }
 
         private async Task UpdateCreditMemoItemHistory(CreditMemoLineItem creditMemoLineItem, AdjustmentType adjustmentType, string remarks)

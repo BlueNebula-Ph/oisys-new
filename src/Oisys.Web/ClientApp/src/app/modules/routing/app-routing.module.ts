@@ -16,6 +16,7 @@ import { EditCustomerComponent } from '../customer/edit-customer/edit-customer.c
 import { InventoryListComponent } from '../inventory/inventory-list/inventory-list.component';
 import { InventoryFormComponent } from '../inventory/inventory-form/inventory-form.component';
 import { InventoryDetailComponent } from '../inventory/inventory-detail/inventory-detail.component';
+import { AdjustItemComponent } from '../inventory/adjust-item/adjust-item.component';
 
 import { OrderListComponent } from '../order/order-list/order-list.component';
 import { OrderDetailComponent } from '../order/order-detail/order-detail.component';
@@ -38,6 +39,8 @@ const routes: Routes = [
   { path: 'inventory', component: InventoryListComponent },
   { path: 'inventory/edit/:id', component: InventoryFormComponent },
   { path: 'inventory/info/:id', component: InventoryDetailComponent },
+  { path: 'adjustment', component: AdjustItemComponent, data: { type: 'adjustment' } },
+  { path: 'manufacture', component: AdjustItemComponent, data: { type: 'manufacturing' } },
   // Admin
   { path: 'categories', component: CategoryListComponent, pathMatch: 'full' },
   { path: 'provinces', component: ProvinceListComponent, pathMatch: 'full' },

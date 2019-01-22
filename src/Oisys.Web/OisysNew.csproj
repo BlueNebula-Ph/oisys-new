@@ -33,6 +33,8 @@
 
   <ItemGroup>
     <None Remove="ClientApp\src\app\nav.ts" />
+    <None Remove="ClientApp\src\app\shared\models\adjustment-type.ts" />
+    <None Remove="ClientApp\src\app\shared\models\adjustment.ts" />
     <None Remove="ClientApp\src\app\shared\models\city.ts" />
     <None Remove="ClientApp\src\app\shared\models\item.ts" />
     <None Remove="ClientApp\src\app\shared\models\model-base.ts" />
@@ -46,6 +48,8 @@
 
   <ItemGroup>
     <TypeScriptCompile Include="ClientApp\src\app\nav.ts" />
+    <TypeScriptCompile Include="ClientApp\src\app\shared\models\adjustment-type.ts" />
+    <TypeScriptCompile Include="ClientApp\src\app\shared\models\adjustment.ts" />
     <TypeScriptCompile Include="ClientApp\src\app\shared\models\model-base.ts" />
     <TypeScriptCompile Include="ClientApp\src\app\shared\models\city.ts" />
     <TypeScriptCompile Include="ClientApp\src\app\shared\models\item.ts" />

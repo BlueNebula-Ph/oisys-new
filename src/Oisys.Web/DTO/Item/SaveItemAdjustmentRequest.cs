@@ -9,6 +9,11 @@ namespace OisysNew.DTO
     public class SaveItemAdjustmentRequest : DTOBase
     {
         /// <summary>
+        /// Gets or sets the item id to be adjusted.
+        /// </summary>
+        public int ItemId { get; set; }
+
+        /// <summary>
         /// Gets or sets property AdjustmentType.
         /// </summary>
         [Required]

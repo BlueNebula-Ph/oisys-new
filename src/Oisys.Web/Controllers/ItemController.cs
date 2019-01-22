@@ -279,16 +279,16 @@ namespace OisysNew.Controllers
         /// <param name="id">Id</param>
         /// <param name="saveAdjustmentRequest"><see cref="SaveItemAdjustmentRequest"/></param>
         /// <returns>None</returns>
-        [HttpPost("{id}/adjust")]
+        [HttpPost("{itemId}/adjust")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult> AdjustItem(long id, [FromBody]SaveItemAdjustmentRequest saveAdjustmentRequest)
+        public async Task<ActionResult> AdjustItem(long itemId, [FromBody]SaveItemAdjustmentRequest saveAdjustmentRequest)
         {
             try
             {
-                var item = await context.Items.SingleOrDefaultAsync(c => c.Id == id);
+                var item = await context.Items.SingleOrDefaultAsync(c => c.Id == itemId);
 
                 if (item == null)
                 {

@@ -1,16 +1,8 @@
-﻿using System;
+﻿using OisysNew.Helpers;
+using System;
 
 namespace OisysNew.Models
 {
-    public enum VoucherCategory
-    {
-        Automotive,
-        Electrical,
-        Hardware,
-        Industrial,
-        Other
-    }
-
     /// <summary>
     /// The cash voucher model
     /// </summary>

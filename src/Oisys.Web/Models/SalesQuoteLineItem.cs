@@ -1,7 +1,5 @@
 ﻿namespace OisysNew.Models
 {
-    using System.ComponentModel.DataAnnotations;
-
     /// <summary>
     /// <see cref="SalesQuote"/> class represents child of SalesQuote created in the application.
     /// </summary>

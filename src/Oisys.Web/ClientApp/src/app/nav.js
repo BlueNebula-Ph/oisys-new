@@ -12,8 +12,13 @@ exports.navItems = [
     },
     {
         name: 'Adjustments',
-        url: '/adjustments',
-        icon: 'fa fa-pencil'
+        url: '/adjustment',
+        icon: 'fa fa-exchange'
+    },
+    {
+        name: 'Manufacture',
+        url: '/manufacture',
+        icon: 'fa fa-wrench'
     },
     {
         title: true,
