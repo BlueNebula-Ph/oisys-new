@@ -35,6 +35,7 @@
     <None Remove="ClientApp\src\app\nav.ts" />
     <None Remove="ClientApp\src\app\shared\models\adjustment-type.ts" />
     <None Remove="ClientApp\src\app\shared\models\adjustment.ts" />
+    <None Remove="ClientApp\src\app\shared\models\cash-voucher.ts" />
     <None Remove="ClientApp\src\app\shared\models\city.ts" />
     <None Remove="ClientApp\src\app\shared\models\item.ts" />
     <None Remove="ClientApp\src\app\shared\models\model-base.ts" />
@@ -44,12 +45,14 @@
     <None Remove="ClientApp\src\app\shared\models\paged-data.ts" />
     <None Remove="ClientApp\src\app\shared\models\Province.ts" />
     <None Remove="ClientApp\src\app\shared\models\sort.ts" />
+    <None Remove="ClientApp\src\app\shared\models\voucher-category.ts" />
   </ItemGroup>
 
   <ItemGroup>
     <TypeScriptCompile Include="ClientApp\src\app\nav.ts" />
     <TypeScriptCompile Include="ClientApp\src\app\shared\models\adjustment-type.ts" />
     <TypeScriptCompile Include="ClientApp\src\app\shared\models\adjustment.ts" />
+    <TypeScriptCompile Include="ClientApp\src\app\shared\models\cash-voucher.ts" />
     <TypeScriptCompile Include="ClientApp\src\app\shared\models\model-base.ts" />
     <TypeScriptCompile Include="ClientApp\src\app\shared\models\city.ts" />
     <TypeScriptCompile Include="ClientApp\src\app\shared\models\item.ts" />
@@ -59,6 +62,7 @@
     <TypeScriptCompile Include="ClientApp\src\app\shared\models\paged-data.ts" />
     <TypeScriptCompile Include="ClientApp\src\app\shared\models\province.ts" />
     <TypeScriptCompile Include="ClientApp\src\app\shared\models\sort.ts" />
+    <TypeScriptCompile Include="ClientApp\src\app\shared\models\voucher-category.ts" />
   </ItemGroup>
 
   <Target Name="DebugEnsureNodeEnv" BeforeTargets="Build" Condition=" '$(Configuration)' == 'Debug' And !Exists('$(SpaRoot)node_modules') ">

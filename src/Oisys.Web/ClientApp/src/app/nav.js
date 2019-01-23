@@ -46,7 +46,7 @@ exports.navItems = [
     },
     {
         name: 'Cash Vouchers',
-        url: '/base',
+        url: '/vouchers',
         icon: 'cui-note'
     },
     {

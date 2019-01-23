@@ -1,3 +1,53 @@
-<p>
-  voucher-form works!
-</p>
+<div class="animated fadeIn">
+  <form #cashVoucherForm="ngForm" (ngSubmit)="saveCashVoucher(cashVoucherForm)">
+    <div class="card no-radius">
+      <h6 class="card-header">Save Voucher Information.</h6>
+      <div class="card-body">
+        <div class="row">
+          <div class="col-4">
+            <div class="form-group">
+              <label>Pay To.</label>
+              <input class="form-control" name="payTo" [(ngModel)]="voucher.payTo" required>
+            </div>
+            <div class="form-group">
+              <label>Date.</label>
+              <div class="input-group">
+                <input type="date" class="form-control" name="date" placeholder="Voucher date" [ngModel]="voucher.date | date:'yyyy-MM-dd'" (ngModelChange)="voucher.date=$event">
+                <div class="input-group-append">
+                  <span class="input-group-text">* Required</span>
+                </div>
+              </div>
+            </div>
+            <div class="form-group">
+              <label>Description.</label>
+              <textarea class="form-control" rows="4" name="description" [(ngModel)]="voucher.description"></textarea>
+            </div>
+            <div class="form-group">
+              <label>Category.</label>
+              <select class="form-control" name="category" [(ngModel)]="voucher.category">
+                <option *ngFor="let t of voucherCategories | enumToArray" [ngValue]="t.value">{{ t.key }}</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Amount.</label>
+              <input currencyMask class="form-control" name="amount" [(ngModel)]="voucher.amount">
+            </div>
+            <div class="form-group">
+              <label>Released By.</label>
+              <input class="form-control" name="releasedBy" [(ngModel)]="voucher.releasedBy">
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="card-footer">
+        <a routerLink="/vouchers" class="btn btn-secondary btn-square">
+          <i class="fa fa-angle-double-left mr-1"></i>Back
+        </a>
+        <button type="submit" class="btn btn-primary btn-square ml-1" title="Save voucher information."
+                [disabled]="!cashVoucherForm.form.valid || isSaving">
+          <i *ngIf="!isSaving" class="fa fa-save mr-1"></i><i *ngIf="isSaving" class="fa fa-spinner fa-spin mr-1"></i>Save
+        </button>
+      </div>
+    </div>
+  </form>
+</div>

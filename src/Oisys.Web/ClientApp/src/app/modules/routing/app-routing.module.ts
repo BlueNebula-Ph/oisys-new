@@ -22,6 +22,10 @@ import { OrderListComponent } from '../order/order-list/order-list.component';
 import { OrderDetailComponent } from '../order/order-detail/order-detail.component';
 import { OrderFormComponent } from '../order/order-form/order-form.component';
 
+import { VoucherListComponent } from '../voucher/voucher-list/voucher-list.component';
+import { VoucherFormComponent } from '../voucher/voucher-form/voucher-form.component';
+import { VoucherDetailComponent } from '../voucher/voucher-detail/voucher-detail.component';
+
 const routes: Routes = [
   { path: '', component: HomeComponent, pathMatch: 'full' },
   // Examples
@@ -41,6 +45,10 @@ const routes: Routes = [
   { path: 'inventory/info/:id', component: InventoryDetailComponent },
   { path: 'adjustment', component: AdjustItemComponent, data: { type: 'adjustment' } },
   { path: 'manufacture', component: AdjustItemComponent, data: { type: 'manufacturing' } },
+  // Cash Vouchers
+  { path: 'vouchers', component: VoucherListComponent },
+  { path: 'vouchers/edit/:id', component: VoucherFormComponent },
+  { path: 'vouchers/info/:id', component: VoucherDetailComponent },
   // Admin
   { path: 'categories', component: CategoryListComponent, pathMatch: 'full' },
   { path: 'provinces', component: ProvinceListComponent, pathMatch: 'full' },

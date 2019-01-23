@@ -10,12 +10,12 @@ namespace OisysNew.DTO.CashVoucher
         /// <summary>
         /// Gets or sets the voucher number
         /// </summary>
-        public string VoucherNumber { get; set; }
+        public int VoucherNumber { get; set; }
 
         /// <summary>
         /// Gets or sets the voucher date
         /// </summary>
-        public DateTime Date { get; set; }
+        public string Date { get; set; }
 
         /// <summary>
         /// Gets or sets pay to
@@ -28,6 +28,11 @@ namespace OisysNew.DTO.CashVoucher
         public string Description { get; set; }
 
         /// <summary>
+        /// Gets or sets the category name
+        /// </summary>
+        public string Category { get; set; }
+
+        /// <summary>
         /// Gets or sets amount
         /// </summary>
         public decimal Amount { get; set; }
@@ -36,10 +41,5 @@ namespace OisysNew.DTO.CashVoucher
         /// Gets or sets released by
         /// </summary>
         public string ReleasedBy { get; set; }
-
-        /// <summary>
-        /// Gets or sets the category name
-        /// </summary>
-        public string Category { get; set; }
     }
 }

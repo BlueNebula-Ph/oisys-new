@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using OisysNew.DTO;
+using OisysNew.DTO.CashVoucher;
 using OisysNew.DTO.Category;
 using OisysNew.DTO.CreditMemo;
 using OisysNew.DTO.Customer;
@@ -10,7 +11,6 @@ using OisysNew.DTO.Province;
 using OisysNew.DTO.SalesQuote;
 using OisysNew.Extensions;
 using OisysNew.Models;
-using System;
 using System.Linq;
 
 namespace OisysNew.Configuration
@@ -27,12 +27,15 @@ namespace OisysNew.Configuration
         {
             // Adjustment
             CreateMap<Adjustment, ItemAdjustmentSummary>()
-                .ForMember(d => d.Item, s => s.MapFrom(o => o.Item.Name))
-                .ForMember(d => d.AdjustmentType, s => s.MapFrom(o => $"{o.AdjustmentType}"))
-                .ForMember(d => d.Quantity, s => s.MapFrom(o => o.Quantity));
+                .ForMember(d => d.Item, s => s.MapFrom(o => o.Item.Name));
 
             CreateMap<SaveItemAdjustmentRequest, Adjustment>()
                 .ForMember(d => d.Quantity, s => s.MapFrom(o => o.AdjustmentQuantity));
+
+            // Cash Voucher
+            CreateMap<CashVoucher, CashVoucherSummary>()
+                .ForMember(d => d.Date, s => s.MapFrom(o => o.Date.ToShortDateString()));
+            CreateMap<SaveCashVoucherRequest, CashVoucher>();
 
             // Category
             CreateMap<Category, CategorySummary>();
@@ -148,12 +151,6 @@ namespace OisysNew.Configuration
 
             CreateMap<SaveSalesQuoteDetailRequest, SalesQuoteLineItem>();
 
-            // // Cash Voucher
-            // CreateMap<CashVoucher, CashVoucherSummary>();
-            // CreateMap<SaveCashVoucherRequest, CashVoucher>();
-
-            
-
             // // Customer Transaction
             // // TODO: Create method to compute running balance
             // CreateMap<SaveCustomerTrxRequest, CustomerTransaction>();
@@ -177,10 +174,6 @@ namespace OisysNew.Configuration
             //     .ForMember(d => d.ItemCodeName, s => s.MapFrom(o => $"{o.OrderDetail.Item.Code} - {o.OrderDetail.Item.Name}"))
             //     .ForMember(d => d.Unit, s => s.MapFrom(o => o.OrderDetail.Item.Unit));
             // CreateMap<SaveDeliveryDetailRequest, DeliveryDetail>();
-
-            
-
-
 
             // // User
             // CreateMap<User, UserSummary>()

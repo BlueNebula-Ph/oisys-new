@@ -6,31 +6,31 @@
         <div class="row">
           <div class="col-4">
             <div class="form-group">
-              <label>Item</label>
+              <label>Item.</label>
               <input class="form-control" name="item" placeholder="Select item..."
                      [ngbTypeahead]="searchItem" [inputFormatter]="itemFormatter" [resultTemplate]="itemTemplate"
                      [(ngModel)]="adjustment.selectedItem">
             </div>
             <div class="form-group" *ngIf="isAdjustment">
-              <label>Adjustment Type</label>
+              <label>Adjustment Type.</label>
               <select class="form-control" name="adjustmentType" [(ngModel)]="adjustment.adjustmentType">
                 <option *ngFor="let t of adjustmentTypes | enumToArray" [ngValue]="t.value">{{ t.key }}</option>
               </select>
             </div>
             <div class="form-group">
-              <label>Quantity</label>
+              <label>Quantity.</label>
               <input type="number" class="form-control" name="adjustmentQuantity" [(ngModel)]="adjustment.adjustmentQuantity" required>
             </div>
             <div class="form-group" *ngIf="isManufacturing">
-              <label>Machine</label>
+              <label>Machine.</label>
               <input class="form-control" name="machine" [(ngModel)]="adjustment.machine">
             </div>
             <div class="form-group" *ngIf="isManufacturing">
-              <label>Operator</label>
+              <label>Operator.</label>
               <input class="form-control" name="operator" [(ngModel)]="adjustment.operator">
             </div>
             <div class="form-group">
-              <label>Remarks</label>
+              <label>Remarks.</label>
               <textarea class="form-control" rows="4" name="remarks" [(ngModel)]="adjustment.remarks"></textarea>
             </div>
           </div>

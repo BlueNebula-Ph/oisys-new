@@ -1,4 +1,5 @@
-﻿using System;
+﻿using OisysNew.Helpers;
+using System;
 using System.ComponentModel.DataAnnotations;
 
 namespace OisysNew.DTO.CashVoucher
@@ -30,6 +31,11 @@ namespace OisysNew.DTO.CashVoucher
         public string Description { get; set; }
 
         /// <summary>
+        /// Gets or sets category
+        /// </summary>
+        public VoucherCategory Category { get; set; }
+
+        /// <summary>
         /// Gets or sets amount
         /// </summary>
         public decimal Amount { get; set; }
@@ -38,10 +44,5 @@ namespace OisysNew.DTO.CashVoucher
         /// Gets or sets released by
         /// </summary>
         public string ReleasedBy { get; set; }
-
-        /// <summary>
-        /// Gets or sets category
-        /// </summary>
-        public string Category { get; set; }
     }
 }
