@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace OisysNew.DTO.CashVoucher
+﻿namespace OisysNew.DTO.CashVoucher
 {
     /// <summary>
     /// The cash voucher view model

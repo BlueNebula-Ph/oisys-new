@@ -15,7 +15,7 @@ import { Customer } from '../../../shared/models/customer';
 import { Order } from '../../../shared/models/order';
 import { Item } from '../../../shared/models/item';
 import { Province } from '../../../shared/models/province';
-import { OrderLineItem } from '../../../shared/models/order-line-item';
+import { LineItem } from '../../../shared/models/line-item';
 
 @Component({
   selector: 'app-order-list',
@@ -77,7 +77,7 @@ export class OrderListComponent implements AfterContentInit {
           this.page = data.pageInfo;
 
           return data.items.map(order => {
-            order.lineItems = order.lineItems.map(lineItem => new OrderLineItem(lineItem));
+            order.lineItems = order.lineItems.map(lineItem => new LineItem(lineItem));
             return new Order(order);
           });
         }),

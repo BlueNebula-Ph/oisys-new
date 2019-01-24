@@ -5,7 +5,7 @@ namespace OisysNew.DTO.SalesQuote
     /// <summary>
     /// <see cref="SalesQuoteDetail"/> class represents the child of SalesQuote object.
     /// </summary>
-    public class SaveSalesQuoteDetailRequest : DTOBase
+    public class SaveSalesQuoteLineItemRequest : DTOBase
     {
         /// <summary>
         /// Gets or sets property SalesQuoteId.
@@ -29,7 +29,7 @@ namespace OisysNew.DTO.SalesQuote
         /// Gets or sets property Price.
         /// </summary>
         [Required]
-        public decimal Price { get; set; }
+        public decimal UnitPrice { get; set; }
 
         /// <summary>
         /// Gets or sets property TotalPrice.

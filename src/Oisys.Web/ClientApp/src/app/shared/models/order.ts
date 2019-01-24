@@ -1,8 +1,8 @@
-import { ModelBase } from "./model-base";
 import { Customer } from "./customer";
-import { OrderLineItem } from "./order-line-item";
+import { JsonModelBase } from "./json-model-base";
+import { LineItem } from "./line-item";
 
-export class Order extends ModelBase {
+export class Order extends JsonModelBase {
   public id: number;
   public code: number;
   public customerId: number;
@@ -10,7 +10,7 @@ export class Order extends ModelBase {
   public customerAddress: string;
   public date: Date;
   public dueDate: Date;
-  public lineItems: OrderLineItem[];
+  public lineItems: LineItem[];
 
   private _selectedCustomer: Customer;
   get selectedCustomer() {
@@ -37,7 +37,6 @@ export class Order extends ModelBase {
   set discountPercent(value: number) {
     this._discountPercent = value;
   }
-
 
   get grossAmount() {
     var totalGrossAmount = 0;
@@ -78,7 +77,7 @@ export class Order extends ModelBase {
     this.dueDate = order && order.dueDate || new Date();
 
     this.discountPercent = order && order.discountPercent || 0;
-    this.lineItems = order && order.lineItems || new Array<OrderLineItem>();
+    this.lineItems = order && order.lineItems || new Array<LineItem>();
   }
 
   updateLineItems() {

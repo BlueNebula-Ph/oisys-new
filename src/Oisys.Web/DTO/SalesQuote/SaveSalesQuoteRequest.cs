@@ -39,6 +39,6 @@ namespace OisysNew.DTO.SalesQuote
         /// <summary>
         /// Gets or sets collection of SalesQuoteDetails navigation property.
         /// </summary>
-        public IEnumerable<SaveSalesQuoteDetailRequest> LineItems { get; set; }
+        public IEnumerable<SaveSalesQuoteLineItemRequest> LineItems { get; set; }
     }
 }

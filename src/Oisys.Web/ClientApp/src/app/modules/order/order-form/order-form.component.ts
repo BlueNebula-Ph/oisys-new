@@ -14,7 +14,7 @@ import { UtilitiesService } from '../../../shared/services/utilities.service';
 import { Order } from '../../../shared/models/order';
 import { Customer } from '../../../shared/models/customer';
 import { Item } from '../../../shared/models/item';
-import { OrderLineItem } from '../../../shared/models/order-line-item';
+import { LineItem } from '../../../shared/models/line-item';
 
 @Component({
   selector: 'app-order-form',
@@ -71,7 +71,7 @@ export class OrderFormComponent implements AfterContentInit {
           .subscribe(order => {
             this.order = new Order(order);
             this.order.lineItems = order.lineItems.map(lineItem => {
-              var orderLineItem = new OrderLineItem(lineItem);
+              var orderLineItem = new LineItem(lineItem);
               orderLineItem.selectedItem = this.filterItems(lineItem.itemName)[0];
               return orderLineItem;
             });
@@ -93,7 +93,8 @@ export class OrderFormComponent implements AfterContentInit {
 
   // Line items
   addLineItem() {
-    this.order.lineItems.push(new OrderLineItem());
+    //this.order.lineItems.push(new OrderLineItem());
+    this.order.lineItems.push(new LineItem());
     this.order.updateLineItems();
   };
 
@@ -123,8 +124,6 @@ export class OrderFormComponent implements AfterContentInit {
 
   private filterCustomers(value: string): Customer[] {
     const filterValue = value.toLowerCase();
-
-    console.log(this.customers);
 
     return this.customers.filter(customer => customer.name.toLowerCase().startsWith(filterValue)).splice(0, 10);
   }

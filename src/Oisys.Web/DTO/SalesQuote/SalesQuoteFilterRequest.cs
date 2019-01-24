@@ -18,6 +18,16 @@ namespace OisysNew.DTO.SalesQuote
         public int? CustomerId { get; set; }
 
         /// <summary>
+        /// Gets or sets property Province Id.
+        /// </summary>
+        public int? ProvinceId { get; set; }
+
+        /// <summary>
+        /// Gets or sets property Item.
+        /// </summary>
+        public int? ItemId { get; set; }
+
+        /// <summary>
         /// Gets or sets property Order DateFrom.
         /// </summary>
         public DateTime? DateFrom { get; set; }
@@ -26,15 +36,5 @@ namespace OisysNew.DTO.SalesQuote
         /// Gets or sets property Order DateTo.
         /// </summary>
         public DateTime? DateTo { get; set; }
-
-        /// <summary>
-        /// Gets or sets property Item.
-        /// </summary>
-        public int? ItemId { get; set; }
-
-        /// <summary>
-        /// Gets or sets property Province Id.
-        /// </summary>
-        public int? ProvinceId { get; set; }
     }
 }

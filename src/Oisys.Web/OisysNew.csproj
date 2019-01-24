@@ -38,12 +38,13 @@
     <None Remove="ClientApp\src\app\shared\models\cash-voucher.ts" />
     <None Remove="ClientApp\src\app\shared\models\city.ts" />
     <None Remove="ClientApp\src\app\shared\models\item.ts" />
-    <None Remove="ClientApp\src\app\shared\models\model-base.ts" />
-    <None Remove="ClientApp\src\app\shared\models\order-line-item.ts" />
+    <None Remove="ClientApp\src\app\shared\models\json-model-base.ts" />
+    <None Remove="ClientApp\src\app\shared\models\line-item.ts" />
     <None Remove="ClientApp\src\app\shared\models\order.ts" />
     <None Remove="ClientApp\src\app\shared\models\page.ts" />
     <None Remove="ClientApp\src\app\shared\models\paged-data.ts" />
     <None Remove="ClientApp\src\app\shared\models\Province.ts" />
+    <None Remove="ClientApp\src\app\shared\models\sales-quotation.ts" />
     <None Remove="ClientApp\src\app\shared\models\sort.ts" />
     <None Remove="ClientApp\src\app\shared\models\voucher-category.ts" />
   </ItemGroup>
@@ -53,14 +54,15 @@
     <TypeScriptCompile Include="ClientApp\src\app\shared\models\adjustment-type.ts" />
     <TypeScriptCompile Include="ClientApp\src\app\shared\models\adjustment.ts" />
     <TypeScriptCompile Include="ClientApp\src\app\shared\models\cash-voucher.ts" />
-    <TypeScriptCompile Include="ClientApp\src\app\shared\models\model-base.ts" />
+    <TypeScriptCompile Include="ClientApp\src\app\shared\models\line-item.ts" />
+    <TypeScriptCompile Include="ClientApp\src\app\shared\models\json-model-base.ts" />
     <TypeScriptCompile Include="ClientApp\src\app\shared\models\city.ts" />
     <TypeScriptCompile Include="ClientApp\src\app\shared\models\item.ts" />
-    <TypeScriptCompile Include="ClientApp\src\app\shared\models\order-line-item.ts" />
     <TypeScriptCompile Include="ClientApp\src\app\shared\models\order.ts" />
     <TypeScriptCompile Include="ClientApp\src\app\shared\models\page.ts" />
     <TypeScriptCompile Include="ClientApp\src\app\shared\models\paged-data.ts" />
     <TypeScriptCompile Include="ClientApp\src\app\shared\models\province.ts" />
+    <TypeScriptCompile Include="ClientApp\src\app\shared\models\sales-quotation.ts" />
     <TypeScriptCompile Include="ClientApp\src\app\shared\models\sort.ts" />
     <TypeScriptCompile Include="ClientApp\src\app\shared\models\voucher-category.ts" />
   </ItemGroup>
@@ -91,5 +93,21 @@
       </ResolvedFileToPublish>
     </ItemGroup>
   </Target>
+
+  <PropertyGroup Condition="'$(Configuration)' == 'Debug'">
+    <TypeScriptTarget>ESNext</TypeScriptTarget>
+    <TypeScriptJSXEmit>None</TypeScriptJSXEmit>
+    <TypeScriptModuleKind>ES6</TypeScriptModuleKind>
+    <TypeScriptCompileOnSaveEnabled>True</TypeScriptCompileOnSaveEnabled>
+    <TypeScriptNoImplicitAny>False</TypeScriptNoImplicitAny>
+    <TypeScriptRemoveComments>False</TypeScriptRemoveComments>
+    <TypeScriptOutFile />
+    <TypeScriptOutDir />
+    <TypeScriptGeneratesDeclarations>False</TypeScriptGeneratesDeclarations>
+    <TypeScriptNoEmitOnError>True</TypeScriptNoEmitOnError>
+    <TypeScriptSourceMap>True</TypeScriptSourceMap>
+    <TypeScriptMapRoot />
+    <TypeScriptSourceRoot />
+  </PropertyGroup>
 
 </Project>

@@ -11,7 +11,7 @@ namespace OisysNew.DTO.SalesQuote
         /// <summary>
         /// Gets or sets property Quote Number.
         /// </summary>
-        public string QuoteNumber { get; set; }
+        public int QuoteNumber { get; set; }
 
         /// <summary>
         /// Gets or sets property CustomerId.
@@ -29,14 +29,9 @@ namespace OisysNew.DTO.SalesQuote
         public string CustomerAddress { get; set; }
 
         /// <summary>
-        /// Gets or sets property Customer Contact.
-        /// </summary>
-        public string CustomerContact { get; set; }
-
-        /// <summary>
         /// Gets or sets property Date.
         /// </summary>
-        public DateTime Date { get; set; }
+        public string Date { get; set; }
 
         /// <summary>
         /// Gets or sets property DeliveryFee.
@@ -51,6 +46,6 @@ namespace OisysNew.DTO.SalesQuote
         /// <summary>
         /// Gets or sets collection of SalesQuoteDetailSummary navigation property.
         /// </summary>
-        public IEnumerable<SalesQuoteDetailSummary> LineItems { get; set; }
+        public IEnumerable<SalesQuoteLineItemSummary> LineItems { get; set; }
     }
 }

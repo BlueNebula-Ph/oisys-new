@@ -1,5 +1,5 @@
-export abstract class ModelBase {
-  toJSON() {
+export class JsonModelBase {
+  public toJSON() {
     const proto = Object.getPrototypeOf(this);
     const jsonObj: any = Object.assign({}, this);
 
@@ -17,5 +17,5 @@ export abstract class ModelBase {
       });
 
     return jsonObj;
-  }
+  };
 }

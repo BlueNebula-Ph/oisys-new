@@ -8,12 +8,12 @@ namespace OisysNew.DTO.CashVoucher
     public class CashVoucherFilterRequest : FilterRequestBase
     {
         /// <summary>
-        /// Gets or sets property Cach Voucher DateFrom.
+        /// Gets or sets cash voucher date from filter.
         /// </summary>
         public DateTime? DateFrom { get; set; }
 
         /// <summary>
-        /// Gets or sets property CashVoucher DateTo.
+        /// Gets or sets cash voucher date to filter.
         /// </summary>
         public DateTime? DateTo { get; set; }
     }

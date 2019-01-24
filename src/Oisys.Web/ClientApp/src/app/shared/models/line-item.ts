@@ -1,8 +1,8 @@
-import { ModelBase } from "./model-base";
-import { Item } from "./item";
 import { PriceList } from "./price-list";
+import { Item } from "./item";
+import { JsonModelBase } from "./json-model-base";
 
-export class OrderLineItem extends ModelBase {
+export class LineItem extends JsonModelBase {
   public id: number;
   public quantity: number;
   public itemId: number;
@@ -60,21 +60,21 @@ export class OrderLineItem extends ModelBase {
   }
 
   constructor();
-  constructor(orderLineItem: OrderLineItem);
-  constructor(orderLineItem?: any) {
+  constructor(lineItem: LineItem);
+  constructor(lineItem?: any) {
     super();
 
-    this.id = orderLineItem && orderLineItem.id || 0;
-    this.quantity = orderLineItem && orderLineItem.quantity || 0;
-    this.itemId = orderLineItem && orderLineItem.itemId || 0;
-    this.itemName = orderLineItem && orderLineItem.itemName || '';
+    this.id = lineItem && lineItem.id || 0;
+    this.quantity = lineItem && lineItem.quantity || 0;
+    this.itemId = lineItem && lineItem.itemId || 0;
+    this.itemName = lineItem && lineItem.itemName || '';
 
-    this.priceList = orderLineItem && orderLineItem.priceList || PriceList["Main Price"];
+    this.priceList = lineItem && lineItem.priceList || PriceList["Main Price"];
 
-    this.unitPrice = orderLineItem && orderLineItem.unitPrice || 0;
+    this.unitPrice = lineItem && lineItem.unitPrice || 0;
   }
 
   updatePriceList(priceList?: PriceList) {
     this.priceList = priceList || PriceList["Main Price"];
   };
-}
+} 

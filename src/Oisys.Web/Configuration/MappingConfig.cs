@@ -134,22 +134,19 @@ namespace OisysNew.Configuration
 
             // Sales Quote
             CreateMap<SalesQuote, SalesQuoteSummary>()
-                .ForMember(d => d.QuoteNumber, s => s.MapFrom(o => o.QuoteNumber.ToString()))
+                .ForMember(d => d.Date, s => s.MapFrom(o => o.Date.ToShortDateString()))
                 .ForMember(d => d.CustomerName, s => s.MapFrom(o => o.Customer.Name))
-                .ForMember(d => d.CustomerAddress, s => s.MapFrom(o => $"{o.Customer.Address}, {o.Customer.City.Name} {o.Customer.Province.Name}"))
-                .ForMember(d => d.CustomerContact, s => s.MapFrom(o => o.Customer.ContactNumber));
+                .ForMember(d => d.CustomerAddress, s => s.MapFrom(o => $"{o.Customer.Address}, {o.Customer.City.Name} {o.Customer.Province.Name}"));
 
             CreateMap<SaveSalesQuoteRequest, SalesQuote>();
 
             // Sales Quote Detail
-            CreateMap<SalesQuoteLineItem, SalesQuoteDetailSummary>()
-                .ForMember(d => d.ItemCode, s => s.MapFrom(o => o.Item.Code))
-                .ForMember(d => d.Item, s => s.MapFrom(o => o.Item.Name))
+            CreateMap<SalesQuoteLineItem, SalesQuoteLineItemSummary>()
+                .ForMember(d => d.ItemName, s => s.MapFrom(o => o.Item.Name))
                 .ForMember(d => d.Unit, s => s.MapFrom(o => o.Item.Unit))
-                .ForMember(d => d.Description, s => s.MapFrom(o => o.Item.Description))
-                .ForMember(d => d.Category, s => s.MapFrom(o => o.Item.Category.Name));
+                .ForMember(d => d.CategoryName, s => s.MapFrom(o => o.Item.Category.Name));
 
-            CreateMap<SaveSalesQuoteDetailRequest, SalesQuoteLineItem>();
+            CreateMap<SaveSalesQuoteLineItemRequest, SalesQuoteLineItem>();
 
             // // Customer Transaction
             // // TODO: Create method to compute running balance

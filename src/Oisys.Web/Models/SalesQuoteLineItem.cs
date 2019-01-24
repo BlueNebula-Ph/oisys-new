@@ -21,9 +21,9 @@
         public long ItemId { get; set; }
 
         /// <summary>
-        /// Gets or sets property Price.
+        /// Gets or sets property Unit Price.
         /// </summary>
-        public decimal Price { get; set; }
+        public decimal UnitPrice { get; set; }
 
         /// <summary>
         /// Gets or sets property TotalPrice.

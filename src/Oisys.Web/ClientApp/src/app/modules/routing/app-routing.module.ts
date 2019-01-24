@@ -26,6 +26,10 @@ import { VoucherListComponent } from '../voucher/voucher-list/voucher-list.compo
 import { VoucherFormComponent } from '../voucher/voucher-form/voucher-form.component';
 import { VoucherDetailComponent } from '../voucher/voucher-detail/voucher-detail.component';
 
+import { QuotationListComponent } from '../quotation/quotation-list/quotation-list.component';
+import { QuotationFormComponent } from '../quotation/quotation-form/quotation-form.component';
+import { QuotationDetailComponent } from '../quotation/quotation-detail/quotation-detail.component';
+
 const routes: Routes = [
   { path: '', component: HomeComponent, pathMatch: 'full' },
   // Examples
@@ -49,6 +53,10 @@ const routes: Routes = [
   { path: 'vouchers', component: VoucherListComponent },
   { path: 'vouchers/edit/:id', component: VoucherFormComponent },
   { path: 'vouchers/info/:id', component: VoucherDetailComponent },
+  // Sales quotations
+  { path: 'sales-quotations', component: QuotationListComponent },
+  { path: 'sales-quotations/edit/:id', component: QuotationFormComponent },
+  { path: 'sales-quotations/info/:id', component: QuotationDetailComponent },
   // Admin
   { path: 'categories', component: CategoryListComponent, pathMatch: 'full' },
   { path: 'provinces', component: ProvinceListComponent, pathMatch: 'full' },
