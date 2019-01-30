@@ -38,6 +38,11 @@ export const navItems = [
     icon: 'fa fa-columns'
   },
   {
+    name: 'Credit Memo',
+    url: '/credit-memos',
+    icon: 'fa fa-clipboard'
+  },
+  {
     name: 'Sales Quotations',
     url: '/sales-quotations',
     icon: 'cui-list'

@@ -1,7 +1,4 @@
-﻿using OisysNew.DTO.Customer;
-using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Collections.Generic;
 
 namespace OisysNew.DTO.CreditMemo
 {
@@ -18,12 +15,17 @@ namespace OisysNew.DTO.CreditMemo
         /// <summary>
         /// Gets or sets customer id.
         /// </summary>
-        public int CustomerId { get; set; }
+        public long CustomerId { get; set; }
 
         /// <summary>
-        /// Gets or sets customer navigation property.
+        /// Gets or sets customer name.
         /// </summary>
-        public CustomerSummary Customer { get; set; }
+        public string CustomerName { get; set; }
+
+        /// <summary>
+        /// Gets or sets the customer address.
+        /// </summary>
+        public string CustomerAddress { get; set; }
 
         /// <summary>
         /// Gets or sets property Date.
@@ -36,16 +38,13 @@ namespace OisysNew.DTO.CreditMemo
         public string Driver { get; set; }
 
         /// <summary>
+        /// Gets or sets total amount.
+        /// </summary>
+        public decimal TotalAmount { get; set; }
+
+        /// <summary>
         /// Gets or sets property Details.
         /// </summary>
         public IEnumerable<CreditMemoLineItemSummary> LineItems { get; set; }
-
-        /// <summary>
-        /// Gets the total amount property.
-        /// </summary>
-        //public decimal TotalAmount
-        //{
-        //    get { return LineItems.Sum(a => a.TotalPrice); }
-        //}
     }
 }

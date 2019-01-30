@@ -26,6 +26,16 @@
         public int Quantity { get; set; }
 
         /// <summary>
+        /// Gets or sets the unit price.
+        /// </summary>
+        public decimal UnitPrice { get; set; }
+
+        /// <summary>
+        /// Gets or sets the total price.
+        /// </summary>
+        public decimal TotalPrice { get; set; }
+
+        /// <summary>
         /// Gets or sets a value indicating whether
         /// the item is returned to the inventory.
         /// </summary>

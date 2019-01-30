@@ -34,6 +34,11 @@ namespace OisysNew.Models
         public bool IsInvoiced { get; set; }
 
         /// <summary>
+        /// Gets or sets the total amount of the credit memo.
+        /// </summary>
+        public decimal TotalAmount { get; set; }
+
+        /// <summary>
         /// Gets or sets property Customer.
         /// </summary>
         public virtual Customer Customer { get; set; }

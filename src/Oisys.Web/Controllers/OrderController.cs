@@ -142,15 +142,15 @@ namespace OisysNew.Controllers
         }
 
         /// <summary>
-        /// Returns a list of order details
+        /// Returns a list of order line items
         /// </summary>
         /// <param name="customerId">Customer Id</param>
         /// <param name="isDelivered">True is delivered, false if not</param>
         /// <returns>List of order details per customer</returns>
-        [HttpGet("detail/{customerId}/lookup/{isDelivered?}", Name = "GetOrderDetailLookup")]
+        [HttpGet("lineItems/{customerId}/lookup/{isDelivered?}", Name = "GetOrderLineItemLookup")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult<IEnumerable<OrderDetailLookup>>> GetOrderDetailLookup(int customerId, bool isDelivered = false)
+        public async Task<ActionResult<IEnumerable<OrderLineItemLookup>>> GetOrderLineItemLookup(int customerId, bool isDelivered = false)
         {
             try
             {
@@ -168,7 +168,7 @@ namespace OisysNew.Controllers
 
                 list = list.OrderBy(c => c.Item.Code);
 
-                var entities = await list.ProjectTo<OrderDetailLookup>(mapper.ConfigurationProvider).ToListAsync();
+                var entities = await list.ProjectTo<OrderLineItemLookup>(mapper.ConfigurationProvider).ToListAsync();
                 return entities;
             }
             catch (Exception e)

@@ -37,9 +37,12 @@
     <None Remove="ClientApp\src\app\shared\models\adjustment.ts" />
     <None Remove="ClientApp\src\app\shared\models\cash-voucher.ts" />
     <None Remove="ClientApp\src\app\shared\models\city.ts" />
+    <None Remove="ClientApp\src\app\shared\models\credit-memo-line-item.ts" />
+    <None Remove="ClientApp\src\app\shared\models\credit-memo.ts" />
     <None Remove="ClientApp\src\app\shared\models\item.ts" />
     <None Remove="ClientApp\src\app\shared\models\json-model-base.ts" />
     <None Remove="ClientApp\src\app\shared\models\line-item.ts" />
+    <None Remove="ClientApp\src\app\shared\models\order-line-item.ts" />
     <None Remove="ClientApp\src\app\shared\models\order.ts" />
     <None Remove="ClientApp\src\app\shared\models\page.ts" />
     <None Remove="ClientApp\src\app\shared\models\paged-data.ts" />
@@ -54,10 +57,13 @@
     <TypeScriptCompile Include="ClientApp\src\app\shared\models\adjustment-type.ts" />
     <TypeScriptCompile Include="ClientApp\src\app\shared\models\adjustment.ts" />
     <TypeScriptCompile Include="ClientApp\src\app\shared\models\cash-voucher.ts" />
+    <TypeScriptCompile Include="ClientApp\src\app\shared\models\credit-memo-line-item.ts" />
+    <TypeScriptCompile Include="ClientApp\src\app\shared\models\credit-memo.ts" />
     <TypeScriptCompile Include="ClientApp\src\app\shared\models\line-item.ts" />
     <TypeScriptCompile Include="ClientApp\src\app\shared\models\json-model-base.ts" />
     <TypeScriptCompile Include="ClientApp\src\app\shared\models\city.ts" />
     <TypeScriptCompile Include="ClientApp\src\app\shared\models\item.ts" />
+    <TypeScriptCompile Include="ClientApp\src\app\shared\models\order-line-item.ts" />
     <TypeScriptCompile Include="ClientApp\src\app\shared\models\order.ts" />
     <TypeScriptCompile Include="ClientApp\src\app\shared\models\page.ts" />
     <TypeScriptCompile Include="ClientApp\src\app\shared\models\paged-data.ts" />

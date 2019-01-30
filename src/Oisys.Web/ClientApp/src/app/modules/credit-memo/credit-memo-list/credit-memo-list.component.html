@@ -1,3 +1,111 @@
-<p>
-  credit-memo-list works!
-</p>
+<div class="animated fadeIn">
+  <h3>Credit Memo Management.</h3>
+  <div class="row">
+    <div class="col-9">
+      <div class="datatable-container">
+        <div class="progress-bar progress-bar-striped progress-bar-animated prog-bar" [hidden]="!isLoading"></div>
+        <ngx-datatable class="bootstrap"
+                       [rows]="rows"
+                       [columnMode]="'flex'"
+                       [headerHeight]="40"
+                       [summaryRow]="false"
+                       [footerHeight]="40"
+                       [rowHeight]="'auto'"
+                       [reorderable]="true"
+                       [externalPaging]="true"
+                       [count]="page.totalElements"
+                       [offset]="page.pageNumber"
+                       [limit]="page.size"
+                       [externalSorting]="true"
+                       (page)="setPage($event)"
+                       (sort)="onSort($event)">
+          <ngx-datatable-column name="Memo #" prop="code" [flexGrow]="1">
+            <ng-template let-value="value" ngx-datatable-cell-template>
+              <div>{{ value }}</div>
+            </ng-template>
+          </ngx-datatable-column>
+          <ngx-datatable-column name="Date" prop="date" [flexGrow]="1">
+            <ng-template let-value="value" ngx-datatable-cell-template>
+              <div>{{ value }}</div>
+            </ng-template>
+          </ngx-datatable-column>
+          <ngx-datatable-column name="Customer" prop="customer.name" [flexGrow]="2">
+            <ng-template let-creditMemo="row" ngx-datatable-cell-template>
+              <div>{{ creditMemo.customerName }}</div>
+              <div class="small">{{ creditMemo.customerAddress }}</div>
+            </ng-template>
+          </ngx-datatable-column>
+          <ngx-datatable-column name="Total Amount" prop="totalAmount" [flexGrow]="2">
+            <ng-template let-column="column" let-sort="sortFn" ngx-datatable-header-template>
+              <span class="datatable-header-cell-wrapper float-right">
+                <span class="datatable-header-cell-label draggable" (click)="sort()">{{ column.name }}</span>
+              </span>
+            </ng-template>
+            <ng-template let-creditMemo="row" ngx-datatable-cell-template>
+              <div class="text-right">
+                <div>{{ creditMemo.totalAmount | currency:'PHP':'₱ ' }}</div>
+              </div>
+            </ng-template>
+          </ngx-datatable-column>
+          <ngx-datatable-column name="" [flexGrow]="2">
+            <ng-template ngx-datatable-header-template>
+              <a routerLink="/credit-memos/edit/0" class="btn btn-sm btn-primary float-right"><i class="fa fa-plus"></i> New Credit Memo</a>
+            </ng-template>
+            <ng-template ngx-datatable-cell-template let-row="row">
+              <div class="text-right">
+                <a routerLink="/credit-memos/info/{{ row.id }}" class="btn btn-ghost-primary" title="View credit memo information.">
+                  <i class="fa fa-sticky-note-o"></i>
+                </a>
+                <a routerLink="/credit-memos/edit/{{ row.id }}" class="btn btn-ghost-primary ml-1" title="Edit this credit memo.">
+                  <i class="fa fa-pencil"></i>
+                </a>
+                <button class="btn btn-ghost-danger ml-1" (click)="onDeleteCreditMemo(row.id)" title="Delete this credit memo.">
+                  <i class="fa fa-trash-o"></i>
+                </button>
+              </div>
+            </ng-template>
+          </ngx-datatable-column>
+        </ngx-datatable>
+      </div>
+    </div>
+    <div class="col-3">
+      <div class="card">
+        <div class="card-header">
+          <i class="fa fa-search"></i> Search Credit Memos.
+        </div>
+        <div class="card-body">
+          <div class="form-group">
+            <label>Keywords.</label>
+            <input class="form-control form-control-sm" placeholder="Search by keywords." [(ngModel)]="searchTerm" />
+          </div>
+          <div class="form-group">
+            <label>Customer.</label>
+            <select class="form-control form-control-sm" [(ngModel)]="selectedCustomer">
+              <option *ngFor="let customer of customers" [ngValue]="customer">{{ customer.name }}</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Item.</label>
+            <select class="form-control form-control-sm" [(ngModel)]="selectedItem">
+              <option *ngFor="let item of items" [ngValue]="item">{{ item.code }} - {{ item.name }}</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Date From.</label>
+            <input type="date" class="form-control form-control-sm" placeholder="Date From" [(ngModel)]="dateFrom" />
+          </div>
+          <div class="form-group">
+            <label>Date To.</label>
+            <input type="date" class="form-control form-control-sm" placeholder="Date To" [(ngModel)]="dateTo" />
+          </div>
+          <button type="button" class="btn btn-sm btn-primary" (click)="search()">
+            <i class="fa fa-search"></i> Search
+          </button>
+          <button type="button" class="btn btn-sm btn-secondary ml-1" (click)="clear()">
+            <i class="fa fa-eraser"></i> Clear
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -30,6 +30,10 @@ import { QuotationListComponent } from '../quotation/quotation-list/quotation-li
 import { QuotationFormComponent } from '../quotation/quotation-form/quotation-form.component';
 import { QuotationDetailComponent } from '../quotation/quotation-detail/quotation-detail.component';
 
+import { CreditMemoListComponent } from '../credit-memo/credit-memo-list/credit-memo-list.component';
+import { CreditMemoFormComponent } from '../credit-memo/credit-memo-form/credit-memo-form.component';
+import { CreditMemoDetailComponent } from '../credit-memo/credit-memo-detail/credit-memo-detail.component';
+
 const routes: Routes = [
   { path: '', component: HomeComponent, pathMatch: 'full' },
   // Examples
@@ -57,6 +61,10 @@ const routes: Routes = [
   { path: 'sales-quotations', component: QuotationListComponent },
   { path: 'sales-quotations/edit/:id', component: QuotationFormComponent },
   { path: 'sales-quotations/info/:id', component: QuotationDetailComponent },
+  // Sales quotations
+  { path: 'credit-memos', component: CreditMemoListComponent },
+  { path: 'credit-memos/edit/:id', component: CreditMemoFormComponent },
+  { path: 'credit-memos/info/:id', component: CreditMemoDetailComponent },
   // Admin
   { path: 'categories', component: CategoryListComponent, pathMatch: 'full' },
   { path: 'provinces', component: ProvinceListComponent, pathMatch: 'full' },

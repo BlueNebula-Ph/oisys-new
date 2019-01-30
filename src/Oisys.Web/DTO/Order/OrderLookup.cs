@@ -36,6 +36,6 @@ namespace OisysNew.DTO.Order
         /// <summary>
         /// Gets or sets order details property.
         /// </summary>
-        public IEnumerable<OrderDetailLookup> Details { get; set; }
+        public IEnumerable<OrderLineItemLookup> Details { get; set; }
     }
 }

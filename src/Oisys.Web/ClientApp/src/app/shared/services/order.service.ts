@@ -7,6 +7,7 @@ import { environment } from '../../../environments/environment';
 import { Order } from '../models/order';
 import { UtilitiesService } from './utilities.service';
 import { PagedData } from '../models/paged-data';
+import { OrderLineItem } from '../models/order-line-item';
 
 @Injectable({
   providedIn: 'root'
@@ -45,6 +46,11 @@ export class OrderService {
   getOrderLookup(): Observable<Order[]> {
     var lookupUrl = `${this.url}/lookup`;
     return this.http.get<Order[]>(lookupUrl);
+  };
+
+  getOrderLineItemLookup(customerId: number, isDelivered?: boolean): Observable<OrderLineItem[]> {
+    var lookupUrl = `${this.url}/lineItems/${customerId}/lookup/${isDelivered}`;
+    return this.http.get<OrderLineItem[]>(lookupUrl);
   };
 
   saveOrder(order: Order): Observable<Order> {

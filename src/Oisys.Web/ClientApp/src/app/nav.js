@@ -1,6 +1,4 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.navItems = [
+export const navItems = [
     {
         title: true,
         name: 'Inventory'
@@ -38,6 +36,11 @@ exports.navItems = [
         name: 'Invoice',
         url: '/invoice',
         icon: 'fa fa-columns'
+    },
+    {
+        name: 'Credit Memo',
+        url: '/credit-memos',
+        icon: 'fa fa-clipboard'
     },
     {
         name: 'Sales Quotations',

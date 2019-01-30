@@ -1,6 +1,4 @@
-﻿using OisysNew.DTO.Order;
-
-namespace OisysNew.DTO.CreditMemo
+﻿namespace OisysNew.DTO.CreditMemo
 {
     /// <summary>
     /// <see cref="CreditMemoLineItemSummary"/> class represents the child of CreditSummary object.
@@ -13,11 +11,6 @@ namespace OisysNew.DTO.CreditMemo
         public string OrderCode { get; set; }
 
         /// <summary>
-        /// Gets or sets property OrderDetail
-        /// </summary>
-        //public OrderLineItemSummary OrderDetail { get; set; }
-
-        /// <summary>
         /// Gets or sets property ItemCode.
         /// </summary>
         public string ItemCode { get; set; }
@@ -25,7 +18,7 @@ namespace OisysNew.DTO.CreditMemo
         /// <summary>
         /// Gets or sets property Item.
         /// </summary>
-        public string Item { get; set; }
+        public string ItemName { get; set; }
 
         /// <summary>
         /// Gets or sets property Quantity.
@@ -35,20 +28,17 @@ namespace OisysNew.DTO.CreditMemo
         /// <summary>
         /// Gets or sets property Price.
         /// </summary>
-        public decimal Price { get; set; }
+        public decimal UnitPrice { get; set; }
+
+        /// <summary>
+        /// Gets or sets total price.
+        /// </summary>
+        public decimal TotalPrice { get; set; }
 
         /// <summary>
         /// Gets or sets a value indicating whether
         /// Item was returned to inventory
         /// </summary>
         public bool ShouldAddBackToInventory { get; set; }
-
-        /// <summary>
-        /// Gets property total price.
-        /// </summary>
-        public decimal TotalPrice
-        {
-            get { return this.Quantity * this.Price; }
-        }
     }
 }

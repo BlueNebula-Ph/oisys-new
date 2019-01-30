@@ -49,14 +49,16 @@ namespace OisysNew.Configuration
 
             // Credit Memo
             CreateMap<CreditMemo, CreditMemoSummary>()
-                .ForMember(d => d.Date, s => s.MapFrom(o => o.Date.ToShortDateString()));
+                .ForMember(d => d.Date, s => s.MapFrom(o => o.Date.ToShortDateString()))
+                .ForMember(d => d.CustomerName, s => s.MapFrom(o => o.Customer.Name))
+                .ForMember(d => d.CustomerAddress, s => s.MapFrom(o => $"{o.Customer.Address}, {o.Customer.City.Name} {o.Customer.Province.Name}"));
+
             CreateMap<SaveCreditMemoRequest, CreditMemo>();
 
             CreateMap<CreditMemoLineItem, CreditMemoLineItemSummary>()
                 .ForMember(d => d.OrderCode, s => s.MapFrom(o => o.OrderLineItem.Order.Code))
                 .ForMember(d => d.ItemCode, s => s.MapFrom(o => o.Item.Code))
-                .ForMember(d => d.Item, s => s.MapFrom(o => o.Item.Name))
-                .ForMember(d => d.Price, s => s.MapFrom(o => o.OrderLineItem.UnitPrice))
+                .ForMember(d => d.ItemName, s => s.MapFrom(o => o.Item.Name))
                 .ForMember(d => d.ShouldAddBackToInventory, s => s.MapFrom(o => o.ReturnedToInventory));
             CreateMap<SaveCreditMemoLineItemRequest, CreditMemoLineItem>()
                 .ForMember(d => d.ReturnedToInventory, s => s.MapFrom(o => o.ShouldAddBackToInventory));
@@ -118,11 +120,12 @@ namespace OisysNew.Configuration
 
             CreateMap<SaveOrderLineItemRequest, OrderLineItem>();
 
-            CreateMap<OrderLineItem, OrderDetailLookup>()
+            CreateMap<OrderLineItem, OrderLineItemLookup>()
+                .ForMember(d => d.OrderCode, s => s.MapFrom(o => o.Order.Code))
+                .ForMember(d => d.OrderDate, s => s.MapFrom(o => o.Order.Date.ToShortDateString()))
+                .ForMember(d => d.ItemCode, s => s.MapFrom(o => o.Item.Code))
                 .ForMember(d => d.ItemName, s => s.MapFrom(o => o.Item.Name))
                 .ForMember(d => d.Unit, s => s.MapFrom(o => o.Item.Unit))
-                .ForMember(d => d.ItemCodeName, s => s.MapFrom(o => $"{o.Item.Code} - {o.Item.Name}"))
-                .ForMember(d => d.ItemCodeNameOrder, s => s.MapFrom(o => $"{o.Item.Code} - {o.Item.Name} ({o.Order.Code})"))
                 .ForMember(d => d.Category, s => s.MapFrom(o => o.Item.Category.Name))
                 .ForMember(d => d.QuantityDelivered, s => s.MapFrom(o => o.QuantityDelivered));
 
