@@ -10,7 +10,6 @@ namespace OisysNew.DTO.CreditMemo
         /// <summary>
         /// Gets or sets property CreditMemoId.
         /// </summary>
-        [Required]
         public int CreditMemoId { get; set; }
 
         /// <summary>
@@ -30,6 +29,16 @@ namespace OisysNew.DTO.CreditMemo
         /// </summary>
         [Required]
         public int Quantity { get; set; }
+
+        /// <summary>
+        /// Gets or sets unit price.
+        /// </summary>
+        public decimal UnitPrice { get; set; }
+
+        /// <summary>
+        /// Gets or sets total price.
+        /// </summary>
+        public decimal TotalPrice { get; set; }
 
         /// <summary>
         /// Gets or sets a value indicating whether gets or sets property whether to put back the returned item to inventory.

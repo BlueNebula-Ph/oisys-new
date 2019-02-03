@@ -48,7 +48,7 @@
         /// <summary>
         /// Gets or sets category name property.
         /// </summary>
-        public string Category { get; set; }
+        public string CategoryName { get; set; }
 
         /// <summary>
         /// Gets or sets quantity returned.

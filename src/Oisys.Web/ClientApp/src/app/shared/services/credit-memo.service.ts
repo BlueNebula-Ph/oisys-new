@@ -12,7 +12,7 @@ import { PagedData } from '../models/paged-data';
   providedIn: 'root'
 })
 export class CreditMemoService {
-  private url = `${environment.apiHost}api/creditMemo`;
+  private url = `${environment.apiHost}api/creditmemo`;
 
   constructor(private http: HttpClient, private util: UtilitiesService) { }
 

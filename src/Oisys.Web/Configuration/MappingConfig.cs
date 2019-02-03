@@ -126,7 +126,7 @@ namespace OisysNew.Configuration
                 .ForMember(d => d.ItemCode, s => s.MapFrom(o => o.Item.Code))
                 .ForMember(d => d.ItemName, s => s.MapFrom(o => o.Item.Name))
                 .ForMember(d => d.Unit, s => s.MapFrom(o => o.Item.Unit))
-                .ForMember(d => d.Category, s => s.MapFrom(o => o.Item.Category.Name))
+                .ForMember(d => d.CategoryName, s => s.MapFrom(o => o.Item.Category.Name))
                 .ForMember(d => d.QuantityDelivered, s => s.MapFrom(o => o.QuantityDelivered));
 
             // Province

@@ -8,7 +8,7 @@ export class OrderLineItem {
   public quantity: number;
   public unit: string;
   public unitPrice: number;
-  public category: string;
+  public categoryName: string;
   public quantityReturned: number;
   public quantityDelivered: number;
 

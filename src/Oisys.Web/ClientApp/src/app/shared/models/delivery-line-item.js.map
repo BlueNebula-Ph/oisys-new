@@ -1,0 +1,1 @@
+{"version":3,"file":"delivery-line-item.js","sourceRoot":"","sources":["delivery-line-item.ts"],"names":[],"mappings":"AAAA,OAAO,EAAE,aAAa,EAAE,MAAM,mBAAmB,CAAC;AAElD,MAAM,OAAO,gBAAiB,SAAQ,aAAa;IAKjD,YAAY,gBAAsB;QAChC,KAAK,EAAE,CAAC;QAER,IAAI,CAAC,EAAE,GAAG,gBAAgB,IAAI,gBAAgB,CAAC,EAAE,IAAI,CAAC,CAAC;IACzD,CAAC;CACF"}

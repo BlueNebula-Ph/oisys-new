@@ -157,7 +157,7 @@ namespace OisysNew.Controllers
                 // get list of active items (not deleted)
                 var list = context.OrderLineItems
                     .Include(c => c.Item)
-                    .ThenInclude(c => c.Category)
+                        .ThenInclude(c => c.Category)
                     .AsNoTracking()
                     .Where(c => c.Order.CustomerId == customerId);
 

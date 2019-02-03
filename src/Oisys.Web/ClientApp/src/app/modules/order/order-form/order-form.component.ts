@@ -93,7 +93,6 @@ export class OrderFormComponent implements AfterContentInit {
 
   // Line items
   addLineItem() {
-    //this.order.lineItems.push(new OrderLineItem());
     this.order.lineItems.push(new LineItem());
     this.order.updateLineItems();
   };
