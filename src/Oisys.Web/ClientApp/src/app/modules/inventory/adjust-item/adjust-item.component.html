@@ -37,7 +37,7 @@
         </div>
       </div>
       <div class="card-footer">
-        <button type="submit" class="btn btn-primary btn-square ml-1" title="Save {{ label }} information."
+        <button type="submit" class="btn btn-primary btn-square ml-1" title="Save {{ label }} information." accesskey="s"
                 [disabled]="!adjustmentForm.form.valid || adjustment.itemId == 0 || !adjustment.itemId || isSaving">
           <i *ngIf="!isSaving" class="fa fa-save mr-1"></i><i *ngIf="isSaving" class="fa fa-spinner fa-spin mr-1"></i>Save
         </button>

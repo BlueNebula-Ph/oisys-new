@@ -99,13 +99,13 @@
         </div>
       </div>
       <div class="card-footer">
-        <a routerLink="/inventory" class="btn btn-secondary btn-square">
-          <i class="fa fa-angle-double-left mr-1"></i>Back
-        </a>
-        <button type="submit" class="btn btn-primary btn-square ml-1" title="Save item information."
+        <button type="submit" class="btn btn-primary btn-square" title="Save item information." accesskey="s"
                 [disabled]="!itemForm.form.valid || item.categoryId == 0 || !item.categoryId || isSaving">
           <i *ngIf="!isSaving" class="fa fa-save mr-1"></i><i *ngIf="isSaving" class="fa fa-spinner fa-spin mr-1"></i>Save
         </button>
+        <a routerLink="/inventory" class="btn btn-secondary btn-square ml-1">
+          <i class="fa fa-angle-double-left mr-1"></i>Back
+        </a>
       </div>
     </div>
   </form>
