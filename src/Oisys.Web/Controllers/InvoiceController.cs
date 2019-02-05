@@ -138,7 +138,6 @@ namespace OisysNew.Controllers
                 logger.LogError(e.Message);
                 return StatusCode(StatusCodes.Status500InternalServerError);
             }
-
         }
 
         /// <summary>
@@ -158,9 +157,17 @@ namespace OisysNew.Controllers
 
                 foreach (var lineItem in entity.LineItems)
                 {
-                    // Set the order to invoiced to prevent it from showing up in future invoicing.
-                    var order = await this.context.Orders.FindAsync(lineItem.OrderId);
-                    order.IsInvoiced = true;
+                    if (lineItem.OrderId != null)
+                    {
+                        // Set the order to invoiced to prevent it from showing up in future invoicing.
+                        var order = await context.Orders.FindAsync(lineItem.OrderId);
+                        order.IsInvoiced = true;
+                    }
+                    else if (lineItem.CreditMemoId != null)
+                    {
+                        var creditMemo = await context.CreditMemos.FindAsync(lineItem.CreditMemoId);
+                        creditMemo.IsInvoiced = true;
+                    }
                 }
 
                 await context.Invoices.AddAsync(invoice);

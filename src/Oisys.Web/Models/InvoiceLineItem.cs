@@ -13,7 +13,12 @@
         /// <summary>
         /// Gets or sets property order id.
         /// </summary>
-        public long OrderId { get; set; }
+        public long? OrderId { get; set; }
+
+        /// <summary>
+        /// Gets or sets property credit memo id.
+        /// </summary>
+        public long? CreditMemoId { get; set; }
 
         /// <summary>
         /// Gets or sets the invoice navigation property.
@@ -24,5 +29,10 @@
         /// Gets or sets the order navigation property.
         /// </summary>
         public virtual Order Order { get; set; }
+
+        /// <summary>
+        /// Gets or sets the credit memo nav property.
+        /// </summary>
+        public virtual CreditMemo CreditMemo { get; set; }
     }
 }
