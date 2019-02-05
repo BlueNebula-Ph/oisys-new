@@ -74,7 +74,7 @@ namespace OisysNew.Controllers
 
                 if (!(filter?.CustomerId).IsNullOrZero())
                 {
-                    list = list.Where(c => c.Details.Any(a => a.OrderDetail.Order.CustomerId == filter.CustomerId));
+                    list = list.Where(c => c.LineItems.Any(a => a.OrderLineItem.Order.CustomerId == filter.CustomerId));
                 }
 
                 if (filter?.DateFrom != null || filter?.DateTo != null)
@@ -86,11 +86,11 @@ namespace OisysNew.Controllers
 
                 if (!(filter?.ItemId).IsNullOrZero())
                 {
-                    list = list.Where(c => c.Details.Any(d => d.OrderDetail.ItemId == filter.ItemId));
+                    list = list.Where(c => c.LineItems.Any(d => d.OrderLineItem.ItemId == filter.ItemId));
                 }
 
                 // sort
-                var ordering = $"DeliveryNumber {Constants.DefaultSortDirection}";
+                var ordering = $"{Constants.ColumnNames.DeliveryNumber} {Constants.DefaultSortDirection}";
                 if (!string.IsNullOrEmpty(filter?.SortBy))
                 {
                     ordering = $"{filter.SortBy} {filter.SortDirection}";
@@ -125,7 +125,7 @@ namespace OisysNew.Controllers
                 .AsNoTracking()
                 .Include(c => c.Province)
                 .Include(c => c.City)
-                .Include(c => c.Details)
+                .Include(c => c.LineItems)
                 .Include("Details.OrderDetail")
                 .Include("Details.OrderDetail.Order.Customer")
                 .Include("Details.OrderDetail.Item")
@@ -287,7 +287,7 @@ namespace OisysNew.Controllers
             try
             {
                 var delivery = await this.context.Deliveries
-                .Include(c => c.Details)
+                .Include(c => c.LineItems)
                 .Include("Details.Item")
                 .SingleOrDefaultAsync(c => c.Id == id);
 
@@ -298,7 +298,7 @@ namespace OisysNew.Controllers
 
                 //delivery.IsDeleted = true;
 
-                foreach (var detail in delivery.Details)
+                foreach (var detail in delivery.LineItems)
                 {
                     //this.adjustmentService.ModifyQuantity(QuantityType.ActualQuantity, detail.OrderDetail.Item, detail.Quantity, AdjustmentType.Add, Constants.AdjustmentRemarks.DeliveryDeleted);
                     detail.DeliveryId = 0;

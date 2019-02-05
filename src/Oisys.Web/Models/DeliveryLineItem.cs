@@ -18,12 +18,12 @@
         /// <summary>
         /// Gets or sets property OrderDetailId.
         /// </summary>
-        public long OrderDetailId { get; set; }
+        public long OrderLineItemId { get; set; }
 
         /// <summary>
         /// Gets or sets property OrderDetail.
         /// </summary>
-        public virtual OrderLineItem OrderDetail { get; set; }
+        public virtual OrderLineItem OrderLineItem { get; set; }
 
         /// <summary>
         /// Gets or sets property Delivery.

@@ -138,6 +138,11 @@
             public const string Code = "Code";
 
             /// <summary>
+            /// The delivery number column name.
+            /// </summary>
+            public const string DeliveryNumber = "DeliveryNumber";
+
+            /// <summary>
             /// The invoice number column name.
             /// </summary>
             public const string InvoiceNumber = "InvoiceNumber";

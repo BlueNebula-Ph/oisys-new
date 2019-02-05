@@ -11,12 +11,12 @@ namespace OisysNew.DTO.Delivery
         /// <summary>
         /// Gets or sets property Code.
         /// </summary>
-        public string DeliveryNumber { get; set; }
+        public int DeliveryNumber { get; set; }
 
         /// <summary>
         /// Gets or sets property Date.
         /// </summary>
-        public DateTime Date { get; set; }
+        public string Date { get; set; }
 
         /// <summary>
         /// Gets or sets property Plate Number.
@@ -26,7 +26,7 @@ namespace OisysNew.DTO.Delivery
         /// <summary>
         /// Gets or sets property Province Id.
         /// </summary>
-        public int ProvinceId { get; set; }
+        public long ProvinceId { get; set; }
 
         /// <summary>
         /// Gets or sets property Province Name.
@@ -36,7 +36,7 @@ namespace OisysNew.DTO.Delivery
         /// <summary>
         /// Gets or sets property City Id.
         /// </summary>
-        public int CityId { get; set; }
+        public long CityId { get; set; }
 
         /// <summary>
         /// Gets or sets property City Name.
@@ -46,6 +46,6 @@ namespace OisysNew.DTO.Delivery
         /// <summary>
         /// Gets or sets property Details.
         /// </summary>
-        public IEnumerable<DeliveryDetailSummary> Details { get; set; }
+        public IEnumerable<DeliveryLineItemSummary> LineItems { get; set; }
     }
 }

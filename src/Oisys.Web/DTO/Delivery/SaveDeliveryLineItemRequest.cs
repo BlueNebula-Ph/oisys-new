@@ -3,9 +3,9 @@
 namespace OisysNew.DTO.Delivery
 {
     /// <summary>
-    /// <see cref="SaveDeliveryDetailRequest"/> is a viewmodel for saving delivery details
+    /// <see cref="SaveDeliveryLineItemRequest"/> is a viewmodel for saving delivery line items
     /// </summary>
-    public class SaveDeliveryDetailRequest
+    public class SaveDeliveryLineItemRequest
     {
         /// <summary>
         /// Gets or sets property Quantity.

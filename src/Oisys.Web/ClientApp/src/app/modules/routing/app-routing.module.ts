@@ -34,6 +34,14 @@ import { CreditMemoListComponent } from '../credit-memo/credit-memo-list/credit-
 import { CreditMemoFormComponent } from '../credit-memo/credit-memo-form/credit-memo-form.component';
 import { CreditMemoDetailComponent } from '../credit-memo/credit-memo-detail/credit-memo-detail.component';
 
+import { DeliveryListComponent } from '../delivery/delivery-list/delivery-list.component';
+import { DeliveryFormComponent } from '../delivery/delivery-form/delivery-form.component';
+import { DeliveryDetailComponent } from '../delivery/delivery-detail/delivery-detail.component';
+
+import { InvoiceListComponent } from '../invoice/invoice-list/invoice-list.component';
+import { InvoiceFormComponent } from '../invoice/invoice-form/invoice-form.component';
+import { InvoiceDetailComponent } from '../invoice/invoice-detail/invoice-detail.component';
+
 const routes: Routes = [
   { path: '', component: HomeComponent, pathMatch: 'full' },
   // Examples
@@ -53,7 +61,7 @@ const routes: Routes = [
   { path: 'inventory/info/:id', component: InventoryDetailComponent },
   { path: 'adjustment', component: AdjustItemComponent, data: { type: 'adjustment' } },
   { path: 'manufacture', component: AdjustItemComponent, data: { type: 'manufacturing' } },
-  // Cash Vouchers
+  // Cash vouchers
   { path: 'vouchers', component: VoucherListComponent },
   { path: 'vouchers/edit/:id', component: VoucherFormComponent },
   { path: 'vouchers/info/:id', component: VoucherDetailComponent },
@@ -61,10 +69,18 @@ const routes: Routes = [
   { path: 'sales-quotations', component: QuotationListComponent },
   { path: 'sales-quotations/edit/:id', component: QuotationFormComponent },
   { path: 'sales-quotations/info/:id', component: QuotationDetailComponent },
-  // Sales quotations
+  // Credit memos
   { path: 'credit-memos', component: CreditMemoListComponent },
   { path: 'credit-memos/edit/:id', component: CreditMemoFormComponent },
   { path: 'credit-memos/info/:id', component: CreditMemoDetailComponent },
+  // Deliveries
+  { path: 'deliveries', component: DeliveryListComponent },
+  { path: 'deliveries/edit/:id', component: DeliveryFormComponent },
+  { path: 'deliveries/info/:id', component: DeliveryDetailComponent },
+  // Invoices
+  { path: 'invoices', component: InvoiceListComponent },
+  { path: 'invoices/edit/:id', component: InvoiceFormComponent },
+  { path: 'invoices/info/:id', component: InvoiceDetailComponent },
   // Admin
   { path: 'categories', component: CategoryListComponent, pathMatch: 'full' },
   { path: 'provinces', component: ProvinceListComponent, pathMatch: 'full' },

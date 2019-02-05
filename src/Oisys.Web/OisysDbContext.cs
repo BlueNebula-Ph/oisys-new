@@ -95,30 +95,12 @@ namespace OisysNew
             CreateCategoryModel(modelBuilder);
             CreateCreditMemoModel(modelBuilder);
             CreateCustomerModel(modelBuilder);
+            CreateDeliveryModel(modelBuilder);
             CreateInvoiceModel(modelBuilder);
             CreateItemModel(modelBuilder);
             CreateOrderModel(modelBuilder);
             CreateProvinceAndCityModels(modelBuilder);
             CreateSalesQuoteModels(modelBuilder);
-
-            // Delivery Details
-            modelBuilder.Entity<DeliveryLineItem>()
-                .HasOne<Delivery>(d => d.Delivery)
-                .WithMany(p => p.Details)
-                .HasForeignKey(p => p.DeliveryId);
-            
-            modelBuilder.HasSequence<int>("DeliveryNumber")
-                .StartsAt(100000)
-                .IncrementsBy(1);
-
-            modelBuilder.Entity<Delivery>()
-                .Property(o => o.DeliveryNumber)
-                .HasDefaultValueSql("NEXT VALUE FOR DeliveryNumber");
-
-            // TODO: Remove when migrated to sql server
-            modelBuilder.Entity<Delivery>()
-                .Property(o => o.DeliveryNumber)
-                .HasValueGenerator(typeof(DeliveryNumberCodeGenerator));
         }
 
         private static void CreateCashVoucherModel(ModelBuilder modelBuilder)
@@ -207,11 +189,39 @@ namespace OisysNew
                 entity.Property(a => a.PriceList).HasConversion<string>();
             });
 
-            modelBuilder.Entity<CustomerTransaction>(entity => 
+            modelBuilder.Entity<CustomerTransaction>(entity =>
             {
                 entity.HasOne(d => d.Customer)
                     .WithMany(d => d.Transactions)
                     .HasForeignKey(p => p.CustomerId);
+            });
+        }
+
+        private static void CreateDeliveryModel(ModelBuilder modelBuilder)
+        {
+            modelBuilder.HasSequence<int>("DeliveryNumber")
+                .StartsAt(100000)
+                .IncrementsBy(1);
+
+            // Delivery
+            modelBuilder.Entity<Delivery>(entity =>
+            {
+                // Setup concurrency checks
+                entity.Property(p => p.RowVersion).IsRowVersion();
+
+                entity.Property(o => o.DeliveryNumber)
+                    .HasDefaultValueSql("NEXT VALUE FOR DeliveryNumber");
+
+                // TODO: Remove when migrated to sql server
+                entity.Property(o => o.DeliveryNumber)
+                    .HasValueGenerator(typeof(DeliveryNumberCodeGenerator));
+            });
+
+            modelBuilder.Entity<DeliveryLineItem>(entity =>
+            {
+                entity.HasOne(d => d.Delivery)
+                    .WithMany(p => p.LineItems)
+                    .HasForeignKey(p => p.DeliveryId);
             });
         }
 
@@ -236,7 +246,7 @@ namespace OisysNew
             });
 
             // Invoice Line Items
-            modelBuilder.Entity<InvoiceLineItem>(entity => 
+            modelBuilder.Entity<InvoiceLineItem>(entity =>
             {
                 entity.HasOne(d => d.Invoice)
                     .WithMany(p => p.LineItems)
@@ -265,7 +275,7 @@ namespace OisysNew
                 entity.Property(a => a.WalkInPrice).HasDefaultValue(0);
             });
 
-            modelBuilder.Entity<ItemHistory>(entity => 
+            modelBuilder.Entity<ItemHistory>(entity =>
             {
                 // Setup foreign keys
                 entity.HasOne(a => a.Item)
@@ -281,7 +291,7 @@ namespace OisysNew
               .IncrementsBy(1);
 
             // Order
-            modelBuilder.Entity<Order>(entity => 
+            modelBuilder.Entity<Order>(entity =>
             {
                 // Setup required fields
                 entity.Property(p => p.Code).IsRequired();

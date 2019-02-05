@@ -29,12 +29,12 @@ export const navItems = [
   },
   {
     name: 'Delivery',
-    url: '/delivery',
+    url: '/deliveries',
     icon: 'fa fa-truck'
   },
   {
     name: 'Invoice',
-    url: '/invoice',
+    url: '/invoices',
     icon: 'fa fa-columns'
   },
   {

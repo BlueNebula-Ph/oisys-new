@@ -3,12 +3,12 @@
     /// <summary>
     /// The delivery detail summary view model.
     /// </summary>
-    public class DeliveryDetailSummary : DTOBase
+    public class DeliveryLineItemSummary : DTOBase
     {
         /// <summary>
         /// Gets or sets property Quantity.
         /// </summary>
-        public decimal Quantity { get; set; }
+        public int Quantity { get; set; }
 
         /// <summary>
         /// Gets or sets property Unit.
@@ -16,9 +16,9 @@
         public string Unit { get; set; }
 
         /// <summary>
-        /// Gets or sets property Order Detail Id.
+        /// Gets or sets property Order Line Item Id.
         /// </summary>
-        public int OrderDetailId { get; set; }
+        public long OrderLineItemId { get; set; }
 
         /// <summary>
         /// Gets or sets property Customer Name.
