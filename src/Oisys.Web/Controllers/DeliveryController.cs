@@ -10,6 +10,7 @@ using OisysNew.Extensions;
 using OisysNew.Helpers;
 using OisysNew.Helpers.Interfaces;
 using OisysNew.Models;
+using OisysNew.Services;
 using System;
 using System.Linq;
 using System.Linq.Dynamic.Core;
@@ -28,6 +29,7 @@ namespace OisysNew.Controllers
         private readonly IMapper mapper;
         private readonly IListHelpers listHelpers;
         private readonly IEntityListHelpers entityListHelpers;
+        private readonly IOrderService orderService;
         private readonly ILogger logger;
 
         /// <summary>
@@ -37,17 +39,21 @@ namespace OisysNew.Controllers
         /// <param name="mapper">Automapper</param>
         /// <param name="listHelpers">List helper</param>
         /// <param name="entityListHelpers">Entity list helper</param>
+        /// <param name="orderService">Order service</param>
         /// <param name="logger">The logger</param>
-        public DeliveryController(IOisysDbContext context, 
+        public DeliveryController(
+            IOisysDbContext context,
             IMapper mapper,
             IListHelpers listHelpers,
             IEntityListHelpers entityListHelpers,
+            IOrderService orderService,
             ILogger<DeliveryController> logger)
         {
             this.context = context;
             this.mapper = mapper;
             this.listHelpers = listHelpers;
             this.entityListHelpers = entityListHelpers;
+            this.orderService = orderService;
             this.logger = logger;
         }
 
@@ -64,7 +70,7 @@ namespace OisysNew.Controllers
             try
             {
                 // get list of active deliveries (not deleted)
-                var list = this.context.Deliveries.AsNoTracking();
+                var list = context.Deliveries.AsNoTracking();
 
                 // filter
                 if (!string.IsNullOrEmpty(filter?.SearchTerm))
@@ -121,26 +127,29 @@ namespace OisysNew.Controllers
         {
             try
             {
-                var entity = await this.context.Deliveries
-                .AsNoTracking()
-                .Include(c => c.Province)
-                .Include(c => c.City)
-                .Include(c => c.LineItems)
-                .Include("Details.OrderDetail")
-                .Include("Details.OrderDetail.Order.Customer")
-                .Include("Details.OrderDetail.Item")
-                .Include("Details.OrderDetail.Item.Category")
-                .SingleOrDefaultAsync(c => c.Id == id);
+                var entity = await context.Deliveries
+                    .AsNoTracking()
+                    .Include(c => c.Province)
+                    .Include(c => c.City)
+                    .Include(c => c.LineItems)
+                        .ThenInclude(lineItem => (lineItem as DeliveryLineItem).OrderLineItem)
+                        .ThenInclude(orderLineItem => orderLineItem.Order)
+                        .ThenInclude(order => order.Customer)
+                    .Include(c => c.LineItems)
+                        .ThenInclude(lineItem => (lineItem as DeliveryLineItem).OrderLineItem)
+                        .ThenInclude(orderLineItem => orderLineItem.Item)
+                        .ThenInclude(item => item.Category)
+                    .SingleOrDefaultAsync(c => c.Id == id);
 
                 if (entity == null)
                 {
                     return NotFound();
                 }
 
-                var deliverySummary = this.mapper.Map<DeliverySummary>(entity);
+                var deliverySummary = mapper.Map<DeliverySummary>(entity);
                 return deliverySummary;
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 logger.LogError(e.Message);
                 return StatusCode(StatusCodes.Status500InternalServerError);
@@ -160,29 +169,13 @@ namespace OisysNew.Controllers
         {
             try
             {
-                var delivery = this.mapper.Map<Delivery>(entity);
+                var delivery = mapper.Map<Delivery>(entity);
+                await context.Deliveries.AddAsync(delivery);
 
-                foreach (var detail in entity.Details)
-                {
-                    // Fetch the order detail associated
-                    var orderDetail = await this.context.OrderLineItems
-                        .Include(a => a.Order)
-                            .ThenInclude(a => a.Customer)
-                        .Include(a => a.Item)
-                        .SingleOrDefaultAsync(a => a.Id == detail.OrderDetailId);
+                // Update the order line item for quantity returned
+                await orderService.ProcessDeliveries(delivery.LineItems, AdjustmentType.Add);
 
-                    //this.adjustmentService.ModifyQuantity(QuantityType.ActualQuantity, orderDetail.Item, detail.Quantity, AdjustmentType.Deduct, Constants.AdjustmentRemarks.DeliveryCreated);
-
-                    //orderDetail.QuantityDelivered += detail.Quantity;
-
-                    if (orderDetail.QuantityDelivered > orderDetail.Quantity)
-                    {
-                        throw new QuantityDeliveredException($"Total quantity delivered for {orderDetail.Item.Name} cannot exceed {orderDetail.Quantity}.");
-                    }
-                }
-
-                await this.context.Deliveries.AddAsync(delivery);
-                await this.context.SaveChangesAsync();
+                await context.SaveChangesAsync();
 
                 return StatusCode(StatusCodes.Status201Created);
             }
@@ -214,7 +207,7 @@ namespace OisysNew.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult> Update(long id, [FromBody]SaveDeliveryRequest entity)
         {
-            var deliveryExists = await this.context.Deliveries
+            var deliveryExists = await context.Deliveries
                 .AnyAsync(c => c.Id == id);
 
             if (!deliveryExists)
@@ -286,25 +279,22 @@ namespace OisysNew.Controllers
         {
             try
             {
-                var delivery = await this.context.Deliveries
+                var delivery = await context.Deliveries
                 .Include(c => c.LineItems)
-                .Include("Details.Item")
+                    .ThenInclude(lineItem => (lineItem as DeliveryLineItem).OrderLineItem)
+                    .ThenInclude(orderLineItem => orderLineItem.Item)
                 .SingleOrDefaultAsync(c => c.Id == id);
 
                 if (delivery == null)
                 {
-                    return this.NotFound(id);
+                    return NotFound();
                 }
 
-                //delivery.IsDeleted = true;
+                // Update the order line item for quantity delivered
+                await orderService.ProcessDeliveries(delivery.LineItems, AdjustmentType.Deduct);
 
-                foreach (var detail in delivery.LineItems)
-                {
-                    //this.adjustmentService.ModifyQuantity(QuantityType.ActualQuantity, detail.OrderDetail.Item, detail.Quantity, AdjustmentType.Add, Constants.AdjustmentRemarks.DeliveryDeleted);
-                    detail.DeliveryId = 0;
-                }
-
-                await this.context.SaveChangesAsync();
+                context.Remove(delivery);
+                await context.SaveChangesAsync();
 
                 return StatusCode(StatusCodes.Status204NoContent);
             }

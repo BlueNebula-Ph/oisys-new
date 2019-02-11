@@ -8,15 +8,15 @@ namespace OisysNew.DTO.Delivery
     public class SaveDeliveryLineItemRequest
     {
         /// <summary>
-        /// Gets or sets property Quantity.
+        /// Gets or sets the quantity delivered.
         /// </summary>
         [Required]
         public decimal Quantity { get; set; }
 
         /// <summary>
-        /// Gets or sets property OrderDetailId.
+        /// Gets or sets the order line item id.
         /// </summary>
         [Required]
-        public int OrderDetailId { get; set; }
+        public int OrderLineItemId { get; set; }
     }
 }

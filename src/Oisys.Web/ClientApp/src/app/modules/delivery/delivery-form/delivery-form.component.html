@@ -1,3 +1,137 @@
-<p>
-  delivery-form works!
-</p>
+<div class="animated fadeIn">
+  <form #deliveryForm="ngForm" (ngSubmit)="saveDelivery(deliveryForm)">
+    <div class="row">
+      <div class="col-12 px-0">
+        <div class="card no-radius">
+          <h6 class="card-header">Save Delivery Information.</h6>
+          <div class="card-body">
+            <div class="row container">
+              <h6>Step 1. Input delivery information.</h6>
+            </div>
+            <div class="row">
+              <div class="col-3 pr-0">
+                <div class="form-group">
+                  <label>Province.</label>
+                  <div class="input-group">
+                    <input class="form-control" name="province" placeholder="Province" (ngModelChange)="provinceUpdated()"
+                           [(ngModel)]="delivery.selectedProvince" [ngbTypeahead]="searchProvince"
+                           [inputFormatter]="provinceFormatter" [resultTemplate]="provTemplate" required>
+                    <div class="input-group-append">
+                      <span class="input-group-text">* Required</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-3 pr-0">
+                <div class="form-group">
+                  <label>City.</label>
+                  <div class="input-group">
+                    <input class="form-control" name="city" placeholder="City" [disabled]="!delivery.provinceId || delivery.provinceId == 0"
+                           [(ngModel)]="delivery.selectedCity" [ngbTypeahead]="searchCity" (ngModelChange)="cityUpdated()"
+                           [inputFormatter]="cityFormatter" [resultTemplate]="cityTemplate" required>
+                    <div class="input-group-append">
+                      <span class="input-group-text">* Required</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-3 pr-0">
+                <div class="form-group">
+                  <label>Date.</label>
+                  <div class="input-group">
+                    <input type="date" class="form-control" name="date" placeholder="Delivery date" [ngModel]="delivery.date | date:'yyyy-MM-dd'" (ngModelChange)="delivery.date=$event" required>
+                    <div class="input-group-append">
+                      <span class="input-group-text">* Required</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-3">
+                <div class="form-group">
+                  <label>Plate Number.</label>
+                  <div class="input-group">
+                    <input class="form-control" name="plateNumber" placeholder="Plate Number" [(ngModel)]="delivery.plateNumber" required>
+                    <div class="input-group-append">
+                      <span class="input-group-text">* Required</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-4 border-right">
+                <h6>Step 2. Select customers.</h6>
+                <div class="input-group mb-2">
+                  <input class="form-control" name="customer" placeholder="Select a customer..."
+                         [(ngModel)]="selectedCustomer" [ngbTypeahead]="searchCustomer" (onModelChange)="customerSelected()"
+                         [inputFormatter]="customerFormatter" [resultTemplate]="customerTemplate">
+                  <div class="input-group-append">
+                    <button type="button" class="btn btn-secondary" (click)="customerSelected()">
+                      <i class="fa fa-check"></i> Select
+                    </button>
+                  </div>
+                </div>
+                <ul class="list-group">
+                  <li class="list-group-item" *ngFor="let customer of selectedCustomers">
+                    <span>{{ customer.name }} <small class="text-muted">{{ customer.address }} {{ customer.cityName }}, {{ customer.provinceName }}</small></span>
+                    <a class="text-danger float-right pointer" (click)="removeCustomer($index)"><i class="fa fa-fw fa-trash"></i></a>
+                  </li>
+                  <li class="list-group-item list-group-item-action" *ngIf="selectedCustomers.length == 0">
+                    No customers selected.
+                  </li>
+                </ul>
+              </div>
+              <div class="col-8">
+                <h6>Step 3. Update items to be delivered.</h6>
+                <table class="table form-table border-bottom">
+                  <thead>
+                    <tr>
+                      <td width="20%">Customer</td>
+                      <td width="10%" class="text-right align-middle">Quantity</td>
+                      <td class="align-middle">Item</td>
+                      <td width="20%" class="align-middle">Category</td>
+                      <td width="10%"></td>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr *ngFor="let lineItem of delivery.lineItems">
+                      <td><input class="form-control form-control-sm" [(ngModel)]="lineItem.customer" [ngModelOptions]="{standalone: true}" readonly /></td>
+                      <td><input type="number" class="form-control form-control-sm text-right" [(ngModel)]="lineItem.quantity" [ngModelOptions]="{standalone: true}" /></td>
+                      <td><input class="form-control form-control-sm" [(ngModel)]="lineItem.item" [ngModelOptions]="{standalone: true}" readonly /></td>
+                      <td><input class="form-control form-control-sm" [(ngModel)]="lineItem.category" [ngModelOptions]="{standalone: true}" readonly /></td>
+                      <td class="text-center">
+                        <button type="button" class="btn btn-ghost-danger btn-sm" (click)="removeLineItem($index)"><i class="fa fa-fw fa-trash"></i></button>
+                      </td>
+                    </tr>
+                    <tr *ngIf="!delivery.lineItems || delivery.lineItems.length == 0">
+                      <td colspan="5">No items added.</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+          <div class="card-footer">
+            <button type="submit" class="btn btn-primary btn-square" title="Save delivery information." accesskey="s"
+                    [disabled]="!deliveryForm.form.valid || isSaving">
+              <i *ngIf="!isSaving" class="fa fa-save mr-1"></i><i *ngIf="isSaving" class="fa fa-spinner fa-spin mr-1"></i>Save
+            </button>
+            <a routerLink="/deliveries" class="btn btn-secondary btn-square ml-1" accesskey="b">
+              <i class="fa fa-angle-double-left mr-1"></i>Back
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </form>
+</div>
+<!-- templates -->
+<ng-template #provTemplate let-province="result" let-t="term">
+  <ngb-highlight [result]="province.name" [term]="t"></ngb-highlight>
+</ng-template>
+<ng-template #cityTemplate let-city="result" let-t="term">
+  <ngb-highlight [result]="city.name" [term]="t"></ngb-highlight>
+</ng-template>
+<ng-template #customerTemplate let-customer="result" let-t="term">
+  <ngb-highlight [result]="customer.name" [term]="t"></ngb-highlight>
+</ng-template>

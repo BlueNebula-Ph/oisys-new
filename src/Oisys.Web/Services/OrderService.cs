@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.Extensions.Logging;
 using OisysNew.DTO.CreditMemo;
+using OisysNew.DTO.Delivery;
 using OisysNew.Exceptions;
 using OisysNew.Helpers;
 using OisysNew.Models;
@@ -26,9 +27,23 @@ namespace OisysNew.Services
             this.logger = logger;
         }
 
-        public Task ProcessDeliveries()
+        public async Task ProcessDeliveries(IEnumerable deliveryLineItems, AdjustmentType adjustmentType)
         {
-            throw new NotImplementedException();
+            foreach (var lineItem in deliveryLineItems)
+            {
+                switch (lineItem)
+                {
+                    case DeliveryLineItem deliveryLineItem:
+                        await UpdateQuantityDelivered(deliveryLineItem, adjustmentType);
+                        break;
+                    case SaveDeliveryLineItemRequest request:
+                        var delLineItem = mapper.Map<DeliveryLineItem>(request);
+                        await UpdateQuantityDelivered(delLineItem, adjustmentType);
+                        break;
+                    case null:
+                        break;
+                }
+            }
         }
 
         public async Task ProcessReturns(IEnumerable creditMemoLineItems, AdjustmentType adjustmentType)
@@ -38,11 +53,11 @@ namespace OisysNew.Services
                 switch (lineItem)
                 {
                     case CreditMemoLineItem creditMemoLineItem:
-                        await UpdateOrderLineItem(creditMemoLineItem, adjustmentType);
+                        await UpdateQuantityReturned(creditMemoLineItem, adjustmentType);
                         break;
                     case SaveCreditMemoLineItemRequest request:
                         var cmLineItem = mapper.Map<CreditMemoLineItem>(request);
-                        await UpdateOrderLineItem(cmLineItem, adjustmentType);
+                        await UpdateQuantityReturned(cmLineItem, adjustmentType);
                         break;
                     case null:
                         break;
@@ -50,14 +65,9 @@ namespace OisysNew.Services
             }
         }
 
-        private async Task UpdateOrderLineItem(CreditMemoLineItem lineItem, AdjustmentType adjustmentType)
+        private async Task UpdateQuantityReturned(CreditMemoLineItem lineItem, AdjustmentType adjustmentType)
         {
-            var orderLineItem = await context.OrderLineItems.FindAsync(lineItem.OrderLineItemId);
-            if (orderLineItem == null)
-            {
-                logger.LogWarning($"Order line item with id {lineItem.OrderLineItemId} not found.");
-                return;
-            }
+            var orderLineItem = await FetchLineItem(lineItem.OrderLineItemId);
 
             orderLineItem.QuantityReturned = adjustmentType == AdjustmentType.Add ?
                 orderLineItem.QuantityReturned + lineItem.Quantity :
@@ -68,6 +78,31 @@ namespace OisysNew.Services
             {
                 throw new QuantityReturnedException($"Quantity returned cannot be more than original quantity.");
             }
+        }
+
+        private async Task UpdateQuantityDelivered(DeliveryLineItem lineItem, AdjustmentType adjustmentType)
+        {
+            var orderLineItem = await FetchLineItem(lineItem.OrderLineItemId);
+
+            orderLineItem.QuantityDelivered = adjustmentType == AdjustmentType.Add ?
+                orderLineItem.QuantityDelivered + lineItem.Quantity :
+                orderLineItem.QuantityDelivered - lineItem.Quantity;
+
+            // Quantity delivered cannot be more than original order quantity
+            if (orderLineItem.QuantityDelivered > orderLineItem.Quantity)
+            {
+                throw new QuantityDeliveredException($"Quantity delivered cannot be more than original quantity.");
+            }
+        }
+
+        private async Task<OrderLineItem> FetchLineItem(long orderLineItemId)
+        {
+            var orderLineItem = await context.OrderLineItems.FindAsync(orderLineItemId);
+            if (orderLineItem == null)
+            {
+                throw new ArgumentException($"Order line item with id {orderLineItemId} not found.");
+            }
+            return orderLineItem;
         }
     }
 }

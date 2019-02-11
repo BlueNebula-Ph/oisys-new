@@ -4,6 +4,7 @@ using OisysNew.DTO.CashVoucher;
 using OisysNew.DTO.Category;
 using OisysNew.DTO.CreditMemo;
 using OisysNew.DTO.Customer;
+using OisysNew.DTO.Delivery;
 using OisysNew.DTO.Invoice;
 using OisysNew.DTO.Item;
 using OisysNew.DTO.Order;
@@ -65,6 +66,8 @@ namespace OisysNew.Configuration
 
             // Customer
             CreateMap<Customer, CustomerLookup>()
+                .ForMember(d => d.ProvinceName, s => s.MapFrom(o => o.Province.Name))
+                .ForMember(d => d.CityName, s => s.MapFrom(o => o.City.Name))
                 .ForMember(d => d.PriceListId, s => s.MapFrom(o => (int)o.PriceList));
             CreateMap<Customer, CustomerWithOrdersLookup>();
 
@@ -80,6 +83,24 @@ namespace OisysNew.Configuration
 
             // Customer Transaction
             CreateMap<CustomerTransaction, CustomerTransactionSummary>();
+
+            // Delivery
+            CreateMap<Delivery, DeliverySummary>()
+                .ForMember(d => d.Date, s => s.MapFrom(o => o.Date.ToShortDateString()))
+                .ForMember(d => d.ProvinceName, s => s.MapFrom(o => o.Province.Name))
+                .ForMember(d => d.CityName, s => s.MapFrom(o => o.City.Name));
+            CreateMap<SaveDeliveryRequest, Delivery>();
+
+            // Delivery Line Item
+            CreateMap<DeliveryLineItem, DeliveryLineItemSummary>()
+                .ForMember(d => d.CustomerId, s => s.MapFrom(o => o.OrderLineItem.Order.CustomerId))
+                .ForMember(d => d.CustomerName, s => s.MapFrom(o => o.OrderLineItem.Order.Customer.Name))
+                .ForMember(d => d.CategoryName, s => s.MapFrom(o => o.OrderLineItem.Item.Category.Name))
+                .ForMember(d => d.ItemCode, s => s.MapFrom(o => o.OrderLineItem.Item.Code))
+                .ForMember(d => d.ItemName, s => s.MapFrom(o => o.OrderLineItem.Item.Name))
+                .ForMember(d => d.OrderNumber, s => s.MapFrom(o => o.OrderLineItem.Order.Code.ToString()))
+                .ForMember(d => d.Unit, s => s.MapFrom(o => o.OrderLineItem.Item.Unit));
+            CreateMap<SaveDeliveryLineItemRequest, DeliveryLineItem>();
 
             // Invoice
             CreateMap<Invoice, InvoiceSummary>()
@@ -160,23 +181,6 @@ namespace OisysNew.Configuration
 
             // CreateMap<CustomerTransaction, CustomerTransactionSummary>()
             //     .ForMember(d => d.Customer, s => s.MapFrom(o => o.Customer.Name));
-
-            // // Delivery
-            // CreateMap<Delivery, DeliverySummary>()
-            //     .ForMember(d => d.ProvinceName, s => s.MapFrom(o => o.Province.Name))
-            //     .ForMember(d => d.CityName, s => s.MapFrom(o => o.City.Name));
-            // CreateMap<SaveDeliveryRequest, Delivery>();
-
-            // // Delivery Detail
-            // CreateMap<DeliveryDetail, DeliveryDetailSummary>()
-            //     .ForMember(d => d.CustomerName, s => s.MapFrom(o => o.OrderDetail.Order.Customer.Name))
-            //     .ForMember(d => d.CategoryName, s => s.MapFrom(o => o.OrderDetail.Item.Category.Name))
-            //     .ForMember(d => d.ItemCode, s => s.MapFrom(o => o.OrderDetail.Item.Code))
-            //     .ForMember(d => d.ItemName, s => s.MapFrom(o => o.OrderDetail.Item.Name))
-            //     .ForMember(d => d.OrderNumber, s => s.MapFrom(o => o.OrderDetail.Order.Code.ToString()))
-            //     .ForMember(d => d.ItemCodeName, s => s.MapFrom(o => $"{o.OrderDetail.Item.Code} - {o.OrderDetail.Item.Name}"))
-            //     .ForMember(d => d.Unit, s => s.MapFrom(o => o.OrderDetail.Item.Unit));
-            // CreateMap<SaveDeliveryDetailRequest, DeliveryDetail>();
 
             // // User
             // CreateMap<User, UserSummary>()

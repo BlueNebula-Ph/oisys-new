@@ -31,8 +31,8 @@ export class CustomerService {
     return this.http.get<Customer>(getUrl);
   };
 
-  getCustomerLookup(): Observable<Customer[]> {
-    var lookupUrl = `${this.url}/lookup`;
+  getCustomerLookup(provinceId: number = 0, cityId: number = 0): Observable<Customer[]> {
+    var lookupUrl = `${this.url}/lookup/${provinceId}/${cityId}`;
     return this.http.get<Customer[]>(lookupUrl);
   };
 

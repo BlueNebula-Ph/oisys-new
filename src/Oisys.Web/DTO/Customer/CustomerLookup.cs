@@ -29,5 +29,15 @@
         /// Gets or sets property Contact Number
         /// </summary>
         public string ContactNumber { get; set; }
+
+        /// <summary>
+        /// Gets or sets the province name.
+        /// </summary>
+        public string ProvinceName { get; set; }
+
+        /// <summary>
+        /// Gets or sets the city name.
+        /// </summary>
+        public string CityName { get; set; }
     }
 }

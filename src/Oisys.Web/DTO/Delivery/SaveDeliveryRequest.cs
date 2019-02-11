@@ -39,6 +39,6 @@ namespace OisysNew.DTO.Delivery
         /// <summary>
         /// Gets or sets property Details.
         /// </summary>
-        public IEnumerable<SaveDeliveryLineItemRequest> Details { get; set; }
+        public IEnumerable<SaveDeliveryLineItemRequest> LineItems { get; set; }
     }
 }

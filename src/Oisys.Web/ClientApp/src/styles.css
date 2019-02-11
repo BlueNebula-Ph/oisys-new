@@ -32,6 +32,10 @@ body {
   text-decoration: line-through;
 }
 
+.pointer {
+  cursor: pointer;
+}
+
 /* Form tables */
 table.form-table td {
   padding: 5px 10px;
