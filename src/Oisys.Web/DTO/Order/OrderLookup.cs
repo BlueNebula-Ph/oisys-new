@@ -1,18 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace OisysNew.DTO.Order
+﻿namespace OisysNew.DTO.Order
 {
     /// <summary>
     /// <see cref="OrderLookup"/> class represents order data for dropdowns.
     /// </summary>
     public class OrderLookup : DTOBase
     {
-        /// <summary>
-        /// Gets the order id property.
-        /// </summary>
-        public long OrderId { get; set; }
-
         /// <summary>
         /// Gets or sets code property.
         /// </summary>
@@ -21,21 +13,11 @@ namespace OisysNew.DTO.Order
         /// <summary>
         /// Gets or sets date property.
         /// </summary>
-        public DateTime Date { get; set; }
-
-        /// <summary>
-        /// Gets or sets discount property.
-        /// </summary>
-        public decimal DiscountPercent { get; set; }
+        public string Date { get; set; }
 
         /// <summary>
         /// Gets or sets total amount property.
         /// </summary>
         public decimal TotalAmount { get; set; }
-
-        /// <summary>
-        /// Gets or sets order details property.
-        /// </summary>
-        public IEnumerable<OrderLineItemLookup> Details { get; set; }
     }
 }

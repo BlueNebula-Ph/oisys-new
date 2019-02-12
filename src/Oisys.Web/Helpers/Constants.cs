@@ -156,6 +156,11 @@
             /// The quote number column name.
             /// </summary>
             public const string QuoteNumber = "QuoteNumber";
+
+            /// <summary>
+            /// The voucher number column name.
+            /// </summary>
+            public const string VoucherNumber = "VoucherNumber";
         }
     }
 }

@@ -8,7 +8,7 @@
         /// <summary>
         /// Gets or sets customer id.
         /// </summary>
-        public int CustomerId { get; set; }
+        public long CustomerId { get; set; }
 
         /// <summary>
         /// Gets or sets property Customer Name.

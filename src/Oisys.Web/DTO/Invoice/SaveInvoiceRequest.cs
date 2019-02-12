@@ -10,6 +10,11 @@ namespace OisysNew.DTO.Invoice
     public class SaveInvoiceRequest : DTOBase
     {
         /// <summary>
+        /// Gets or sets the invoice number.
+        /// </summary>
+        public int InvoiceNumber { get; set; }
+
+        /// <summary>
         /// Gets or sets the customer id.
         /// </summary>
         [Required]
@@ -20,6 +25,16 @@ namespace OisysNew.DTO.Invoice
         /// </summary>
         [Required]
         public DateTime Date { get; set; }
+
+        /// <summary>
+        /// Gets or sets the total amount due from orders.
+        /// </summary>
+        public decimal TotalAmountDue { get; set; }
+
+        /// <summary>
+        /// Gets or sets the total amount from credit memos.
+        /// </summary>
+        public decimal TotalCreditAmount { get; set; }
 
         /// <summary>
         /// Gets or sets the discount percent.

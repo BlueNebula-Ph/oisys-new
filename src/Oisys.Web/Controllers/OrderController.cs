@@ -127,18 +127,18 @@ namespace OisysNew.Controllers
         /// </summary>
         /// <param name="customerId">Customer Id</param>
         /// <returns>List of Orders per Customer</returns>
-        [HttpGet("{customerId}/lookup", Name = "GetOrderLookup")]
+        [HttpGet("{customerId}/lookup/{isInvoiced?}", Name = "GetOrderLookup")]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<ActionResult<IEnumerable<OrderLookup>>> GetLookup(int customerId)
+        public async Task<ActionResult<IEnumerable<OrderLookup>>> GetLookup(int customerId, bool isInvoiced = false)
         {
             // get list of active items (not deleted)
             var list = context.Orders
                 .AsNoTracking()
-                .Where(c => c.CustomerId == customerId)
+                .Where(c => c.CustomerId == customerId && c.IsInvoiced == isInvoiced)
                 .OrderBy(c => c.Code);
 
-            var entities = await list.ProjectTo<OrderLookup>(mapper.ConfigurationProvider).ToListAsync();
-            return entities;
+            var orders = await list.ProjectTo<OrderLookup>(mapper.ConfigurationProvider).ToListAsync();
+            return orders;
         }
 
         /// <summary>

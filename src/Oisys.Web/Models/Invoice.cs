@@ -16,7 +16,7 @@ namespace OisysNew.Models
         /// <summary>
         /// Gets or sets property CustomerId.
         /// </summary>
-        public int CustomerId { get; set; }
+        public long CustomerId { get; set; }
         
         /// <summary>
         /// Gets or sets property Date.
@@ -24,9 +24,16 @@ namespace OisysNew.Models
         public DateTime Date { get; set; }
 
         /// <summary>
-        /// Gets or sets gross amount.
+        /// Gets or sets total amount due.
+        /// This is the total amount of all orders in the invoice.
         /// </summary>
-        public decimal GrossAmount { get; set; }
+        public decimal TotalAmountDue { get; set; }
+
+        /// <summary>
+        /// Gets or sets total credit amount.
+        /// This is the total amount of all credit memos in the invoice.
+        /// </summary>
+        public decimal TotalCreditAmount { get; set; }
 
         /// <summary>
         /// Gets or sets property discount in percent.
@@ -39,7 +46,8 @@ namespace OisysNew.Models
         public decimal DiscountAmount { get; set; }
 
         /// <summary>
-        /// Gets or sets property TotalAmount.
+        /// Gets or sets total invoice amount.
+        /// Total amount = Total amount due - total credit amount - discount amount
         /// </summary>
         public decimal TotalAmount { get; set; }
 

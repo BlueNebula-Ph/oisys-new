@@ -12,6 +12,11 @@ namespace OisysNew.Extensions
             return !number.HasValue || (number.HasValue && number.Value == 0);
         }
 
+        public static bool IsNullOrZero(this long? number)
+        {
+            return !number.HasValue || (number.HasValue && number.Value == 0);
+        }
+
         public static string GetDisplayName(this Enum enumValue)
         {
             return enumValue.GetType()

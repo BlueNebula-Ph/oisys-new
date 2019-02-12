@@ -41,6 +41,11 @@ export class CreditMemoService {
     return this.http.get<any>(getUrl);
   };
 
+  getCreditMemoLookup(customerId: number, isInvoiced: boolean = false): Observable<CreditMemo[]> {
+    var lookupUrl = `${this.url}/${customerId}/lookup/${isInvoiced}`;
+    return this.http.get<CreditMemo[]>(lookupUrl);
+  };
+
   saveCreditMemo(creditMemo: CreditMemo): Observable<CreditMemo> {
     if (creditMemo.id == 0) {
       return this.http.post<CreditMemo>(this.url, creditMemo, this.util.httpOptions);

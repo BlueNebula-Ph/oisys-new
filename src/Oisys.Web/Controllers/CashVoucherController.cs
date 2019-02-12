@@ -79,7 +79,7 @@ namespace OisysNew.Controllers
                 }
 
                 // sort
-                var ordering = $"VoucherNumber {Constants.DefaultSortDirection}";
+                var ordering = $"{Constants.ColumnNames.VoucherNumber} {Constants.DefaultSortDirection}";
                 if (!string.IsNullOrEmpty(filter?.SortBy))
                 {
                     ordering = $"{filter.SortBy} {filter.SortDirection}";

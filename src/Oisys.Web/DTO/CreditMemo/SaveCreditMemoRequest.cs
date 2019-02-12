@@ -32,6 +32,11 @@ namespace OisysNew.DTO.CreditMemo
         public string Driver { get; set; }
 
         /// <summary>
+        /// Gets or sets the total amount of the credit memo
+        /// </summary>
+        public decimal TotalAmount { get; set; }
+
+        /// <summary>
         /// Gets or sets the line items associated to the credit memo.
         /// </summary>
         public IEnumerable<SaveCreditMemoLineItemRequest> LineItems { get; set; }

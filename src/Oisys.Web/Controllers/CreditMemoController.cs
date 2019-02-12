@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using AutoMapper.QueryableExtensions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -12,6 +13,7 @@ using OisysNew.Helpers.Interfaces;
 using OisysNew.Models;
 using OisysNew.Services;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Dynamic.Core;
 using System.Threading.Tasks;
@@ -152,6 +154,25 @@ namespace OisysNew.Controllers
                 logger.LogError(e.Message);
                 return StatusCode(StatusCodes.Status500InternalServerError);
             }
+        }
+
+        /// <summary>
+        /// Returns list of active <see cref="CreditMemo"/>
+        /// </summary>
+        /// <param name="customerId">Customer Id</param>
+        /// <returns>List of Credit Memo per Customer</returns>
+        [HttpGet("{customerId}/lookup/{isInvoiced?}", Name = "GetCreditMemoLookup")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<ActionResult<IEnumerable<CreditMemoLookup>>> GetLookup(int customerId, bool isInvoiced = false)
+        {
+            // get list of active items (not deleted)
+            var list = context.CreditMemos
+                .AsNoTracking()
+                .Where(c => c.CustomerId == customerId && c.IsInvoiced == isInvoiced)
+                .OrderBy(c => c.Code);
+
+            var creditMemos = await list.ProjectTo<CreditMemoLookup>(mapper.ConfigurationProvider).ToListAsync();
+            return creditMemos;
         }
 
         /// <summary>

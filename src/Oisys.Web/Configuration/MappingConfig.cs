@@ -54,6 +54,11 @@ namespace OisysNew.Configuration
                 .ForMember(d => d.CustomerName, s => s.MapFrom(o => o.Customer.Name))
                 .ForMember(d => d.CustomerAddress, s => s.MapFrom(o => $"{o.Customer.Address}, {o.Customer.City.Name} {o.Customer.Province.Name}"));
 
+            CreateMap<CreditMemo, CreditMemoLookup>()
+                .ForMember(d => d.Date, s => s.MapFrom(o => o.Date.ToShortDateString()))
+                .ForMember(d => d.CustomerName, s => s.MapFrom(o => o.Customer.Name))
+                .ForMember(d => d.CustomerAddress, s => s.MapFrom(o => $"{o.Customer.Address}, {o.Customer.City.Name} {o.Customer.Province.Name}"));
+
             CreateMap<SaveCreditMemoRequest, CreditMemo>();
 
             CreateMap<CreditMemoLineItem, CreditMemoLineItemSummary>()
@@ -132,9 +137,10 @@ namespace OisysNew.Configuration
                 .ForMember(d => d.CustomerName, s => s.MapFrom(o => o.Customer.Name))
                 .ForMember(d => d.CustomerAddress, s => s.MapFrom(o => $"{o.Customer.Address}, {o.Customer.City.Name}, {o.Customer.Province.Name}"));
 
-            CreateMap<SaveOrderRequest, Order>();
+            CreateMap<Order, OrderLookup>()
+                .ForMember(d => d.Date, s => s.MapFrom(o => o.Date.ToShortDateString()));
 
-            CreateMap<Order, OrderLookup>();
+            CreateMap<SaveOrderRequest, Order>();
 
             // Order Line Item
             CreateMap<OrderLineItem, OrderLineItemSummary>()

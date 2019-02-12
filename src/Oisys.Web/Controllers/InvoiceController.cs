@@ -154,21 +154,7 @@ namespace OisysNew.Controllers
             try
             {
                 var invoice = mapper.Map<Invoice>(entity);
-
-                foreach (var lineItem in entity.LineItems)
-                {
-                    if (lineItem.OrderId != null)
-                    {
-                        // Set the order to invoiced to prevent it from showing up in future invoicing.
-                        var order = await context.Orders.FindAsync(lineItem.OrderId);
-                        order.IsInvoiced = true;
-                    }
-                    else if (lineItem.CreditMemoId != null)
-                    {
-                        var creditMemo = await context.CreditMemos.FindAsync(lineItem.CreditMemoId);
-                        creditMemo.IsInvoiced = true;
-                    }
-                }
+                await orderService.ProcessInvoice(invoice.LineItems, true);
 
                 await context.Invoices.AddAsync(invoice);
                 await context.SaveChangesAsync();
@@ -239,7 +225,7 @@ namespace OisysNew.Controllers
         {
             try
             {
-                var invoice = await this.context.Invoices
+                var invoice = await context.Invoices
                     .Include(c => c.LineItems)
                     .SingleOrDefaultAsync(c => c.Id == id);
 
@@ -248,9 +234,10 @@ namespace OisysNew.Controllers
                     return NotFound();
                 }
 
-                //invoice.IsDeleted = true;
+                await orderService.ProcessInvoice(invoice.LineItems, false);
+                context.Remove(invoice);
 
-                await this.context.SaveChangesAsync();
+                await context.SaveChangesAsync();
 
                 return StatusCode(StatusCodes.Status204NoContent);
             }

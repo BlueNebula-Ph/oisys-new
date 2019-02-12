@@ -9,5 +9,7 @@ namespace OisysNew.Services
         Task ProcessReturns(IEnumerable creditMemoLineItems, AdjustmentType adjustmentType);
 
         Task ProcessDeliveries(IEnumerable deliveryLineItems, AdjustmentType adjustmentType);
+
+        Task ProcessInvoice(IEnumerable invoiceLineItems, bool isInvoiced);
     }
 }

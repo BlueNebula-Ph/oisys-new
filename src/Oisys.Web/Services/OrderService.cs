@@ -2,7 +2,9 @@
 using Microsoft.Extensions.Logging;
 using OisysNew.DTO.CreditMemo;
 using OisysNew.DTO.Delivery;
+using OisysNew.DTO.Invoice;
 using OisysNew.Exceptions;
+using OisysNew.Extensions;
 using OisysNew.Helpers;
 using OisysNew.Models;
 using System;
@@ -65,6 +67,25 @@ namespace OisysNew.Services
             }
         }
 
+        public async Task ProcessInvoice(IEnumerable invoiceLineItems, bool isInvoiced)
+        {
+            foreach (var lineItem in invoiceLineItems)
+            {
+                switch (lineItem)
+                {
+                    case InvoiceLineItem invoiceLineItem:
+                        await UpdateOrderOrCreditMemo(invoiceLineItem, isInvoiced);
+                        break;
+                    case SaveInvoiceLineItemRequest invoice:
+                        var invLineItem = mapper.Map<InvoiceLineItem>(invoice);
+                        await UpdateOrderOrCreditMemo(invLineItem, isInvoiced);
+                        break;
+                    case null:
+                        break;
+                }
+            }
+        }
+
         private async Task UpdateQuantityReturned(CreditMemoLineItem lineItem, AdjustmentType adjustmentType)
         {
             var orderLineItem = await FetchLineItem(lineItem.OrderLineItemId);
@@ -103,6 +124,40 @@ namespace OisysNew.Services
                 throw new ArgumentException($"Order line item with id {orderLineItemId} not found.");
             }
             return orderLineItem;
+        }
+
+        private async Task UpdateOrderOrCreditMemo(InvoiceLineItem lineItem, bool isInvoiced)
+        {
+            if (!lineItem.OrderId.IsNullOrZero())
+            {
+                var order = await FetchOrder(lineItem.OrderId.Value);
+                order.IsInvoiced = isInvoiced;
+            }
+            else if (!lineItem.CreditMemoId.IsNullOrZero())
+            {
+                var creditMemo = await FetchCreditMemo(lineItem.CreditMemoId.Value);
+                creditMemo.IsInvoiced = isInvoiced;
+            }
+        }
+
+        private async Task<Order> FetchOrder(long orderId)
+        {
+            var order = await context.Orders.FindAsync(orderId);
+            if (order == null)
+            {
+                throw new ArgumentException($"Order with id {orderId} not found.");
+            }
+            return order;
+        }
+
+        private async Task<CreditMemo> FetchCreditMemo(long creditMemoId)
+        {
+            var creditMemo = await context.CreditMemos.FindAsync(creditMemoId);
+            if (creditMemo == null)
+            {
+                throw new ArgumentException($"Credit memo with id {creditMemoId} not found.");
+            }
+            return creditMemo;
         }
     }
 }

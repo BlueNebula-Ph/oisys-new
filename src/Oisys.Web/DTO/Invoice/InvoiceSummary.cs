@@ -33,9 +33,14 @@ namespace OisysNew.DTO.Invoice
         public string Date { get; set; }
 
         /// <summary>
-        /// Gets or sets gross amount.
+        /// Gets or sets the total amount from orders.
         /// </summary>
-        public decimal GrossAmount { get; set; }
+        public decimal TotalAmountDue { get; set; }
+
+        /// <summary>
+        /// Gets or sets the total credit amount.
+        /// </summary>
+        public decimal TotalCreditAmount { get; set; }
 
         /// <summary>
         /// Gets or sets property discount in percent.
