@@ -1,7 +1,7 @@
 <div class="animated fadeIn">
   <h3>Customer Management.</h3>
   <div class="row">
-    <div class="col-9">
+    <div class="col-9 pr-0">
       <div class="datatable-container">
         <div class="progress-bar progress-bar-striped progress-bar-animated prog-bar" [hidden]="!isLoading"></div>
         <ngx-datatable class="bootstrap"
@@ -11,7 +11,7 @@
                        [summaryRow]="false"
                        [footerHeight]="40"
                        [rowHeight]="'auto'"
-                       [reorderable]="true"
+                       [reorderable]="false"
                        [externalPaging]="true"
                        [count]="page.totalElements"
                        [offset]="page.pageNumber"
@@ -68,32 +68,45 @@
     </div>
     <div class="col-3">
       <div class="card">
-        <div class="card-header">
-          <i class="fa fa-search"></i> Search Customers.
-        </div>
         <div class="card-body">
-          <div class="form-group">
-            <label>Keywords.</label>
-            <input class="form-control" placeholder="Search by keywords." [(ngModel)]="searchTerm" />
+          <div class="input-group mb-2">
+            <div class="input-group-prepend" title="Search by keywords.">
+              <span class="input-group-text">
+                <i class="fa fa-search fa-fw"></i>
+              </span>
+            </div>
+            <input class="form-control form-control-sm" placeholder="Search by keywords." [(ngModel)]="searchTerm" appFocus="true" />
           </div>
-          <div class="form-group">
-            <label>Province.</label>
-            <select class="form-control" [(ngModel)]="selectedProvince">
+          <div class="input-group mb-2">
+            <div class="input-group-prepend" title="Search by province.">
+              <span class="input-group-text">
+                <i class="fa fa-map-o fa-fw"></i>
+              </span>
+            </div>
+            <select class="form-control form-control-sm" [(ngModel)]="selectedProvince">
+              <option [ngValue]="null">Search by province.</option>
               <option *ngFor="let prov of provinces" [ngValue]="prov">{{ prov.name }}</option>
             </select>
           </div>
-          <div class="form-group">
-            <label>City.</label>
-            <select class="form-control" [(ngModel)]="selectedCity">
-              <option *ngFor="let city of selectedProvince.cities" [ngValue]="city">{{ city.name }}</option>
+          <div class="input-group mb-2">
+            <div class="input-group-prepend" title="Search by city.">
+              <span class="input-group-text">
+                <i class="fa fa-map-o fa-fw"></i>
+              </span>
+            </div>
+            <select class="form-control form-control-sm" [(ngModel)]="selectedCity">
+              <option [ngValue]="null">Search by city.</option>
+              <option *ngFor="let city of (selectedProvince ? selectedProvince.cities : [])" [ngValue]="city">{{ city.name }}</option>
             </select>
           </div>
-          <button type="button" class="btn btn-sm btn-primary" (click)="search()">
-            <i class="fa fa-search"></i> Search
-          </button>&nbsp;
-          <button type="button" class="btn btn-sm btn-secondary" (click)="clear()">
-            <i class="fa fa-eraser"></i> Clear
-          </button>
+          <div>
+            <button type="button" class="btn btn-sm btn-primary mr-1" (click)="search()">
+              <i class="fa fa-search"></i> Search
+            </button>
+            <button type="button" class="btn btn-sm btn-secondary" (click)="clear()">
+              <i class="fa fa-eraser"></i> Clear
+            </button>
+          </div>
         </div>
       </div>
     </div>

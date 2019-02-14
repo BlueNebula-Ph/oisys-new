@@ -27,9 +27,9 @@ export class CreditMemoListComponent implements AfterContentInit {
   searchTerm: string = '';
   dateFrom: Date;
   dateTo: Date;
-  selectedCustomer: Customer = new Customer();
+  selectedCustomer: Customer = null;
   customers: Customer[];
-  selectedItem: Item = new Item();
+  selectedItem: Item = null;
   items: Item[];
 
   isLoading: boolean = false;
@@ -59,8 +59,8 @@ export class CreditMemoListComponent implements AfterContentInit {
       this.sort.prop,
       this.sort.dir,
       this.searchTerm,
-      this.selectedCustomer.id,
-      this.selectedItem.id,
+      this.selectedCustomer ? this.selectedCustomer.id : 0,
+      this.selectedItem ? this.selectedItem.id : 0,
       this.dateFrom,
       this.dateTo)
       .pipe(
@@ -124,8 +124,8 @@ export class CreditMemoListComponent implements AfterContentInit {
 
   clear() {
     this.searchTerm = '';
-    this.selectedCustomer = new Customer();
-    this.selectedItem = new Item();
+    this.selectedCustomer = null;
+    this.selectedItem = null;
     this.dateFrom = null;
     this.dateTo = null;
   }

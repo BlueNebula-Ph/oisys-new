@@ -1,46 +1,44 @@
 <div class="animated fadeIn">
   <form #adjustmentForm="ngForm" (ngSubmit)="saveAdjustment(adjustmentForm)">
-    <div class="card no-radius">
-      <h6 class="card-header">Save {{ label | titlecase }} Information.</h6>
-      <div class="card-body">
-        <div class="row">
-          <div class="col-4">
-            <div class="form-group">
-              <label>Item.</label>
-              <input class="form-control" name="item" placeholder="Select item..."
-                     [ngbTypeahead]="searchItem" [inputFormatter]="itemFormatter" [resultTemplate]="itemTemplate"
-                     [(ngModel)]="adjustment.selectedItem">
-            </div>
-            <div class="form-group" *ngIf="isAdjustment">
-              <label>Adjustment Type.</label>
-              <select class="form-control" name="adjustmentType" [(ngModel)]="adjustment.adjustmentType">
-                <option *ngFor="let t of adjustmentTypes | enumToArray" [ngValue]="t.value">{{ t.key }}</option>
-              </select>
-            </div>
-            <div class="form-group">
-              <label>Quantity.</label>
-              <input type="number" class="form-control" name="adjustmentQuantity" [(ngModel)]="adjustment.adjustmentQuantity" required>
-            </div>
-            <div class="form-group" *ngIf="isManufacturing">
-              <label>Machine.</label>
-              <input class="form-control" name="machine" [(ngModel)]="adjustment.machine">
-            </div>
-            <div class="form-group" *ngIf="isManufacturing">
-              <label>Operator.</label>
-              <input class="form-control" name="operator" [(ngModel)]="adjustment.operator">
-            </div>
-            <div class="form-group">
-              <label>Remarks.</label>
-              <textarea class="form-control" rows="4" name="remarks" [(ngModel)]="adjustment.remarks"></textarea>
-            </div>
+    <div class="col-md-4">
+      <div class="card no-radius">
+        <h6 class="card-header">Save {{ label | titlecase }} Information.</h6>
+        <div class="card-body">
+          <div class="form-group">
+            <label>Item.</label>
+            <input class="form-control" name="item" placeholder="Select item..."
+                   [ngbTypeahead]="searchItem" [inputFormatter]="itemFormatter" [resultTemplate]="itemTemplate"
+                   [(ngModel)]="adjustment.selectedItem" appFocus="true">
+          </div>
+          <div class="form-group" *ngIf="isAdjustment">
+            <label>Adjustment Type.</label>
+            <select class="form-control" name="adjustmentType" [(ngModel)]="adjustment.adjustmentType">
+              <option *ngFor="let t of adjustmentTypes | enumToArray" [ngValue]="t.value">{{ t.key }}</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Quantity.</label>
+            <input type="number" class="form-control" name="adjustmentQuantity" [(ngModel)]="adjustment.adjustmentQuantity" required>
+          </div>
+          <div class="form-group" *ngIf="isManufacturing">
+            <label>Machine.</label>
+            <input class="form-control" name="machine" [(ngModel)]="adjustment.machine">
+          </div>
+          <div class="form-group" *ngIf="isManufacturing">
+            <label>Operator.</label>
+            <input class="form-control" name="operator" [(ngModel)]="adjustment.operator">
+          </div>
+          <div class="form-group">
+            <label>Remarks.</label>
+            <textarea class="form-control" rows="4" name="remarks" [(ngModel)]="adjustment.remarks"></textarea>
           </div>
         </div>
-      </div>
-      <div class="card-footer">
-        <button type="submit" class="btn btn-primary btn-square ml-1" title="Save {{ label }} information." accesskey="s"
-                [disabled]="!adjustmentForm.form.valid || adjustment.itemId == 0 || !adjustment.itemId || isSaving">
-          <i *ngIf="!isSaving" class="fa fa-save mr-1"></i><i *ngIf="isSaving" class="fa fa-spinner fa-spin mr-1"></i>Save
-        </button>
+        <div class="card-footer">
+          <button type="submit" class="btn btn-primary btn-square ml-1" title="Save {{ label }} information." accesskey="s"
+                  [disabled]="!adjustmentForm.form.valid || adjustment.itemId == 0 || !adjustment.itemId || isSaving">
+            <i *ngIf="!isSaving" class="fa fa-save mr-1"></i><i *ngIf="isSaving" class="fa fa-spinner fa-spin mr-1"></i>Save
+          </button>
+        </div>
       </div>
     </div>
   </form>

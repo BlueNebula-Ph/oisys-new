@@ -8,7 +8,7 @@ import { NgbTypeaheadModule } from '@ng-bootstrap/ng-bootstrap';
 import { CurrencyMaskModule } from 'ng2-currency-mask';
 
 import { EnumToArrayPipe } from '../pipes/enum-to-array.pipe';
-import { FocusMeDirective } from '../directives/focus-me.directive';
+import { FocusDirective } from '../directives/focus.directive';
 
 @NgModule({
   imports: [
@@ -21,11 +21,11 @@ import { FocusMeDirective } from '../directives/focus-me.directive';
   ],
   declarations: [
     EnumToArrayPipe,
-    FocusMeDirective
+    FocusDirective
   ],
   exports: [
     EnumToArrayPipe,
-    FocusMeDirective,
+    FocusDirective,
     BrowserAnimationsModule,
     RouterModule,
     NgxDatatableModule,

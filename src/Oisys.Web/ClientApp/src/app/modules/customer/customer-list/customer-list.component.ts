@@ -24,8 +24,8 @@ export class CustomerListComponent implements AfterContentInit {
   rows = new Array<Customer>();
 
   searchTerm: string = '';
-  selectedProvince: Province = new Province();
-  selectedCity: City = new City();
+  selectedProvince: Province = null;
+  selectedCity: City = null;
   provinces: Province[];
 
   isLoading: boolean = false;
@@ -51,8 +51,8 @@ export class CustomerListComponent implements AfterContentInit {
       this.sort.prop,
       this.sort.dir,
       this.searchTerm,
-      this.selectedProvince.id,
-      this.selectedCity.id)
+      this.selectedProvince ? this.selectedProvince.id : 0,
+      this.selectedCity ? this.selectedCity.id : 0)
       .pipe(
         map(data => {
           // Flip flag to show that loading has finished.
@@ -109,7 +109,7 @@ export class CustomerListComponent implements AfterContentInit {
 
   clear() {
     this.searchTerm = '';
-    this.selectedProvince = new Province();
-    this.selectedCity = new City();
+    this.selectedProvince = null;
+    this.selectedCity = null;
   }
 }

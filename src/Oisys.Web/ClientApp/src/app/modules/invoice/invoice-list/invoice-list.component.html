@@ -1,7 +1,7 @@
 <div class="animated fadeIn">
   <h3>Invoice Management.</h3>
   <div class="row">
-    <div class="col-9">
+    <div class="col-9 pr-0">
       <div class="datatable-container">
         <div class="progress-bar progress-bar-striped progress-bar-animated prog-bar" [hidden]="!isLoading"></div>
         <ngx-datatable class="bootstrap"
@@ -27,7 +27,6 @@
           <ngx-datatable-column name="Date" prop="date" [flexGrow]="1">
             <ng-template let-invoice="row" ngx-datatable-cell-template>
               <div>{{ invoice.date }}</div>
-              <div><span class="badge badge-secondary badge-custom mr-1">Due: {{ invoice.dueDate }}</span></div>
             </ng-template>
           </ngx-datatable-column>
           <ngx-datatable-column name="Customer" prop="customer.name" [flexGrow]="2">
@@ -36,7 +35,17 @@
               <div class="small">{{ invoice.customerAddress }}</div>
             </ng-template>
           </ngx-datatable-column>
-          <ngx-datatable-column name="Total Amount" prop="totalAmount" [flexGrow]="2">
+          <ngx-datatable-column name="Amount Due" prop="totalAmountDue" [flexGrow]="1">
+            <ng-template let-value="value" ngx-datatable-cell-template>
+              <div class="text-right">{{ value | currency:'PHP':'₱ ' }}</div>
+            </ng-template>
+          </ngx-datatable-column>
+          <ngx-datatable-column name="Credit Amount" prop="totalCreditAmount" [flexGrow]="1">
+            <ng-template let-value="value" ngx-datatable-cell-template>
+              <div class="text-right">{{ value | currency:'PHP':'₱ ' }}</div>
+            </ng-template>
+          </ngx-datatable-column>
+          <ngx-datatable-column name="Total Amount" prop="totalAmount" [flexGrow]="1">
             <ng-template let-column="column" let-sort="sortFn" ngx-datatable-header-template>
               <span class="datatable-header-cell-wrapper float-right">
                 <span class="datatable-header-cell-label draggable" (click)="sort()">{{ column.name }}</span>
@@ -45,7 +54,7 @@
             <ng-template let-invoice="row" ngx-datatable-cell-template>
               <div class="text-right">
                 <div>{{ invoice.totalAmount | currency:'PHP':'₱ ' }}</div>
-                <div class="small text-italicize">{{ invoice.grossAmount | currency:'PHP':'₱ ' }} less {{ invoice.discountPercent | number:'1.2-2' }}%</div>
+                <div class="small text-italicize">less {{ invoice.discountAmount | currency:'PHP':'₱ ' }} ({{ invoice.discountPercent | number:'1.2-2' }}%)</div>
               </div>
             </ng-template>
           </ngx-datatable-column>

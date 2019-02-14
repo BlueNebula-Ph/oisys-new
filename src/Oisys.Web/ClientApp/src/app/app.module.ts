@@ -47,20 +47,20 @@ export const CustomCurrencyMaskConfig: CurrencyMaskConfig = {
   thousands: ','
 };
 
-
 @NgModule({
   declarations: [
     AppComponent,
     NavMenuComponent,
     HomeComponent,
-    FetchDataComponent,
-    CounterComponent
+    CounterComponent,
+    FetchDataComponent
   ],
   imports: [
     BrowserModule.withServerTransition({ appId: 'ng-cli-universal' }),
     HttpClientModule,
     FormsModule,
     AppRoutingModule,
+    SharedModule,
     CustomerModule,
     InventoryModule,
     OrderModule,
@@ -70,7 +70,6 @@ export const CustomCurrencyMaskConfig: CurrencyMaskConfig = {
     VoucherModule,
     QuotationModule,
     SettingsModule,
-    SharedModule,
     AppHeaderModule,
     AppSidebarModule,
     AppFooterModule,

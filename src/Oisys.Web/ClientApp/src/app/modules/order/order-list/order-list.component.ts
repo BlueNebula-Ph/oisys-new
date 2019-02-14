@@ -30,12 +30,12 @@ export class OrderListComponent implements AfterContentInit {
   searchTerm: string = '';
   dateFrom: Date;
   dateTo: Date;
-  selectedCustomer: Customer = new Customer();
+  selectedCustomer: Customer = null;
   customers: Customer[];
-  selectedItem: Item = new Item();
+  selectedItem: Item = null;
   items: Item[];
   provinces: Province[];
-  selectedProvince: Province = new Province();
+  selectedProvince: Province = null;
 
   isLoading: boolean = false;
 
@@ -65,9 +65,9 @@ export class OrderListComponent implements AfterContentInit {
       this.sort.prop,
       this.sort.dir,
       this.searchTerm,
-      this.selectedCustomer.id,
-      this.selectedProvince.id,
-      this.selectedItem.id,
+      this.selectedCustomer ? this.selectedCustomer.id : 0,
+      this.selectedProvince ? this.selectedProvince.id : 0,
+      this.selectedItem ? this.selectedItem.id : 0,
       this.dateFrom,
       this.dateTo)
       .pipe(
@@ -133,9 +133,9 @@ export class OrderListComponent implements AfterContentInit {
 
   clear() {
     this.searchTerm = '';
-    this.selectedCustomer = new Customer();
-    this.selectedItem = new Item();
-    this.selectedProvince = new Province();
+    this.selectedCustomer = null;
+    this.selectedItem = null;
+    this.selectedProvince = null;
     this.dateFrom = null;
     this.dateTo = null;
   }

@@ -13,6 +13,10 @@ import { Page } from '../../../shared/models/page';
 import { Sort } from '../../../shared/models/sort';
 import { Category } from '../../../shared/models/category';
 
+enum FocusControls {
+  'searchBox'
+}
+
 @Component({
   selector: 'app-inventory-list',
   templateUrl: './inventory-list.component.html',
@@ -24,10 +28,11 @@ export class InventoryListComponent implements AfterContentInit {
   rows = new Array<Item>();
 
   searchTerm: string = '';
-  selectedCategory: Category = new Category();
+  selectedCategory: Category = null;
   categories: Category[];
 
   isLoading: boolean = false;
+  focus: number = FocusControls.searchBox;
 
   constructor(private inventoryService: InventoryService, private categoryService: CategoryService, private util: UtilitiesService, private router: Router) {
     this.page.pageNumber = 0;
@@ -50,7 +55,7 @@ export class InventoryListComponent implements AfterContentInit {
       this.sort.prop,
       this.sort.dir,
       this.searchTerm,
-      this.selectedCategory.id)
+      this.selectedCategory ? this.selectedCategory.id : 0)
       .pipe(
         map(data => {
           // Flip flag to show that loading has finished.
@@ -103,10 +108,13 @@ export class InventoryListComponent implements AfterContentInit {
     // Reset page number on search.
     this.page.pageNumber = 0;
     this.loadItems();
+    this.focus = 333;
+    //this.focus = FocusControls.searchBox;
   }
 
   clear() {
     this.searchTerm = '';
-    this.selectedCategory = new Category();
+    this.selectedCategory = null;
+    this.focus = 100;
   }
 }
