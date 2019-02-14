@@ -1,0 +1,108 @@
+<div class="card">
+  <div class="card-body">
+    <!-- Keywords -->
+    <div class="input-group mb-2">
+      <div class="input-group-prepend" title="Search by keywords.">
+        <span class="input-group-text">
+          <i class="fa fa-search fa-fw"></i>
+        </span>
+      </div>
+      <input class="form-control form-control-sm" placeholder="Search by keywords." [(ngModel)]="search.searchTerm" appFocus="true" />
+    </div>
+
+    <!-- Customers -->
+    <div *ngIf="showCustomers" class="input-group mb-2">
+      <div class="input-group-prepend" title="Search by customer.">
+        <span class="input-group-text">
+          <i class="cui-people fa-fw"></i>
+        </span>
+      </div>
+      <select class="form-control form-control-sm" [(ngModel)]="search.selectedCustomer">
+        <option [ngValue]="null">Search by customer.</option>
+        <option *ngFor="let customer of customers" [ngValue]="customer">{{ customer.name }}</option>
+      </select>
+    </div>
+
+    <!-- Province -->
+    <div *ngIf="showProvinces" class="input-group mb-2">
+      <div class="input-group-prepend" title="Search by province.">
+        <span class="input-group-text">
+          <i class="fa fa-map-o fa-fw"></i>
+        </span>
+      </div>
+      <select class="form-control form-control-sm" [(ngModel)]="search.selectedProvince">
+        <option [ngValue]="null">Search by province.</option>
+        <option *ngFor="let prov of provinces" [ngValue]="prov">{{ prov.name }}</option>
+      </select>
+    </div>
+
+    <!-- City -->
+    <div *ngIf="showCities" class="input-group mb-2">
+      <div class="input-group-prepend" title="Search by city.">
+        <span class="input-group-text">
+          <i class="fa fa-map-o fa-fw"></i>
+        </span>
+      </div>
+      <select class="form-control form-control-sm" [(ngModel)]="search.selectedCity">
+        <option [ngValue]="null">Search by city.</option>
+        <option *ngFor="let city of (search.selectedProvince ? search.selectedProvince.cities : [])" [ngValue]="city">
+          {{ city.name }}
+        </option>
+      </select>
+    </div>
+
+    <!-- Category -->
+    <div *ngIf="showCategories" class="input-group mb-2">
+      <div class="input-group-prepend" title="Search by category.">
+        <span class="input-group-text">
+          <i class="fa fa-folder-open fa-fw"></i>
+        </span>
+      </div>
+      <select class="form-control form-control-sm" [(ngModel)]="search.selectedCategory">
+        <option [ngValue]="null">Search by category.</option>
+        <option *ngFor="let category of categories" [ngValue]="category">{{ category.name }}</option>
+      </select>
+    </div>
+
+    <!-- Items -->
+    <div *ngIf="showItems" class="input-group mb-2">
+      <div class="input-group-prepend" title="Search by item.">
+        <span class="input-group-text">
+          <i class="fa fa-database fa-fw"></i>
+        </span>
+      </div>
+      <select class="form-control form-control-sm" [(ngModel)]="search.selectedItem">
+        <option [ngValue]="null">Search by item.</option>
+        <option *ngFor="let item of items" [ngValue]="item">{{ item.code }} - {{ item.name }}</option>
+      </select>
+    </div>
+
+    <!-- Dates -->
+    <div *ngIf="showDates" class="input-group mb-2">
+      <div class="input-group-prepend" title="Search by date range - Date from.">
+        <span class="input-group-text">
+          <i class="fa fa-calendar fa-fw"></i>
+        </span>
+      </div>
+      <input type="date" class="form-control form-control-sm" placeholder="Date From" [(ngModel)]="search.dateFrom" />
+    </div>
+    <div *ngIf="showDates" class="input-group mb-2">
+      <div class="input-group-prepend" title="Search by date range - Date to.">
+        <span class="input-group-text">
+          <i class="fa fa-calendar fa-fw"></i>
+        </span>
+      </div>
+      <input type="date" class="form-control form-control-sm" placeholder="Date To" [(ngModel)]="search.dateTo" />
+    </div>
+
+    <!-- Buttons -->
+    <div>
+      <button type="button" class="btn btn-sm btn-primary mr-1" (click)="performSearch()" accesskey="s">
+        <i class="fa fa-search"></i> Search
+      </button>
+      <button type="button" class="btn btn-sm btn-secondary" (click)="clearSearch()" accesskey="c">
+        <i class="fa fa-eraser"></i> Clear
+      </button>
+    </div>
+  </div>
+</div>

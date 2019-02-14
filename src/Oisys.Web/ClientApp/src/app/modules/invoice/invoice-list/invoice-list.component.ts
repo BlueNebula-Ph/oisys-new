@@ -11,11 +11,9 @@ import { UtilitiesService } from '../../../shared/services/utilities.service';
 
 import { Page } from '../../../shared/models/page';
 import { Sort } from '../../../shared/models/sort';
+import { Search } from '../../../shared/models/search';
 import { Customer } from '../../../shared/models/customer';
 import { Invoice } from '../../../shared/models/invoice';
-import { Item } from '../../../shared/models/item';
-import { Province } from '../../../shared/models/province';
-import { InvoiceLineItem } from '../../../shared/models/invoice-line-item';
 
 @Component({
   selector: 'app-invoice-list',
@@ -25,17 +23,10 @@ import { InvoiceLineItem } from '../../../shared/models/invoice-line-item';
 export class InvoiceListComponent implements AfterContentInit {
   page: Page = new Page();
   sort: Sort = new Sort();
+  search: Search = new Search();
   rows = new Array<Invoice>();
 
-  searchTerm: string = '';
-  dateFrom: Date;
-  dateTo: Date;
-  selectedCustomer: Customer = new Customer();
   customers: Customer[];
-  selectedItem: Item = new Item();
-  items: Item[];
-  provinces: Province[];
-  selectedProvince: Province = new Province();
 
   isLoading: boolean = false;
 
@@ -64,12 +55,10 @@ export class InvoiceListComponent implements AfterContentInit {
       this.page.size,
       this.sort.prop,
       this.sort.dir,
-      this.searchTerm,
-      this.selectedCustomer.id,
-      this.selectedProvince.id,
-      this.selectedItem.id,
-      this.dateFrom,
-      this.dateTo)
+      this.search.searchTerm,
+      this.search.customerId,
+      this.search.dateFrom,
+      this.search.dateTo)
       .pipe(
         map(data => {
           // Flip flag to show that loading has finished.
@@ -94,12 +83,8 @@ export class InvoiceListComponent implements AfterContentInit {
   fetchLists() {
     forkJoin(
       this.customerService.getCustomerLookup(),
-      this.inventoryService.getItemLookup(),
-      this.provinceService.getProvinceLookup()
-    ).subscribe(([customerResponse, inventoryResponse, provinceResponse]) => {
+    ).subscribe(([customerResponse]) => {
       this.customers = customerResponse;
-      this.items = inventoryResponse;
-      this.provinces = provinceResponse;
     });
   };
 
@@ -126,18 +111,12 @@ export class InvoiceListComponent implements AfterContentInit {
     }
   }
 
-  search() {
-    // Reset page number on search.
-    this.page.pageNumber = 0;
-    this.loadInvoices();
-  }
-
-  clear() {
-    this.searchTerm = '';
-    this.selectedCustomer = new Customer();
-    this.selectedItem = new Item();
-    this.selectedProvince = new Province();
-    this.dateFrom = null;
-    this.dateTo = null;
+  onSearch(event) {
+    if (event) {
+      // Reset page number on search.
+      this.page.pageNumber = 0;
+      this.search = event;
+      this.loadInvoices();
+    }
   }
 }

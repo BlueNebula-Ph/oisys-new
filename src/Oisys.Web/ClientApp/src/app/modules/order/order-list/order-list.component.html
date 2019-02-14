@@ -71,75 +71,15 @@
       </div>
     </div>
     <div class="col-3">
-      <div class="card">
-        <div class="card-body">
-          <div class="input-group mb-2">
-            <div class="input-group-prepend" title="Search by keywords.">
-              <span class="input-group-text">
-                <i class="fa fa-search fa-fw"></i>
-              </span>
-            </div>
-            <input class="form-control form-control-sm" placeholder="Search by keywords." [(ngModel)]="searchTerm" />
-          </div>
-          <div class="input-group mb-2">
-            <div class="input-group-prepend" title="Search by customer.">
-              <span class="input-group-text">
-                <i class="cui-people fa-fw"></i>
-              </span>
-            </div>
-            <select class="form-control form-control-sm" [(ngModel)]="selectedCustomer">
-              <option [ngValue]="null">Search by customer.</option>
-              <option *ngFor="let customer of customers" [ngValue]="customer">{{ customer.name }}</option>
-            </select>
-          </div>
-          <div class="input-group mb-2">
-            <div class="input-group-prepend" title="Search by province.">
-              <span class="input-group-text">
-                <i class="fa fa-map-o fa-fw"></i>
-              </span>
-            </div>
-            <select class="form-control form-control-sm" [(ngModel)]="selectedProvince">
-              <option [ngValue]="null">Search by province.</option>
-              <option *ngFor="let province of provinces" [ngValue]="province">{{ province.name }}</option>
-            </select>
-          </div>
-          <div class="input-group mb-2">
-            <div class="input-group-prepend" title="Search by item.">
-              <span class="input-group-text">
-                <i class="fa fa-database fa-fw"></i>
-              </span>
-            </div>
-            <select class="form-control form-control-sm" [(ngModel)]="selectedItem">
-              <option [ngValue]="null">Search by item.</option>
-              <option *ngFor="let item of items" [ngValue]="item">{{ item.code }} - {{ item.name }}</option>
-            </select>
-          </div>
-          <div class="input-group mb-2">
-            <div class="input-group-prepend" title="Search by date range - Date from.">
-              <span class="input-group-text">
-                <i class="fa fa-calendar fa-fw"></i>
-              </span>
-            </div>
-            <input type="date" class="form-control form-control-sm" placeholder="Date From" [(ngModel)]="dateFrom" />
-          </div>
-          <div class="input-group mb-2">
-            <div class="input-group-prepend" title="Search by date range - Date to.">
-              <span class="input-group-text">
-                <i class="fa fa-calendar fa-fw"></i>
-              </span>
-            </div>
-            <input type="date" class="form-control form-control-sm" placeholder="Date To" [(ngModel)]="dateTo" />
-          </div>
-          <div>
-            <button type="button" class="btn btn-sm btn-primary" (click)="search()" accesskey="s">
-              <i class="fa fa-search"></i> Search
-            </button>
-            <button type="button" class="btn btn-sm btn-secondary ml-1" (click)="clear()" accesskey="c">
-              <i class="fa fa-eraser"></i> Clear
-            </button>
-          </div>
-        </div>
-      </div>
+      <app-search-panel (searched)="onSearch($event)"
+                        [showCustomers]="true"
+                        [customers]="customers"
+                        [showProvinces]="true"
+                        [provinces]="provinces"
+                        [showItems]="true"
+                        [items]="items"
+                        [showDates]="true">
+      </app-search-panel>
     </div>
   </div>
 </div>

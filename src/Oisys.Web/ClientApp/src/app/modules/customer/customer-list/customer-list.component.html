@@ -67,48 +67,11 @@
       </div>
     </div>
     <div class="col-3">
-      <div class="card">
-        <div class="card-body">
-          <div class="input-group mb-2">
-            <div class="input-group-prepend" title="Search by keywords.">
-              <span class="input-group-text">
-                <i class="fa fa-search fa-fw"></i>
-              </span>
-            </div>
-            <input class="form-control form-control-sm" placeholder="Search by keywords." [(ngModel)]="searchTerm" appFocus="true" />
-          </div>
-          <div class="input-group mb-2">
-            <div class="input-group-prepend" title="Search by province.">
-              <span class="input-group-text">
-                <i class="fa fa-map-o fa-fw"></i>
-              </span>
-            </div>
-            <select class="form-control form-control-sm" [(ngModel)]="selectedProvince">
-              <option [ngValue]="null">Search by province.</option>
-              <option *ngFor="let prov of provinces" [ngValue]="prov">{{ prov.name }}</option>
-            </select>
-          </div>
-          <div class="input-group mb-2">
-            <div class="input-group-prepend" title="Search by city.">
-              <span class="input-group-text">
-                <i class="fa fa-map-o fa-fw"></i>
-              </span>
-            </div>
-            <select class="form-control form-control-sm" [(ngModel)]="selectedCity">
-              <option [ngValue]="null">Search by city.</option>
-              <option *ngFor="let city of (selectedProvince ? selectedProvince.cities : [])" [ngValue]="city">{{ city.name }}</option>
-            </select>
-          </div>
-          <div>
-            <button type="button" class="btn btn-sm btn-primary mr-1" (click)="search()">
-              <i class="fa fa-search"></i> Search
-            </button>
-            <button type="button" class="btn btn-sm btn-secondary" (click)="clear()">
-              <i class="fa fa-eraser"></i> Clear
-            </button>
-          </div>
-        </div>
-      </div>
+      <app-search-panel (searched)="onSearch($event)"
+                        [showProvinces]="true"
+                        [provinces]="provinces"
+                        [showCities]="true">
+      </app-search-panel>
     </div>
   </div>
 </div>

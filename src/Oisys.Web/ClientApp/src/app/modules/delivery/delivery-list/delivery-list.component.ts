@@ -11,6 +11,7 @@ import { UtilitiesService } from '../../../shared/services/utilities.service';
 
 import { Page } from '../../../shared/models/page';
 import { Sort } from '../../../shared/models/sort';
+import { Search } from '../../../shared/models/search';
 import { Customer } from '../../../shared/models/customer';
 import { Delivery } from '../../../shared/models/delivery';
 import { Item } from '../../../shared/models/item';
@@ -24,17 +25,12 @@ import { Province } from '../../../shared/models/province';
 export class DeliveryListComponent implements AfterContentInit {
   page: Page = new Page();
   sort: Sort = new Sort();
+  search: Search = new Search();
   rows = new Array<Delivery>();
 
-  searchTerm: string = '';
-  dateFrom: Date;
-  dateTo: Date;
-  selectedCustomer: Customer = new Customer();
   customers: Customer[];
-  selectedItem: Item = new Item();
   items: Item[];
   provinces: Province[];
-  selectedProvince: Province = new Province();
 
   isLoading: boolean = false;
 
@@ -63,12 +59,12 @@ export class DeliveryListComponent implements AfterContentInit {
       this.page.size,
       this.sort.prop,
       this.sort.dir,
-      this.searchTerm,
-      this.selectedCustomer.id,
-      this.selectedProvince.id,
-      this.selectedItem.id,
-      this.dateFrom,
-      this.dateTo)
+      this.search.searchTerm,
+      this.search.customerId,
+      this.search.provinceId,
+      this.search.itemId,
+      this.search.dateFrom,
+      this.search.dateTo)
       .pipe(
         map(data => {
           // Flip flag to show that loading has finished.
@@ -125,18 +121,12 @@ export class DeliveryListComponent implements AfterContentInit {
     }
   }
 
-  search() {
-    // Reset page number on search.
-    this.page.pageNumber = 0;
-    this.loadDeliveries();
-  }
-
-  clear() {
-    this.searchTerm = '';
-    this.selectedCustomer = new Customer();
-    this.selectedItem = new Item();
-    this.selectedProvince = new Province();
-    this.dateFrom = null;
-    this.dateTo = null;
+  onSearch(event) {
+    if (event) {
+      // Reset page number on search.
+      this.page.pageNumber = 0;
+      this.search = event;
+      this.loadDeliveries();
+    }
   }
 }

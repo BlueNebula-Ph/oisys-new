@@ -10,8 +10,8 @@ import { UtilitiesService } from '../../../shared/services/utilities.service';
 import { Customer } from '../../../shared/models/customer';
 import { Page } from '../../../shared/models/page';
 import { Sort } from '../../../shared/models/sort';
+import { Search } from '../../../shared/models/search';
 import { Province } from '../../../shared/models/province';
-import { City } from '../../../shared/models/city';
 
 @Component({
   selector: 'app-customer-list',
@@ -21,11 +21,9 @@ import { City } from '../../../shared/models/city';
 export class CustomerListComponent implements AfterContentInit {
   page: Page = new Page();
   sort: Sort = new Sort();
+  search: Search = new Search();
   rows = new Array<Customer>();
-
-  searchTerm: string = '';
-  selectedProvince: Province = null;
-  selectedCity: City = null;
+  
   provinces: Province[];
 
   isLoading: boolean = false;
@@ -50,9 +48,9 @@ export class CustomerListComponent implements AfterContentInit {
       this.page.size,
       this.sort.prop,
       this.sort.dir,
-      this.searchTerm,
-      this.selectedProvince ? this.selectedProvince.id : 0,
-      this.selectedCity ? this.selectedCity.id : 0)
+      this.search.searchTerm,
+      this.search.provinceId,
+      this.search.cityId)
       .pipe(
         map(data => {
           // Flip flag to show that loading has finished.
@@ -101,15 +99,12 @@ export class CustomerListComponent implements AfterContentInit {
     }
   }
 
-  search() {
-    // Reset page number on search.
-    this.page.pageNumber = 0;
-    this.loadCustomers();
-  }
-
-  clear() {
-    this.searchTerm = '';
-    this.selectedProvince = null;
-    this.selectedCity = null;
+  onSearch(event) {
+    if (event) {
+      // Reset page number on search.
+      this.page.pageNumber = 0;
+      this.search = event;
+      this.loadCustomers();
+    }
   }
 }

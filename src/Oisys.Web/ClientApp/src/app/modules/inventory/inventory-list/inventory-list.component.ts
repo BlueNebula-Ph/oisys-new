@@ -11,6 +11,7 @@ import { UtilitiesService } from '../../../shared/services/utilities.service';
 import { Item } from '../../../shared/models/item';
 import { Page } from '../../../shared/models/page';
 import { Sort } from '../../../shared/models/sort';
+import { Search } from '../../../shared/models/search';
 import { Category } from '../../../shared/models/category';
 
 enum FocusControls {
@@ -25,14 +26,13 @@ enum FocusControls {
 export class InventoryListComponent implements AfterContentInit {
   page: Page = new Page();
   sort: Sort = new Sort();
+  search: Search = new Search();
   rows = new Array<Item>();
 
-  searchTerm: string = '';
-  selectedCategory: Category = null;
   categories: Category[];
 
   isLoading: boolean = false;
-  focus: number = FocusControls.searchBox;
+  //focus: number = FocusControls.searchBox;
 
   constructor(private inventoryService: InventoryService, private categoryService: CategoryService, private util: UtilitiesService, private router: Router) {
     this.page.pageNumber = 0;
@@ -54,8 +54,8 @@ export class InventoryListComponent implements AfterContentInit {
       this.page.size,
       this.sort.prop,
       this.sort.dir,
-      this.searchTerm,
-      this.selectedCategory ? this.selectedCategory.id : 0)
+      this.search.searchTerm,
+      this.search.categoryId)
       .pipe(
         map(data => {
           // Flip flag to show that loading has finished.
@@ -104,17 +104,12 @@ export class InventoryListComponent implements AfterContentInit {
     }
   }
 
-  search() {
-    // Reset page number on search.
-    this.page.pageNumber = 0;
-    this.loadItems();
-    this.focus = 333;
-    //this.focus = FocusControls.searchBox;
-  }
-
-  clear() {
-    this.searchTerm = '';
-    this.selectedCategory = null;
-    this.focus = 100;
+  onSearch(event) {
+    if (event) {
+      // Reset page number on search.
+      this.page.pageNumber = 0;
+      this.search = event;
+      this.loadItems();
+    }
   }
 }

@@ -8,6 +8,7 @@ import { UtilitiesService } from '../../../shared/services/utilities.service';
 
 import { Page } from '../../../shared/models/page';
 import { Sort } from '../../../shared/models/sort';
+import { Search } from '../../../shared/models/search';
 import { CashVoucher } from '../../../shared/models/cash-voucher';
 
 @Component({
@@ -18,11 +19,8 @@ import { CashVoucher } from '../../../shared/models/cash-voucher';
 export class VoucherListComponent implements AfterContentInit {
   page: Page = new Page();
   sort: Sort = new Sort();
+  search: Search = new Search();
   rows = new Array<CashVoucher>();
-
-  searchTerm: string = '';
-  dateFrom: Date;
-  dateTo: Date;
 
   isLoading: boolean = false;
 
@@ -47,9 +45,9 @@ export class VoucherListComponent implements AfterContentInit {
       this.page.size,
       this.sort.prop,
       this.sort.dir,
-      this.searchTerm,
-      this.dateFrom,
-      this.dateTo)
+      this.search.searchTerm,
+      this.search.dateFrom,
+      this.search.dateTo)
       .pipe(
         map(data => {
           // Flip flag to show that loading has finished.
@@ -90,15 +88,12 @@ export class VoucherListComponent implements AfterContentInit {
     }
   }
 
-  search() {
-    // Reset page number on search.
-    this.page.pageNumber = 0;
-    this.loadCashVouchers();
-  }
-
-  clear() {
-    this.searchTerm = '';
-    this.dateFrom = null;
-    this.dateTo = null;
+  onSearch(event) {
+    if (event) {
+      // Reset page number on search.
+      this.page.pageNumber = 0;
+      this.search = event;
+      this.loadCashVouchers();
+    }
   }
 }

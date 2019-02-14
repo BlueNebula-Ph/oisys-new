@@ -24,6 +24,7 @@ import { CreditMemoModule } from './modules/credit-memo/credit-memo.module';
 import { VoucherModule } from './modules/voucher/voucher.module';
 import { QuotationModule } from './modules/quotation/quotation.module';
 import { SettingsModule } from './modules/settings/settings.module';
+import { SharedModule } from './shared/modules/shared.module';
 
 import { AppComponent } from './shared/components/app/app.component';
 import { NavMenuComponent } from './shared/components/nav-menu/nav-menu.component';
@@ -31,7 +32,6 @@ import { NavMenuComponent } from './shared/components/nav-menu/nav-menu.componen
 import { HomeComponent } from './shared/components/home/home.component';
 import { FetchDataComponent } from './shared/components/fetch-data/fetch-data.component';
 import { CounterComponent } from './shared/components/counter/counter.component';
-import { SharedModule } from './shared/modules/shared.module';
 
 export const CustomScrollConfig: PerfectScrollbarConfigInterface = {
   suppressScrollX: true

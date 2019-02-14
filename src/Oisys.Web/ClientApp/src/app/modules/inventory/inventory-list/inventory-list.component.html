@@ -78,37 +78,10 @@
       </div>
     </div>
     <div class="col-3">
-      <div class="card">
-        <div class="card-body">
-          <div class="input-group mb-2">
-            <div class="input-group-prepend" title="Search by keywords.">
-              <span class="input-group-text">
-                <i class="fa fa-search fa-fw"></i>
-              </span>
-            </div>
-            <input class="form-control form-control-sm" placeholder="Search by keywords." [(ngModel)]="searchTerm" [appFocus]="(focus === 0)" />
-          </div>
-          <div class="input-group mb-2">
-            <div class="input-group-prepend" title="Search by category.">
-              <span class="input-group-text">
-                <i class="fa fa-folder-open fa-fw"></i>
-              </span>
-            </div>
-            <select class="form-control form-control-sm" [(ngModel)]="selectedCategory">
-              <option [ngValue]="null">Search by category.</option>
-              <option *ngFor="let category of categories" [ngValue]="category">{{ category.name }}</option>
-            </select>
-          </div>
-          <div>
-            <button type="button" class="btn btn-sm btn-primary mr-1" (click)="search()" accesskey="s">
-              <i class="fa fa-search"></i> Search
-            </button>
-            <button type="button" class="btn btn-sm btn-secondary" (click)="clear()" accesskey="c">
-              <i class="fa fa-eraser"></i> Clear
-            </button>
-          </div>
-        </div>
-      </div>
+      <app-search-panel (searched)="onSearch($event)"
+                        [showCategories]="true"
+                        [categories]="categories">
+      </app-search-panel>
     </div>
   </div>
 </div>

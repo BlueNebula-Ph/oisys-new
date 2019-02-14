@@ -90,6 +90,11 @@ namespace OisysNew.Controllers
                     list = list.Where(c => c.Date >= filter.DateFrom && c.Date < filter.DateTo.Value.AddDays(1));
                 }
 
+                if (!(filter?.ProvinceId).IsNullOrZero())
+                {
+                    list = list.Where(c => c.ProvinceId == filter.ProvinceId);
+                }
+
                 if (!(filter?.ItemId).IsNullOrZero())
                 {
                     list = list.Where(c => c.LineItems.Any(d => d.OrderLineItem.ItemId == filter.ItemId));

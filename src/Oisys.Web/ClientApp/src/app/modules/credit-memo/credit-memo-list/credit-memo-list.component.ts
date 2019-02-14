@@ -10,6 +10,7 @@ import { UtilitiesService } from '../../../shared/services/utilities.service';
 
 import { Page } from '../../../shared/models/page';
 import { Sort } from '../../../shared/models/sort';
+import { Search } from '../../../shared/models/search';
 import { Customer } from '../../../shared/models/customer';
 import { CreditMemo } from '../../../shared/models/credit-memo';
 import { Item } from '../../../shared/models/item';
@@ -22,14 +23,10 @@ import { Item } from '../../../shared/models/item';
 export class CreditMemoListComponent implements AfterContentInit {
   page: Page = new Page();
   sort: Sort = new Sort();
+  search: Search = new Search();
   rows = new Array<CreditMemo>();
 
-  searchTerm: string = '';
-  dateFrom: Date;
-  dateTo: Date;
-  selectedCustomer: Customer = null;
   customers: Customer[];
-  selectedItem: Item = null;
   items: Item[];
 
   isLoading: boolean = false;
@@ -58,11 +55,11 @@ export class CreditMemoListComponent implements AfterContentInit {
       this.page.size,
       this.sort.prop,
       this.sort.dir,
-      this.searchTerm,
-      this.selectedCustomer ? this.selectedCustomer.id : 0,
-      this.selectedItem ? this.selectedItem.id : 0,
-      this.dateFrom,
-      this.dateTo)
+      this.search.searchTerm,
+      this.search.customerId,
+      this.search.itemId,
+      this.search.dateFrom,
+      this.search.dateTo)
       .pipe(
         map(data => {
           // Flip flag to show that loading has finished.
@@ -116,17 +113,12 @@ export class CreditMemoListComponent implements AfterContentInit {
     }
   }
 
-  search() {
-    // Reset page number on search.
-    this.page.pageNumber = 0;
-    this.loadCreditMemos();
-  }
-
-  clear() {
-    this.searchTerm = '';
-    this.selectedCustomer = null;
-    this.selectedItem = null;
-    this.dateFrom = null;
-    this.dateTo = null;
+  onSearch(event) {
+    if (event) {
+      // Reset page number on search.
+      this.page.pageNumber = 0;
+      this.search = event;
+      this.loadCreditMemos();
+    }
   }
 }

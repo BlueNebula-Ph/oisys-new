@@ -23,12 +23,10 @@ export class InvoiceService {
     sortDirection: string,
     searchTerm: string,
     customerId: number = 0,
-    provinceId: number = 0,
-    itemId: number = 0,
     dateFrom?: Date,
     dateTo?: Date
   ): Observable<PagedData<Invoice>> {
-    var filter = { pageNumber, pageSize, sortBy, sortDirection, searchTerm, customerId, provinceId, itemId, dateFrom, dateTo };
+    var filter = { pageNumber, pageSize, sortBy, sortDirection, searchTerm, customerId, dateFrom, dateTo };
     var searchUrl = `${this.url}/search`;
 
     return this.http.post<any>(searchUrl, filter)

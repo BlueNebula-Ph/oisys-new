@@ -18,6 +18,11 @@ namespace OisysNew.DTO.Delivery
         public int? CustomerId { get; set; }
 
         /// <summary>
+        /// Gets or sets province id.
+        /// </summary>
+        public int? ProvinceId { get; set; }
+
+        /// <summary>
         /// Gets or sets property Delivery Date From.
         /// </summary>
         public DateTime? DateFrom { get; set; }

@@ -11,6 +11,7 @@ import { UtilitiesService } from '../../../shared/services/utilities.service';
 
 import { Page } from '../../../shared/models/page';
 import { Sort } from '../../../shared/models/sort';
+import { Search } from '../../../shared/models/search';
 import { Customer } from '../../../shared/models/customer';
 import { Order } from '../../../shared/models/order';
 import { Item } from '../../../shared/models/item';
@@ -25,17 +26,12 @@ import { LineItem } from '../../../shared/models/line-item';
 export class OrderListComponent implements AfterContentInit {
   page: Page = new Page();
   sort: Sort = new Sort();
+  search: Search = new Search();
   rows = new Array<Order>();
 
-  searchTerm: string = '';
-  dateFrom: Date;
-  dateTo: Date;
-  selectedCustomer: Customer = null;
   customers: Customer[];
-  selectedItem: Item = null;
   items: Item[];
   provinces: Province[];
-  selectedProvince: Province = null;
 
   isLoading: boolean = false;
 
@@ -64,12 +60,12 @@ export class OrderListComponent implements AfterContentInit {
       this.page.size,
       this.sort.prop,
       this.sort.dir,
-      this.searchTerm,
-      this.selectedCustomer ? this.selectedCustomer.id : 0,
-      this.selectedProvince ? this.selectedProvince.id : 0,
-      this.selectedItem ? this.selectedItem.id : 0,
-      this.dateFrom,
-      this.dateTo)
+      this.search.searchTerm,
+      this.search.customerId,
+      this.search.provinceId,
+      this.search.itemId,
+      this.search.dateFrom,
+      this.search.dateTo)
       .pipe(
         map(data => {
           // Flip flag to show that loading has finished.
@@ -125,18 +121,12 @@ export class OrderListComponent implements AfterContentInit {
     }
   }
 
-  search() {
-    // Reset page number on search.
-    this.page.pageNumber = 0;
-    this.loadOrders();
-  }
-
-  clear() {
-    this.searchTerm = '';
-    this.selectedCustomer = null;
-    this.selectedItem = null;
-    this.selectedProvince = null;
-    this.dateFrom = null;
-    this.dateTo = null;
+  onSearch(event) {
+    if (event) {
+      // Reset page number on search.
+      this.page.pageNumber = 0;
+      this.search = event;
+      this.loadOrders();
+    }
   }
 }
