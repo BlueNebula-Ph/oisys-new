@@ -11,7 +11,7 @@
                   <label>Customer.</label>
                   <div class="input-group">
                     <input class="form-control" name="customer" placeholder="Select customer..."
-                           [(ngModel)]="order.selectedCustomer" [ngbTypeahead]="searchCustomer"
+                           [(ngModel)]="order.selectedCustomer" [ngbTypeahead]="searchCustomer" [appFocus]="true"
                            [inputFormatter]="customerFormatter" [resultTemplate]="customerTemplate" required>
                     <div class="input-group-append">
                       <span class="input-group-text">* Required</span>
@@ -53,42 +53,43 @@
                 </div>
               </div>
             </div>
-            <div class="row">
-              <table class="table form-table border-bottom">
-                <thead>
-                  <tr>
-                    <td width="10%" class="text-right align-middle">Quantity</td>
-                    <td width="10%" class="align-middle">Unit</td>
-                    <td width="25%" class="align-middle">Item</td>
-                    <td width="15%" class="align-middle">Category</td>
-                    <td width="15%" class="align-middle text-right">Unit Price</td>
-                    <td width="15%" class="align-middle text-right">Total Price</td>
-                    <td width="10%" class="text-center">
-                      <button type="button" class="btn btn-sm btn-primary" accesskey="a" (click)="addLineItem()">
-                        <i class="fa fa-plus"></i> Item
-                      </button>
-                    </td>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr *ngFor="let lineItem of order.lineItems">
-                    <td><input type="number" class="form-control form-control-sm text-right" [(ngModel)]="lineItem.quantity" [ngModelOptions]="{standalone: true}" /></td>
-                    <td><input class="form-control form-control-sm" [(ngModel)]="lineItem.unit" [ngModelOptions]="{standalone: true}" readonly /></td>
-                    <td>
-                      <input class="form-control form-control-sm" name="orderLineItem" placeholder="Select item..."
-                             [ngbTypeahead]="searchItem" [inputFormatter]="itemFormatter" [resultTemplate]="itemTemplate"
-                             [(ngModel)]="lineItem.selectedItem" [ngModelOptions]="{standalone: true}">
-                    </td>
-                    <td><input class="form-control form-control-sm" [(ngModel)]="lineItem.categoryName" [ngModelOptions]="{standalone: true}" readonly /></td>
-                    <td><input currencyMask class="form-control form-control-sm text-right" [(ngModel)]="lineItem.unitPrice" [ngModelOptions]="{standalone: true}" /></td>
-                    <td><input currencyMask class="form-control form-control-sm text-right" [(ngModel)]="lineItem.totalPrice" [ngModelOptions]="{standalone: true}" readonly /></td>
-                    <td class="text-center">
-                      <button type="button" class="btn btn-ghost-danger btn-sm" (click)="removeLineItem($index)"><i class="fa fa-fw fa-trash"></i></button>
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
+            <table class="table form-table border-bottom">
+              <thead>
+                <tr>
+                  <td width="10%" class="text-right align-middle">Quantity</td>
+                  <td width="10%" class="align-middle">Unit</td>
+                  <td width="25%" class="align-middle">Item</td>
+                  <td width="15%" class="align-middle">Category</td>
+                  <td width="15%" class="align-middle text-right">Unit Price</td>
+                  <td width="15%" class="align-middle text-right">Total Price</td>
+                  <td width="10%" class="text-center">
+                    <button type="button" class="btn btn-sm btn-primary" accesskey="a" (click)="addLineItem()">
+                      <i class="fa fa-plus"></i> Item
+                    </button>
+                  </td>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let lineItem of order.lineItems">
+                  <td><input [appFocus]="true" type="number" class="form-control form-control-sm text-right" [(ngModel)]="lineItem.quantity" [ngModelOptions]="{standalone: true}" /></td>
+                  <td><input class="form-control form-control-sm" [(ngModel)]="lineItem.unit" [ngModelOptions]="{standalone: true}" readonly /></td>
+                  <td>
+                    <input class="form-control form-control-sm" name="orderLineItem" placeholder="Select item..."
+                           [ngbTypeahead]="searchItem" [inputFormatter]="itemFormatter" [resultTemplate]="itemTemplate"
+                           [(ngModel)]="lineItem.selectedItem" [ngModelOptions]="{standalone: true}">
+                  </td>
+                  <td><input class="form-control form-control-sm" [(ngModel)]="lineItem.categoryName" [ngModelOptions]="{standalone: true}" readonly /></td>
+                  <td><input currencyMask class="form-control form-control-sm text-right" [(ngModel)]="lineItem.unitPrice" [ngModelOptions]="{standalone: true}" /></td>
+                  <td><input currencyMask class="form-control form-control-sm text-right" [(ngModel)]="lineItem.totalPrice" [ngModelOptions]="{standalone: true}" readonly /></td>
+                  <td class="text-center">
+                    <button type="button" class="btn btn-ghost-danger btn-sm" (click)="removeLineItem($index)"><i class="fa fa-fw fa-trash"></i></button>
+                  </td>
+                </tr>
+                <tr *ngIf="order.lineItems.length == 0">
+                  <td colspan="7">No items added.</td>
+                </tr>
+              </tbody>
+            </table>
           </div>
           <div class="card-footer">
             <button type="submit" class="btn btn-primary btn-square" title="Save order information." accesskey="s"
@@ -139,7 +140,7 @@
   <ngb-highlight [result]="customer.name" [term]="t"></ngb-highlight>
 </ng-template>
 <ng-template #itemTemplate let-item="result" let-t="term">
-  <span>{{ item.code }}</span> - 
+  <span>{{ item.code }}</span> -
   <ngb-highlight [result]="item.name" [term]="t"></ngb-highlight>&nbsp;
   <small>({{ item.quantity }} {{ item.unit }})</small>
   <div class="small">

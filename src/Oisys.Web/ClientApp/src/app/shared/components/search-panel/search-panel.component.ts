@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { Component, Input, Output, EventEmitter, ViewChild, ElementRef, AfterContentInit } from '@angular/core';
 
 import { Search } from '../../models/search';
 import { Province } from '../../models/Province';
@@ -11,7 +11,7 @@ import { Category } from '../../models/category';
   templateUrl: './search-panel.component.html',
   styleUrls: ['./search-panel.component.css']
 })
-export class SearchPanelComponent implements OnInit {
+export class SearchPanelComponent implements AfterContentInit {
   @Input() showProvinces: boolean = false;
   @Input() provinces: Province[] = new Array<Province>();
 
@@ -32,18 +32,27 @@ export class SearchPanelComponent implements OnInit {
 
   search: Search = new Search();
 
+  @ViewChild("keywords") keywordsField: ElementRef;
+
   constructor() { }
 
-  ngOnInit() {
+  ngAfterContentInit() {
+    this.keywordsField.nativeElement.focus();
   }
 
   performSearch(): void {
     this.searched.emit(this.search);
-  }
+    this.keywordsField.nativeElement.focus();
+  };
 
   clearSearch(): void {
     this.search = new Search();
+    this.performSearch();
+  };
 
-    this.searched.emit(this.search);
-  }
+  onKeyup(event) {
+    if (event && event.keyCode == 13) {
+      this.performSearch();
+    }
+  };
 }
