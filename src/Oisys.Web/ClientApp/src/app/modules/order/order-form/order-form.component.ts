@@ -2,8 +2,8 @@ import { Component, AfterContentInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { NgForm } from '@angular/forms';
 
-import { Observable, forkJoin } from 'rxjs';
-import { debounceTime, distinctUntilChanged, map, switchMap } from 'rxjs/operators';
+import { Observable, forkJoin, of } from 'rxjs';
+import { debounceTime, distinctUntilChanged, map, switchMap, catchError, combineLatest, first } from 'rxjs/operators';
 import { NgbTypeaheadConfig } from '@ng-bootstrap/ng-bootstrap';
 
 import { OrderService } from '../../../shared/services/order.service';
@@ -26,6 +26,8 @@ export class OrderFormComponent implements AfterContentInit {
   customers: Customer[];
   items: Item[];
 
+  orderId: number;
+
   constructor(
     private orderService: OrderService,
     private customerService: CustomerService,
@@ -38,8 +40,17 @@ export class OrderFormComponent implements AfterContentInit {
   }
 
   ngAfterContentInit() {
+    this.getOrderId();
     this.fetchLists();
-    setTimeout(() => this.loadOrder(), 3000);
+    //setTimeout(() => this.loadOrder(), 3000);
+  };
+
+  getOrderId() {
+    //this.route.paramMap
+    //  .pipe(
+    //    switchMap(param => +param.get('id'))
+    //  )
+    //  .subscribe(id => this.orderId = id);
   };
 
   saveOrder(orderForm: NgForm) {
@@ -82,13 +93,45 @@ export class OrderFormComponent implements AfterContentInit {
   };
 
   fetchLists() {
+    var reqs = [
+      this.customerService.getCustomerLookup(),
+      this.inventoryService.getItemLookup(),
+      //this.route.paramMap
+      //  .pipe(
+      //    switchMap(param => {
+      //      const id = parseInt(param.get('id'));
+      //      if (!id || id == 0) {
+      //        return of(new Order());
+      //      }
+      //      return this.orderService.getOrderById(id);
+      //    })
+      //  )
+      this.orderId && this.orderId != 0 ? this.orderService.getOrderById(this.orderId) : of(new Order())
+    ];
+
     forkJoin(
       this.customerService.getCustomerLookup(),
-      this.inventoryService.getItemLookup()
-    ).subscribe(([customerResponse, inventoryResponse]) => {
-      this.customers = customerResponse;
-      this.items = inventoryResponse;
-    });
+      this.inventoryService.getItemLookup(),
+      this.orderId && this.orderId != 0 ? this.orderService.getOrderById(this.orderId) : of(new Order())
+    )
+      .subscribe(([a, b, order]) => {
+        this.customers = a;
+        this.items = b;
+
+        this.order = new Order(order);
+        this.order.lineItems = order.lineItems.map(lineItem => {
+          var orderLineItem = new LineItem(lineItem);
+          orderLineItem.selectedItem = this.filterItems(lineItem.itemName)[0];
+          return orderLineItem;
+        });
+        this.order.selectedCustomer = this.filterCustomers(order.customerName)[0];
+      })
+
+    return reqs
+    //).subscribe(([customerResponse, inventoryResponse]) => {
+    //  this.customers = customerResponse;
+    //  this.items = inventoryResponse;
+    //});
   };
 
   // Line items
@@ -98,7 +141,7 @@ export class OrderFormComponent implements AfterContentInit {
   };
 
   removeLineItem(index: number) {
-    if(confirm('Are you sure you want to remove this item?')) {
+    if (confirm('Are you sure you want to remove this item?')) {
       this.order.lineItems.splice(index, 1);
     }
   };

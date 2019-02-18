@@ -38,9 +38,9 @@ export class OrderService {
       );
   };
 
-  getOrderById(id: number): Observable<any> {
+  getOrderById(id: number): Observable<Order> {
     var getUrl = `${this.url}/${id}`;
-    return this.http.get<any>(getUrl);
+    return this.http.get<Order>(getUrl);
   };
 
   getOrderLookup(customerId: number, isInvoiced: boolean = false): Observable<Order[]> {

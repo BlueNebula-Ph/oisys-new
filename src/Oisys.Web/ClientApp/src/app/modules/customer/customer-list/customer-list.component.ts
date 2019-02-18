@@ -1,6 +1,6 @@
 import { Component, AfterContentInit } from '@angular/core';
 
-import { of } from 'rxjs';
+import { of, Observable } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 
 import { CustomerService } from '../../../shared/services/customer.service';
@@ -22,9 +22,9 @@ export class CustomerListComponent implements AfterContentInit {
   page: Page = new Page();
   sort: Sort = new Sort();
   search: Search = new Search();
-  rows = new Array<Customer>();
-  
-  provinces: Province[];
+  rows = of(new Array<Customer>());
+
+  provinces: Observable<Province[]>;
 
   isLoading: boolean = false;
 
@@ -43,7 +43,7 @@ export class CustomerListComponent implements AfterContentInit {
 
   loadCustomers() {
     this.isLoading = true;
-    this.customerService.getCustomers(
+    this.rows = this.customerService.getCustomers(
       this.page.pageNumber,
       this.page.size,
       this.sort.prop,
@@ -65,15 +65,16 @@ export class CustomerListComponent implements AfterContentInit {
 
           return of([]);
         })
-      )
-      .subscribe(data => this.rows = data);
+      );
+     // .subscribe(data => this.rows = data);
   }
 
   fetchProvinces() {
-    this.provinceService.getProvinceLookup()
-      .subscribe(results => {
-        this.provinces = results;
-      });
+    this.provinces = this.provinceService.getProvinceLookup();
+    //this.provinceService.getProvinceLookup()
+    //  .subscribe(results => {
+    //    this.provinces = results;
+    //  });
   };
 
   onDeleteCustomer(id: number): void {

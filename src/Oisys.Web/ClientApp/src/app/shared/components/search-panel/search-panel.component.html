@@ -7,7 +7,7 @@
           <i class="fa fa-search fa-fw"></i>
         </span>
       </div>
-      <input #keywords class="form-control form-control-sm" placeholder="Search by keywords." [(ngModel)]="search.searchTerm"
+      <input #keywords appControlStyle placeholder="Search by keywords." [(ngModel)]="search.searchTerm"
              (keyup)="onKeyup($event)" />
     </div>
 
@@ -18,7 +18,7 @@
           <i class="cui-people fa-fw"></i>
         </span>
       </div>
-      <select class="form-control form-control-sm" [(ngModel)]="search.selectedCustomer">
+      <select appControlStyle [(ngModel)]="search.selectedCustomer">
         <option [ngValue]="null">Search by customer.</option>
         <option *ngFor="let customer of customers" [ngValue]="customer">{{ customer.name }}</option>
       </select>
@@ -31,7 +31,7 @@
           <i class="fa fa-map-o fa-fw"></i>
         </span>
       </div>
-      <select class="form-control form-control-sm" [(ngModel)]="search.selectedProvince">
+      <select appControlStyle [(ngModel)]="search.selectedProvince">
         <option [ngValue]="null">Search by province.</option>
         <option *ngFor="let prov of provinces" [ngValue]="prov">{{ prov.name }}</option>
       </select>
@@ -44,7 +44,7 @@
           <i class="fa fa-map-o fa-fw"></i>
         </span>
       </div>
-      <select class="form-control form-control-sm" [(ngModel)]="search.selectedCity">
+      <select appControlStyle [(ngModel)]="search.selectedCity">
         <option [ngValue]="null">Search by city.</option>
         <option *ngFor="let city of (search.selectedProvince ? search.selectedProvince.cities : [])" [ngValue]="city">
           {{ city.name }}
@@ -59,7 +59,7 @@
           <i class="fa fa-folder-open fa-fw"></i>
         </span>
       </div>
-      <select class="form-control form-control-sm" [(ngModel)]="search.selectedCategory">
+      <select appControlStyle [(ngModel)]="search.selectedCategory">
         <option [ngValue]="null">Search by category.</option>
         <option *ngFor="let category of categories" [ngValue]="category">{{ category.name }}</option>
       </select>
@@ -72,7 +72,7 @@
           <i class="fa fa-database fa-fw"></i>
         </span>
       </div>
-      <select class="form-control form-control-sm" [(ngModel)]="search.selectedItem">
+      <select appControlStyle [(ngModel)]="search.selectedItem">
         <option [ngValue]="null">Search by item.</option>
         <option *ngFor="let item of items" [ngValue]="item">{{ item.code }} - {{ item.name }}</option>
       </select>
@@ -85,7 +85,7 @@
           <i class="fa fa-calendar fa-fw"></i>
         </span>
       </div>
-      <input type="date" class="form-control form-control-sm" placeholder="Date From" [(ngModel)]="search.dateFrom" />
+      <input appControlStyle type="date" placeholder="Date From" [(ngModel)]="search.dateFrom" />
     </div>
     <div *ngIf="showDates" class="input-group mb-2">
       <div class="input-group-prepend" title="Search by date range - Date to.">
@@ -93,7 +93,7 @@
           <i class="fa fa-calendar fa-fw"></i>
         </span>
       </div>
-      <input type="date" class="form-control form-control-sm" placeholder="Date To" [(ngModel)]="search.dateTo" />
+      <input appControlStyle type="date" placeholder="Date To" [(ngModel)]="search.dateTo" />
     </div>
 
     <!-- Buttons -->

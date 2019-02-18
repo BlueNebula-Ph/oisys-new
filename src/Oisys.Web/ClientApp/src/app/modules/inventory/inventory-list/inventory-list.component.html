@@ -80,8 +80,11 @@
     <div class="col-3">
       <app-search-panel (searched)="onSearch($event)"
                         [showCategories]="true"
-                        [categories]="categories">
+                        [categories]="categories | async">
       </app-search-panel>
     </div>
   </div>
+</div>
+<div>
+  {{ rows$ | async | json }}
 </div>

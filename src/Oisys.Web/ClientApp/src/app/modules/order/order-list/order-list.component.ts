@@ -1,6 +1,6 @@
 import { Component, AfterContentInit } from '@angular/core';
 
-import { of, forkJoin } from 'rxjs';
+import { of, Observable } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 
 import { OrderService } from '../../../shared/services/order.service';
@@ -27,11 +27,11 @@ export class OrderListComponent implements AfterContentInit {
   page: Page = new Page();
   sort: Sort = new Sort();
   search: Search = new Search();
-  rows = new Array<Order>();
+  rows$ = of(new Array<Order>());
 
-  customers: Customer[];
-  items: Item[];
-  provinces: Province[];
+  customers$: Observable<Customer[]>;
+  items$: Observable<Item[]>;
+  provinces$: Observable<Province[]>;
 
   isLoading: boolean = false;
 
@@ -55,7 +55,7 @@ export class OrderListComponent implements AfterContentInit {
 
   loadOrders() {
     this.isLoading = true;
-    this.orderService.getOrders(
+    this.rows$ = this.orderService.getOrders(
       this.page.pageNumber,
       this.page.size,
       this.sort.prop,
@@ -82,20 +82,13 @@ export class OrderListComponent implements AfterContentInit {
 
           return of([]);
         })
-      )
-      .subscribe(data => this.rows = data);
+      );
   }
 
   fetchLists() {
-    forkJoin(
-      this.customerService.getCustomerLookup(),
-      this.inventoryService.getItemLookup(),
-      this.provinceService.getProvinceLookup()
-    ).subscribe(([customerResponse, inventoryResponse, provinceResponse]) => {
-      this.customers = customerResponse;
-      this.items = inventoryResponse;
-      this.provinces = provinceResponse;
-    });
+    this.customers$ = this.customerService.getCustomerLookup();
+    this.items$ = this.inventoryService.getItemLookup();
+    this.provinces$ = this.provinceService.getProvinceLookup();
   };
 
   onDeleteOrder(id: number): void {

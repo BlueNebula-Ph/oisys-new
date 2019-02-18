@@ -1,7 +1,7 @@
-import { Component, AfterContentInit } from '@angular/core';
+import { Component, AfterContentInit, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
 
-import { of } from 'rxjs';
+import { of, Observable } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 
 import { InventoryService } from '../../../shared/services/inventory.service';
@@ -13,26 +13,23 @@ import { Page } from '../../../shared/models/page';
 import { Sort } from '../../../shared/models/sort';
 import { Search } from '../../../shared/models/search';
 import { Category } from '../../../shared/models/category';
-
-enum FocusControls {
-  'searchBox'
-}
+import { PagedData } from '../../../shared/models/paged-data';
 
 @Component({
   selector: 'app-inventory-list',
   templateUrl: './inventory-list.component.html',
   styleUrls: ['./inventory-list.component.css']
 })
-export class InventoryListComponent implements AfterContentInit {
+export class InventoryListComponent implements AfterContentInit, OnDestroy {
   page: Page = new Page();
   sort: Sort = new Sort();
   search: Search = new Search();
-  rows = new Array<Item>();
 
-  categories: Category[];
+  rows$: Observable<PagedData<Item>>; // = of(new Array<Item>());
+  items$: Observable<Item[]>;
+  categories: Observable<Category[]>;
 
   isLoading: boolean = false;
-  //focus: number = FocusControls.searchBox;
 
   constructor(private inventoryService: InventoryService, private categoryService: CategoryService, private util: UtilitiesService, private router: Router) {
     this.page.pageNumber = 0;
@@ -43,43 +40,44 @@ export class InventoryListComponent implements AfterContentInit {
 
   ngAfterContentInit() {
     this.setPage({ offset: 0 });
-    this.fetchCategories();
+    this.categories = this.categoryService.getCategoryLookup();
     this.loadItems();
+  };
+
+  ngOnDestroy() {
+
   };
 
   loadItems() {
     this.isLoading = true;
-    this.inventoryService.getItems(
+
+    this.rows$ = this.inventoryService.getItems(
       this.page.pageNumber,
       this.page.size,
       this.sort.prop,
       this.sort.dir,
       this.search.searchTerm,
-      this.search.categoryId)
-      .pipe(
-        map(data => {
-          // Flip flag to show that loading has finished.
-          this.isLoading = false;
+      this.search.categoryId);
+      //.pipe(
+      //  map(data => {
+      //    // Flip flag to show that loading has finished.
+      //    this.isLoading = false;
 
-          this.page = data.pageInfo;
+      //    console.log(data);
 
-          return data.items;
-        }),
-        catchError(() => {
-          this.isLoading = false;
+      //    this.page = data.pageInfo;
 
-          return of([]);
-        })
-      )
-      .subscribe(data => this.rows = data);
+      //    this.items$ = of(data.items);
+
+      //    return data;
+      //  }),
+      //  catchError(() => {
+      //    this.isLoading = false;
+
+      //    return of(new Array<Item>());
+      //  })
+      //);
   }
-
-  fetchCategories() {
-    this.categoryService.getCategoryLookup()
-      .subscribe(results => {
-        this.categories = results;
-      });
-  };
 
   onDeleteItem(id: number): void {
     if (confirm("Are you sure you want to delete this item?")) {
