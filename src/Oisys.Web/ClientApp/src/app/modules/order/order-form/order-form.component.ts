@@ -68,8 +68,8 @@ export class OrderFormComponent implements AfterContentInit, OnDestroy {
   };
 
   saveOrder(orderForm: NgForm) {
-    this.isSaving = true;
     if (orderForm.valid) {
+      this.isSaving = true;
       this.saveOrderSub = this.orderService
         .saveOrder(this.order)
         .subscribe(this.saveSuccess, this.saveFailed, this.saveCompleted);

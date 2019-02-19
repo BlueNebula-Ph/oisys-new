@@ -68,8 +68,8 @@ export class EditCustomerComponent implements AfterContentInit, OnDestroy {
   }
 
   saveCustomer(customerForm: NgForm) {
-    this.isSaving = true;
     if (customerForm.valid) {
+      this.isSaving = true;
       this.customerService
         .saveCustomer(this.customer)
         .subscribe(this.saveSuccess, this.saveFailed, this.saveCompleted);

@@ -6,15 +6,15 @@
     <form #categoryForm="ngForm" (ngSubmit)="saveCategory(categoryForm)">
       <div class="form-group">
         <label>Category Name.</label>
-        <div class="input-group">
-          <input type="text" class="form-control" name="categoryName" placeholder="Category name" [(ngModel)]="category.name" (keyup.enter)="saveCategory(categoryForm)" required>
+        <div appInputGroupStyle>
+          <input appControlStyle #categoryName type="text" name="categoryName" placeholder="Category name" [(ngModel)]="category.name" (keyup.enter)="saveCategory(categoryForm)" required>
           <div class="input-group-append">
             <span class="input-group-text">* Required</span>
           </div>
         </div>
       </div>
       <div class="form-group form-actions">
-        <button type="submit" class="btn btn-primary btn-square" [disabled]="!categoryForm.form.valid || isSaving" title="Save category information.">
+        <button type="submit" class="btn btn-sm btn-primary btn-square" [disabled]="!categoryForm.form.valid || isSaving" title="Save category information.">
           <i *ngIf="!isSaving" class="fa fa-save"></i><i *ngIf="isSaving" class="fa fa-spinner fa-spin"></i>&nbsp;Save
         </button>
       </div>

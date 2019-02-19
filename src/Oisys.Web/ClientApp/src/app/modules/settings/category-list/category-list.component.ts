@@ -1,6 +1,6 @@
-import { Component, ViewChild, ElementRef, AfterContentInit } from '@angular/core';
+import { Component, ViewChild, AfterContentInit, OnDestroy, ElementRef } from '@angular/core';
 
-import { of } from 'rxjs';
+import { of, Observable, Subscription } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 
 import { CategoryService } from '../../../shared/services/category.service';
@@ -15,14 +15,17 @@ import { Sort } from '../../../shared/models/sort';
   templateUrl: './category-list.component.html',
   styleUrls: ['./category-list.component.css']
 })
-export class CategoryListComponent implements AfterContentInit {
+export class CategoryListComponent implements AfterContentInit, OnDestroy {
   page: Page = new Page();
   sort: Sort = new Sort();
-  rows = new Array<Category>();
+  selectedCategory: Category;
+
+  rows$: Observable<Category[]>;
+  deleteCategorySub: Subscription;
 
   isLoading: boolean = false;
 
-  selectedCategory: Category;
+  @ViewChild('searchBox') input: ElementRef;
 
   constructor(private categoryService: CategoryService, private util: UtilitiesService) {
     this.page.pageNumber = 0;
@@ -31,16 +34,19 @@ export class CategoryListComponent implements AfterContentInit {
     this.sort.dir = 'asc';
   }
 
-  @ViewChild('searchBox') input: ElementRef;
-
   ngAfterContentInit() {
     this.setPage({ offset: 0 });
     this.loadCategories();
+    this.input.nativeElement.focus();
+  };
+
+  ngOnDestroy() {
+    if (this.deleteCategorySub) { this.deleteCategorySub.unsubscribe(); }
   };
 
   loadCategories() {
     this.isLoading = true;
-    this.categoryService.getCategories(
+    this.rows$ = this.categoryService.getCategories(
       this.page.pageNumber,
       this.page.size,
       this.sort.prop,
@@ -60,8 +66,7 @@ export class CategoryListComponent implements AfterContentInit {
 
           return of([]);
         })
-      )
-      .subscribe(data => this.rows = data);
+      );
   }
 
   onEditCategory(categoryToEdit: Category): void {
@@ -70,7 +75,7 @@ export class CategoryListComponent implements AfterContentInit {
 
   onDeleteCategory(id: number): void {
     if (confirm("Are you sure you want to delete this category?")) {
-      this.categoryService.deleteCategory(id).subscribe(() => {
+      this.deleteCategorySub = this.categoryService.deleteCategory(id).subscribe(() => {
         this.loadCategories();
         this.util.showSuccessMessage("Category deleted successfully.");
       });
@@ -79,13 +84,12 @@ export class CategoryListComponent implements AfterContentInit {
 
   onCategorySaved(category: Category): void {
     this.loadCategories();
-    this.util.showSuccessMessage("Category saved successfully.");
   };
 
   setPage(pageInfo): void {
     this.page.pageNumber = pageInfo.offset;
     this.loadCategories();
-  }
+  };
 
   onSort(event) {
     if (event) {
@@ -94,11 +98,17 @@ export class CategoryListComponent implements AfterContentInit {
       this.sort = event.sorts[0];
       this.loadCategories();
     }
-  }
+  };
 
   search() {
     // Reset page number on search.
     this.page.pageNumber = 0;
     this.loadCategories();
-  }
+  };
+
+  onKeyup(event) {
+    if (event && event.keyCode == 13) {
+      this.search();
+    }
+  };
 }
