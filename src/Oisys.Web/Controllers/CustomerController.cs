@@ -100,15 +100,20 @@ namespace OisysNew.Controllers
         /// Returns list of active <see cref="Customer"/>
         /// </summary>
         /// <returns>List of Customers</returns>
-        [HttpGet("lookup/{provinceId?}/{cityId?}", Name = "GetCustomerLookup")]
+        [HttpGet("lookup/{provinceId?}/{cityId?}/{name?}", Name = "GetCustomerLookup")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult<IEnumerable<CustomerLookup>>> GetLookup(int provinceId = 0, int cityId = 0)
+        public async Task<ActionResult<IEnumerable<CustomerLookup>>> GetLookup(int provinceId = 0, int cityId = 0, string name = "")
         {
             try
             {
                 // get list of active items (not deleted)
                 var list = context.Customers.AsNoTracking();
+
+                if (!string.IsNullOrEmpty(name))
+                {
+                    list = list.Where(a => a.Name.StartsWith(name, StringComparison.CurrentCultureIgnoreCase));
+                }
 
                 if (provinceId != 0)
                 {

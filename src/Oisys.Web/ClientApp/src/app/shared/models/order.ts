@@ -12,13 +12,13 @@ export class Order extends JsonModelBase {
   public dueDate: Date;
   public lineItems: LineItem[];
 
-  private _selectedCustomer: Customer;
-  get selectedCustomer() {
-    return this._selectedCustomer;
+  private _customer: Customer;
+  get customer() {
+    return this._customer;
   }
-  set selectedCustomer(customer: Customer) {
+  set customer(customer: Customer) {
     if (customer) {
-      this._selectedCustomer = customer;
+      this._customer = customer;
       this.customerId = customer.id;
       this.updateLineItems();
     }
@@ -28,11 +28,12 @@ export class Order extends JsonModelBase {
   get discountPercent() {
     if (this._discountPercent) {
       return this._discountPercent;
+    } else {
+      if (this._customer && this.customerId && this.customerId != 0) {
+        return this._customer.discount;
+      }
+      return 0;
     }
-    if (this.selectedCustomer && this.customerId && this.customerId != 0) {
-      return this.selectedCustomer.discount;
-    }
-    return 0;
   }
   set discountPercent(value: number) {
     this._discountPercent = value;
@@ -72,18 +73,19 @@ export class Order extends JsonModelBase {
     this.customerId = order && order.customerId || 0;
     this.customerName = order && order.customerName || '';
     this.customerAddress = order && order.customerAddress || '';
+    this.discountPercent = order && order.discountPercent || 0;
 
     this.date = order && order.date || new Date();
     this.dueDate = order && order.dueDate || new Date();
 
-    this.discountPercent = order && order.discountPercent || 0;
-    this.lineItems = order && order.lineItems || new Array<LineItem>();
+    this.lineItems = (order && order.lineItems) ? order.lineItems.map(lineItem => new LineItem(lineItem)) : new Array<LineItem>();
+    this.customer = (order && order.customer) ? new Customer(order.customer) : undefined;
   }
 
   updateLineItems() {
-    if (this.customerId && this.customerId != 0) {
+    if (this.customerId && this.customerId != 0 && this.lineItems) {
       this.lineItems.forEach((lineItem) => {
-        lineItem.updatePriceList(this._selectedCustomer.priceListId);
+        lineItem.updatePriceList(this._customer.priceListId);
       });
     }
   };

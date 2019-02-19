@@ -104,16 +104,21 @@ namespace OisysNew.Controllers
         /// Returns list of active <see cref="Item"/>
         /// </summary>
         /// <returns>List of Items</returns>
-        [HttpGet("lookup", Name = "GetItemLookup")]
+        [HttpGet("lookup/{name?}", Name = "GetItemLookup")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult<IEnumerable<ItemLookup>>> GetLookup()
+        public async Task<ActionResult<IEnumerable<ItemLookup>>> GetLookup(string name = "")
         {
             try
             {
                 // get list of active items (not deleted)
                 var list = context.Items
                     .AsNoTracking();
+
+                if (!string.IsNullOrEmpty(name))
+                {
+                    list = list.Where(a => a.Name.StartsWith(name, StringComparison.CurrentCultureIgnoreCase));
+                }
 
                 // sort
                 var ordering = $"{Constants.ColumnNames.Name} {Constants.DefaultSortDirection}";

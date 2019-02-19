@@ -216,7 +216,7 @@ namespace OisysNew.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult<OrderSummary>> GetOrderById(int id)
+        public async Task<ActionResult<OrderDetail>> GetOrderById(int id)
         {
             try
             {
@@ -232,8 +232,8 @@ namespace OisysNew.Controllers
                     return NotFound(id);
                 }
 
-                var orderSummary = mapper.Map<OrderSummary>(entity);
-                return orderSummary;
+                var orderDetail = mapper.Map<OrderDetail>(entity);
+                return orderDetail;
             }
             catch (Exception e)
             {

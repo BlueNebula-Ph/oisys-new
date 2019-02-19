@@ -75,6 +75,6 @@ namespace OisysNew.DTO.Item
         /// <summary>
         /// Gets or sets the adjustments collection.
         /// </summary>
-        public IEnumerable<ItemHistorySummary> TransactionHistory { get; set; }
+        //public IEnumerable<ItemHistorySummary> TransactionHistory { get; set; }
     }
 }

@@ -1,9 +1,9 @@
-﻿namespace OisysNew.DTO.Order
+﻿using OisysNew.DTO.Customer;
+using System.Collections.Generic;
+
+namespace OisysNew.DTO.Order
 {
-    /// <summary>
-    /// View model for the order entity.
-    /// </summary>
-    public class OrderSummary : DTOBase
+    public class OrderDetail : DTOBase
     {
         /// <summary>
         /// Gets or sets property Code.
@@ -12,14 +12,9 @@
         public int Code { get; set; }
 
         /// <summary>
-        /// Gets or sets the customer name.
+        /// Gets or sets the selected customer
         /// </summary>
-        public string CustomerName { get; set; }
-
-        /// <summary>
-        /// Gets or sets the customer address.
-        /// </summary>
-        public string CustomerAddress { get; set; }
+        public CustomerLookup Customer { get; set; }
 
         /// <summary>
         /// Gets or sets property Date.
@@ -51,5 +46,15 @@
         /// GrossAmount - DiscountAmount
         /// </summary>
         public decimal TotalAmount { get; set; }
+
+        /// <summary>
+        /// Gets or sets the order line items.
+        /// </summary>
+        public IEnumerable<OrderDetailLineItem> LineItems { get; set; }
+
+        /// <summary>
+        /// Gets or sets concurrency check.
+        /// </summary>
+        public byte[] RowVersion { get; set; }
     }
 }

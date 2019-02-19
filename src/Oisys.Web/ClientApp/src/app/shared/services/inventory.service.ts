@@ -32,8 +32,13 @@ export class InventoryService {
     return this.http.get<Item>(getUrl);
   };
 
-  getItemLookup(): Observable<Item[]> {
+  getItemLookup(name: string = ''): Observable<Item[]> {
     var lookupUrl = `${this.url}/lookup`;
+
+    if (name !== '') {
+      lookupUrl = lookupUrl.concat(`/${name}`);
+    }
+
     return this.http.get<Item[]>(lookupUrl);
   };
 

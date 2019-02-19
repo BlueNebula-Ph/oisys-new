@@ -72,7 +72,7 @@ export class QuotationFormComponent implements AfterContentInit {
             this.salesQuotation = new SalesQuotation(salesQuotation);
             this.salesQuotation.lineItems = salesQuotation.lineItems.map(lineItem => {
               var salesQuotationLineItem = new LineItem(lineItem);
-              salesQuotationLineItem.selectedItem = this.filterItems(lineItem.itemName)[0];
+              salesQuotationLineItem.item = this.filterItems(lineItem.itemName)[0];
               return salesQuotationLineItem;
             });
             this.salesQuotation.selectedCustomer = this.filterCustomers(salesQuotation.customerName)[0];

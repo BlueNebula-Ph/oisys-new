@@ -16,7 +16,6 @@ import { Customer } from '../../../shared/models/customer';
 import { Order } from '../../../shared/models/order';
 import { Item } from '../../../shared/models/item';
 import { Province } from '../../../shared/models/province';
-import { LineItem } from '../../../shared/models/line-item';
 
 @Component({
   selector: 'app-order-list',
@@ -27,8 +26,8 @@ export class OrderListComponent implements AfterContentInit {
   page: Page = new Page();
   sort: Sort = new Sort();
   search: Search = new Search();
-  rows$ = of(new Array<Order>());
 
+  rows$: Observable<Order[]>;
   customers$: Observable<Customer[]>;
   items$: Observable<Item[]>;
   provinces$: Observable<Province[]>;
@@ -72,10 +71,7 @@ export class OrderListComponent implements AfterContentInit {
           this.isLoading = false;
           this.page = data.pageInfo;
 
-          return data.items.map(order => {
-            order.lineItems = order.lineItems.map(lineItem => new LineItem(lineItem));
-            return new Order(order);
-          });
+          return data.items;
         }),
         catchError(() => {
           this.isLoading = false;

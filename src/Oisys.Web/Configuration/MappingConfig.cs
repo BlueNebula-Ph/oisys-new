@@ -137,16 +137,22 @@ namespace OisysNew.Configuration
                 .ForMember(d => d.CustomerName, s => s.MapFrom(o => o.Customer.Name))
                 .ForMember(d => d.CustomerAddress, s => s.MapFrom(o => $"{o.Customer.Address}, {o.Customer.City.Name}, {o.Customer.Province.Name}"));
 
+            CreateMap<Order, OrderDetail>()
+                .ForMember(d => d.Date, s => s.MapFrom(o => o.Date.ToShortDateString()))
+                .ForMember(d => d.DueDate, s => s.MapFrom(o => o.DueDate.HasValue ? o.DueDate.Value.ToShortDateString() : string.Empty))
+                .ForMember(d => d.Customer, s => s.MapFrom(o => o.Customer));
+
             CreateMap<Order, OrderLookup>()
                 .ForMember(d => d.Date, s => s.MapFrom(o => o.Date.ToShortDateString()));
 
             CreateMap<SaveOrderRequest, Order>();
 
             // Order Line Item
-            CreateMap<OrderLineItem, OrderLineItemSummary>()
+            CreateMap<OrderLineItem, OrderDetailLineItem>()
                 .ForMember(d => d.ItemName, s => s.MapFrom(o => o.Item.Name))
                 .ForMember(d => d.Unit, s => s.MapFrom(o => o.Item.Unit))
-                .ForMember(d => d.CategoryName, s => s.MapFrom(o => o.Item.Category.Name));
+                .ForMember(d => d.CategoryName, s => s.MapFrom(o => o.Item.Category.Name))
+                .ForMember(d => d.Item, s => s.MapFrom(o => o.Item));
 
             CreateMap<SaveOrderLineItemRequest, OrderLineItem>();
 

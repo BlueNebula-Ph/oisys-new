@@ -10,23 +10,23 @@ export class LineItem extends JsonModelBase {
 
   public priceList: PriceList;
 
-  private _selectedItem: Item;
-  get selectedItem() {
-    return this._selectedItem;
+  private _item: Item;
+  get item() {
+    return this._item;
   }
-  set selectedItem(item: Item) {
+  set item(item: Item) {
     if (item) {
-      this._selectedItem = item;
+      this._item = item;
       this.itemId = item.id;
     }
   }
 
   get unit() {
-    return this._selectedItem && this._selectedItem.unit || '';
+    return this._item && this._item.unit || '';
   }
 
   get categoryName() {
-    return this._selectedItem && this._selectedItem.categoryName || '';
+    return this._item && this._item.categoryName || '';
   }
 
   private _unitPrice: number;
@@ -36,16 +36,16 @@ export class LineItem extends JsonModelBase {
     }
 
     var unitPrice = 0;
-    if (this._selectedItem && this.itemId != 0) {
+    if (this._item && this.itemId != 0) {
       switch (this.priceList) {
         case PriceList["Main Price"]:
-          unitPrice = this._selectedItem.mainPrice;
+          unitPrice = this._item.mainPrice;
           break;
         case PriceList["Walk-In Price"]:
-          unitPrice = this._selectedItem.walkInPrice;
+          unitPrice = this._item.walkInPrice;
           break;
         case PriceList["N.E. Price"]:
-          unitPrice = this._selectedItem.nePrice;
+          unitPrice = this._item.nePrice;
           break;
       }
     }
@@ -72,6 +72,8 @@ export class LineItem extends JsonModelBase {
     this.priceList = lineItem && lineItem.priceList || PriceList["Main Price"];
 
     this.unitPrice = lineItem && lineItem.unitPrice || 0;
+
+    this.item = (lineItem && lineItem.item) ? new Item(lineItem.item) : undefined;
   }
 
   updatePriceList(priceList?: PriceList) {

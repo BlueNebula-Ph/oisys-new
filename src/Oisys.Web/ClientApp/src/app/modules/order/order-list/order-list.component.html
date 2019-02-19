@@ -5,7 +5,7 @@
       <div class="datatable-container">
         <div class="progress-bar progress-bar-striped progress-bar-animated prog-bar" [hidden]="!isLoading"></div>
         <ngx-datatable class="bootstrap"
-                       [rows]="rows$ | async"
+                       [rows]="(rows$ | async) || []"
                        [columnMode]="'flex'"
                        [headerHeight]="40"
                        [summaryRow]="false"
@@ -45,7 +45,7 @@
             <ng-template let-order="row" ngx-datatable-cell-template>
               <div class="text-right">
                 <div>{{ order.totalAmount | currency:'PHP':'₱ ' }}</div>
-                <div class="small text-italicize">{{ order.grossAmount | currency:'PHP':'₱ ' }} less {{ order.discountPercent | number:'1.2-2' }}%</div>
+                <div class="small text-italicize">{{ order.grossAmount | currency:'PHP':'₱ ' }} less {{ order.discountAmount | currency:'PHP':'₱ ' }} ({{ order.discountPercent | number:'1.2-2' }}%)</div>
               </div>
             </ng-template>
           </ngx-datatable-column>

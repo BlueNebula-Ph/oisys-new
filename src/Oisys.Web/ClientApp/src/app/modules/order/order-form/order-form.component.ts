@@ -1,9 +1,9 @@
-import { Component, AfterContentInit } from '@angular/core';
+import { Component, AfterContentInit, OnDestroy, ViewChild, ElementRef } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { NgForm } from '@angular/forms';
 
-import { Observable, forkJoin, of } from 'rxjs';
-import { debounceTime, distinctUntilChanged, map, switchMap, catchError, combineLatest, first } from 'rxjs/operators';
+import { Observable, Subscription } from 'rxjs';
+import { debounceTime, distinctUntilChanged, map, switchMap } from 'rxjs/operators';
 import { NgbTypeaheadConfig } from '@ng-bootstrap/ng-bootstrap';
 
 import { OrderService } from '../../../shared/services/order.service';
@@ -12,8 +12,6 @@ import { InventoryService } from '../../../shared/services/inventory.service';
 import { UtilitiesService } from '../../../shared/services/utilities.service';
 
 import { Order } from '../../../shared/models/order';
-import { Customer } from '../../../shared/models/customer';
-import { Item } from '../../../shared/models/item';
 import { LineItem } from '../../../shared/models/line-item';
 
 @Component({
@@ -21,12 +19,13 @@ import { LineItem } from '../../../shared/models/line-item';
   templateUrl: './order-form.component.html',
   styleUrls: ['./order-form.component.css']
 })
-export class OrderFormComponent implements AfterContentInit {
-  order: Order = new Order();
-  customers: Customer[];
-  items: Item[];
+export class OrderFormComponent implements AfterContentInit, OnDestroy {
+  order = new Order();
+  getOrderSub: Subscription;
+  saveOrderSub: Subscription;
+  isSaving = false;
 
-  orderId: number;
+  @ViewChild('customer') customerField: ElementRef;
 
   constructor(
     private orderService: OrderService,
@@ -39,105 +38,70 @@ export class OrderFormComponent implements AfterContentInit {
     this.config.showHint = true;
   }
 
-  ngAfterContentInit() {
-    this.getOrderId();
-    this.fetchLists();
-    //setTimeout(() => this.loadOrder(), 3000);
+  ngAfterContentInit(): void {
+    this.loadOrderForm();
   };
 
-  getOrderId() {
-    //this.route.paramMap
-    //  .pipe(
-    //    switchMap(param => +param.get('id'))
-    //  )
-    //  .subscribe(id => this.orderId = id);
-  };
+  ngOnDestroy(): void {
+    if (this.getOrderSub) {
+      this.getOrderSub.unsubscribe();
+    }
+    if (this.saveOrderSub) {
+      this.saveOrderSub.unsubscribe();
+    }
+  }
 
-  saveOrder(orderForm: NgForm) {
-    if (orderForm.valid) {
-      this.orderService
-        .saveOrder(this.order)
-        .subscribe(() => {
-          if (this.order.id == 0) {
-            this.loadOrder();
-          }
-          this.util.showSuccessMessage("Order saved successfully.");
-        }, error => {
-          console.error(error);
-          this.util.showErrorMessage("An error occurred.");
-        });
+  loadOrderForm() {
+    const orderId = +this.route.snapshot.paramMap.get("id");
+    if (orderId && orderId != 0) {
+      this.loadOrder(orderId);
+    } else {
+      this.setOrder(undefined);
     }
   };
 
-  loadOrder() {
-    this.route.paramMap.subscribe(params => {
-      var routeParam = params.get("id");
-      var id = parseInt(routeParam);
-
-      if (id == 0) {
-        this.order = new Order();
-      } else {
-        this.orderService
-          .getOrderById(id)
-          .subscribe(order => {
-            this.order = new Order(order);
-            this.order.lineItems = order.lineItems.map(lineItem => {
-              var orderLineItem = new LineItem(lineItem);
-              orderLineItem.selectedItem = this.filterItems(lineItem.itemName)[0];
-              return orderLineItem;
-            });
-            this.order.selectedCustomer = this.filterCustomers(order.customerName)[0];
-          });
-      }
-    });
+  setOrder(order: any) {
+    this.order = order ? new Order(order) : new Order();
+    this.customerField.nativeElement.focus();
   };
 
-  fetchLists() {
-    var reqs = [
-      this.customerService.getCustomerLookup(),
-      this.inventoryService.getItemLookup(),
-      //this.route.paramMap
-      //  .pipe(
-      //    switchMap(param => {
-      //      const id = parseInt(param.get('id'));
-      //      if (!id || id == 0) {
-      //        return of(new Order());
-      //      }
-      //      return this.orderService.getOrderById(id);
-      //    })
-      //  )
-      this.orderId && this.orderId != 0 ? this.orderService.getOrderById(this.orderId) : of(new Order())
-    ];
+  loadOrder(id: number) {
+    this.getOrderSub = this.orderService
+      .getOrderById(id)
+      .subscribe(order => this.setOrder(order));
+  };
 
-    forkJoin(
-      this.customerService.getCustomerLookup(),
-      this.inventoryService.getItemLookup(),
-      this.orderId && this.orderId != 0 ? this.orderService.getOrderById(this.orderId) : of(new Order())
-    )
-      .subscribe(([a, b, order]) => {
-        this.customers = a;
-        this.items = b;
+  saveOrder(orderForm: NgForm) {
+    this.isSaving = true;
+    if (orderForm.valid) {
+      this.saveOrderSub = this.orderService
+        .saveOrder(this.order)
+        .subscribe(this.saveSuccess, this.saveFailed, this.saveCompleted);
+    }
+  };
 
-        this.order = new Order(order);
-        this.order.lineItems = order.lineItems.map(lineItem => {
-          var orderLineItem = new LineItem(lineItem);
-          orderLineItem.selectedItem = this.filterItems(lineItem.itemName)[0];
-          return orderLineItem;
-        });
-        this.order.selectedCustomer = this.filterCustomers(order.customerName)[0];
-      })
+  saveSuccess = () => {
+    if (this.order.id == 0) {
+      this.setOrder(undefined);
+    }
+    this.util.showSuccessMessage("Order saved successfully.");
+  };
 
-    return reqs
-    //).subscribe(([customerResponse, inventoryResponse]) => {
-    //  this.customers = customerResponse;
-    //  this.items = inventoryResponse;
-    //});
+  saveFailed = (error) => {
+    this.util.showErrorMessage("An error occurred while saving. Please try again.");
+    console.log(error);
+  };
+
+  saveCompleted = () => {
+    this.isSaving = false;
   };
 
   // Line items
   addLineItem() {
-    this.order.lineItems.push(new LineItem());
-    this.order.updateLineItems();
+    if (this.order && this.order.lineItems) {
+      this.order.lineItems.push(new LineItem());
+      this.order.updateLineItems();
+    }
   };
 
   removeLineItem(index: number) {
@@ -151,28 +115,26 @@ export class OrderFormComponent implements AfterContentInit {
     text$.pipe(
       debounceTime(200),
       distinctUntilChanged(),
-      map(term => term.length < 2 ? [] : this.filterCustomers(term))
+      switchMap(term => term.length < 2 ? [] :
+        this.customerService.getCustomerLookup(0, 0, term)
+          .pipe(
+            map(customers => customers.splice(0, 10))
+          )
+      )
     );
 
   searchItem = (text$: Observable<string>) =>
     text$.pipe(
       debounceTime(200),
       distinctUntilChanged(),
-      map(term => this.filterItems(term))
+      switchMap(term => term.length < 2 ? [] :
+        this.inventoryService.getItemLookup(term)
+          .pipe(
+            map(items => items.splice(0, 10))
+          )
+      )
     );
 
   customerFormatter = (x: { name: string }) => x.name;
   itemFormatter = (x: { name: string }) => x.name;
-
-  private filterCustomers(value: string): Customer[] {
-    const filterValue = value.toLowerCase();
-
-    return this.customers.filter(customer => customer.name.toLowerCase().startsWith(filterValue)).splice(0, 10);
-  }
-
-  private filterItems(value: string): Item[] {
-    const filterValue = value.toLowerCase();
-
-    return this.items.filter(item => item.name.toLowerCase().startsWith(filterValue)).splice(0, 10);
-  }
 }

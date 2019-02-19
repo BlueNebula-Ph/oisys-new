@@ -10,8 +10,8 @@
                 <div class="form-group">
                   <label>Customer.</label>
                   <div appInputGroupStyle>
-                    <input appControlStyle name="customer" placeholder="Select customer..."
-                           [(ngModel)]="order.selectedCustomer" [ngbTypeahead]="searchCustomer" [appFocus]="true"
+                    <input appControlStyle #customer name="customer" placeholder="Select customer..."
+                           [(ngModel)]="order.customer" [ngbTypeahead]="searchCustomer"
                            [inputFormatter]="customerFormatter" [resultTemplate]="customerTemplate" required>
                     <div class="input-group-append">
                       <span class="input-group-text">* Required</span>
@@ -76,7 +76,7 @@
                   <td>
                     <input appControlStyle name="orderLineItem" placeholder="Select item..."
                            [ngbTypeahead]="searchItem" [inputFormatter]="itemFormatter" [resultTemplate]="itemTemplate"
-                           [(ngModel)]="lineItem.selectedItem" [ngModelOptions]="{standalone: true}">
+                           [(ngModel)]="lineItem.item" [ngModelOptions]="{standalone: true}">
                   </td>
                   <td><input appControlStyle [(ngModel)]="lineItem.categoryName" [ngModelOptions]="{standalone: true}" readonly /></td>
                   <td><input currencyMask appControlStyle class="text-right" [(ngModel)]="lineItem.unitPrice" [ngModelOptions]="{standalone: true}" /></td>
@@ -146,4 +146,7 @@
   <div class="small">
     <em>Main: {{ item.mainPrice | currency:'PHP':'₱ '}} | Walk-In: {{ item.mainPrice | currency:'PHP':'₱ '}} | N.E: {{ item.mainPrice | currency:'PHP':'₱ '}}</em>
   </div>
+</ng-template>
+<ng-template #loading>
+  <i class="fa fa-spinner fa-spin"></i> Loading...
 </ng-template>

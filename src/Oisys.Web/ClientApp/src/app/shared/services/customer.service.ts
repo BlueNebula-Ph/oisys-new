@@ -31,8 +31,13 @@ export class CustomerService {
     return this.http.get<Customer>(getUrl);
   };
 
-  getCustomerLookup(provinceId: number = 0, cityId: number = 0): Observable<Customer[]> {
+  getCustomerLookup(provinceId: number = 0, cityId: number = 0, name: string = ''): Observable<Customer[]> {
     var lookupUrl = `${this.url}/lookup/${provinceId}/${cityId}`;
+
+    if (name !== '') {
+      lookupUrl = lookupUrl.concat(`/${name}`);
+    }
+
     return this.http.get<Customer[]>(lookupUrl);
   };
 
