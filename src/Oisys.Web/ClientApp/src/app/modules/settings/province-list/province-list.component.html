@@ -1,9 +1,9 @@
 <div class="animated fadeIn">
   <h3>Province / City Management.</h3>
   <div class="row">
-    <div class="col">
-      <div class="input-group">
-        <input class="form-control" placeholder="Search provinces and cities" #searchBox autofocus>
+    <div class="col pr-0">
+      <div appInputGroupStyle>
+        <input appControlStyle placeholder="Search provinces and cities" (keyup)="onKeyup($event)" #searchBox>
         <div class="input-group-append">
           <button type="button" class="btn btn-primary" (click)="search()">
             <i class="fa fa-search"></i> Search
@@ -14,13 +14,13 @@
       <div class="datatable-container mt-3">
         <div class="progress-bar progress-bar-striped progress-bar-animated prog-bar" [hidden]="!isLoading"></div>
         <ngx-datatable class="bootstrap"
-                       [rows]="rows"
+                       [rows]="(rows$ | async) || []"
                        [columnMode]="'flex'"
                        [headerHeight]="40"
                        [summaryRow]="false"
                        [footerHeight]="40"
                        [rowHeight]="'auto'"
-                       [reorderable]="true"
+                       [reorderable]="false"
                        [externalPaging]="true"
                        [count]="page.totalElements"
                        [offset]="page.pageNumber"

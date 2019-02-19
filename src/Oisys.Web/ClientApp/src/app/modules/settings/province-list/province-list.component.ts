@@ -1,6 +1,6 @@
-import { Component, ViewChild, ElementRef, AfterContentInit } from '@angular/core';
+import { Component, ViewChild, AfterContentInit, ElementRef, OnDestroy } from '@angular/core';
 
-import { of } from 'rxjs';
+import { of, Observable, Subscription } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 
 import { ProvinceService } from '../../../shared/services/province.service';
@@ -15,14 +15,17 @@ import { Sort } from '../../../shared/models/sort';
   templateUrl: './province-list.component.html',
   styleUrls: ['./province-list.component.css']
 })
-export class ProvinceListComponent implements AfterContentInit {
+export class ProvinceListComponent implements AfterContentInit, OnDestroy {
   page: Page = new Page();
   sort: Sort = new Sort();
-  rows = new Array<Province>();
+  selectedProvince: Province;
+
+  rows$: Observable<Province[]>;
+  deleteProvinceSub: Subscription;
 
   isLoading: boolean = false;
 
-  selectedProvince: Province;
+  @ViewChild('searchBox') input: ElementRef;
 
   constructor(private provinceService: ProvinceService, private util: UtilitiesService) {
     this.page.pageNumber = 0;
@@ -31,16 +34,18 @@ export class ProvinceListComponent implements AfterContentInit {
     this.sort.dir = 'asc';
   }
 
-  @ViewChild('searchBox') input: ElementRef;
-
   ngAfterContentInit() {
     this.setPage({ offset: 0 });
     this.loadProvinces();
   };
 
+  ngOnDestroy() {
+    if (this.deleteProvinceSub) { this.deleteProvinceSub.unsubscribe(); }
+  };
+
   loadProvinces() {
     this.isLoading = true;
-    this.provinceService.getProvinces(
+    this.rows$ = this.provinceService.getProvinces(
       this.page.pageNumber,
       this.page.size,
       this.sort.prop,
@@ -59,8 +64,7 @@ export class ProvinceListComponent implements AfterContentInit {
 
           return of([]);
         })
-      )
-      .subscribe(data => this.rows = data);
+      );
   }
 
   onEditProvince(provinceToEdit: Province): void {
@@ -69,7 +73,7 @@ export class ProvinceListComponent implements AfterContentInit {
 
   onDeleteProvince(id: number): void {
     if (confirm("Are you sure you want to delete this province?")) {
-      this.provinceService.deleteProvince(id).subscribe(() => {
+      this.deleteProvinceSub = this.provinceService.deleteProvince(id).subscribe(() => {
         this.loadProvinces();
         this.util.showSuccessMessage("Province deleted successfully.");
       });
@@ -78,7 +82,6 @@ export class ProvinceListComponent implements AfterContentInit {
 
   onProvinceSaved(province: Province): void {
     this.loadProvinces();
-    this.util.showSuccessMessage("Province saved successfully.");
   };
 
   setPage(pageInfo): void {
@@ -100,4 +103,10 @@ export class ProvinceListComponent implements AfterContentInit {
     this.page.pageNumber = 0;
     this.loadProvinces();
   }
+
+  onKeyup(event) {
+    if (event && event.keyCode == 13) {
+      this.search();
+    }
+  };
 }

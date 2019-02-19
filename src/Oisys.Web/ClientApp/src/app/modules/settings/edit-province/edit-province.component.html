@@ -6,8 +6,8 @@
     <form #provinceForm="ngForm" (ngSubmit)="saveProvince(provinceForm)">
       <div class="form-group">
         <label>Province Name.</label>
-        <div class="input-group">
-          <input type="text" class="form-control" name="provinceName" placeholder="Province name" [(ngModel)]="province.name" required>
+        <div appInputGroupStyle>
+          <input appControlStyle #provinceName type="text" name="provinceName" placeholder="Province name" [(ngModel)]="province.name" required>
           <div class="input-group-append">
             <span class="input-group-text">* Required</span>
           </div>
@@ -16,8 +16,8 @@
 
       <div class="form-group" *ngFor="let city of province.cities; index as i;">
         <label>City {{ i + 1 }}.</label>
-        <div class="input-group">
-          <input type="text" class="form-control" name="cityName" placeholder="City # {{ i + 1 }}" [ngClass]="{ 'strikethrough': city.isDeleted }" [(ngModel)]="city.name" [ngModelOptions]="{standalone: true}" required>
+        <div appInputGroupStyle>
+          <input appControlStyle [appFocus]="focus" type="text" name="cityName" placeholder="City # {{ i + 1 }}" [ngClass]="{ 'strikethrough': city.isDeleted }" [(ngModel)]="city.name" [ngModelOptions]="{standalone: true}" required>
           <div class="input-group-append">
             <span class="input-group-text">* Required</span>
             <button *ngIf="province.id && province.id != 0 && !city.isDeleted" type="button" class="btn btn-danger" title="Delete this city." (click)="deleteCity(city)">
@@ -31,10 +31,10 @@
       </div>
 
       <div class="form-group form-actions">
-        <button type="button" class="btn btn-secondary btn-square" (click)="addNewCity()" title="Add a new city.">
+        <button type="button" class="btn btn-sm btn-secondary btn-square" (click)="addNewCity()" title="Add a new city.">
           <i class="fa fa-plus"></i> Add City
         </button>
-        <button type="submit" class="btn btn-primary btn-square ml-1" [disabled]="!provinceForm.form.valid || !province.citiesValid || isSaving" title="Save province information.">
+        <button type="submit" class="btn btn-sm btn-primary btn-square ml-1" [disabled]="!provinceForm.form.valid || !province.citiesValid || isSaving" title="Save province information.">
           <i *ngIf="!isSaving" class="fa fa-save"></i><i *ngIf="isSaving" class="fa fa-spinner fa-spin"></i>&nbsp;Save
         </button>
       </div>

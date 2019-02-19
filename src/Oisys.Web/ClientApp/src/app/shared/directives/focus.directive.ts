@@ -1,4 +1,4 @@
-import { Directive, AfterContentInit, ElementRef, Input, OnChanges, SimpleChanges } from '@angular/core';
+import { Directive, AfterContentInit, Input, OnChanges, SimpleChanges, ElementRef } from '@angular/core';
 
 @Directive({
   selector: '[appFocus]'
@@ -6,7 +6,7 @@ import { Directive, AfterContentInit, ElementRef, Input, OnChanges, SimpleChange
 export class FocusDirective implements AfterContentInit, OnChanges {
   @Input() appFocus: boolean = false;
 
-  public constructor(private el: ElementRef) {}
+  public constructor(private el: ElementRef) { }
 
   public ngAfterContentInit() {
     this.setFocus();
@@ -20,8 +20,10 @@ export class FocusDirective implements AfterContentInit, OnChanges {
 
   private setFocus() {
     setTimeout(() => {
-      this.el.nativeElement.focus();
-      this.el.nativeElement.select();
+      if (this.appFocus) {
+        this.el.nativeElement.focus();
+        this.el.nativeElement.select();
+      }
     }, 20);
   };
 }

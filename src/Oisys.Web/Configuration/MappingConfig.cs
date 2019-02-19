@@ -171,7 +171,8 @@ namespace OisysNew.Configuration
                 .ForMember(d => d.QuantityDelivered, s => s.MapFrom(o => o.QuantityDelivered));
 
             // Province
-            CreateMap<Province, ProvinceSummary>();
+            CreateMap<Province, ProvinceSummary>()
+                .ForMember(d => d.Cities, s => s.MapFrom(o => o.Cities.OrderBy(c => c.Name)));
             CreateMap<Province, ProvinceLookup>()
                 .ForMember(d => d.Cities, s => s.MapFrom(o => o.Cities.OrderBy(c => c.Name)));
             CreateMap<SaveProvinceRequest, Province>();
