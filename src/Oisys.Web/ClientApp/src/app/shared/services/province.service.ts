@@ -5,7 +5,7 @@ import { environment } from '../../../environments/environment';
 import { catchError } from 'rxjs/operators';
 
 import { UtilitiesService } from './utilities.service';
-import { Province } from '../models/Province';
+import { Province } from '../models/province';
 import { PagedData } from '../models/paged-data';
 
 @Injectable({
@@ -31,8 +31,13 @@ export class ProvinceService {
     return this.http.get<Province>(getUrl);
   };
 
-  getProvinceLookup(): Observable<Province[]> {
+  getProvinceLookup(name: string = ''): Observable<Province[]> {
     var lookupUrl = `${this.url}/lookup`;
+
+    if (name !== '') {
+      lookupUrl = lookupUrl.concat(`/${name}`);
+    }
+
     return this.http.get<Province[]>(lookupUrl);
   };
 

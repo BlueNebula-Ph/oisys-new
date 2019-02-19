@@ -46,6 +46,7 @@ namespace OisysNew.Configuration
             // City
             CreateMap<City, CitySummary>()
                 .ForMember(d => d.ProvinceName, s => s.MapFrom(o => o.Province.Name));
+            CreateMap<City, CityLookup>();
             CreateMap<SaveCityRequest, City>();
 
             // Credit Memo
@@ -79,8 +80,12 @@ namespace OisysNew.Configuration
             CreateMap<Customer, CustomerSummary>()
                 .ForMember(d => d.CityName, s => s.MapFrom(o => o.City.Name))
                 .ForMember(d => d.ProvinceName, s => s.MapFrom(o => o.Province.Name))
-                .ForMember(d => d.PriceListId, s => s.MapFrom(o => (int)o.PriceList))
                 .ForMember(d => d.PriceList, s => s.MapFrom(o => o.PriceList.GetDisplayName()));
+
+            CreateMap<Customer, CustomerDetail>()
+                .ForMember(d => d.PriceListId, s => s.MapFrom(o => (int)o.PriceList))
+                .ForMember(d => d.Province, s => s.MapFrom(o => o.Province))
+                .ForMember(d => d.City, s => s.MapFrom(o => o.City));
 
             CreateMap<SaveCustomerRequest, Customer>()
                 .ForMember(d => d.PriceList, s => s.MapFrom(o => o.PriceListId))

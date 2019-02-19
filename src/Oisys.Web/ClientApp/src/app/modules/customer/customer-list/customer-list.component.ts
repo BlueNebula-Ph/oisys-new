@@ -1,6 +1,6 @@
-import { Component, AfterContentInit } from '@angular/core';
+import { Component, AfterContentInit, OnDestroy } from '@angular/core';
 
-import { of, Observable } from 'rxjs';
+import { of, Observable, Subscription } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 
 import { CustomerService } from '../../../shared/services/customer.service';
@@ -18,13 +18,14 @@ import { Province } from '../../../shared/models/province';
   templateUrl: './customer-list.component.html',
   styleUrls: ['./customer-list.component.css']
 })
-export class CustomerListComponent implements AfterContentInit {
+export class CustomerListComponent implements AfterContentInit, OnDestroy {
   page: Page = new Page();
   sort: Sort = new Sort();
   search: Search = new Search();
-  rows = of(new Array<Customer>());
 
-  provinces: Observable<Province[]>;
+  rows$: Observable<Customer[]>;
+  provinces$: Observable<Province[]>;
+  deleteCustomerSub: Subscription;
 
   isLoading: boolean = false;
 
@@ -41,9 +42,15 @@ export class CustomerListComponent implements AfterContentInit {
     this.loadCustomers();
   };
 
+  ngOnDestroy(): void {
+    if (this.deleteCustomerSub) {
+      this.deleteCustomerSub.unsubscribe();
+    }
+  };
+
   loadCustomers() {
     this.isLoading = true;
-    this.rows = this.customerService.getCustomers(
+    this.rows$ = this.customerService.getCustomers(
       this.page.pageNumber,
       this.page.size,
       this.sort.prop,
@@ -66,20 +73,15 @@ export class CustomerListComponent implements AfterContentInit {
           return of([]);
         })
       );
-     // .subscribe(data => this.rows = data);
   }
 
   fetchProvinces() {
-    this.provinces = this.provinceService.getProvinceLookup();
-    //this.provinceService.getProvinceLookup()
-    //  .subscribe(results => {
-    //    this.provinces = results;
-    //  });
+    this.provinces$ = this.provinceService.getProvinceLookup();
   };
 
   onDeleteCustomer(id: number): void {
     if (confirm("Are you sure you want to delete this customer?")) {
-      this.customerService.deleteCustomer(id).subscribe(() => {
+      this.deleteCustomerSub = this.customerService.deleteCustomer(id).subscribe(() => {
         this.loadCustomers();
         this.util.showSuccessMessage("Customer deleted successfully.");
       });

@@ -38,21 +38,17 @@ export class OrderFormComponent implements AfterContentInit, OnDestroy {
     this.config.showHint = true;
   }
 
-  ngAfterContentInit(): void {
+  ngAfterContentInit() {
     this.loadOrderForm();
   };
 
-  ngOnDestroy(): void {
-    if (this.getOrderSub) {
-      this.getOrderSub.unsubscribe();
-    }
-    if (this.saveOrderSub) {
-      this.saveOrderSub.unsubscribe();
-    }
+  ngOnDestroy() {
+    if (this.getOrderSub) { this.getOrderSub.unsubscribe(); }
+    if (this.saveOrderSub) { this.saveOrderSub.unsubscribe(); }
   }
 
   loadOrderForm() {
-    const orderId = +this.route.snapshot.paramMap.get("id");
+    const orderId = +this.route.snapshot.paramMap.get('id');
     if (orderId && orderId != 0) {
       this.loadOrder(orderId);
     } else {

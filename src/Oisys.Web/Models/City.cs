@@ -13,7 +13,7 @@
         /// <summary>
         /// Gets or sets the province id of the city.
         /// </summary>
-        public int ProvinceId { get; set; }
+        public long ProvinceId { get; set; }
 
         /// <summary>
         /// Gets or sets the province navigation property.

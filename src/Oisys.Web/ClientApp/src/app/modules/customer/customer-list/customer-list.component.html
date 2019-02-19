@@ -5,7 +5,7 @@
       <div class="datatable-container">
         <div class="progress-bar progress-bar-striped progress-bar-animated prog-bar" [hidden]="!isLoading"></div>
         <ngx-datatable class="bootstrap"
-                       [rows]="rows | async"
+                       [rows]="(rows$ | async) || []"
                        [columnMode]="'flex'"
                        [headerHeight]="40"
                        [summaryRow]="false"
@@ -69,7 +69,7 @@
     <div class="col-3">
       <app-search-panel (searched)="onSearch($event)"
                         [showProvinces]="true"
-                        [provinces]="provinces"
+                        [provinces]="provinces$ | async"
                         [showCities]="true">
       </app-search-panel>
     </div>

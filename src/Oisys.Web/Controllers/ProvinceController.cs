@@ -92,15 +92,20 @@ namespace OisysNew.Controllers
         /// Returns list of active <see cref="Province"/>
         /// </summary>
         /// <returns>List of Provinces</returns>
-        [HttpGet("lookup", Name = "GetProvinceLookup")]
+        [HttpGet("lookup/{name?}", Name = "GetProvinceLookup")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult<IEnumerable<ProvinceLookup>>> GetLookup()
+        public async Task<ActionResult<IEnumerable<ProvinceLookup>>> GetLookup(string name = "")
         {
             try
             {
                 // get list of active items (not deleted)
                 var list = context.Provinces.AsNoTracking();
+
+                if (!string.IsNullOrEmpty(name))
+                {
+                    list = list.Where(a => a.Name.StartsWith(name, StringComparison.CurrentCultureIgnoreCase));
+                }
 
                 // sort
                 var ordering = $"Name {Constants.DefaultSortDirection}";

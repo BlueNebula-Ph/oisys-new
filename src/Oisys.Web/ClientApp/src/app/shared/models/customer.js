@@ -1,8 +1,30 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-var price_list_1 = require("./price-list");
-var Customer = /** @class */ (function () {
-    function Customer(customer) {
+import { PriceList } from "./price-list";
+import { Province } from "./province";
+import { City } from "./city";
+export class Customer {
+    get province() {
+        return this._province;
+    }
+    set province(prov) {
+        if (prov) {
+            this._province = prov;
+            this.provinceId = prov.id;
+        }
+    }
+    get city() {
+        return this._city;
+    }
+    set city(city) {
+        if (city) {
+            this._city = city;
+            this.cityId = city.id;
+        }
+        else {
+            this._city = undefined;
+            this.cityId = 0;
+        }
+    }
+    constructor(customer) {
         this.id = customer && customer.id || 0;
         this.name = customer && customer.name || '';
         this.email = customer && customer.email || '';
@@ -15,39 +37,9 @@ var Customer = /** @class */ (function () {
         this.provinceName = customer && customer.provinceName || '';
         this.cityId = customer && customer.cityId || 0;
         this.cityName = customer && customer.cityName || '';
-        this.priceListId = customer && customer.priceListId || price_list_1.PriceList["Main Price"];
+        this.priceListId = customer && customer.priceListId || PriceList["Main Price"];
+        this.province = (customer && customer.province) ? new Province(customer.province) : undefined;
+        this.city = (customer && customer.city) ? new City(customer.city) : undefined;
     }
-    Object.defineProperty(Customer.prototype, "selectedProvince", {
-        get: function () {
-            return this._selectedProvince;
-        },
-        set: function (prov) {
-            if (prov) {
-                this._selectedProvince = prov;
-                this.provinceId = prov.id;
-            }
-        },
-        enumerable: true,
-        configurable: true
-    });
-    Object.defineProperty(Customer.prototype, "selectedCity", {
-        get: function () {
-            return this._selectedCity;
-        },
-        set: function (city) {
-            if (city) {
-                this._selectedCity = city;
-                this.cityId = city.id;
-            }
-            else {
-                this._selectedCity = undefined;
-                this.cityId = 0;
-            }
-        },
-        enumerable: true,
-        configurable: true
-    });
-    return Customer;
-}());
-exports.Customer = Customer;
+}
 //# sourceMappingURL=customer.js.map

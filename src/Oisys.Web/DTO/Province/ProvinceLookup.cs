@@ -15,6 +15,6 @@ namespace OisysNew.DTO.Province
         /// <summary>
         /// Gets or sets the list of cities under the province.
         /// </summary>
-        public IEnumerable<CitySummary> Cities { get; set; }
+        public IEnumerable<CityLookup> Cities { get; set; }
     }
 }

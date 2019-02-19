@@ -1,5 +1,5 @@
 import { PriceList } from "./price-list";
-import { Province } from "./Province";
+import { Province } from "./province";
 import { City } from "./city";
 
 export class Customer {
@@ -17,27 +17,27 @@ export class Customer {
   public provinceName: string;
   public cityName: string;
 
-  private _selectedProvince: Province;
-  get selectedProvince() {
-    return this._selectedProvince;
+  private _province: Province;
+  get province() {
+    return this._province;
   }
-  set selectedProvince(prov: Province) {
+  set province(prov: Province) {
     if (prov) {
-      this._selectedProvince = prov;
+      this._province = prov;
       this.provinceId = prov.id;
     }
   }
 
-  private _selectedCity: City;
-  get selectedCity() {
-    return this._selectedCity;
+  private _city: City;
+  get city() {
+    return this._city;
   }
-  set selectedCity(city: City) {
+  set city(city: City) {
     if (city) {
-      this._selectedCity = city;
+      this._city = city;
       this.cityId = city.id;
     } else {
-      this._selectedCity = undefined;
+      this._city = undefined;
       this.cityId = 0;
     }
   }
@@ -61,5 +61,8 @@ export class Customer {
     this.cityName = customer && customer.cityName || '';
 
     this.priceListId = customer && customer.priceListId || PriceList["Main Price"];
+
+    this.province = (customer && customer.province) ? new Province(customer.province) : undefined;
+    this.city = (customer && customer.city) ? new City(customer.city) : undefined;
   }
 }

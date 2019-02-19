@@ -1,6 +1,6 @@
-import { Component, AfterContentInit } from '@angular/core';
+import { Component, AfterContentInit, OnDestroy } from '@angular/core';
 
-import { of, Observable } from 'rxjs';
+import { of, Observable, Subscription } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 
 import { OrderService } from '../../../shared/services/order.service';
@@ -22,7 +22,7 @@ import { Province } from '../../../shared/models/province';
   templateUrl: './order-list.component.html',
   styleUrls: ['./order-list.component.css']
 })
-export class OrderListComponent implements AfterContentInit {
+export class OrderListComponent implements AfterContentInit, OnDestroy {
   page: Page = new Page();
   sort: Sort = new Sort();
   search: Search = new Search();
@@ -31,6 +31,7 @@ export class OrderListComponent implements AfterContentInit {
   customers$: Observable<Customer[]>;
   items$: Observable<Item[]>;
   provinces$: Observable<Province[]>;
+  deleteOrderSub: Subscription;
 
   isLoading: boolean = false;
 
@@ -50,6 +51,12 @@ export class OrderListComponent implements AfterContentInit {
     this.setPage({ offset: 0 });
     this.fetchLists();
     this.loadOrders();
+  };
+
+  ngOnDestroy() {
+    if (this.deleteOrderSub) {
+      this.deleteOrderSub.unsubscribe();
+    }
   };
 
   loadOrders() {
@@ -89,7 +96,7 @@ export class OrderListComponent implements AfterContentInit {
 
   onDeleteOrder(id: number): void {
     if (confirm("Are you sure you want to delete this order?")) {
-      this.orderService.deleteOrder(id).subscribe(() => {
+      this.deleteOrderSub = this.orderService.deleteOrder(id).subscribe(() => {
         this.loadOrders();
         this.util.showSuccessMessage("Order deleted successfully.");
       });

@@ -16,7 +16,7 @@ import { UtilitiesService } from '../../../shared/services/utilities.service';
 import { Delivery } from '../../../shared/models/delivery';
 import { DeliveryLineItem } from '../../../shared/models/delivery-line-item';
 import { Customer } from '../../../shared/models/customer';
-import { Province } from '../../../shared/models/Province';
+import { Province } from '../../../shared/models/province';
 import { City } from '../../../shared/models/city';
 
 @Component({

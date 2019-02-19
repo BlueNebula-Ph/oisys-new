@@ -8,7 +8,7 @@
             <div class="form-group">
               <label>Customer Name.</label>
               <div appInputGroupStyle>
-                <input appControlStyle name="customerName" placeholder="Customer name" [(ngModel)]="customer.name" appFocus="true" required>
+                <input appControlStyle #name name="customerName" placeholder="Customer name" [(ngModel)]="customer.name" appFocus="true" required>
                 <div class="input-group-append">
                   <span class="input-group-text">* Required</span>
                 </div>
@@ -51,7 +51,7 @@
               <label>Province.</label>
               <div appInputGroupStyle>
                 <input appControlStyle name="province" placeholder="Province" (ngModelChange)="provinceUpdated()"
-                       [(ngModel)]="customer.selectedProvince" [ngbTypeahead]="searchProvince"
+                       [(ngModel)]="customer.province" [ngbTypeahead]="searchProvince"
                        [inputFormatter]="provinceFormatter" [resultTemplate]="provTemplate" required>
                 <div class="input-group-append">
                   <span class="input-group-text">* Required</span>
@@ -62,7 +62,7 @@
               <label>City.</label>
               <div appInputGroupStyle>
                 <input appControlStyle name="city" placeholder="City" [disabled]="!customer.provinceId || customer.provinceId == 0"
-                       [(ngModel)]="customer.selectedCity" [ngbTypeahead]="searchCity"
+                       [(ngModel)]="customer.city" [ngbTypeahead]="searchCity"
                        [inputFormatter]="cityFormatter" [resultTemplate]="cityTemplate" required>
                 <div class="input-group-append">
                   <span class="input-group-text">* Required</span>

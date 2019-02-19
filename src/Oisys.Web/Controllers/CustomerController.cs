@@ -191,31 +191,23 @@ namespace OisysNew.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult<CustomerSummary>> GetCustomerById(long id)
+        public async Task<ActionResult<CustomerDetail>> GetCustomerById(long id)
         {
             try
             {
                 var entity = await context.Customers
-                .Include(c => c.City)
-                .Include(c => c.Province)
-                .Include(c => c.Transactions)
-                .AsNoTracking()
-                .FirstOrDefaultAsync(c => c.Id == id);
+                    .Include(c => c.City)
+                    .Include(c => c.Province).ThenInclude(c => c.Cities)
+                    .AsNoTracking()
+                    .FirstOrDefaultAsync(c => c.Id == id);
 
                 if (entity == null)
                 {
-                    return NotFound(id);
+                    return NotFound();
                 }
 
-                // Sort the transactions by date desc
-                // Hacky! Find better solution if possible
-                //entity.Transactions = entity.Transactions
-                //    .OrderByDescending(t => t.Date)
-                //    .Select(transaction => transaction)
-                //    .ToList();
-
-                var customerSummary = mapper.Map<CustomerSummary>(entity);
-                return customerSummary;
+                var customerDetail = mapper.Map<CustomerDetail>(entity);
+                return customerDetail;
             }
             catch (Exception e)
             {

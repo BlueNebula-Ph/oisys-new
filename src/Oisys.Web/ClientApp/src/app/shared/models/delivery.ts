@@ -1,5 +1,5 @@
 import { JsonModelBase } from "./json-model-base";
-import { Province } from "./Province";
+import { Province } from "./province";
 import { City } from "./city";
 import { DeliveryLineItem } from "./delivery-line-item";
 

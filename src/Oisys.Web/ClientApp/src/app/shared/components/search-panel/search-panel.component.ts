@@ -1,7 +1,7 @@
 import { Component, Input, Output, EventEmitter, ViewChild, ElementRef, AfterContentInit } from '@angular/core';
 
 import { Search } from '../../models/search';
-import { Province } from '../../models/Province';
+import { Province } from '../../models/province';
 import { Item } from '../../models/item';
 import { Customer } from '../../models/customer';
 import { Category } from '../../models/category';
