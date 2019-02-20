@@ -147,10 +147,10 @@ namespace OisysNew.Controllers
         /// <param name="customerId">Customer Id</param>
         /// <param name="isDelivered">True is delivered, false if not</param>
         /// <returns>List of order details per customer</returns>
-        [HttpGet("lineItems/{customerId}/lookup/{isDelivered?}", Name = "GetOrderLineItemLookup")]
+        [HttpGet("lineItems/{customerId}/lookup/{isDelivered?}/{itemName?}", Name = "GetOrderLineItemLookup")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult<IEnumerable<OrderLineItemLookup>>> GetOrderLineItemLookup(int customerId, bool isDelivered = false)
+        public async Task<ActionResult<IEnumerable<OrderLineItemLookup>>> GetOrderLineItemLookup(int customerId, bool isDelivered = false, string itemName = "")
         {
             try
             {
@@ -164,6 +164,11 @@ namespace OisysNew.Controllers
                 if (!isDelivered)
                 {
                     list = list.Where(c => c.QuantityDelivered != c.Quantity);
+                }
+
+                if (!string.IsNullOrEmpty(itemName))
+                {
+                    list = list.Where(c => c.Item.Name.StartsWith(itemName, StringComparison.CurrentCultureIgnoreCase));
                 }
 
                 list = list.OrderBy(c => c.Item.Code);

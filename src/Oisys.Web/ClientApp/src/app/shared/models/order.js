@@ -44,7 +44,7 @@ export class Order extends JsonModelBase {
         return this.grossAmount - this.discountAmount;
     }
     get lineItemsValid() {
-        return this.lineItems.length > 0 && this.lineItems.every(lineItem => lineItem.itemId != 0);
+        return this.lineItems && this.lineItems.length > 0 && this.lineItems.every(lineItem => lineItem.itemId && lineItem.itemId != 0);
     }
     constructor(order) {
         super();

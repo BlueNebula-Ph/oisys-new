@@ -129,25 +129,27 @@ namespace OisysNew.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult<CreditMemoSummary>> GetCreditMemoById(long id)
+        public async Task<ActionResult<CreditMemoDetail>> GetCreditMemoById(long id)
         {
             try
             {
                 var entity = await context.CreditMemos
-                .Include(c => c.Customer).ThenInclude(c => c.Province)
-                .Include(c => c.Customer).ThenInclude(c => c.City)
-                .Include(c => c.LineItems).ThenInclude(lineItem => (lineItem as CreditMemoLineItem).Item)
-                .Include(c => c.LineItems).ThenInclude(lineItem => (lineItem as CreditMemoLineItem).OrderLineItem).ThenInclude(orderLineItem => orderLineItem.Order)
-                .AsNoTracking()
-                .SingleOrDefaultAsync(c => c.Id == id);
+                    .Include(c => c.Customer).ThenInclude(c => c.Province)
+                    .Include(c => c.Customer).ThenInclude(c => c.City)
+                    .Include(c => c.LineItems).ThenInclude(lineItem => (lineItem as CreditMemoLineItem).Item)
+                    .Include(c => c.LineItems).ThenInclude(lineItem => (lineItem as CreditMemoLineItem).OrderLineItem).ThenInclude(orderLineItem => orderLineItem.Order)
+                    .Include(c => c.LineItems).ThenInclude(lineItem => (lineItem as CreditMemoLineItem).OrderLineItem).ThenInclude(orderLineItem => orderLineItem.Item)
+                    .Include(c => c.LineItems).ThenInclude(lineItem => (lineItem as CreditMemoLineItem).OrderLineItem).ThenInclude(orderLineItem => orderLineItem.Item).ThenInclude(item => item.Category)
+                    .AsNoTracking()
+                    .SingleOrDefaultAsync(c => c.Id == id);
 
                 if (entity == null)
                 {
                     return NotFound();
                 }
 
-                var creditMemoSummary = mapper.Map<CreditMemoSummary>(entity);
-                return creditMemoSummary;
+                var creditMemoDetail = mapper.Map<CreditMemoDetail>(entity);
+                return creditMemoDetail;
             }
             catch (Exception e)
             {

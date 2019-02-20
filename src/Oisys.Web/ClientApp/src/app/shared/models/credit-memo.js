@@ -1,11 +1,13 @@
 import { JsonModelBase } from "./json-model-base";
+import { Customer } from "./customer";
+import { CreditMemoLineItem } from "./credit-memo-line-item";
 export class CreditMemo extends JsonModelBase {
-    get selectedCustomer() {
-        return this._selectedCustomer;
+    get customer() {
+        return this._customer;
     }
-    set selectedCustomer(customer) {
+    set customer(customer) {
         if (customer) {
-            this._selectedCustomer = customer;
+            this._customer = customer;
             this.customerId = customer.id;
         }
     }
@@ -20,6 +22,9 @@ export class CreditMemo extends JsonModelBase {
         }
         return totalAmount;
     }
+    get lineItemsValid() {
+        return this.lineItems && this.lineItems.length > 0 && this.lineItems.every(lineItem => lineItem.itemId && lineItem.itemId != 0);
+    }
     constructor(creditMemo) {
         super();
         this.id = creditMemo && creditMemo.id || 0;
@@ -29,7 +34,10 @@ export class CreditMemo extends JsonModelBase {
         this.customerAddress = creditMemo && creditMemo.customerAddress || '';
         this.date = creditMemo && creditMemo.date || new Date();
         this.driver = creditMemo && creditMemo.driver || '';
-        this.lineItems = creditMemo && creditMemo.lineItems || new Array();
+        this.lineItems = (creditMemo && creditMemo.lineItems) ?
+            creditMemo.lineItems.map(lineItem => new CreditMemoLineItem(lineItem)) :
+            new Array();
+        this.customer = (creditMemo && creditMemo.customer) ? new Customer(creditMemo.customer) : undefined;
     }
 }
 //# sourceMappingURL=credit-memo.js.map

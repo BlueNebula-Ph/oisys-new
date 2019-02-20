@@ -1,9 +1,9 @@
-import { Component, AfterContentInit } from '@angular/core';
+import { Component, AfterContentInit, ViewChild, OnDestroy, ElementRef } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { NgForm } from '@angular/forms';
 
-import { Observable, forkJoin } from 'rxjs';
-import { debounceTime, distinctUntilChanged, map } from 'rxjs/operators';
+import { Observable, Subscription } from 'rxjs';
+import { debounceTime, distinctUntilChanged, map, switchMap } from 'rxjs/operators';
 import { NgbTypeaheadConfig } from '@ng-bootstrap/ng-bootstrap';
 
 import { CreditMemoService } from '../../../shared/services/credit-memo.service';
@@ -13,18 +13,19 @@ import { UtilitiesService } from '../../../shared/services/utilities.service';
 
 import { CreditMemo } from '../../../shared/models/credit-memo';
 import { CreditMemoLineItem } from '../../../shared/models/credit-memo-line-item';
-import { Customer } from '../../../shared/models/customer';
-import { OrderLineItem } from '../../../shared/models/order-line-item';
 
 @Component({
   selector: 'app-credit-memo-form',
   templateUrl: './credit-memo-form.component.html',
   styleUrls: ['./credit-memo-form.component.css']
 })
-export class CreditMemoFormComponent implements AfterContentInit {
+export class CreditMemoFormComponent implements AfterContentInit, OnDestroy {
   creditMemo: CreditMemo = new CreditMemo();
-  customers: Customer[];
-  orderItems: OrderLineItem[];
+  getCreditMemoSub: Subscription;
+  saveCreditMemoSub: Subscription;
+  isSaving = false;
+
+  @ViewChild('customer') customerField: ElementRef;
 
   constructor(
     private creditMemoService: CreditMemoService,
@@ -38,66 +39,64 @@ export class CreditMemoFormComponent implements AfterContentInit {
   }
 
   ngAfterContentInit() {
-    this.fetchLists();
-    setTimeout(() => this.loadCreditMemo(), 3000);
+    this.loadCreditMemoForm();
   };
+
+  ngOnDestroy() {
+    if (this.getCreditMemoSub) { this.getCreditMemoSub.unsubscribe(); }
+    if (this.saveCreditMemoSub) { this.saveCreditMemoSub.unsubscribe(); }
+  };
+
+  loadCreditMemoForm() {
+    const creditMemoId = +this.route.snapshot.paramMap.get('id');
+    if (creditMemoId && creditMemoId != 0) {
+      this.loadCreditMemo(creditMemoId);
+    } else {
+      this.setCreditMemo(undefined);
+    }
+  };
+
+  setCreditMemo(creditMemo: any) {
+    this.creditMemo = creditMemo ? new CreditMemo(creditMemo) : new CreditMemo();
+    this.customerField.nativeElement.focus();
+  };
+
+  loadCreditMemo(id: number) {
+    this.getCreditMemoSub = this.creditMemoService
+      .getCreditMemoById(id)
+      .subscribe(creditMemo => this.setCreditMemo(creditMemo));
+  }
 
   saveCreditMemo(creditMemoForm: NgForm) {
     if (creditMemoForm.valid) {
+      this.isSaving = true;
       this.creditMemoService
         .saveCreditMemo(this.creditMemo)
-        .subscribe(() => {
-          if (this.creditMemo.id == 0) {
-            this.loadCreditMemo();
-          }
-          this.util.showSuccessMessage("Credit memo saved successfully.");
-        }, error => {
-          console.error(error);
-          this.util.showErrorMessage("An error occurred.");
-        });
+        .subscribe(this.saveSuccess, this.saveFailed, this.saveCompleted);
     }
   };
 
-  loadCreditMemo() {
-    this.route.paramMap.subscribe(params => {
-      var routeParam = params.get("id");
-      var id = parseInt(routeParam);
-
-      if (id == 0) {
-        this.creditMemo = new CreditMemo();
-      } else {
-        this.creditMemoService
-          .getCreditMemoById(id)
-          .subscribe(creditMemo => {
-            //this.creditMemo = new CreditMemo(creditMemo);
-            //this.creditMemo.lineItems = creditMemo.lineItems.map(lineItem => {
-            //  var creditMemoLineItem = new CreditMemoLineItem(lineItem);
-            //  creditMemoLineItem.selectedItem = this.filterItems(lineItem.itemName)[0];
-            //  return creditMemoLineItem;
-            //});
-            //this.creditMemo.selectedCustomer = this.filterCustomers(creditMemo.customerName)[0];
-          });
-      }
-    });
-  };
-
-  fetchLists() {
-    this.customerService
-      .getCustomerLookup()
-      .subscribe(data => this.customers = data);
-  };
-
-  customerSelected(customer: Customer) {
-    if (customer && customer.id) {
-      this.orderService
-        .getOrderLineItemLookup(customer.id)
-        .subscribe(data => this.orderItems = data);
+  saveSuccess = () => {
+    if (this.creditMemo.id == 0) {
+      this.setCreditMemo(undefined);
     }
-  }
+    this.util.showSuccessMessage('Credit memo saved successfully.');
+  };
+
+  saveFailed = (error) => {
+    this.util.showErrorMessage('An error occurred while saving. Please try again.');
+    console.log(error);
+  };
+
+  saveCompleted = () => {
+    this.isSaving = false;
+  };
 
   // Line items
   addLineItem() {
-    this.creditMemo.lineItems.push(new CreditMemoLineItem());
+    if (this.creditMemo && this.creditMemo.lineItems) {
+      this.creditMemo.lineItems.push(new CreditMemoLineItem());
+    }
   };
 
   removeLineItem(index: number) {
@@ -111,28 +110,26 @@ export class CreditMemoFormComponent implements AfterContentInit {
     text$.pipe(
       debounceTime(200),
       distinctUntilChanged(),
-      map(term => term.length < 2 ? [] : this.filterCustomers(term))
+      switchMap(term => term.length < 2 ? [] :
+        this.customerService.getCustomerLookup(0, 0, term)
+          .pipe(
+            map(customers => customers.splice(0, 10))
+          )
+      )
     );
 
   searchItem = (text$: Observable<string>) =>
     text$.pipe(
       debounceTime(200),
       distinctUntilChanged(),
-      map(term => this.filterItems(term))
+      switchMap(term => term.length < 2 ? [] :
+        this.orderService.getOrderLineItemLookup(this.creditMemo.customerId, false, term)
+          .pipe(
+            map(orders => orders.splice(0, 10))
+          )
+      )
     );
 
   customerFormatter = (x: { name: string }) => x.name;
   itemFormatter = (x: { itemName: string, orderCode: string }) => `${x.itemName} - Order # ${x.orderCode}`;
-
-  private filterCustomers(value: string): Customer[] {
-    const filterValue = value.toLowerCase();
-
-    return this.customers.filter(customer => customer.name.toLowerCase().startsWith(filterValue)).splice(0, 10);
-  }
-
-  private filterItems(value: string): OrderLineItem[] {
-    const filterValue = value.toLowerCase();
-
-    return this.orderItems.filter(item => item.itemName.toLowerCase().startsWith(filterValue)).splice(0, 10);
-  }
 }

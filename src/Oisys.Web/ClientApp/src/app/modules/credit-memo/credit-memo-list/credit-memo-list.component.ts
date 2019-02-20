@@ -1,6 +1,6 @@
-import { Component, AfterContentInit } from '@angular/core';
+import { Component, AfterContentInit, OnDestroy } from '@angular/core';
 
-import { of, forkJoin } from 'rxjs';
+import { of, Observable, Subscription } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 
 import { CreditMemoService } from '../../../shared/services/credit-memo.service';
@@ -20,14 +20,15 @@ import { Item } from '../../../shared/models/item';
   templateUrl: './credit-memo-list.component.html',
   styleUrls: ['./credit-memo-list.component.css']
 })
-export class CreditMemoListComponent implements AfterContentInit {
+export class CreditMemoListComponent implements AfterContentInit, OnDestroy {
   page: Page = new Page();
   sort: Sort = new Sort();
   search: Search = new Search();
-  rows = new Array<CreditMemo>();
 
-  customers: Customer[];
-  items: Item[];
+  rows$: Observable<CreditMemo[]>;
+  customers$: Observable<Customer[]>;
+  items$: Observable<Item[]>;
+  deleteCreditMemoSub: Subscription;
 
   isLoading: boolean = false;
 
@@ -48,9 +49,13 @@ export class CreditMemoListComponent implements AfterContentInit {
     this.loadCreditMemos();
   };
 
+  ngOnDestroy() {
+    if (this.deleteCreditMemoSub) { this.deleteCreditMemoSub.unsubscribe(); }
+  };
+
   loadCreditMemos() {
     this.isLoading = true;
-    this.creditMemoService.getCreditMemos(
+    this.rows$ = this.creditMemoService.getCreditMemos(
       this.page.pageNumber,
       this.page.size,
       this.sort.prop,
@@ -66,36 +71,28 @@ export class CreditMemoListComponent implements AfterContentInit {
           this.isLoading = false;
           this.page = data.pageInfo;
 
-          return data.items.map(creditMemo => {
-            //creditMemo.lineItems = creditMemo.lineItems.map(lineItem => new LineItem(lineItem));
-            return new CreditMemo(creditMemo);
-          });
+          return data.items;
         }),
         catchError(() => {
           this.isLoading = false;
 
           return of([]);
         })
-      )
-      .subscribe(data => this.rows = data);
+      );
   }
 
   fetchLists() {
-    forkJoin(
-      this.customerService.getCustomerLookup(),
-      this.inventoryService.getItemLookup(),
-    ).subscribe(([customerResponse, inventoryResponse]) => {
-      this.customers = customerResponse;
-      this.items = inventoryResponse;
-    });
+    this.customers$ = this.customerService.getCustomerLookup();
+    this.items$ = this.inventoryService.getItemLookup();
   };
 
   onDeleteCreditMemo(id: number): void {
-    if (confirm("Are you sure you want to delete this credit memo?")) {
-      this.creditMemoService.deleteCreditMemo(id).subscribe(() => {
-        this.loadCreditMemos();
-        this.util.showSuccessMessage("Credit memo deleted successfully.");
-      });
+    if (confirm('Are you sure you want to delete this credit memo?')) {
+      this.deleteCreditMemoSub = this.creditMemoService.deleteCreditMemo(id)
+        .subscribe(() => {
+          this.loadCreditMemos();
+          this.util.showSuccessMessage('Credit memo deleted successfully.');
+        });
     }
   }
 

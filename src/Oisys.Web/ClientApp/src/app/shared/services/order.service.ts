@@ -48,8 +48,13 @@ export class OrderService {
     return this.http.get<Order[]>(lookupUrl);
   };
 
-  getOrderLineItemLookup(customerId: number, isDelivered: boolean = false): Observable<OrderLineItem[]> {
+  getOrderLineItemLookup(customerId: number, isDelivered: boolean = false, itemName: string = ''): Observable<OrderLineItem[]> {
     var lookupUrl = `${this.url}/lineItems/${customerId}/lookup/${isDelivered}`;
+
+    if (itemName !== '') {
+      lookupUrl = lookupUrl.concat(`/${itemName}`);
+    }
+
     return this.http.get<OrderLineItem[]>(lookupUrl);
   };
 

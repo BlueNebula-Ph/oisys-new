@@ -55,6 +55,10 @@ namespace OisysNew.Configuration
                 .ForMember(d => d.CustomerName, s => s.MapFrom(o => o.Customer.Name))
                 .ForMember(d => d.CustomerAddress, s => s.MapFrom(o => $"{o.Customer.Address}, {o.Customer.City.Name} {o.Customer.Province.Name}"));
 
+            CreateMap<CreditMemo, CreditMemoDetail>()
+                .ForMember(d => d.Date, s => s.MapFrom(o => o.Date.ToShortDateString()))
+                .ForMember(d => d.Customer, s => s.MapFrom(o => o.Customer));
+
             CreateMap<CreditMemo, CreditMemoLookup>()
                 .ForMember(d => d.Date, s => s.MapFrom(o => o.Date.ToShortDateString()))
                 .ForMember(d => d.CustomerName, s => s.MapFrom(o => o.Customer.Name))
@@ -62,11 +66,11 @@ namespace OisysNew.Configuration
 
             CreateMap<SaveCreditMemoRequest, CreditMemo>();
 
-            CreateMap<CreditMemoLineItem, CreditMemoLineItemSummary>()
-                .ForMember(d => d.OrderCode, s => s.MapFrom(o => o.OrderLineItem.Order.Code))
-                .ForMember(d => d.ItemCode, s => s.MapFrom(o => o.Item.Code))
-                .ForMember(d => d.ItemName, s => s.MapFrom(o => o.Item.Name))
+            // Credit Memo Line Item
+            CreateMap<CreditMemoLineItem, CreditMemoDetailLineItem>()
+                .ForMember(d => d.OrderLineItem, s => s.MapFrom(o => o.OrderLineItem))
                 .ForMember(d => d.ShouldAddBackToInventory, s => s.MapFrom(o => o.ReturnedToInventory));
+
             CreateMap<SaveCreditMemoLineItemRequest, CreditMemoLineItem>()
                 .ForMember(d => d.ReturnedToInventory, s => s.MapFrom(o => o.ShouldAddBackToInventory));
 

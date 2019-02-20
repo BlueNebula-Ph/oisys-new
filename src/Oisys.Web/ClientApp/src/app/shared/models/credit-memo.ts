@@ -12,13 +12,13 @@ export class CreditMemo extends JsonModelBase {
   public driver: string;
   public lineItems: CreditMemoLineItem[];
 
-  private _selectedCustomer: Customer;
-  get selectedCustomer() {
-    return this._selectedCustomer;
+  private _customer: Customer;
+  get customer() {
+    return this._customer;
   }
-  set selectedCustomer(customer: Customer) {
+  set customer(customer: Customer) {
     if (customer) {
-      this._selectedCustomer = customer;
+      this._customer = customer;
       this.customerId = customer.id;
     }
   }
@@ -35,6 +35,10 @@ export class CreditMemo extends JsonModelBase {
     return totalAmount;
   }
 
+  get lineItemsValid() {
+    return this.lineItems && this.lineItems.length > 0 && this.lineItems.every(lineItem => lineItem.itemId && lineItem.itemId != 0);
+  }
+
   constructor();
   constructor(creditMemo: CreditMemo);
   constructor(creditMemo?: any) {
@@ -48,6 +52,9 @@ export class CreditMemo extends JsonModelBase {
     this.date = creditMemo && creditMemo.date || new Date();
     this.driver = creditMemo && creditMemo.driver || '';
 
-    this.lineItems = creditMemo && creditMemo.lineItems || new Array<CreditMemoLineItem>();
+    this.lineItems = (creditMemo && creditMemo.lineItems) ?
+      creditMemo.lineItems.map(lineItem => new CreditMemoLineItem(lineItem)) :
+      new Array<CreditMemoLineItem>();
+    this.customer = (creditMemo && creditMemo.customer) ? new Customer(creditMemo.customer) : undefined;
   }
 }

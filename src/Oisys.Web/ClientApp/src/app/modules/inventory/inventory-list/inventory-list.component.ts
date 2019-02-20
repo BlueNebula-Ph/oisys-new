@@ -78,11 +78,11 @@ export class InventoryListComponent implements AfterContentInit, OnDestroy {
   };
 
   onDeleteItem(id: number): void {
-    if (confirm("Are you sure you want to delete this item?")) {
+    if (confirm('Are you sure you want to delete this item?')) {
       this.deleteItemSub = this.inventoryService.deleteItem(id)
         .subscribe(() => {
           this.loadItems();
-          this.util.showSuccessMessage("Item deleted successfully.");
+          this.util.showSuccessMessage('Item deleted successfully.');
         });
     }
   }

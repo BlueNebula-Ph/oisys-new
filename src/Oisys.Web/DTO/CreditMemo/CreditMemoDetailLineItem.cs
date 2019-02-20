@@ -1,24 +1,16 @@
-﻿namespace OisysNew.DTO.CreditMemo
+﻿using OisysNew.DTO.Order;
+
+namespace OisysNew.DTO.CreditMemo
 {
     /// <summary>
-    /// <see cref="CreditMemoLineItemSummary"/> class represents the child of CreditSummary object.
+    /// <see cref="CreditMemoDetailLineItem"/> class represents the child of CreditSummary object.
     /// </summary>
-    public class CreditMemoLineItemSummary : DTOBase
+    public class CreditMemoDetailLineItem : DTOBase
     {
         /// <summary>
-        /// Gets or sets property Ordercode.
+        /// Gets or sets the item
         /// </summary>
-        public string OrderCode { get; set; }
-
-        /// <summary>
-        /// Gets or sets property ItemCode.
-        /// </summary>
-        public string ItemCode { get; set; }
-
-        /// <summary>
-        /// Gets or sets property Item.
-        /// </summary>
-        public string ItemName { get; set; }
+        public OrderLineItemLookup OrderLineItem { get; set; }
 
         /// <summary>
         /// Gets or sets property Quantity.
