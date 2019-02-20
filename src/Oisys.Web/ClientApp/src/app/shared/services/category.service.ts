@@ -31,8 +31,13 @@ export class CategoryService {
     return this.http.get<Category>(getUrl);
   };
 
-  getCategoryLookup(): Observable<Category[]> {
+  getCategoryLookup(name: string = ''): Observable<Category[]> {
     var lookupUrl = `${this.url}/lookup`;
+
+    if (name !== '') {
+      lookupUrl = lookupUrl.concat(`/${name}`);
+    }
+
     return this.http.get<Category[]>(lookupUrl);
   };
 

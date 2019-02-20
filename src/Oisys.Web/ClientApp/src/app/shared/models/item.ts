@@ -15,13 +15,13 @@ export class Item {
   public walkInPrice: number;
   public nePrice: number;
 
-  private _selectedCategory: Category;
-  get selectedCategory() {
-    return this._selectedCategory;
+  private _category: Category;
+  get category() {
+    return this._category;
   }
-  set selectedCategory(category: Category) {
+  set category(category: Category) {
     if (category) {
-      this._selectedCategory = category;
+      this._category = category;
       this.categoryId = category.id;
     }
   }
@@ -45,5 +45,7 @@ export class Item {
     this.mainPrice = item && item.mainPrice || 0;
     this.walkInPrice = item && item.walkInPrice || 0;
     this.nePrice = item && item.nePrice || 0;
+
+    this.category = (item && item.category) ? new Category(item.category) : undefined;
   }
 }

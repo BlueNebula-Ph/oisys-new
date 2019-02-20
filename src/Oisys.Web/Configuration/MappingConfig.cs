@@ -130,6 +130,9 @@ namespace OisysNew.Configuration
             CreateMap<Item, ItemSummary>()
                 .ForMember(d => d.CategoryName, s => s.MapFrom(o => o.Category.Name));
 
+            CreateMap<Item, ItemDetail>()
+                .ForMember(d => d.Category, s => s.MapFrom(o => o.Category));
+
             CreateMap<SaveItemRequest, Item>();
 
             // Item History

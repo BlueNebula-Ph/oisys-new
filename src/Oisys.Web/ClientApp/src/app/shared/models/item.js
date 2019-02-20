@@ -1,7 +1,15 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-var Item = /** @class */ (function () {
-    function Item(item) {
+import { Category } from "./category";
+export class Item {
+    get category() {
+        return this._category;
+    }
+    set category(category) {
+        if (category) {
+            this._category = category;
+            this.categoryId = category.id;
+        }
+    }
+    constructor(item) {
         this.id = item && item.id || 0;
         this.code = item && item.code || '';
         this.name = item && item.name || '';
@@ -15,21 +23,7 @@ var Item = /** @class */ (function () {
         this.mainPrice = item && item.mainPrice || 0;
         this.walkInPrice = item && item.walkInPrice || 0;
         this.nePrice = item && item.nePrice || 0;
+        this.category = (item && item.category) ? new Category(item.category) : undefined;
     }
-    Object.defineProperty(Item.prototype, "selectedCategory", {
-        get: function () {
-            return this._selectedCategory;
-        },
-        set: function (category) {
-            if (category) {
-                this._selectedCategory = category;
-                this.categoryId = category.id;
-            }
-        },
-        enumerable: true,
-        configurable: true
-    });
-    return Item;
-}());
-exports.Item = Item;
+}
 //# sourceMappingURL=item.js.map

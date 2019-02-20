@@ -1,9 +1,9 @@
-import { Component, AfterContentInit } from '@angular/core';
+import { Component, AfterContentInit, ViewChild, OnDestroy, ElementRef  } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { NgForm } from '@angular/forms';
 
-import { Observable } from 'rxjs';
-import { debounceTime, distinctUntilChanged, map } from 'rxjs/operators';
+import { Observable, Subscription } from 'rxjs';
+import { debounceTime, distinctUntilChanged, map, switchMap } from 'rxjs/operators';
 
 import { InventoryService } from '../../../shared/services/inventory.service';
 import { UtilitiesService } from '../../../shared/services/utilities.service';
@@ -17,11 +17,15 @@ import { AdjustmentType } from '../../../shared/models/adjustment-type';
   templateUrl: './adjust-item.component.html',
   styleUrls: ['./adjust-item.component.css']
 })
-export class AdjustItemComponent implements AfterContentInit {
+export class AdjustItemComponent implements AfterContentInit, OnDestroy {
   adjustment: Adjustment = new Adjustment();
   label: string = 'adjustment';
   adjustmentTypes = AdjustmentType;
-  items: Item[];
+  isSaving = false;
+
+  saveAdjustmentSub: Subscription;
+
+  @ViewChild('itemName') itemNameField: ElementRef;
 
   get isAdjustment() {
     return this.label == 'adjustment';
@@ -31,40 +35,47 @@ export class AdjustItemComponent implements AfterContentInit {
     return this.label == 'manufacturing';
   }
 
-  constructor(private inventoryService: InventoryService, private util: UtilitiesService, private route: ActivatedRoute) {
-  }
+  constructor(
+    private inventoryService: InventoryService,
+    private util: UtilitiesService,
+    private route: ActivatedRoute
+  ) { }
 
   ngAfterContentInit() {
-    this.getRouteData();
-    this.fetchItems();
-  }
-
-  getRouteData() {
-    this.route.data.subscribe(data => this.label = data.type);
+    this.label = this.route.snapshot.data.type;
+    this.clearAdjustment();
   };
 
-  fetchItems() {
-    this.inventoryService.getItemLookup()
-      .subscribe(items => this.items = items);
+  ngOnDestroy() {
+    if (this.saveAdjustmentSub) { this.saveAdjustmentSub.unsubscribe(); }
   };
 
   saveAdjustment(adjustmentForm: NgForm) {
-    if (!adjustmentForm.valid) {
-      console.log(adjustmentForm.errors);
+    if (adjustmentForm.valid) {
+      this.isSaving = true;
+      this.saveAdjustmentSub = this.inventoryService
+        .saveItemAdjustment(this.adjustment)
+        .subscribe(this.saveSuccess, this.saveFailed, this.saveCompleted);
     }
+  };
 
-    this.inventoryService
-      .saveItemAdjustment(this.adjustment)
-      .subscribe(() => {
-        this.clearAdjustment();
-        this.util.showSuccessMessage('Adjustment saved successfully.');
-      }, () => {
-        this.util.showErrorMessage('An error has occurred.');
-      });
+  saveSuccess = () => {
+    this.clearAdjustment();
+    this.util.showSuccessMessage('Adjustment saved successfully.');
+  };
+
+  saveFailed = (error) => {
+    this.util.showErrorMessage("An error occurred while saving. Please try again.");
+    console.log(error);
+  };
+
+  saveCompleted = () => {
+    this.isSaving = false;
   };
 
   clearAdjustment() {
     this.adjustment = new Adjustment();
+    this.itemNameField.nativeElement.focus();
   };
 
   // Autocomplete
@@ -72,14 +83,13 @@ export class AdjustItemComponent implements AfterContentInit {
     text$.pipe(
       debounceTime(200),
       distinctUntilChanged(),
-      map(term => this.filterItems(term))
+      switchMap(term => term.length < 2 ? [] :
+        this.inventoryService.getItemLookup(term)
+          .pipe(
+            map(provinces => provinces.splice(0, 10))
+        )
+      )
     );
 
   itemFormatter = (x: { name: string }) => x.name;
-
-  private filterItems(value: string): Item[] {
-    const filterValue = value.toLowerCase();
-
-    return this.items.filter(item => item.name.toLowerCase().startsWith(filterValue)).splice(0, 10);
-  }
 }

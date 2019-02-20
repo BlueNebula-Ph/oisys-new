@@ -5,7 +5,7 @@
       <div class="datatable-container">
         <div class="progress-bar progress-bar-striped progress-bar-animated prog-bar" [hidden]="!isLoading"></div>
         <ngx-datatable class="bootstrap"
-                       [rows]="rows"
+                       [rows]="(rows$ | async) || []"
                        [columnMode]="'flex'"
                        [headerHeight]="40"
                        [summaryRow]="false"
@@ -80,11 +80,8 @@
     <div class="col-3">
       <app-search-panel (searched)="onSearch($event)"
                         [showCategories]="true"
-                        [categories]="categories | async">
+                        [categories]="categories$ | async">
       </app-search-panel>
     </div>
   </div>
-</div>
-<div>
-  {{ rows$ | async | json }}
 </div>

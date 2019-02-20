@@ -73,7 +73,7 @@ export class CustomerListComponent implements AfterContentInit, OnDestroy {
           return of([]);
         })
       );
-  }
+  };
 
   fetchProvinces() {
     this.provinces$ = this.provinceService.getProvinceLookup();

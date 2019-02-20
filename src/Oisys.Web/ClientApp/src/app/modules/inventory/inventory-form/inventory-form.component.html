@@ -7,8 +7,8 @@
           <div class="col-4">
             <div class="form-group">
               <label>Item Code.</label>
-              <div class="input-group">
-                <input class="form-control" name="itemCode" placeholder="Item code" [(ngModel)]="item.code" appFocus required>
+              <div appInputGroupStyle>
+                <input appControlStyle name="itemCode" placeholder="Item code" [(ngModel)]="item.code" #itemCode required>
                 <div class="input-group-append">
                   <span class="input-group-text">* Required</span>
                 </div>
@@ -16,8 +16,8 @@
             </div>
             <div class="form-group">
               <label>Item Name.</label>
-              <div class="input-group">
-                <input class="form-control" name="itemName" placeholder="Item name" [(ngModel)]="item.name" required>
+              <div appInputGroupStyle>
+                <input appControlStyle name="itemName" placeholder="Item name" [(ngModel)]="item.name" required>
                 <div class="input-group-append">
                   <span class="input-group-text">* Required</span>
                 </div>
@@ -25,8 +25,8 @@
             </div>
             <div class="form-group">
               <label>Description.</label>
-              <div class="input-group">
-                <input class="form-control" name="description" placeholder="Description" [(ngModel)]="item.description">
+              <div appInputGroupStyle>
+                <input appControlStyle name="description" placeholder="Description" [(ngModel)]="item.description">
                 <div class="input-group-append">
                   <span class="input-group-text">* Required</span>
                 </div>
@@ -34,9 +34,9 @@
             </div>
             <div class="form-group">
               <label>Category.</label>
-              <div class="input-group">
-                <input class="form-control" name="category" placeholder="Category"
-                       [(ngModel)]="item.selectedCategory" [ngbTypeahead]="searchCategory"
+              <div appInputGroupStyle>
+                <input appControlStyle name="category" placeholder="Category"
+                       [(ngModel)]="item.category" [ngbTypeahead]="searchCategory"
                        [inputFormatter]="categoryFormatter" [resultTemplate]="categoryTemplate" required>
                 <div class="input-group-append">
                   <span class="input-group-text">* Required</span>
@@ -47,8 +47,8 @@
           <div class="col-4">
             <div class="form-group">
               <label>Quantity.</label>
-              <div class="input-group">
-                <input type="number" class="form-control" name="quantity" placeholder="Quantity" [(ngModel)]="item.quantity" [disabled]="item.id != 0">
+              <div appInputGroupStyle>
+                <input type="number" appControlStyle name="quantity" placeholder="Quantity" [(ngModel)]="item.quantity" [disabled]="isQuantityDisabled">
                 <div class="input-group-append">
                   <span class="input-group-text">* Required</span>
                 </div>
@@ -56,22 +56,22 @@
             </div>
             <div class="form-group">
               <label>Unit.</label>
-              <input class="form-control" name="unit" placeholder="Unit" [(ngModel)]="item.unit">
+              <input appControlStyle name="unit" placeholder="Unit" [(ngModel)]="item.unit">
             </div>
             <div class="form-group">
               <label>Weight.</label>
-              <input class="form-control" name="weight" placeholder="Item Weight" [(ngModel)]="item.weight">
+              <input appControlStyle name="weight" placeholder="Item Weight" [(ngModel)]="item.weight">
             </div>
             <div class="form-group">
               <label>Thickness.</label>
-              <input class="form-control" name="thickness" placeholder="Item Thickness" [(ngModel)]="item.thickness">
+              <input appControlStyle name="thickness" placeholder="Item Thickness" [(ngModel)]="item.thickness">
             </div>
           </div>
           <div class="col-4">
             <div class="form-group">
               <label>Main Price.</label>
-              <div class="input-group">
-                <input currencyMask class="form-control" name="mainPrice" placeholder="Main Price" [(ngModel)]="item.mainPrice">
+              <div appInputGroupStyle>
+                <input currencyMask appControlStyle name="mainPrice" placeholder="Main Price" [(ngModel)]="item.mainPrice">
                 <div class="input-group-append">
                   <span class="input-group-text">* Required</span>
                 </div>
@@ -79,8 +79,8 @@
             </div>
             <div class="form-group">
               <label>Walk-In Price.</label>
-              <div class="input-group">
-                <input currencyMask class="form-control" name="walkInPrice" placeholder="Walk-In Price" [(ngModel)]="item.walkInPrice">
+              <div appInputGroupStyle>
+                <input currencyMask appControlStyle name="walkInPrice" placeholder="Walk-In Price" [(ngModel)]="item.walkInPrice">
                 <div class="input-group-append">
                   <span class="input-group-text">* Required</span>
                 </div>
@@ -88,8 +88,8 @@
             </div>
             <div class="form-group">
               <label>N.E. Price.</label>
-              <div class="input-group">
-                <input currencyMask class="form-control" name="nePrice" placeholder="N.E. Price" [(ngModel)]="item.nePrice">
+              <div appInputGroupStyle>
+                <input currencyMask appControlStyle name="nePrice" placeholder="N.E. Price" [(ngModel)]="item.nePrice">
                 <div class="input-group-append">
                   <span class="input-group-text">* Required</span>
                 </div>

@@ -1,7 +1,6 @@
 import { Component, AfterContentInit, OnDestroy } from '@angular/core';
-import { Router } from '@angular/router';
 
-import { of, Observable } from 'rxjs';
+import { of, Observable, Subscription } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 
 import { InventoryService } from '../../../shared/services/inventory.service';
@@ -13,7 +12,6 @@ import { Page } from '../../../shared/models/page';
 import { Sort } from '../../../shared/models/sort';
 import { Search } from '../../../shared/models/search';
 import { Category } from '../../../shared/models/category';
-import { PagedData } from '../../../shared/models/paged-data';
 
 @Component({
   selector: 'app-inventory-list',
@@ -25,13 +23,13 @@ export class InventoryListComponent implements AfterContentInit, OnDestroy {
   sort: Sort = new Sort();
   search: Search = new Search();
 
-  rows$: Observable<PagedData<Item>>; // = of(new Array<Item>());
-  items$: Observable<Item[]>;
-  categories: Observable<Category[]>;
+  rows$: Observable<Item[]>;
+  categories$: Observable<Category[]>;
+  deleteItemSub: Subscription;
 
   isLoading: boolean = false;
 
-  constructor(private inventoryService: InventoryService, private categoryService: CategoryService, private util: UtilitiesService, private router: Router) {
+  constructor(private inventoryService: InventoryService, private categoryService: CategoryService, private util: UtilitiesService) {
     this.page.pageNumber = 0;
     this.page.size = 20;
     this.sort.prop = 'name';
@@ -40,51 +38,52 @@ export class InventoryListComponent implements AfterContentInit, OnDestroy {
 
   ngAfterContentInit() {
     this.setPage({ offset: 0 });
-    this.categories = this.categoryService.getCategoryLookup();
+    this.fetchCategories();
+    
     this.loadItems();
   };
 
   ngOnDestroy() {
-
+    if (this.deleteItemSub) { this.deleteItemSub.unsubscribe(); }
   };
 
   loadItems() {
     this.isLoading = true;
-
     this.rows$ = this.inventoryService.getItems(
       this.page.pageNumber,
       this.page.size,
       this.sort.prop,
       this.sort.dir,
       this.search.searchTerm,
-      this.search.categoryId);
-      //.pipe(
-      //  map(data => {
-      //    // Flip flag to show that loading has finished.
-      //    this.isLoading = false;
+      this.search.categoryId)
+      .pipe(
+        map(data => {
+          // Flip flag to show that loading has finished.
+          this.isLoading = false;
 
-      //    console.log(data);
+          this.page = data.pageInfo;
 
-      //    this.page = data.pageInfo;
+          return data.items;
+        }),
+        catchError(() => {
+          this.isLoading = false;
 
-      //    this.items$ = of(data.items);
+          return of([]);
+        })
+      );
+  };
 
-      //    return data;
-      //  }),
-      //  catchError(() => {
-      //    this.isLoading = false;
-
-      //    return of(new Array<Item>());
-      //  })
-      //);
-  }
+  fetchCategories() {
+    this.categories$ = this.categoryService.getCategoryLookup();
+  };
 
   onDeleteItem(id: number): void {
     if (confirm("Are you sure you want to delete this item?")) {
-      this.inventoryService.deleteItem(id).subscribe(() => {
-        this.loadItems();
-        this.util.showSuccessMessage("Item deleted successfully.");
-      });
+      this.deleteItemSub = this.inventoryService.deleteItem(id)
+        .subscribe(() => {
+          this.loadItems();
+          this.util.showSuccessMessage("Item deleted successfully.");
+        });
     }
   }
 

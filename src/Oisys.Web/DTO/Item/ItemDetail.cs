@@ -1,9 +1,8 @@
-﻿namespace OisysNew.DTO.Item
+﻿using OisysNew.DTO.Category;
+
+namespace OisysNew.DTO.Item
 {
-    /// <summary>
-    /// View model for the Item entity.
-    /// </summary>
-    public class ItemSummary : DTOBase
+    public class ItemDetail : DTOBase
     {
         /// <summary>
         /// Gets or sets property Code.
@@ -36,18 +35,33 @@
         public decimal? WalkInPrice { get; set; }
 
         /// <summary>
+        /// Gets or sets property Weight.
+        /// </summary>
+        public string Weight { get; set; }
+
+        /// <summary>
+        /// Gets or sets property Thickness.
+        /// </summary>
+        public string Thickness { get; set; }
+
+        /// <summary>
         /// Gets or sets property Unit.
         /// </summary>
         public string Unit { get; set; }
 
         /// <summary>
-        /// Gets or sets property category name.
+        /// Gets or sets item category.
         /// </summary>
-        public string CategoryName { get; set; }
+        public CategoryLookup Category { get; set; }
 
         /// <summary>
         /// Gets or sets property Quantity.
         /// </summary>
         public int Quantity { get; set; }
+
+        /// <summary>
+        /// Gets or sets concurrency check.
+        /// </summary>
+        public byte[] RowVersion { get; set; }
     }
 }
