@@ -9,9 +9,9 @@
               <div class="col-3 pr-0">
                 <div class="form-group">
                   <label>Customer.</label>
-                  <div class="input-group">
-                    <input class="form-control" name="customer" placeholder="Select customer..."
-                           [(ngModel)]="salesQuotation.selectedCustomer" [ngbTypeahead]="searchCustomer"
+                  <div appInputGroupStyle>
+                    <input appControlStyle name="customer" placeholder="Select customer..." #customer
+                           [(ngModel)]="salesQuotation.customer" [ngbTypeahead]="searchCustomer"
                            [inputFormatter]="customerFormatter" [resultTemplate]="customerTemplate" required>
                     <div class="input-group-append">
                       <span class="input-group-text">* Required</span>
@@ -22,8 +22,8 @@
               <div class="col-3 pr-0">
                 <div class="form-group">
                   <label>Date.</label>
-                  <div class="input-group">
-                    <input type="date" class="form-control" name="date" placeholder="Sales quotation date" [ngModel]="salesQuotation.date | date:'yyyy-MM-dd'" (ngModelChange)="salesQuotation.date=$event" required>
+                  <div appInputGroupStyle>
+                    <input appControlStyle type="date" name="date" placeholder="Sales quotation date" [ngModel]="salesQuotation.date | date:'yyyy-MM-dd'" (ngModelChange)="salesQuotation.date=$event" required>
                     <div class="input-group-append">
                       <span class="input-group-text">* Required</span>
                     </div>
@@ -33,8 +33,8 @@
               <div class="col-3 pr-0">
                 <div class="form-group">
                   <label>Delivery Fee.</label>
-                  <div class="input-group">
-                    <input currencyMask class="form-control" name="deliveryFee" placeholder="Delivery fee" [(ngModel)]="salesQuotation.deliveryFee" required>
+                  <div appInputGroupStyle>
+                    <input currencyMask appControlStyle name="deliveryFee" placeholder="Delivery fee" [(ngModel)]="salesQuotation.deliveryFee" required>
                     <div class="input-group-append">
                       <span class="input-group-text">* Required</span>
                     </div>
@@ -42,42 +42,43 @@
                 </div>
               </div>
             </div>
-            <div class="row">
-              <table class="table form-table border-bottom">
-                <thead>
-                  <tr>
-                    <td width="10%" class="text-right align-middle">Quantity</td>
-                    <td width="10%" class="align-middle">Unit</td>
-                    <td width="25%" class="align-middle">Item</td>
-                    <td width="15%" class="align-middle">Category</td>
-                    <td width="15%" class="align-middle text-right">Unit Price</td>
-                    <td width="15%" class="align-middle text-right">Total Price</td>
-                    <td width="10%" class="text-center">
-                      <button type="button" class="btn btn-sm btn-primary" (click)="addLineItem()">
-                        <i class="fa fa-plus"></i> Item
-                      </button>
-                    </td>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr *ngFor="let lineItem of salesQuotation.lineItems">
-                    <td><input type="number" class="form-control form-control-sm text-right" [(ngModel)]="lineItem.quantity" [ngModelOptions]="{standalone: true}" /></td>
-                    <td><input class="form-control form-control-sm" [(ngModel)]="lineItem.unit" [ngModelOptions]="{standalone: true}" readonly /></td>
-                    <td>
-                      <input class="form-control form-control-sm" name="salesQuotationLineItem" placeholder="Select item..."
-                             [ngbTypeahead]="searchItem" [inputFormatter]="itemFormatter" [resultTemplate]="itemTemplate"
-                             [(ngModel)]="lineItem.selectedItem" [ngModelOptions]="{standalone: true}">
-                    </td>
-                    <td><input class="form-control form-control-sm" [(ngModel)]="lineItem.categoryName" [ngModelOptions]="{standalone: true}" readonly /></td>
-                    <td><input currencyMask class="form-control form-control-sm text-right" [(ngModel)]="lineItem.unitPrice" [ngModelOptions]="{standalone: true}" /></td>
-                    <td><input currencyMask class="form-control form-control-sm text-right" [(ngModel)]="lineItem.totalPrice" [ngModelOptions]="{standalone: true}" readonly /></td>
-                    <td class="text-center">
-                      <button type="button" class="btn btn-ghost-danger btn-sm" (click)="removeLineItem($index)"><i class="fa fa-fw fa-trash"></i></button>
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
+            <table class="table form-table border-bottom">
+              <thead>
+                <tr>
+                  <td width="10%" class="text-right align-middle">Quantity</td>
+                  <td width="10%" class="align-middle">Unit</td>
+                  <td width="25%" class="align-middle">Item</td>
+                  <td width="15%" class="align-middle">Category</td>
+                  <td width="15%" class="align-middle text-right">Unit Price</td>
+                  <td width="15%" class="align-middle text-right">Total Price</td>
+                  <td width="10%" class="text-center">
+                    <button type="button" class="btn btn-sm btn-primary" accesskey="a" (click)="addLineItem()">
+                      <i class="fa fa-plus"></i> Item
+                    </button>
+                  </td>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let lineItem of salesQuotation.lineItems">
+                  <td><input appControlStyle [appFocus]="true" type="number" class="text-right" [(ngModel)]="lineItem.quantity" [ngModelOptions]="{standalone: true}" /></td>
+                  <td><input appControlStyle [(ngModel)]="lineItem.unit" [ngModelOptions]="{standalone: true}" readonly /></td>
+                  <td>
+                    <input appControlStyle name="salesQuotationLineItem" placeholder="Select item..."
+                           [ngbTypeahead]="searchItem" [inputFormatter]="itemFormatter" [resultTemplate]="itemTemplate"
+                           [(ngModel)]="lineItem.item" [ngModelOptions]="{standalone: true}">
+                  </td>
+                  <td><input appControlStyle [(ngModel)]="lineItem.categoryName" [ngModelOptions]="{standalone: true}" readonly /></td>
+                  <td><input currencyMask appControlStyle class="text-right" [(ngModel)]="lineItem.unitPrice" [ngModelOptions]="{standalone: true}" /></td>
+                  <td><input currencyMask appControlStyle class="text-right" [(ngModel)]="lineItem.totalPrice" [ngModelOptions]="{standalone: true}" readonly /></td>
+                  <td class="text-center">
+                    <button type="button" class="btn btn-ghost-danger btn-sm" (click)="removeLineItem($index)"><i class="fa fa-fw fa-trash"></i></button>
+                  </td>
+                </tr>
+                <tr *ngIf="salesQuotation.lineItems.length == 0">
+                  <td colspan="7">No items added.</td>
+                </tr>
+              </tbody>
+            </table>
           </div>
           <div class="card-footer">
             <button type="submit" class="btn btn-primary btn-square" title="Save sales quotation information." accesskey="s"

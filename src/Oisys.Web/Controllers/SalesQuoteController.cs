@@ -117,10 +117,10 @@ namespace OisysNew.Controllers
         /// <param name="id">id</param>
         /// <returns>SalesQuote</returns>
         [HttpGet("{id}", Name = "GetSalesQuote")]
-        [ProducesResponseType(typeof(SalesQuoteSummary), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(SalesQuoteDetail), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult<SalesQuoteSummary>> GetById(long id)
+        public async Task<ActionResult<SalesQuoteDetail>> GetById(long id)
         {
             try
             {
@@ -136,8 +136,8 @@ namespace OisysNew.Controllers
                     return NotFound();
                 }
 
-                var salesQuoteSummary = mapper.Map<SalesQuoteSummary>(salesQuotation);
-                return salesQuoteSummary;
+                var salesQuotationDetail = mapper.Map<SalesQuoteDetail>(salesQuotation);
+                return salesQuotationDetail;
             }
             catch (Exception e)
             {

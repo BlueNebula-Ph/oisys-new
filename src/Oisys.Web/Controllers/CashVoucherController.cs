@@ -111,8 +111,8 @@ namespace OisysNew.Controllers
             try
             {
                 var entity = await context.CashVouchers
-                .AsNoTracking()
-                .FirstOrDefaultAsync(c => c.Id == id);
+                    .AsNoTracking()
+                    .FirstOrDefaultAsync(c => c.Id == id);
 
                 if (entity == null)
                 {

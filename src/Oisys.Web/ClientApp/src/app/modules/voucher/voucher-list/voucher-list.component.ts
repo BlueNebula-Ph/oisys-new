@@ -1,6 +1,6 @@
-import { Component, AfterContentInit } from '@angular/core';
+import { Component, AfterContentInit, OnDestroy } from '@angular/core';
 
-import { of } from 'rxjs';
+import { of, Observable, Subscription } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 
 import { CashVoucherService } from '../../../shared/services/cash-voucher.service';
@@ -16,11 +16,13 @@ import { CashVoucher } from '../../../shared/models/cash-voucher';
   templateUrl: './voucher-list.component.html',
   styleUrls: ['./voucher-list.component.css']
 })
-export class VoucherListComponent implements AfterContentInit {
+export class VoucherListComponent implements AfterContentInit, OnDestroy {
   page: Page = new Page();
   sort: Sort = new Sort();
   search: Search = new Search();
-  rows = new Array<CashVoucher>();
+
+  rows$: Observable<CashVoucher[]>;
+  deleteVoucherSub: Subscription;
 
   isLoading: boolean = false;
 
@@ -38,9 +40,13 @@ export class VoucherListComponent implements AfterContentInit {
     this.loadCashVouchers();
   };
 
+  ngOnDestroy() {
+    if (this.deleteVoucherSub) { this.deleteVoucherSub.unsubscribe(); }
+  };
+
   loadCashVouchers() {
     this.isLoading = true;
-    this.cashVoucherService.getCashVouchers(
+    this.rows$ = this.cashVoucherService.getCashVouchers(
       this.page.pageNumber,
       this.page.size,
       this.sort.prop,
@@ -54,20 +60,19 @@ export class VoucherListComponent implements AfterContentInit {
           this.isLoading = false;
           this.page = data.pageInfo;
 
-          return data.items.map(cashVoucher => new CashVoucher(cashVoucher));
+          return data.items;
         }),
         catchError(() => {
           this.isLoading = false;
 
           return of([]);
         })
-      )
-      .subscribe(data => this.rows = data);
+      );
   }
 
   onDeleteCashVoucher(id: number): void {
     if (confirm("Are you sure you want to delete this voucher?")) {
-      this.cashVoucherService.deleteCashVoucher(id).subscribe(() => {
+      this.deleteVoucherSub = this.cashVoucherService.deleteCashVoucher(id).subscribe(() => {
         this.loadCashVouchers();
         this.util.showSuccessMessage("Voucher deleted successfully.");
       });

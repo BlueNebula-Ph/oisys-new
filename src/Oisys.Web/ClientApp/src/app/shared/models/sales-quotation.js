@@ -1,11 +1,13 @@
+import { Customer } from "./customer";
 import { JsonModelBase } from "./json-model-base";
+import { LineItem } from "./line-item";
 export class SalesQuotation extends JsonModelBase {
-    get selectedCustomer() {
-        return this._selectedCustomer;
+    get customer() {
+        return this._customer;
     }
-    set selectedCustomer(customer) {
+    set customer(customer) {
         if (customer) {
-            this._selectedCustomer = customer;
+            this._customer = customer;
             this.customerId = customer.id;
         }
     }
@@ -32,12 +34,13 @@ export class SalesQuotation extends JsonModelBase {
         this.customerAddress = salesQuotation && salesQuotation.customerAddress || '';
         this.date = salesQuotation && salesQuotation.date || new Date();
         this.deliveryFee = salesQuotation && salesQuotation.deliveryFee || 0;
-        this.lineItems = salesQuotation && salesQuotation.lineItems || new Array();
+        this.lineItems = (salesQuotation && salesQuotation.lineItems) ? salesQuotation.lineItems.map(lineItem => new LineItem(lineItem)) : new Array();
+        this.customer = (salesQuotation && salesQuotation.customer) ? new Customer(salesQuotation.customer) : undefined;
     }
     updateLineItems() {
         if (this.customerId && this.customerId != 0) {
             this.lineItems.forEach((lineItem) => {
-                lineItem.updatePriceList(this._selectedCustomer.priceListId);
+                lineItem.updatePriceList(this._customer.priceListId);
             });
         }
     }

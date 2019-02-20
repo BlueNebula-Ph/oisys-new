@@ -9,7 +9,6 @@ import { InventoryService } from '../../../shared/services/inventory.service';
 import { UtilitiesService } from '../../../shared/services/utilities.service';
 
 import { Adjustment } from '../../../shared/models/adjustment';
-import { Item } from '../../../shared/models/item';
 import { AdjustmentType } from '../../../shared/models/adjustment-type';
 
 @Component({
@@ -65,7 +64,7 @@ export class AdjustItemComponent implements AfterContentInit, OnDestroy {
   };
 
   saveFailed = (error) => {
-    this.util.showErrorMessage("An error occurred while saving. Please try again.");
+    this.util.showErrorMessage('An error occurred while saving. Please try again.');
     console.log(error);
   };
 

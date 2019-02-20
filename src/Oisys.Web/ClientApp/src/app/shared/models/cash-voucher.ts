@@ -19,7 +19,7 @@ export class CashVoucher {
     this.date = cashVoucher && cashVoucher.date || new Date();
     this.description = cashVoucher && cashVoucher.description || '';
     this.amount = cashVoucher && cashVoucher.amount || 0;
-    this.category = cashVoucher && cashVoucher.category || VoucherCategory.Automotive;
+    this.category = (cashVoucher && cashVoucher.category) ? VoucherCategory[cashVoucher.category as string] : VoucherCategory.Automotive;
     this.releasedBy = cashVoucher && cashVoucher.releasedBy || '';
   }
 }

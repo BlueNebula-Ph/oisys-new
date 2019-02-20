@@ -80,11 +80,11 @@ export class OrderFormComponent implements AfterContentInit, OnDestroy {
     if (this.order.id == 0) {
       this.setOrder(undefined);
     }
-    this.util.showSuccessMessage("Order saved successfully.");
+    this.util.showSuccessMessage('Order saved successfully.');
   };
 
   saveFailed = (error) => {
-    this.util.showErrorMessage("An error occurred while saving. Please try again.");
+    this.util.showErrorMessage('An error occurred while saving. Please try again.');
     console.log(error);
   };
 

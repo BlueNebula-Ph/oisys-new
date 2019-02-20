@@ -1,6 +1,6 @@
-import { Component, AfterContentInit } from '@angular/core';
+import { Component, AfterContentInit, OnDestroy } from '@angular/core';
 
-import { of, forkJoin } from 'rxjs';
+import { of, Observable, Subscription } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 
 import { SalesQuotationService } from '../../../shared/services/sales-quotation.service';
@@ -16,22 +16,22 @@ import { Customer } from '../../../shared/models/customer';
 import { SalesQuotation } from '../../../shared/models/sales-quotation';
 import { Item } from '../../../shared/models/item';
 import { Province } from '../../../shared/models/province';
-import { LineItem } from '../../../shared/models/line-item';
 
 @Component({
   selector: 'app-quotation-list',
   templateUrl: './quotation-list.component.html',
   styleUrls: ['./quotation-list.component.css']
 })
-export class QuotationListComponent implements AfterContentInit {
+export class QuotationListComponent implements AfterContentInit, OnDestroy {
   page: Page = new Page();
   sort: Sort = new Sort();
   search: Search = new Search();
-  rows = new Array<SalesQuotation>();
 
-  customers: Customer[];
-  items: Item[];
-  provinces: Province[];
+  rows$: Observable<SalesQuotation[]>;
+  customers$: Observable<Customer[]>;
+  items$: Observable<Item[]>;
+  provinces$: Observable<Province[]>;
+  deleteQuotationSub: Subscription;
 
   isLoading: boolean = false;
 
@@ -53,9 +53,13 @@ export class QuotationListComponent implements AfterContentInit {
     this.loadSalesQuotations();
   };
 
+  ngOnDestroy() {
+    if (this.deleteQuotationSub) { this.deleteQuotationSub.unsubscribe(); }
+  };
+
   loadSalesQuotations() {
     this.isLoading = true;
-    this.salesQuotationService.getSalesQuotations(
+    this.rows$ = this.salesQuotationService.getSalesQuotations(
       this.page.pageNumber,
       this.page.size,
       this.sort.prop,
@@ -72,10 +76,7 @@ export class QuotationListComponent implements AfterContentInit {
           this.isLoading = false;
           this.page = data.pageInfo;
 
-          return data.items.map(salesQuotation => {
-            salesQuotation.lineItems = salesQuotation.lineItems.map(lineItem => new LineItem(lineItem));
-            return new SalesQuotation(salesQuotation);
-          });
+          return data.items;
         }),
         catchError(() => {
           this.isLoading = false;
@@ -83,26 +84,19 @@ export class QuotationListComponent implements AfterContentInit {
           return of([]);
         })
       )
-      .subscribe(data => this.rows = data);
-  }
+  };
 
   fetchLists() {
-    forkJoin(
-      this.customerService.getCustomerLookup(),
-      this.inventoryService.getItemLookup(),
-      this.provinceService.getProvinceLookup()
-    ).subscribe(([customerResponse, inventoryResponse, provinceResponse]) => {
-      this.customers = customerResponse;
-      this.items = inventoryResponse;
-      this.provinces = provinceResponse;
-    });
+    this.customers$ = this.customerService.getCustomerLookup(),
+    this.items$ = this.inventoryService.getItemLookup(),
+    this.provinces$ = this.provinceService.getProvinceLookup()
   };
 
   onDeleteSalesQuotation(id: number): void {
-    if (confirm("Are you sure you want to delete this sales quotation?")) {
-      this.salesQuotationService.deleteSalesQuotation(id).subscribe(() => {
+    if (confirm('Are you sure you want to delete this sales quotation?')) {
+      this.deleteQuotationSub = this.salesQuotationService.deleteSalesQuotation(id).subscribe(() => {
         this.loadSalesQuotations();
-        this.util.showSuccessMessage("Sales quotation deleted successfully.");
+        this.util.showSuccessMessage('Sales quotation deleted successfully.');
       });
     }
   }

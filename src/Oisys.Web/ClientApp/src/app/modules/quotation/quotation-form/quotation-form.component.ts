@@ -1,9 +1,9 @@
-import { Component, AfterContentInit } from '@angular/core';
+import { Component, AfterContentInit, OnDestroy, ViewChild, ElementRef } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { NgForm } from '@angular/forms';
 
-import { Observable, forkJoin } from 'rxjs';
-import { debounceTime, distinctUntilChanged, map } from 'rxjs/operators';
+import { Observable, forkJoin, Subscription } from 'rxjs';
+import { debounceTime, distinctUntilChanged, map, switchMap } from 'rxjs/operators';
 import { NgbTypeaheadConfig } from '@ng-bootstrap/ng-bootstrap';
 
 import { SalesQuotationService } from '../../../shared/services/sales-quotation.service';
@@ -21,10 +21,13 @@ import { LineItem } from '../../../shared/models/line-item';
   templateUrl: './quotation-form.component.html',
   styleUrls: ['./quotation-form.component.css']
 })
-export class QuotationFormComponent implements AfterContentInit {
+export class QuotationFormComponent implements AfterContentInit, OnDestroy {
   salesQuotation: SalesQuotation = new SalesQuotation();
-  customers: Customer[];
-  items: Item[];
+  getQuotationSub: Subscription;
+  saveQuotationSub: Subscription;
+  isSaving = false;
+
+  @ViewChild('customer') customerField: ElementRef;
 
   constructor(
     private salesQuotationService: SalesQuotationService,
@@ -38,63 +41,65 @@ export class QuotationFormComponent implements AfterContentInit {
   }
 
   ngAfterContentInit() {
-    this.fetchLists();
-    setTimeout(() => this.loadSalesQuotation(), 3000);
+    this.loadQuotationForm();
+  };
+
+  ngOnDestroy() {
+    if (this.getQuotationSub) { this.getQuotationSub.unsubscribe(); }
+    if (this.saveQuotationSub) { this.saveQuotationSub.unsubscribe(); }
+  };
+
+  loadQuotationForm() {
+    const quotationId = +this.route.snapshot.paramMap.get('id');
+    if (quotationId && quotationId != 0) {
+      this.loadQuotation(quotationId);
+    } else {
+      this.setQuotation(undefined);
+    }
+  };
+
+  setQuotation(quotation: any) {
+    this.salesQuotation = quotation ? new SalesQuotation(quotation) : new SalesQuotation();
+    this.customerField.nativeElement.focus();
+  };
+
+  loadQuotation(id: number) {
+    this.getQuotationSub = this.salesQuotationService
+      .getSalesQuotationById(id)
+      .subscribe(quotation => this.setQuotation(quotation));
   };
 
   saveSalesQuotation(salesQuotationForm: NgForm) {
     if (salesQuotationForm.valid) {
+      this.isSaving = true;
       this.salesQuotationService
         .saveSalesQuotation(this.salesQuotation)
-        .subscribe(() => {
-          if (this.salesQuotation.id == 0) {
-            this.loadSalesQuotation();
-          }
-          this.util.showSuccessMessage("Sales quotation saved successfully.");
-        }, error => {
-          console.error(error);
-          this.util.showErrorMessage("An error occurred.");
-        });
+        .subscribe(this.saveSuccess, this.saveFailed, this.saveCompleted);
     }
   };
 
-  loadSalesQuotation() {
-    this.route.paramMap.subscribe(params => {
-      var routeParam = params.get("id");
-      var id = parseInt(routeParam);
-
-      if (id == 0) {
-        this.salesQuotation = new SalesQuotation();
-      } else {
-        this.salesQuotationService
-          .getSalesQuotationById(id)
-          .subscribe(salesQuotation => {
-            this.salesQuotation = new SalesQuotation(salesQuotation);
-            this.salesQuotation.lineItems = salesQuotation.lineItems.map(lineItem => {
-              var salesQuotationLineItem = new LineItem(lineItem);
-              salesQuotationLineItem.item = this.filterItems(lineItem.itemName)[0];
-              return salesQuotationLineItem;
-            });
-            this.salesQuotation.selectedCustomer = this.filterCustomers(salesQuotation.customerName)[0];
-          });
-      }
-    });
+  saveSuccess = () => {
+    if (this.salesQuotation.id == 0) {
+      this.setQuotation(undefined);
+    }
+    this.util.showSuccessMessage('Sales quotation saved successfully.');
   };
 
-  fetchLists() {
-    forkJoin(
-      this.customerService.getCustomerLookup(),
-      this.inventoryService.getItemLookup()
-    ).subscribe(([customerResponse, inventoryResponse]) => {
-      this.customers = customerResponse;
-      this.items = inventoryResponse;
-    });
+  saveFailed = (error) => {
+    this.util.showErrorMessage('An error occurred while saving. Please try again.');
+    console.log(error);
+  };
+
+  saveCompleted = () => {
+    this.isSaving = false;
   };
 
   // Line items
   addLineItem() {
-    this.salesQuotation.lineItems.push(new LineItem());
-    this.salesQuotation.updateLineItems();
+    if (this.salesQuotation && this.salesQuotation.lineItems) {
+      this.salesQuotation.lineItems.push(new LineItem());
+      this.salesQuotation.updateLineItems();
+    }
   };
 
   removeLineItem(index: number) {
@@ -108,28 +113,26 @@ export class QuotationFormComponent implements AfterContentInit {
     text$.pipe(
       debounceTime(200),
       distinctUntilChanged(),
-      map(term => term.length < 2 ? [] : this.filterCustomers(term))
+      switchMap(term => term.length < 2 ? [] :
+        this.customerService.getCustomerLookup(0, 0, term)
+          .pipe(
+            map(customers => customers.splice(0, 10))
+          )
+      )
     );
 
   searchItem = (text$: Observable<string>) =>
     text$.pipe(
       debounceTime(200),
       distinctUntilChanged(),
-      map(term => this.filterItems(term))
+      switchMap(term => term.length < 2 ? [] :
+        this.inventoryService.getItemLookup(term)
+          .pipe(
+            map(items => items.splice(0, 10))
+          )
+      )
     );
 
   customerFormatter = (x: { name: string }) => x.name;
   itemFormatter = (x: { name: string }) => x.name;
-
-  private filterCustomers(value: string): Customer[] {
-    const filterValue = value.toLowerCase();
-
-    return this.customers.filter(customer => customer.name.toLowerCase().startsWith(filterValue)).splice(0, 10);
-  }
-
-  private filterItems(value: string): Item[] {
-    const filterValue = value.toLowerCase();
-
-    return this.items.filter(item => item.name.toLowerCase().startsWith(filterValue)).splice(0, 10);
-  }
 }

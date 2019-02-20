@@ -39,5 +39,10 @@
         /// Gets or sets released by
         /// </summary>
         public string ReleasedBy { get; set; }
+
+        /// <summary>
+        /// Gets or sets row version for concurrency check
+        /// </summary>
+        public byte[] RowVersion { get; set; }
     }
 }

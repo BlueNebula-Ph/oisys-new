@@ -54,9 +54,7 @@ export class OrderListComponent implements AfterContentInit, OnDestroy {
   };
 
   ngOnDestroy() {
-    if (this.deleteOrderSub) {
-      this.deleteOrderSub.unsubscribe();
-    }
+    if (this.deleteOrderSub) { this.deleteOrderSub.unsubscribe(); }
   };
 
   loadOrders() {
@@ -95,10 +93,10 @@ export class OrderListComponent implements AfterContentInit, OnDestroy {
   };
 
   onDeleteOrder(id: number): void {
-    if (confirm("Are you sure you want to delete this order?")) {
+    if (confirm('Are you sure you want to delete this order?')) {
       this.deleteOrderSub = this.orderService.deleteOrder(id).subscribe(() => {
         this.loadOrders();
-        this.util.showSuccessMessage("Order deleted successfully.");
+        this.util.showSuccessMessage('Order deleted successfully.');
       });
     }
   }

@@ -12,13 +12,13 @@ export class SalesQuotation extends JsonModelBase {
   public deliveryFee: number;
   public lineItems: LineItem[];
 
-  private _selectedCustomer: Customer;
-  get selectedCustomer() {
-    return this._selectedCustomer;
+  private _customer: Customer;
+  get customer() {
+    return this._customer;
   }
-  set selectedCustomer(customer: Customer) {
+  set customer(customer: Customer) {
     if (customer) {
-      this._selectedCustomer = customer;
+      this._customer = customer;
       this.customerId = customer.id;
     }
   }
@@ -53,13 +53,14 @@ export class SalesQuotation extends JsonModelBase {
 
     this.deliveryFee = salesQuotation && salesQuotation.deliveryFee || 0;
 
-    this.lineItems = salesQuotation && salesQuotation.lineItems || new Array<LineItem>();
+    this.lineItems = (salesQuotation && salesQuotation.lineItems) ? salesQuotation.lineItems.map(lineItem => new LineItem(lineItem)) : new Array<LineItem>();
+    this.customer = (salesQuotation && salesQuotation.customer) ? new Customer(salesQuotation.customer) : undefined;
   }
 
   updateLineItems() {
     if (this.customerId && this.customerId != 0) {
       this.lineItems.forEach((lineItem) => {
-        lineItem.updatePriceList(this._selectedCustomer.priceListId);
+        lineItem.updatePriceList(this._customer.priceListId);
       });
     }
   };

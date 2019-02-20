@@ -1,6 +1,8 @@
-import { Component, AfterContentInit } from '@angular/core';
+import { Component, AfterContentInit, OnDestroy, ViewChild, ElementRef } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { NgForm } from '@angular/forms';
+
+import { Subscription } from 'rxjs';
 
 import { CashVoucherService } from '../../../shared/services/cash-voucher.service';
 import { UtilitiesService } from '../../../shared/services/utilities.service';
@@ -13,47 +15,72 @@ import { VoucherCategory } from '../../../shared/models/voucher-category';
   templateUrl: './voucher-form.component.html',
   styleUrls: ['./voucher-form.component.css']
 })
-export class VoucherFormComponent implements AfterContentInit {
+export class VoucherFormComponent implements AfterContentInit, OnDestroy {
   voucher: CashVoucher = new CashVoucher();
   voucherCategories = VoucherCategory;
+  getVoucherSub: Subscription;
+  saveVoucherSub: Subscription;
+  isSaving = false;
 
-  constructor(private cashVoucherService: CashVoucherService, private util: UtilitiesService, private route: ActivatedRoute) {
-  }
+  @ViewChild('payTo') payToField: ElementRef;
+
+  constructor(
+    private cashVoucherService: CashVoucherService,
+    private util: UtilitiesService,
+    private route: ActivatedRoute
+  ) { }
 
   ngAfterContentInit() {
-    this.loadVoucher();
-  }
-
-  saveCashVoucher(cashVoucherForm: NgForm) {
-    if (!cashVoucherForm.valid) {
-      console.log(cashVoucherForm.errors);
-    }
-
-    this.cashVoucherService
-      .saveCashVoucher(this.voucher)
-      .subscribe(() => {
-        this.loadVoucher();
-        this.util.showSuccessMessage('Cash voucher saved successfully.');
-      }, () => {
-        this.util.showErrorMessage('An error has occurred.');
-      });
+    this.loadVoucherForm();
   };
 
-  loadVoucher() {
-    this.route.paramMap.subscribe(params => {
-      var routeParam = params.get("id");
-      var id = parseInt(routeParam);
+  ngOnDestroy() {
+    if (this.getVoucherSub) { this.getVoucherSub.unsubscribe(); }
+    if (this.saveVoucherSub) { this.saveVoucherSub.unsubscribe(); }
+  };
 
-      if (id == 0) {
-        this.voucher = new CashVoucher();
-      } else {
-        this.cashVoucherService
-          .getCashVoucherById(id)
-          .subscribe(voucher => {
-            voucher.category = VoucherCategory[voucher.category];
-            this.voucher = new CashVoucher(voucher);
-          });
-      }
-    });
+  loadVoucherForm() {
+    const voucherId = +this.route.snapshot.paramMap.get('id');
+    if (voucherId && voucherId != 0) {
+      this.loadVoucher(voucherId);
+    } else {
+      this.setVoucher(undefined);
+    }
+  };
+
+  setVoucher(voucher: any) {
+    this.voucher = voucher ? new CashVoucher(voucher) : new CashVoucher();
+    this.payToField.nativeElement.focus();
+  };
+
+  loadVoucher(id: number) {
+    this.getVoucherSub = this.cashVoucherService
+      .getCashVoucherById(id)
+      .subscribe(voucher => this.setVoucher(voucher));
+  };
+
+  saveCashVoucher(cashVoucherForm: NgForm) {
+    if (cashVoucherForm.valid) {
+      this.isSaving = true;
+      this.cashVoucherService
+        .saveCashVoucher(this.voucher)
+        .subscribe(this.saveSuccess, this.saveFailed, this.saveCompleted);
+    }
+  };
+
+  saveSuccess = () => {
+    if (this.voucher.id == 0) {
+      this.setVoucher(undefined);
+    }
+    this.util.showSuccessMessage('Cash voucher saved successfully.');
+  };
+
+  saveFailed = (error) => {
+    this.util.showErrorMessage("An error occurred while saving. Please try again.");
+    console.log(error);
+  };
+
+  saveCompleted = () => {
+    this.isSaving = false;
   };
 }

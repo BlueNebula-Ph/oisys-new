@@ -1,11 +1,11 @@
 ﻿using OisysNew.DTO.Item;
 
-namespace OisysNew.DTO.Order
+namespace OisysNew.DTO.SalesQuote
 {
     /// <summary>
-    /// <see cref="OrderDetailLineItem"/> class represents the child of OrderSummary object.
+    /// View model for the <see cref="SalesQuoteDetail"/> entity.
     /// </summary>
-    public class OrderDetailLineItem : DTOBase
+    public class SalesQuoteDetailLineItem : DTOBase
     {
         /// <summary>
         /// Gets or sets property Quantity.
@@ -26,10 +26,5 @@ namespace OisysNew.DTO.Order
         /// Gets or sets property TotalPrice.
         /// </summary>
         public decimal TotalPrice { get; set; }
-
-        /// <summary>
-        /// Gets or sets the quantity returned for this line item.
-        /// </summary>
-        public int QuantityReturned { get; set; }
     }
 }
