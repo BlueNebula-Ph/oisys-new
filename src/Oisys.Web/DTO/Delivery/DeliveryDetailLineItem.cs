@@ -1,11 +1,12 @@
 ﻿using OisysNew.DTO.Customer;
+using OisysNew.DTO.Order;
 
-namespace OisysNew.DTO.Order
+namespace OisysNew.DTO.Delivery
 {
     /// <summary>
-    /// <see cref="OrderLineItemLookup"/> represents order line item in lookup data.
+    /// The delivery detail summary view model.
     /// </summary>
-    public class OrderLineItemLookup : DTOBase
+    public class DeliveryDetailLineItem : DTOBase
     {
         /// <summary>
         /// Gets or sets order code.

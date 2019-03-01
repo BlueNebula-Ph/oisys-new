@@ -1,6 +1,6 @@
-import { Component, AfterContentInit } from '@angular/core';
+import { Component, AfterContentInit, OnDestroy } from '@angular/core';
 
-import { of, forkJoin } from 'rxjs';
+import { of, Observable, Subscription } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 
 import { DeliveryService } from '../../../shared/services/delivery.service';
@@ -22,15 +22,16 @@ import { Province } from '../../../shared/models/province';
   templateUrl: './delivery-list.component.html',
   styleUrls: ['./delivery-list.component.css']
 })
-export class DeliveryListComponent implements AfterContentInit {
+export class DeliveryListComponent implements AfterContentInit, OnDestroy {
   page: Page = new Page();
   sort: Sort = new Sort();
   search: Search = new Search();
-  rows = new Array<Delivery>();
 
-  customers: Customer[];
-  items: Item[];
-  provinces: Province[];
+  rows$: Observable<Delivery[]>;
+  customers$: Observable<Customer[]>;
+  items$: Observable<Item[]>;
+  provinces$: Observable<Province[]>;
+  deleteDeliverySub: Subscription;
 
   isLoading: boolean = false;
 
@@ -52,9 +53,13 @@ export class DeliveryListComponent implements AfterContentInit {
     this.loadDeliveries();
   };
 
+  ngOnDestroy() {
+    if (this.deleteDeliverySub) { this.deleteDeliverySub.unsubscribe(); }
+  };
+
   loadDeliveries() {
     this.isLoading = true;
-    this.deliveryService.getDeliveries(
+    this.rows$ = this.deliveryService.getDeliveries(
       this.page.pageNumber,
       this.page.size,
       this.sort.prop,
@@ -71,10 +76,6 @@ export class DeliveryListComponent implements AfterContentInit {
           this.isLoading = false;
           this.page = data.pageInfo;
 
-          //return data.items.map(delivery => {
-          //  delivery.lineItems = delivery.lineItems.map(lineItem => new LineItem(lineItem));
-          //  return new Delivery(delivery);
-          //});
           return data.items;
         }),
         catchError(() => {
@@ -82,28 +83,22 @@ export class DeliveryListComponent implements AfterContentInit {
 
           return of([]);
         })
-      )
-      .subscribe(data => this.rows = data);
+      );
   }
 
   fetchLists() {
-    forkJoin(
-      this.customerService.getCustomerLookup(),
-      this.inventoryService.getItemLookup(),
-      this.provinceService.getProvinceLookup()
-    ).subscribe(([customerResponse, inventoryResponse, provinceResponse]) => {
-      this.customers = customerResponse;
-      this.items = inventoryResponse;
-      this.provinces = provinceResponse;
-    });
+    this.customers$ = this.customerService.getCustomerLookup();
+    this.items$ = this.inventoryService.getItemLookup();
+    this.provinces$ = this.provinceService.getProvinceLookup();
   };
 
   onDeleteDelivery(id: number): void {
-    if (confirm("Are you sure you want to delete this delivery?")) {
-      this.deliveryService.deleteDelivery(id).subscribe(() => {
-        this.loadDeliveries();
-        this.util.showSuccessMessage("Delivery deleted successfully.");
-      });
+    if (confirm('Are you sure you want to delete this delivery?')) {
+      this.deleteDeliverySub = this.deliveryService.deleteDelivery(id)
+        .subscribe(() => {
+          this.loadDeliveries();
+          this.util.showSuccessMessage('Delivery deleted successfully.');
+        });
     }
   }
 

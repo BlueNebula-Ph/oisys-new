@@ -1,33 +1,36 @@
 import { JsonModelBase } from "./json-model-base";
+import { OrderLineItem } from "./order-line-item";
+import { Customer } from "./customer";
 
 export class DeliveryLineItem extends JsonModelBase {
   public id: number;
   public orderLineItemId: number;
   public quantity: number;
-  public customerId: number;
-  public customer: string;
-  public orderNumber: string;
+  public orderCode: string;
   public orderDate: string;
   public itemCode: string;
   public itemName: string;
-  public category: string;
+  public unit: string;
+  public categoryName: string;
+  public quantityNotDelivered: number = 0;
 
   get item() {
-    return `${this.itemCode} - ${this.itemName} in Order # ${this.orderNumber} @ ${this.orderDate}`;
+    return `${this.itemCode} - ${this.itemName}`;
+  };
+
+  private _customer: Customer;
+  get customer() {
+    return this._customer;
+  }
+  set customer(value: Customer) {
+    if (value) {
+      this._customer = value;
+    }
   }
 
   constructor();
-  constructor(deliverLineItem: {
-    orderLineItemId: number,
-    quantity: number,
-    customerId: number,
-    customer: string,
-    orderNumber: string,
-    orderDate: string,
-    itemCode: string,
-    itemName: string,
-    category: string
-  });
+  constructor(deliveryLineItem: DeliveryLineItem);
+  constructor(deliveryLineItem: OrderLineItem);
   constructor(deliveryLineItem?: any) {
     super();
 
@@ -35,12 +38,14 @@ export class DeliveryLineItem extends JsonModelBase {
     this.orderLineItemId = deliveryLineItem && deliveryLineItem.orderLineItemId || 0;
     this.quantity = deliveryLineItem && deliveryLineItem.quantity || 0;
 
-    this.customerId = deliveryLineItem && deliveryLineItem.customerId || 0;
-    this.customer = deliveryLineItem && deliveryLineItem.customer || '';
-    this.orderNumber = deliveryLineItem && deliveryLineItem.orderNumber || '';
+    this.orderCode = deliveryLineItem && deliveryLineItem.orderCode || '';
     this.orderDate = deliveryLineItem && deliveryLineItem.orderDate || '';
     this.itemCode = deliveryLineItem && deliveryLineItem.itemCode || '';
     this.itemName = deliveryLineItem && deliveryLineItem.itemName || '';
-    this.category = deliveryLineItem && deliveryLineItem.category || '';
+    this.unit = deliveryLineItem && deliveryLineItem.unit || '';
+    this.categoryName = deliveryLineItem && deliveryLineItem.categoryName || '';
+
+    this.customer = (deliveryLineItem && deliveryLineItem.customer) ?
+      new Customer(deliveryLineItem.customer) : undefined;
   }
 }

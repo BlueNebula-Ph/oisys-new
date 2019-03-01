@@ -76,7 +76,7 @@ export class VoucherFormComponent implements AfterContentInit, OnDestroy {
   };
 
   saveFailed = (error) => {
-    this.util.showErrorMessage("An error occurred while saving. Please try again.");
+    this.util.showErrorMessage('An error occurred while saving. Please try again.');
     console.log(error);
   };
 

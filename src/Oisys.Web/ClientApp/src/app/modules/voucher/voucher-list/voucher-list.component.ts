@@ -71,10 +71,10 @@ export class VoucherListComponent implements AfterContentInit, OnDestroy {
   }
 
   onDeleteCashVoucher(id: number): void {
-    if (confirm("Are you sure you want to delete this voucher?")) {
+    if (confirm('Are you sure you want to delete this voucher?')) {
       this.deleteVoucherSub = this.cashVoucherService.deleteCashVoucher(id).subscribe(() => {
         this.loadCashVouchers();
-        this.util.showSuccessMessage("Voucher deleted successfully.");
+        this.util.showSuccessMessage('Voucher deleted successfully.');
       });
     }
   }

@@ -2,6 +2,9 @@ export class OrderLineItem {
     get totalPrice() {
         return this.quantity * this.unitPrice;
     }
+    get quantityNotDelivered() {
+        return this.quantity - this.quantityDelivered;
+    }
     constructor(orderLineItem) {
         this.id = orderLineItem && orderLineItem.id || 0;
         this.orderCode = orderLineItem && orderLineItem.orderCode || '';

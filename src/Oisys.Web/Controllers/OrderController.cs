@@ -156,6 +156,8 @@ namespace OisysNew.Controllers
             {
                 // get list of active items (not deleted)
                 var list = context.OrderLineItems
+                    .Include(c => c.Order)
+                        .ThenInclude(c => c.Customer)
                     .Include(c => c.Item)
                         .ThenInclude(c => c.Category)
                     .AsNoTracking()
@@ -173,8 +175,8 @@ namespace OisysNew.Controllers
 
                 list = list.OrderBy(c => c.Item.Code);
 
-                var entities = await list.ProjectTo<OrderLineItemLookup>(mapper.ConfigurationProvider).ToListAsync();
-                return entities;
+                var orderLineItems = await list.ProjectTo<OrderLineItemLookup>(mapper.ConfigurationProvider).ToListAsync();
+                return orderLineItems;
             }
             catch (Exception e)
             {

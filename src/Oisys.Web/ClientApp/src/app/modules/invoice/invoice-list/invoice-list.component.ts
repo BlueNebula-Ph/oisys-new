@@ -1,12 +1,10 @@
-import { Component, AfterContentInit } from '@angular/core';
+import { Component, AfterContentInit, OnDestroy } from '@angular/core';
 
-import { of, forkJoin } from 'rxjs';
+import { of, Observable, Subscription } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 
 import { InvoiceService } from '../../../shared/services/invoice.service';
 import { CustomerService } from '../../../shared/services/customer.service';
-import { ProvinceService } from '../../../shared/services/province.service';
-import { InventoryService } from '../../../shared/services/inventory.service';
 import { UtilitiesService } from '../../../shared/services/utilities.service';
 
 import { Page } from '../../../shared/models/page';
@@ -20,21 +18,20 @@ import { Invoice } from '../../../shared/models/invoice';
   templateUrl: './invoice-list.component.html',
   styleUrls: ['./invoice-list.component.css']
 })
-export class InvoiceListComponent implements AfterContentInit {
+export class InvoiceListComponent implements AfterContentInit, OnDestroy {
   page: Page = new Page();
   sort: Sort = new Sort();
   search: Search = new Search();
-  rows = new Array<Invoice>();
 
-  customers: Customer[];
+  rows$: Observable<Invoice[]>;
+  customers$: Observable<Customer[]>;
+  deleteInvoiceSub: Subscription;
 
   isLoading: boolean = false;
 
   constructor(
     private invoiceService: InvoiceService,
     private customerService: CustomerService,
-    private provinceService: ProvinceService,
-    private inventoryService: InventoryService,
     private util: UtilitiesService) {
     this.page.pageNumber = 0;
     this.page.size = 20;
@@ -48,9 +45,13 @@ export class InvoiceListComponent implements AfterContentInit {
     this.loadInvoices();
   };
 
+  ngOnDestroy() {
+    if (this.deleteInvoiceSub) { this.deleteInvoiceSub.unsubscribe(); }
+  };
+
   loadInvoices() {
     this.isLoading = true;
-    this.invoiceService.getInvoices(
+    this.rows$ = this.invoiceService.getInvoices(
       this.page.pageNumber,
       this.page.size,
       this.sort.prop,
@@ -65,10 +66,6 @@ export class InvoiceListComponent implements AfterContentInit {
           this.isLoading = false;
           this.page = data.pageInfo;
 
-          //return data.items.map(invoice => {
-          //  invoice.lineItems = invoice.lineItems.map(lineItem => new LineItem(lineItem));
-          //  return new Invoice(invoice);
-          //});
           return data.items;
         }),
         catchError(() => {
@@ -76,24 +73,20 @@ export class InvoiceListComponent implements AfterContentInit {
 
           return of([]);
         })
-      )
-      .subscribe(data => this.rows = data);
+      );
   }
 
   fetchLists() {
-    forkJoin(
-      this.customerService.getCustomerLookup(),
-    ).subscribe(([customerResponse]) => {
-      this.customers = customerResponse;
-    });
+    this.customers$ = this.customerService.getCustomerLookup();
   };
 
   onDeleteInvoice(id: number): void {
-    if (confirm("Are you sure you want to delete this invoice?")) {
-      this.invoiceService.deleteInvoice(id).subscribe(() => {
-        this.loadInvoices();
-        this.util.showSuccessMessage("Invoice deleted successfully.");
-      });
+    if (confirm('Are you sure you want to delete this invoice?')) {
+      this.deleteInvoiceSub = this.invoiceService.deleteInvoice(id)
+        .subscribe(() => {
+          this.loadInvoices();
+          this.util.showSuccessMessage('Invoice deleted successfully.');
+        });
     }
   }
 

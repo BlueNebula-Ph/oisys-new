@@ -103,17 +103,27 @@ namespace OisysNew.Configuration
                 .ForMember(d => d.Date, s => s.MapFrom(o => o.Date.ToShortDateString()))
                 .ForMember(d => d.ProvinceName, s => s.MapFrom(o => o.Province.Name))
                 .ForMember(d => d.CityName, s => s.MapFrom(o => o.City.Name));
+
+            CreateMap<Delivery, DeliveryDetail>()
+                .ForMember(d => d.Date, s => s.MapFrom(o => o.Date.ToShortDateString()))
+                .ForMember(d => d.Province, s => s.MapFrom(o => o.Province))
+                .ForMember(d => d.City, s => s.MapFrom(o => o.City));
+
             CreateMap<SaveDeliveryRequest, Delivery>();
 
             // Delivery Line Item
-            CreateMap<DeliveryLineItem, DeliveryLineItemSummary>()
-                .ForMember(d => d.CustomerId, s => s.MapFrom(o => o.OrderLineItem.Order.CustomerId))
-                .ForMember(d => d.CustomerName, s => s.MapFrom(o => o.OrderLineItem.Order.Customer.Name))
-                .ForMember(d => d.CategoryName, s => s.MapFrom(o => o.OrderLineItem.Item.Category.Name))
+            CreateMap<DeliveryLineItem, DeliveryDetailLineItem>()
+                .ForMember(d => d.Quantity, s => s.MapFrom(o => o.Quantity))
+                .ForMember(d => d.OrderCode, s => s.MapFrom(o => o.OrderLineItem.Order.Code))
+                .ForMember(d => d.OrderDate, s => s.MapFrom(o => o.OrderLineItem.Order.Date.ToShortDateString()))
                 .ForMember(d => d.ItemCode, s => s.MapFrom(o => o.OrderLineItem.Item.Code))
                 .ForMember(d => d.ItemName, s => s.MapFrom(o => o.OrderLineItem.Item.Name))
-                .ForMember(d => d.OrderNumber, s => s.MapFrom(o => o.OrderLineItem.Order.Code.ToString()))
-                .ForMember(d => d.Unit, s => s.MapFrom(o => o.OrderLineItem.Item.Unit));
+                .ForMember(d => d.Unit, s => s.MapFrom(o => o.OrderLineItem.Item.Unit))
+                .ForMember(d => d.CategoryName, s => s.MapFrom(o => o.OrderLineItem.Item.Category.Name))
+                .ForMember(d => d.QuantityDelivered, s => s.MapFrom(o => o.OrderLineItem.QuantityDelivered))
+                .ForMember(d => d.OrderLineItemId, s => s.MapFrom(o => o.OrderLineItem.Id))
+                .ForMember(d => d.Customer, s => s.MapFrom(o => o.OrderLineItem.Order.Customer));
+
             CreateMap<SaveDeliveryLineItemRequest, DeliveryLineItem>();
 
             // Invoice
@@ -172,7 +182,9 @@ namespace OisysNew.Configuration
                 .ForMember(d => d.ItemName, s => s.MapFrom(o => o.Item.Name))
                 .ForMember(d => d.Unit, s => s.MapFrom(o => o.Item.Unit))
                 .ForMember(d => d.CategoryName, s => s.MapFrom(o => o.Item.Category.Name))
-                .ForMember(d => d.QuantityDelivered, s => s.MapFrom(o => o.QuantityDelivered));
+                .ForMember(d => d.QuantityDelivered, s => s.MapFrom(o => o.QuantityDelivered))
+                .ForMember(d => d.OrderLineItemId, s => s.MapFrom(o => o.Id))
+                .ForMember(d => d.Customer, s => s.MapFrom(o => o.Order.Customer));
 
             // Province
             CreateMap<Province, ProvinceSummary>()

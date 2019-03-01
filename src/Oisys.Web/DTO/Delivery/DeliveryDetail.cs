@@ -1,9 +1,9 @@
-﻿namespace OisysNew.DTO.Delivery
+﻿using OisysNew.DTO.Province;
+using System.Collections.Generic;
+
+namespace OisysNew.DTO.Delivery
 {
-    /// <summary>
-    /// <see cref="DeliverySummary"/> class DeliverySummary object.
-    /// </summary>
-    public class DeliverySummary : DTOBase
+    public class DeliveryDetail : DTOBase
     {
         /// <summary>
         /// Gets or sets property Code.
@@ -21,13 +21,18 @@
         public string PlateNumber { get; set; }
 
         /// <summary>
-        /// Gets or sets property Province Name.
+        /// Gets or sets the delivery province.
         /// </summary>
-        public string ProvinceName { get; set; }
+        public ProvinceLookup Province { get; set; }
 
         /// <summary>
-        /// Gets or sets property City Name.
+        /// Gets or sets the delivery city.
         /// </summary>
-        public string CityName { get; set; }
+        public CityLookup City { get; set; }
+
+        /// <summary>
+        /// Gets or sets property Details.
+        /// </summary>
+        public IEnumerable<DeliveryDetailLineItem> LineItems { get; set; }
     }
 }

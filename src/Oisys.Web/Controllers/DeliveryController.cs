@@ -128,22 +128,29 @@ namespace OisysNew.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult<DeliverySummary>> GetDeliveryById(long id)
+        public async Task<ActionResult<DeliveryDetail>> GetDeliveryById(long id)
         {
             try
             {
                 var entity = await context.Deliveries
-                    .AsNoTracking()
                     .Include(c => c.Province)
+                        .ThenInclude(c => c.Cities)
                     .Include(c => c.City)
                     .Include(c => c.LineItems)
                         .ThenInclude(lineItem => (lineItem as DeliveryLineItem).OrderLineItem)
                         .ThenInclude(orderLineItem => orderLineItem.Order)
                         .ThenInclude(order => order.Customer)
+                        .ThenInclude(customer => customer.Province)
+                    .Include(c => c.LineItems)
+                        .ThenInclude(lineItem => (lineItem as DeliveryLineItem).OrderLineItem)
+                        .ThenInclude(orderLineItem => orderLineItem.Order)
+                        .ThenInclude(order => order.Customer)
+                        .ThenInclude(customer => customer.City)
                     .Include(c => c.LineItems)
                         .ThenInclude(lineItem => (lineItem as DeliveryLineItem).OrderLineItem)
                         .ThenInclude(orderLineItem => orderLineItem.Item)
                         .ThenInclude(item => item.Category)
+                    .AsNoTracking()
                     .SingleOrDefaultAsync(c => c.Id == id);
 
                 if (entity == null)
@@ -151,8 +158,8 @@ namespace OisysNew.Controllers
                     return NotFound();
                 }
 
-                var deliverySummary = mapper.Map<DeliverySummary>(entity);
-                return deliverySummary;
+                var deliveryDetail = mapper.Map<DeliveryDetail>(entity);
+                return deliveryDetail;
             }
             catch (Exception e)
             {

@@ -117,7 +117,7 @@ namespace OisysNew.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult<InvoiceSummary>> GetInvoiceById(long id)
+        public async Task<ActionResult<InvoiceDetail>> GetInvoiceById(long id)
         {
             try
             {
@@ -130,8 +130,8 @@ namespace OisysNew.Controllers
                     return NotFound();
                 }
 
-                var invoiceSummary = mapper.Map<InvoiceSummary>(entity);
-                return invoiceSummary;
+                var invoiceDetail = mapper.Map<InvoiceDetail>(entity);
+                return invoiceDetail;
             }
             catch (Exception e)
             {

@@ -6,7 +6,9 @@
   [mobileSidebarToggler]="false"
   [asideMenuToggler]="false"
   [mobileAsideMenuToggler]="false">
-  Test
+  <div class="mr-3 p-3 border rounded">
+    <i class="fa fa-user"></i>
+  </div>
 </app-header>
 <div class="app-body">
   <app-sidebar [fixed]="true" [display]="'lg'">
@@ -17,7 +19,7 @@
   <main class="main">
 
     <!-- Breadcrumb -->
-    <ol class="breadcrumb">
+    <ol class="breadcrumb py-2">
       <app-breadcrumb></app-breadcrumb>
       <!-- Breadcrumb Menu-->
       <li class="breadcrumb-menu d-md-down-none">

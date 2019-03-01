@@ -1,9 +1,9 @@
-﻿namespace OisysNew.DTO.Invoice
+﻿using OisysNew.DTO.Customer;
+using System.Collections.Generic;
+
+namespace OisysNew.DTO.Invoice
 {
-    /// <summary>
-    /// View model for the invoice entity.
-    /// </summary>
-    public class InvoiceSummary : DTOBase
+    public class InvoiceDetail : DTOBase
     {
         /// <summary>
         /// Gets or sets invoice number.
@@ -11,14 +11,9 @@
         public int InvoiceNumber { get; set; }
 
         /// <summary>
-        /// Gets or sets the customer name.
+        /// Gets or sets invoice customer.
         /// </summary>
-        public string CustomerName { get; set; }
-
-        /// <summary>
-        /// Gets or sets the customer address.
-        /// </summary>
-        public string CustomerAddress { get; set; }
+        public CustomerLookup Customer { get; set; }
 
         /// <summary>
         /// Gets or sets property Date.
@@ -54,5 +49,10 @@
         /// Gets or sets a value indicating whether invoice is paid.
         /// </summary>
         public bool IsPaid { get; set; }
+
+        /// <summary>
+        /// Gets or sets the invoice line items.
+        /// </summary>
+        public IEnumerable<InvoiceDetailLineItem> LineItems { get; set; }
     }
 }

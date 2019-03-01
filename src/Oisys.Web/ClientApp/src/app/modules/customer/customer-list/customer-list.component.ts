@@ -80,10 +80,10 @@ export class CustomerListComponent implements AfterContentInit, OnDestroy {
   };
 
   onDeleteCustomer(id: number): void {
-    if (confirm("Are you sure you want to delete this customer?")) {
+    if (confirm('Are you sure you want to delete this customer?')) {
       this.deleteCustomerSub = this.customerService.deleteCustomer(id).subscribe(() => {
         this.loadCustomers();
-        this.util.showSuccessMessage("Customer deleted successfully.");
+        this.util.showSuccessMessage('Customer deleted successfully.');
       });
     }
   }

@@ -1,10 +1,10 @@
-import { Component, AfterContentInit } from '@angular/core';
+import { Component, AfterContentInit, ElementRef, ViewChild, OnDestroy } from '@angular/core';
 
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Event } from '@angular/router';
 import { NgForm } from '@angular/forms';
 
-import { Observable, forkJoin } from 'rxjs';
-import { debounceTime, distinctUntilChanged, map } from 'rxjs/operators';
+import { Observable, Subscription } from 'rxjs';
+import { debounceTime, distinctUntilChanged, map, switchMap } from 'rxjs/operators';
 import { NgbTypeaheadConfig } from '@ng-bootstrap/ng-bootstrap';
 
 import { DeliveryService } from '../../../shared/services/delivery.service';
@@ -16,7 +16,6 @@ import { UtilitiesService } from '../../../shared/services/utilities.service';
 import { Delivery } from '../../../shared/models/delivery';
 import { DeliveryLineItem } from '../../../shared/models/delivery-line-item';
 import { Customer } from '../../../shared/models/customer';
-import { Province } from '../../../shared/models/province';
 import { City } from '../../../shared/models/city';
 
 @Component({
@@ -24,12 +23,20 @@ import { City } from '../../../shared/models/city';
   templateUrl: './delivery-form.component.html',
   styleUrls: ['./delivery-form.component.css']
 })
-export class DeliveryFormComponent implements AfterContentInit {
+export class DeliveryFormComponent implements AfterContentInit, OnDestroy {
   delivery: Delivery = new Delivery();
-  provinces: Province[];
-  customers: Customer[];
+
+  customersList = new Array<Customer>();
   selectedCustomer: Customer;
-  selectedCustomers: Customer[] = new Array<Customer>();
+
+  getDeliverySub: Subscription;
+  getOrderLineItemSub: Subscription;
+  saveDeliverySub: Subscription;
+
+  isSaving = false;
+
+  @ViewChild('province') provinceField: ElementRef;
+  @ViewChild('customer') customerField: ElementRef;
 
   constructor(
     private deliveryService: DeliveryService,
@@ -44,118 +51,100 @@ export class DeliveryFormComponent implements AfterContentInit {
   }
 
   ngAfterContentInit() {
-    this.fetchLists();
-    //setTimeout(() => this.loadDelivery(), 3000);
+    this.loadDeliveryForm();
+  };
+
+  ngOnDestroy() {
+    if (this.getDeliverySub) { this.getDeliverySub.unsubscribe(); }
+    if (this.saveDeliverySub) { this.saveDeliverySub.unsubscribe(); }
+  };
+
+  loadDeliveryForm() {
+    const deliveryId = +this.route.snapshot.paramMap.get('id');
+    if (deliveryId && deliveryId != 0) {
+      this.loadDelivery(deliveryId);
+    } else {
+      this.setDelivery(undefined);
+    }
+  };
+
+  setDelivery(delivery: any) {
+    this.delivery = delivery ? new Delivery(delivery) : new Delivery();
+    this.provinceField.nativeElement.focus();
+  };
+
+  loadDelivery(id: number) {
+    this.getDeliverySub = this.deliveryService
+      .getDeliveryById(id)
+      .subscribe(delivery => this.setDelivery(delivery));
   };
 
   saveDelivery(deliveryForm: NgForm) {
     if (deliveryForm.valid) {
-      this.deliveryService
+      this.isSaving = true;
+      this.saveDeliverySub = this.deliveryService
         .saveDelivery(this.delivery)
-        .subscribe(() => {
-          if (this.delivery.id == 0) {
-            //this.loadDelivery();
-          }
-          this.util.showSuccessMessage("Delivery saved successfully.");
-        }, error => {
-          console.error(error);
-          this.util.showErrorMessage("An error occurred.");
-        });
+        .subscribe(this.saveSuccess, this.saveFailed, this.saveCompleted);
     }
   };
 
-  //loadDelivery() {
-  //  this.route.paramMap.subscribe(params => {
-  //    var routeParam = params.get("id");
-  //    var id = parseInt(routeParam);
-
-  //    if (id == 0) {
-  //      this.delivery = new Delivery();
-  //    } else {
-  //      this.deliveryService
-  //        .getDeliveryById(id)
-  //        .subscribe(delivery => {
-  //          this.delivery = new Delivery(delivery);
-  //          this.delivery.lineItems = delivery.lineItems.map(lineItem => {
-  //            var deliveryLineItem = new LineItem(lineItem);
-  //            deliveryLineItem.selectedItem = this.filterItems(lineItem.itemName)[0];
-  //            return deliveryLineItem;
-  //          });
-  //          this.delivery.selectedCustomer = this.filterCustomers(delivery.customerName)[0];
-  //        });
-  //    }
-  //  });
-  //};
-
-  fetchLists() {
-    forkJoin(
-      this.provinceService.getProvinceLookup()
-    ).subscribe(([provinceResponse]) => {
-      this.provinces = provinceResponse;
-    });
-  };
-
-  provinceUpdated() {
-    this.delivery.selectedCity = new City();
-  };
-
-  cityUpdated() {
-    if (this.delivery.provinceId && this.delivery.cityId) {
-      this.customerService
-        .getCustomerLookup(this.delivery.provinceId, this.delivery.cityId)
-        .subscribe(data => this.customers = data);
+  saveSuccess = () => {
+    if (this.delivery.id == 0) {
+      this.setDelivery(undefined);
     }
+    this.util.showSuccessMessage('Delivery saved successfully.');
+  };
+
+  saveFailed = (error) => {
+    this.util.showErrorMessage('An error occurred while saving. Please try again.');
+    console.log(error);
+  };
+
+  saveCompleted = () => {
+    this.isSaving = false;
   };
 
   customerSelected() {
     if (this.selectedCustomer && this.selectedCustomer.id != 0 && !this.customerIdExists(this.selectedCustomer.id)) {
-      this.selectedCustomers.push(this.selectedCustomer);
       this.fetchCustomerOrderItems(this.selectedCustomer);
+      this.customerField.nativeElement.value = '';
     }
   };
 
   customerIdExists(id: number) {
-    return this.selectedCustomers.find(x => x.id == id) != null;
-  };
-
-  removeCustomer(index: number) {
-    if (confirm('Are you sure you want to remove this customer? Items related to this customer will also be removed.')) {
-      var customers = this.selectedCustomers.splice(index, 1);
-      var customer = customers[0];
-      if (customer) {
-        this.delivery.lineItems = this.delivery.lineItems.filter(val => val.customerId != customer.id);
-      }
-    }
+    return this.delivery.lineItems.find(x => x.customer.id == id) != null;
   };
 
   fetchCustomerOrderItems(customer: Customer) {
-    this.orderService.getOrderLineItemLookup(customer.id, false)
+    this.getOrderLineItemSub = this.orderService
+      .getOrderLineItemLookup(customer.id, false)
       .subscribe(data => {
-        this.delivery.lineItems = data.map(lineItem => new DeliveryLineItem({
-          customerId: customer.id,
-          customer: customer.name,
-          orderLineItemId: lineItem.id,
-          orderNumber: lineItem.orderCode,
-          orderDate: lineItem.orderDate,
-          quantity: lineItem.quantity,
-          itemCode: lineItem.itemCode,
-          itemName: lineItem.itemName,
-          category: lineItem.categoryName
-        }));
-
-        this.selectedCustomer = new Customer();
+        var newItems = data.map(orderLineItem =>
+        {
+          var quantityNotDelivered = orderLineItem.quantity - orderLineItem.quantityDelivered;
+          var deliveryItem = new DeliveryLineItem(orderLineItem);
+          deliveryItem.id = 0; // Set id to 0
+          deliveryItem.quantity = quantityNotDelivered;
+          deliveryItem.quantityNotDelivered = quantityNotDelivered;
+          return deliveryItem;
+        });
+        this.delivery.lineItems = this.delivery.lineItems.concat(newItems);
       });
   };
 
-  // Line items
-  addLineItem() {
-    //this.delivery.lineItems.push(new LineItem());
-    //this.delivery.updateLineItems();
+  removeCustomer(customerId: number) {
+    if (confirm('Are you sure you want to remove this customer? Items related to this customer will also be removed.')) {
+      this.delivery.lineItems = this.delivery.lineItems.filter(val => val.customer.id != customerId);
+    }
   };
 
-  removeLineItem(index: number) {
+  quantityUpdated(event: any, lineItem: DeliveryLineItem) {
+    this.delivery.updateQuantity(lineItem.orderLineItemId, +event.target.value);
+  };
+
+  removeLineItem(lineItem: DeliveryLineItem) {
     if (confirm('Are you sure you want to remove this item?')) {
-      //this.delivery.lineItems.splice(index, 1);
+      //this.delivery.lineItems = this.delivery.lineItems.filter(val => val.customer.id != customerId);
     }
   };
 
@@ -164,7 +153,12 @@ export class DeliveryFormComponent implements AfterContentInit {
     text$.pipe(
       debounceTime(200),
       distinctUntilChanged(),
-      map(term => term.length < 2 ? [] : this.filterProvinces(term))
+      switchMap(term => term.length < 2 ? [] :
+        this.provinceService.getProvinceLookup(term)
+          .pipe(
+            map(provinces => provinces.splice(0, 10))
+          )
+      )
     );
 
   searchCity = (text$: Observable<string>) =>
@@ -178,28 +172,24 @@ export class DeliveryFormComponent implements AfterContentInit {
     text$.pipe(
       debounceTime(200),
       distinctUntilChanged(),
-      map(term => term.length < 2 ? [] : this.filterCustomers(term))
+      switchMap(term => term.length < 2 ? [] :
+        this.customerService.getCustomerLookup(this.delivery.provinceId, this.delivery.cityId, term)
+          .pipe(
+            map(customers => customers.splice(0, 10))
+          )
+      )
     );
 
   provinceFormatter = (x: { name: string }) => x.name;
   cityFormatter = (x: { name: string }) => x.name;
   customerFormatter = (x: { name: string }) => x.name;
 
-  private filterProvinces(value: string): Province[] {
-    const filterValue = value.toLowerCase();
-
-    return this.provinces.filter(province => province.name.toLowerCase().startsWith(filterValue)).splice(0, 10);
-  }
-
   private filterCities(value: string): City[] {
     const filterValue = value.toLowerCase();
 
-    return this.delivery.selectedProvince.cities.filter(city => city.name.toLowerCase().startsWith(filterValue)).splice(0, 10);
-  }
-
-  private filterCustomers(value: string): Customer[] {
-    const filterValue = value.toLowerCase();
-
-    return this.customers.filter(customer => customer.name.toLowerCase().startsWith(filterValue)).splice(0, 10);
+    return this.delivery.province
+      .cities
+      .filter(city => city.name.toLowerCase().startsWith(filterValue))
+      .splice(0, 10);
   }
 }

@@ -80,11 +80,11 @@ export class EditCustomerComponent implements AfterContentInit, OnDestroy {
     if (this.customer.id == 0) {
       this.setCustomer(undefined);
     }
-    this.util.showSuccessMessage("Customer saved successfully.");
+    this.util.showSuccessMessage('Customer saved successfully.');
   };
 
   saveFailed = (error) => {
-    this.util.showErrorMessage("An error occurred while saving. Please try again.");
+    this.util.showErrorMessage('An error occurred while saving. Please try again.');
     console.log(error);
   };
 

@@ -16,6 +16,10 @@ export class OrderLineItem {
     return this.quantity * this.unitPrice;
   }
 
+  get quantityNotDelivered() {
+    return this.quantity - this.quantityDelivered;
+  }
+
   constructor();
   constructor(orderLineItem: OrderLineItem);
   constructor(orderLineItem?: any) {

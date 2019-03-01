@@ -5,7 +5,7 @@
       <div class="datatable-container">
         <div class="progress-bar progress-bar-striped progress-bar-animated prog-bar" [hidden]="!isLoading"></div>
         <ngx-datatable class="bootstrap"
-                       [rows]="rows"
+                       [rows]="(rows$ | async) || []"
                        [columnMode]="'flex'"
                        [headerHeight]="40"
                        [summaryRow]="false"
@@ -36,13 +36,16 @@
             </ng-template>
           </ngx-datatable-column>
           <ngx-datatable-column name="Amount Due" prop="totalAmountDue" [flexGrow]="1">
-            <ng-template let-value="value" ngx-datatable-cell-template>
-              <div class="text-right">{{ value | currency:'PHP':'₱ ' }}</div>
+            <ng-template let-column="column" let-sort="sortFn" ngx-datatable-header-template>
+              <span class="datatable-header-cell-wrapper float-right">
+                <span class="datatable-header-cell-label draggable" (click)="sort()">{{ column.name }}</span>
+              </span>
             </ng-template>
-          </ngx-datatable-column>
-          <ngx-datatable-column name="Credit Amount" prop="totalCreditAmount" [flexGrow]="1">
-            <ng-template let-value="value" ngx-datatable-cell-template>
-              <div class="text-right">{{ value | currency:'PHP':'₱ ' }}</div>
+            <ng-template let-invoice="row" ngx-datatable-cell-template>
+              <div class="text-right">
+                <div>{{ invoice.totalAmountDue | currency:'PHP':'₱ ' }}</div>
+                <div><span class="badge badge-primary">Credit: {{ invoice.totalCreditAmount | currency:'PHP':'₱ ' }}</span></div>
+              </div>
             </ng-template>
           </ngx-datatable-column>
           <ngx-datatable-column name="Total Amount" prop="totalAmount" [flexGrow]="1">
@@ -82,7 +85,7 @@
     <div class="col-3">
       <app-search-panel (searched)="onSearch($event)"
                         [showCustomers]="true"
-                        [customers]="customers"
+                        [customers]="customers$ | async"
                         [showDates]="true">
       </app-search-panel>
     </div>

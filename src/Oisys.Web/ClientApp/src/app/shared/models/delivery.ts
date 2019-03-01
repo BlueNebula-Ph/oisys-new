@@ -2,6 +2,7 @@ import { JsonModelBase } from "./json-model-base";
 import { Province } from "./province";
 import { City } from "./city";
 import { DeliveryLineItem } from "./delivery-line-item";
+import { DeliveryGroupItem } from "./delivery-group-item";
 
 export class Delivery extends JsonModelBase {
   public id: number;
@@ -13,30 +14,47 @@ export class Delivery extends JsonModelBase {
   public plateNumber: string;
   public lineItems: DeliveryLineItem[];
 
-  private _selectedProvince: Province;
-  get selectedProvince() {
-    return this._selectedProvince;
+  private _province: Province;
+  get province() {
+    return this._province;
   }
-  set selectedProvince(prov: Province) {
+  set province(prov: Province) {
     if (prov) {
-      this._selectedProvince = prov;
+      this._province = prov;
       this.provinceId = prov.id;
     }
   }
 
-  private _selectedCity: City;
-  get selectedCity() {
-    return this._selectedCity;
+  private _city: City;
+  get city() {
+    return this._city;
   }
-  set selectedCity(city: City) {
+  set city(city: City) {
     if (city) {
-      this._selectedCity = city;
+      this._city = city;
       this.cityId = city.id;
     } else {
-      this._selectedCity = undefined;
+      this._city = undefined;
       this.cityId = 0;
     }
   }
+
+  get groupedItems() {
+    const groupedItems = new Array<DeliveryGroupItem>();
+    if (this.lineItems && this.lineItems.length > 0) {
+      this.lineItems.forEach((lineItem) => {
+        var groupItem = groupedItems.find(i => i.customerName == lineItem.customer.name);
+        if (groupItem) {
+          groupItem.addLineItem(lineItem);
+        } else {
+          var address = `${lineItem.customer.address}, ${lineItem.customer.cityName}, ${lineItem.customer.provinceName}`;
+          var deliveryGroupItem = new DeliveryGroupItem(lineItem.customer.name, address, [lineItem]);
+          groupedItems.push(deliveryGroupItem);
+        }
+      });
+    }
+    return groupedItems;
+  };
 
   constructor();
   constructor(delivery: Delivery);
@@ -53,6 +71,14 @@ export class Delivery extends JsonModelBase {
     this.cityId = delivery && delivery.cityId || 0;
     this.cityName = delivery && delivery.cityName || '';
 
-    this.lineItems = delivery && delivery.lineItems || new Array<DeliveryLineItem>();
+    this.lineItems = (delivery && delivery.lineItems) ?
+      delivery.lineItems.map(lineItem => new DeliveryLineItem(lineItem)) : new Array<DeliveryLineItem>();
+    this.province = (delivery && delivery.province) ? new Province(delivery.province) : undefined;
+    this.city = (delivery && delivery.city) ? new City(delivery.city) : undefined;
   }
+
+  updateQuantity(orderLineItemId: number, newQuantity: number) {
+    var deliveryLineItem = this.lineItems.find(item => item.orderLineItemId == orderLineItemId);
+    deliveryLineItem.quantity = newQuantity;
+  };
 }
