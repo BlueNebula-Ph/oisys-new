@@ -39,8 +39,8 @@ namespace OisysNew.Controllers
         /// <param name="listHelpers">List helper</param>
         /// <param name="entityListHelpers">Entity list helper</param>
         /// <param name="logger">The logger</param>
-        public InvoiceController(IOisysDbContext context, 
-            IMapper mapper, 
+        public InvoiceController(IOisysDbContext context,
+            IMapper mapper,
             IListHelpers listHelpers,
             IEntityListHelpers entityListHelpers,
             IOrderService orderService,
@@ -122,8 +122,16 @@ namespace OisysNew.Controllers
             try
             {
                 var entity = await context.Invoices
-                .AsNoTracking()
-                .SingleOrDefaultAsync(c => c.Id == id);
+                    .Include(c => c.Customer)
+                        .ThenInclude(customer => customer.Province)
+                    .Include(c => c.Customer)
+                        .ThenInclude(customer => customer.City)
+                    .Include(c => c.LineItems)
+                        .ThenInclude(lineItem => (lineItem as InvoiceLineItem).Order)
+                    .Include(c => c.LineItems)
+                        .ThenInclude(lineItem => (lineItem as InvoiceLineItem).CreditMemo)
+                    .AsNoTracking()
+                    .SingleOrDefaultAsync(c => c.Id == id);
 
                 if (entity == null)
                 {

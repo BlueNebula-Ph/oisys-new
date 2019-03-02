@@ -1,19 +1,7 @@
 import { JsonModelBase } from "./json-model-base";
+import { InvoiceLineItem } from "./invoice-line-item";
 import { InvoiceLineItemType } from "./invoice-line-item-type";
 export class Invoice extends JsonModelBase {
-    constructor(id, invoiceNumber, date, discountPercent, lineItems) {
-        super();
-        this.id = id;
-        this.invoiceNumber = invoiceNumber;
-        this.date = date;
-        this.discountPercent = discountPercent;
-        this.lineItems = lineItems;
-        this.id = id || 0;
-        this.invoiceNumber = invoiceNumber || 0;
-        this.date = date || new Date();
-        this.discountPercent = discountPercent || 0;
-        this.lineItems = lineItems || new Array();
-    }
     get selectedCustomer() {
         return this._selectedCustomer;
     }
@@ -34,6 +22,15 @@ export class Invoice extends JsonModelBase {
     }
     get discountAmount() {
         return parseFloat(((this.totalAmountDue - this.totalCreditAmount) * this.discountPercent / 100).toFixed(2));
+    }
+    constructor(invoice) {
+        super();
+        this.id = invoice && invoice.id || 0;
+        this.invoiceNumber = invoice && invoice.invoiceNumber || 0;
+        this.date = invoice && invoice.date || new Date();
+        this.discountPercent = invoice && invoice.discountPercent || 0;
+        this.lineItems = (invoice && invoice.lineItems) ?
+            invoice.lineItems.map(lineItem => new InvoiceLineItem(lineItem)) : new Array();
     }
     computeTotalAmount(type) {
         var totalAmount = 0;

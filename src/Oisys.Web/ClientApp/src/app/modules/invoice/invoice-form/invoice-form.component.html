@@ -5,15 +5,13 @@
         <div class="card no-radius">
           <h6 class="card-header">Save Invoice Information.</h6>
           <div class="card-body">
-            <div class="row container">
-              <h6>Step 1. Input invoice information.</h6>
-            </div>
+            <h6 class="card-title">Step 1. Input invoice information.</h6>
             <div class="row">
               <div class="col-4 pr-0">
                 <div class="form-group">
                   <label>Customer.</label>
                   <div appInputGroupStyle>
-                    <input appControlStyle name="customer" placeholder="Select customer..."
+                    <input appControlStyle #customer name="customer" placeholder="Select customer..."
                            [(ngModel)]="invoice.selectedCustomer" [ngbTypeahead]="searchCustomer" (ngModelChange)="customerSelected($event)"
                            [inputFormatter]="customerFormatter" [resultTemplate]="customerTemplate" required>
                     <div class="input-group-append">
@@ -45,31 +43,34 @@
                 </div>
               </div>
             </div>
-            <h6>Step 2. Review order & credit memo information.</h6>
+            <h6 class="card-title">Step 2. Review order & credit memo information.</h6>
             <table class="table form-table border-bottom">
               <thead>
                 <tr>
                   <td width="10%"></td>
-                  <td class="align-middle">Code</td>
-                  <td class="align-middle">Date</td>
-                  <td class="align-middle text-right">Total Amount</td>
-                  <td width="10%" class="text-center"></td>
+                  <td class="align-middle"width="30%">Code</td>
+                  <td class="align-middle"width="20%">Date</td>
+                  <td class="align-middle text-right" width="30%">Total Amount</td>
+                  <td width="10%"></td>
                 </tr>
               </thead>
               <tbody>
                 <tr *ngFor="let lineItem of invoice.lineItems">
-                  <td>
+                  <td class="align-middle text-center">
                     <span *ngIf="lineItem.isOrder"><i class="fa fa-plus text-success"></i></span>
                     <span *ngIf="lineItem.isCreditMemo"><i class="fa fa-minus text-danger"></i></span>
                   </td>
-                  <td>{{ lineItem.code }}</td>
-                  <td>{{ lineItem.date }}</td>
-                  <td class="text-right">{{ lineItem.totalAmount | currency:'PHP':'₱ ' }}</td>
+                  <td class="align-middle">
+                    <span *ngIf="lineItem.isOrder">Order # {{ lineItem.code }}</span>
+                    <span *ngIf="lineItem.isCreditMemo">Credit Memo # {{ lineItem.code }}</span>
+                  </td>
+                  <td class="align-middle">{{ lineItem.date }}</td>
+                  <td class="align-middle text-right">{{ lineItem.totalAmount | currency:'PHP':'₱ ' }}</td>
                   <td class="text-center">
                     <button type="button" class="btn btn-ghost-danger btn-sm" (click)="removeLineItem($index)"><i class="fa fa-fw fa-trash"></i></button>
                   </td>
                 </tr>
-                <tr *ngIf="invoice.lineItems || invoice.lineItems.length == 0">
+                <tr *ngIf="!invoice.lineItems || invoice.lineItems.length == 0">
                   <td colspan="5">No items added.</td>
                 </tr>
               </tbody>

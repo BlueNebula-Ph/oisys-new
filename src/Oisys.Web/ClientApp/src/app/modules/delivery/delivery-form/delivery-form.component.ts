@@ -142,9 +142,9 @@ export class DeliveryFormComponent implements AfterContentInit, OnDestroy {
     this.delivery.updateQuantity(lineItem.orderLineItemId, +event.target.value);
   };
 
-  removeLineItem(lineItem: DeliveryLineItem) {
+  removeLineItem(index: number) {
     if (confirm('Are you sure you want to remove this item?')) {
-      //this.delivery.lineItems = this.delivery.lineItems.filter(val => val.customer.id != customerId);
+      this.delivery.lineItems.splice(index, 1);
     }
   };
 

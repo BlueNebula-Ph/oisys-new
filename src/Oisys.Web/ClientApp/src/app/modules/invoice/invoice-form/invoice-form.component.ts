@@ -1,9 +1,9 @@
-import { Component, AfterContentInit } from '@angular/core';
+import { Component, AfterContentInit, ViewChild, ElementRef, OnDestroy } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { NgForm } from '@angular/forms';
 
-import { Observable, forkJoin } from 'rxjs';
-import { debounceTime, distinctUntilChanged, map } from 'rxjs/operators';
+import { Observable, forkJoin, Subscription, Subscribable } from 'rxjs';
+import { debounceTime, distinctUntilChanged, map, switchMap } from 'rxjs/operators';
 import { NgbTypeaheadConfig } from '@ng-bootstrap/ng-bootstrap';
 
 import { InvoiceService } from '../../../shared/services/invoice.service';
@@ -24,13 +24,19 @@ import { InvoiceLineItemType } from '../../../shared/models/invoice-line-item-ty
   templateUrl: './invoice-form.component.html',
   styleUrls: ['./invoice-form.component.css']
 })
-export class InvoiceFormComponent implements AfterContentInit {
+export class InvoiceFormComponent implements AfterContentInit, OnDestroy {
   invoice: Invoice = new Invoice();
-  customers: Customer[];
-  orders: Order[];
-  creditMemos: CreditMemo[];
 
-  selectedCustomer: Customer;
+  orders = new Array<Order>();
+  creditMemos = new Array<CreditMemo>();
+
+  getInvoiceSub: Subscription;
+  saveInvoiceSub: Subscription;
+  fetchItemsSub: Subscription;
+
+  isSaving = false;
+
+  @ViewChild('customer') customerField: ElementRef;
 
   constructor(
     private invoiceService: InvoiceService,
@@ -45,92 +51,85 @@ export class InvoiceFormComponent implements AfterContentInit {
   }
 
   ngAfterContentInit() {
-    this.fetchCustomers();
-    //setTimeout(() => this.loadInvoice(), 3000);
+    this.loadInvoiceForm();
+  };
+
+  ngOnDestroy() {
+    if (this.getInvoiceSub) { this.getInvoiceSub.unsubscribe(); }
+    if (this.saveInvoiceSub) { this.saveInvoiceSub.unsubscribe(); }
+    if (this.fetchItemsSub) { this.fetchItemsSub.unsubscribe(); }
+  };
+
+  loadInvoiceForm() {
+    const invoiceId = +this.route.snapshot.paramMap.get('id');
+    if (invoiceId && invoiceId != 0) {
+      this.loadInvoice(invoiceId);
+    } else {
+      this.setInvoice(undefined);
+    }
+  };
+
+  setInvoice(invoice: any) {
+    this.invoice = invoice ? new Invoice(invoice) : new Invoice();
+    this.customerField.nativeElement.focus();
+  };
+
+  loadInvoice(id: number) {
+    this.getInvoiceSub = this.invoiceService
+      .getInvoiceById(id)
+      .subscribe(invoice => this.setInvoice(invoice));
   };
 
   saveInvoice(invoiceForm: NgForm) {
     if (invoiceForm.valid) {
-      this.invoiceService
+      this.isSaving = true;
+      this.saveInvoiceSub = this.invoiceService
         .saveInvoice(this.invoice)
-        .subscribe(() => {
-          if (this.invoice.id == 0) {
-            this.loadInvoice();
-          }
-          this.util.showSuccessMessage("Invoice saved successfully.");
-        }, error => {
-          console.error(error);
-          this.util.showErrorMessage("An error occurred.");
-        });
+        .subscribe(this.saveSuccess, this.saveFailed, this.saveCompleted);
     }
   };
 
-  loadInvoice() {
-    //this.route.paramMap.subscribe(params => {
-    //  var routeParam = params.get("id");
-    //  var id = parseInt(routeParam);
-
-    //  if (id == 0) {
-    //    this.invoice = new Invoice();
-    //  } else {
-    //    this.invoiceService
-    //      .getInvoiceById(id)
-    //      .subscribe(invoice => {
-    //        this.invoice = new Invoice(invoice);
-    //        this.invoice.lineItems = invoice.lineItems.map(lineItem => {
-    //          var invoiceLineItem = new LineItem(lineItem);
-    //          invoiceLineItem.selectedItem = this.filterItems(lineItem.itemName)[0];
-    //          return invoiceLineItem;
-    //        });
-    //        //this.invoice.selectedCustomer = this.filterCustomers(invoice.customerName)[0];
-    //      });
-    //  }
-    //});
+  saveSuccess = () => {
+    if (this.invoice.id == 0) {
+      this.setInvoice(undefined);
+    }
+    this.util.showSuccessMessage('Invoice saved successfully.');
   };
 
-  fetchCustomers() {
-    this.customerService
-      .getCustomerLookup()
-      .subscribe(customers => this.customers = customers);
+  saveFailed = (error) => {
+    this.util.showErrorMessage('An error occurred while saving. Please try again.');
+    console.log(error);
+  };
+
+  saveCompleted = () => {
+    this.isSaving = false;
   };
 
   customerSelected(customer: Customer) {
-    if (customer && customer.id && customer.id != 0) {
-      forkJoin(
+    if (this.invoice.selectedCustomer && this.invoice.selectedCustomer.id != 0) {
+      this.fetchItemsSub = forkJoin(
         this.orderService.getOrderLookup(customer.id),
         this.creditMemoService.getCreditMemoLookup(customer.id)
       ).subscribe(([orderResponse, creditMemoResponse]) => {
-        var orders = orderResponse.map(val => {
-          var item = new InvoiceLineItem();
-          item.code = val.code;
-          item.orderId = val.id;
-          item.totalAmount = val.totalAmount;
-          item.date = val.date;
-          item.type = InvoiceLineItemType.Order;
-          return item;
-        });
-        console.log(orders);
-        var creditMemos = creditMemoResponse.map(val => {
-          var item = new InvoiceLineItem();
-          item.creditMemoId = val.id;
-          item.code = val.code;
-          item.date = val.date;
-          item.totalAmount = val.totalAmount;
-          item.type = InvoiceLineItemType.CreditMemo;
-          return item;
-        });
-        console.log(creditMemos);
-
+        var orders = orderResponse.map(val => this.createInvoiceLineItem(val, InvoiceLineItemType.Order));
+        var creditMemos = creditMemoResponse.map(val => this.createInvoiceLineItem(val, InvoiceLineItemType.CreditMemo));
         this.invoice.lineItems = orders.concat(creditMemos);
       });
     }
   };
 
-  // Line items
-  addLineItem() {
-    this.invoice.lineItems.push(new InvoiceLineItem());
+  createInvoiceLineItem(value: any, type: InvoiceLineItemType): InvoiceLineItem {
+    var lineItem = new InvoiceLineItem();
+    lineItem.code = value && value.code || 0;
+    lineItem.date = value && value.date || undefined;
+    lineItem.totalAmount = value && value.totalAmount || 0;
+    lineItem.type = type;
+    lineItem.orderId = type == InvoiceLineItemType.Order ? (value && value.id || 0) : 0
+    lineItem.creditMemoId = type == InvoiceLineItemType.CreditMemo ? (value && value.id || 0) : 0;
+    return lineItem;
   };
 
+  // Line items
   removeLineItem(index: number) {
     if (confirm('Are you sure you want to remove this item?')) {
       this.invoice.lineItems.splice(index, 1);
@@ -142,28 +141,13 @@ export class InvoiceFormComponent implements AfterContentInit {
     text$.pipe(
       debounceTime(200),
       distinctUntilChanged(),
-      map(term => term.length < 2 ? [] : this.filterCustomers(term))
-    );
-
-  searchItem = (text$: Observable<string>) =>
-    text$.pipe(
-      debounceTime(200),
-      distinctUntilChanged(),
-      map(term => this.filterOrders(term))
+      switchMap(term => term.length < 2 ? [] :
+        this.customerService.getCustomerLookup(0, 0, term)
+          .pipe(
+            map(customers => customers.splice(0, 10))
+          )
+      )
     );
 
   customerFormatter = (x: { name: string }) => x.name;
-  itemFormatter = (x: { name: string }) => x.name;
-
-  private filterCustomers(value: string): Customer[] {
-    const filterValue = value.toLowerCase();
-
-    return this.customers.filter(customer => customer.name.toLowerCase().startsWith(filterValue)).splice(0, 10);
-  }
-
-  private filterOrders(value: string): Order[] {
-    const filterValue = value.toLowerCase();
-
-    return this.orders.filter(order => order.code.toString().startsWith(filterValue)).splice(0, 10);
-  }
 }

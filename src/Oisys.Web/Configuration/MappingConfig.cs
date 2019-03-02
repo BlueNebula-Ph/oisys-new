@@ -132,9 +132,17 @@ namespace OisysNew.Configuration
                 .ForMember(d => d.CustomerName, s => s.MapFrom(o => o.Customer.Name))
                 .ForMember(d => d.CustomerAddress, s => s.MapFrom(o => $"{o.Customer.Address}, {o.Customer.City.Name} {o.Customer.Province.Name}"));
 
+            CreateMap<Invoice, InvoiceDetail>()
+                .ForMember(d => d.Date, s => s.MapFrom(o => o.Date.ToShortDateString()))
+                .ForMember(d => d.Customer, s => s.MapFrom(o => o.Customer));
+
             CreateMap<SaveInvoiceRequest, Invoice>();
 
             // Invoice Line Item
+            CreateMap<InvoiceLineItem, InvoiceDetailLineItem>()
+                .ForMember(d => d.Order, s => s.MapFrom(o => o.Order))
+                .ForMember(d => d.CreditMemo, s => s.MapFrom(o => o.CreditMemo));
+
             CreateMap<SaveInvoiceLineItemRequest, InvoiceLineItem>();
 
             // Item
