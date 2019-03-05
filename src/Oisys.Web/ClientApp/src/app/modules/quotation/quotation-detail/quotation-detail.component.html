@@ -1,3 +1,60 @@
-<p>
-  quotation-detail works!
-</p>
+<div class="card" *ngIf="salesQuotation$ | async as salesQuotation">
+  <div class="card-body">
+    <h6 class="card-title">
+      Sales Quotation # {{ salesQuotation.quoteNumber }}
+      <span class="badge badge-danger align-top" *ngIf="salesQuotation.isNew">New!</span>
+    </h6>
+    <div class="font-italic" *ngIf="salesQuotation.customer as customer">
+      <div>{{ customer.name }}</div>
+      <div>{{ customer.address }}, {{ customer.cityName }}, {{ customer.provinceName }}</div>
+    </div>
+    <div class="my-2">
+      <div>Date: {{ salesQuotation.date | date:'MM/dd/yyyy' }}</div>
+      <div>Delivery Fee: {{ salesQuotation.deliveryFee | currency:'PHP':'₱ ' }}</div>
+    </div>
+    <table class="table table-sm table-striped border">
+      <thead>
+        <tr>
+          <th width="10%" class="text-right">Qty</th>
+          <th width="10%">Unit</th>
+          <th width="25%">Item</th>
+          <th width="15%">Category</th>
+          <th width="15%" class="text-right">Unit Price</th>
+          <th width="25%" class="text-right">Total Price</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let lineItem of salesQuotation.lineItems">
+          <td class="text-right">{{ lineItem.quantity }}</td>
+          <td>{{ lineItem.unit }}</td>
+          <td *ngIf="lineItem.item as item">
+            {{ item.code }} - {{ item.name }}
+          </td>
+          <td *ngIf="lineItem.item as item">
+            {{ item.categoryName }}
+          </td>
+          <td class="text-right">{{ lineItem.unitPrice | currency:'PHP':'₱ ' }}</td>
+          <td class="text-right">{{ lineItem.totalPrice | currency:'PHP':'₱ ' }}</td>
+        </tr>
+      </tbody>
+      <tfoot class="font-weight-bold">
+        <tr>
+          <td colspan="6" class="text-right">
+            <ul class="list-unstyled">
+              <li class="my-2">Total Amount - {{ salesQuotation.totalAmount | currency:'PHP':'₱ ' }}</li>
+            </ul>
+          </td>
+        </tr>
+      </tfoot>
+    </table>
+    <div>
+      <a routerLink="/sales-quotations" class="btn btn-sm btn-ghost-dark mr-1" accesskey="b">
+        <i class="fa fa-angle-double-left mr-1"></i>Back
+      </a>
+      <a routerLink="/sales-quotations/edit/{{ salesQuotation.id }}" class="btn btn-sm btn-ghost-dark" accesskey="e">
+        <i class="fa fa-pencil mr-1"></i>Edit
+      </a>
+    </div>
+  </div>
+</div>
+

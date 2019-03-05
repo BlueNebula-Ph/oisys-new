@@ -46,6 +46,11 @@ export class Order extends JsonModelBase {
     get lineItemsValid() {
         return this.lineItems && this.lineItems.length > 0 && this.lineItems.every(lineItem => lineItem.itemId && lineItem.itemId != 0);
     }
+    get isNew() {
+        const today = new Date();
+        const sevenDaysBefore = new Date(today.setDate(today.getDate() - 7));
+        return this.date > sevenDaysBefore;
+    }
     constructor(order) {
         super();
         this.id = order && order.id || 0;
@@ -54,8 +59,8 @@ export class Order extends JsonModelBase {
         this.customerName = order && order.customerName || '';
         this.customerAddress = order && order.customerAddress || '';
         this.discountPercent = order && order.discountPercent || 0;
-        this.date = order && order.date || new Date();
-        this.dueDate = order && order.dueDate || new Date();
+        this.date = (order && order.date) ? new Date(order.date) : new Date();
+        this.dueDate = (order && order.dueDate) ? new Date(order.dueDate) : new Date();
         this.lineItems = (order && order.lineItems) ? order.lineItems.map(lineItem => new LineItem(lineItem)) : new Array();
         this.customer = (order && order.customer) ? new Customer(order.customer) : undefined;
     }

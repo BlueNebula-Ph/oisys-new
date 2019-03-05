@@ -25,6 +25,11 @@ export class SalesQuotation extends JsonModelBase {
     get lineItemsValid() {
         return this.lineItems.length > 0 && this.lineItems.every(lineItem => lineItem.itemId != 0);
     }
+    get isNew() {
+        const today = new Date();
+        const sevenDaysBefore = new Date(today.setDate(today.getDate() - 7));
+        return this.date > sevenDaysBefore;
+    }
     constructor(salesQuotation) {
         super();
         this.id = salesQuotation && salesQuotation.id || 0;
@@ -32,7 +37,7 @@ export class SalesQuotation extends JsonModelBase {
         this.customerId = salesQuotation && salesQuotation.customerId || 0;
         this.customerName = salesQuotation && salesQuotation.customerName || '';
         this.customerAddress = salesQuotation && salesQuotation.customerAddress || '';
-        this.date = salesQuotation && salesQuotation.date || new Date();
+        this.date = (salesQuotation && salesQuotation.date) ? new Date(salesQuotation.date) : new Date();
         this.deliveryFee = salesQuotation && salesQuotation.deliveryFee || 0;
         this.lineItems = (salesQuotation && salesQuotation.lineItems) ? salesQuotation.lineItems.map(lineItem => new LineItem(lineItem)) : new Array();
         this.customer = (salesQuotation && salesQuotation.customer) ? new Customer(salesQuotation.customer) : undefined;

@@ -32,7 +32,10 @@
           <ngx-datatable-column name="Pay To" prop="payTo" [flexGrow]="2">
             <ng-template let-voucher="row" ngx-datatable-cell-template>
               <div>{{ voucher.payTo }}</div>
-              <div><span class="badge badge-primary">{{ voucher.category }}</span>&nbsp;<span class="small">{{ voucher.description }}</span></div>
+              <div>
+                <span class="badge badge-primary">{{ voucher.category }}</span>&nbsp;
+                <span class="small text-truncate">{{ voucher.description }}</span>
+              </div>
             </ng-template>
           </ngx-datatable-column>
           <ngx-datatable-column name="Amount" prop="amount" [flexGrow]="1">
