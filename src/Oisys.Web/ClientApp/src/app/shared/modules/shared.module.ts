@@ -9,11 +9,12 @@ import { NgbTypeaheadModule } from '@ng-bootstrap/ng-bootstrap';
 import { CurrencyMaskModule } from 'ng2-currency-mask';
 
 import { EnumToArrayPipe } from '../pipes/enum-to-array.pipe';
+import { NoValuePipe } from '../pipes/no-value.pipe';
+
 import { FocusDirective } from '../directives/focus.directive';
 import { ControlStyleDirective } from '../directives/control-style.directive';
 import { InputGroupStyleDirective } from '../directives/input-group-style.directive';
 import { SearchPanelComponent } from '../components/search-panel/search-panel.component';
-
 
 @NgModule({
   imports: [
@@ -27,6 +28,7 @@ import { SearchPanelComponent } from '../components/search-panel/search-panel.co
   ],
   declarations: [
     EnumToArrayPipe,
+    NoValuePipe,
     FocusDirective,
     ControlStyleDirective,
     InputGroupStyleDirective,
@@ -34,6 +36,7 @@ import { SearchPanelComponent } from '../components/search-panel/search-panel.co
   ],
   exports: [
     EnumToArrayPipe,
+    NoValuePipe,
     FocusDirective,
     ControlStyleDirective,
     InputGroupStyleDirective,

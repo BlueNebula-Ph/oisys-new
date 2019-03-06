@@ -1,55 +1,45 @@
-<div class="animated fadeIn">
-  <div class="row">
-    <div class="col-5">
-      <div class="card mb-0 bg-light">
-        <h5 class="card-header"><i class="fa fa-file-o"></i>{{ item.code}} - {{ item.name }}</h5>
-        <div class="card-body pb-0">
-          <p class="card-title">{{ item.description }}</p>
-          <h6 class="card-title">Other Information.</h6>
-          <dl class="row">
-            <dt class="col-sm-3 font-weight-normal">Category</dt>
-            <dd class="col-sm-9">{{ item.categoryName }}</dd>
-            <dt class="col-sm-3 font-weight-normal">Weight</dt>
-            <dd class="col-sm-9">{{ item.weight }}</dd>
-            <dt class="col-sm-3 font-weight-normal">Thickness</dt>
-            <dd class="col-sm-9">{{ item.thickness }}</dd>
-          </dl>
+<div class="animated fadeIn card" *ngIf="item$ | async as item">
+  <div class="card-body">
+    <h5 class="card-title">
+      {{ item.code }} - {{ item.name }}
+      <span class="badge badge-primary">{{ item.category.name }}</span>
+    </h5>
+    <p class="text-muted">{{ item.description }}</p>
+    <div class="brand-card">
+      <div class="brand-card-body">
+        <div>
+          <div class="text-value">{{ item.quantity }} {{ item.unit }}</div>
+          <div class="text-uppercase text-muted small">Quantity</div>
+        </div>
+        <div>
+          <div class="text-value">{{ item.mainPrice | currency:'PHP':'₱ ' }}</div>
+          <div class="text-uppercase text-muted small">Main Price</div>
+        </div>
+        <div>
+          <div class="text-value">{{ item.walkInPrice | currency:'PHP':'₱ ' }}</div>
+          <div class="text-uppercase text-muted small">Walk-In Price</div>
+        </div>
+        <div>
+          <div class="text-value">{{ item.nePrice | currency:'PHP':'₱ ' }}</div>
+          <div class="text-uppercase text-muted small">N.E. Price</div>
+        </div>
+        <div>
+          <div class="text-value">{{ item.weight | noValue }}</div>
+          <div class="text-uppercase text-muted small">Weight</div>
+        </div>
+        <div>
+          <div class="text-value">{{ item.thickness | noValue }}</div>
+          <div class="text-uppercase text-muted small">Thickness</div>
         </div>
       </div>
     </div>
-  </div>
-  <div class="row mt-0">
-    <div class="col-sm-2">
-      <div class="callout callout-info b-t-1 b-r-1 b-b-1">
-        <small class="text-muted">Current Quantity</small><br>
-        <strong class="h4">{{ item.quantity }} {{item.unit }}</strong>
-      </div>
+    <div>
+      <a routerLink="/inventory" class="btn btn-sm btn-ghost-dark mr-1" accesskey="b">
+        <i class="fa fa-angle-double-left mr-1"></i>Back
+      </a>
+      <a routerLink="/inventory/edit/{{ item.id }}" class="btn btn-sm btn-ghost-dark" accesskey="e">
+        <i class="fa fa-pencil mr-1"></i>Edit
+      </a>
     </div>
-    <div class="col-sm-2">
-      <div class="callout callout-info b-t-1 b-r-1 b-b-1">
-        <small class="text-muted">Main Price</small><br>
-        <strong class="h4">{{ item.mainPrice | currency:'PHP':'symbol-narrow' }}</strong>
-      </div>
-    </div>
-    <div class="col-sm-2">
-      <div class="callout callout-info b-t-1 b-r-1 b-b-1">
-        <small class="text-muted">Walk-In Price</small><br>
-        <strong class="h4">{{ item.walkInPrice | currency:'PHP':'symbol-narrow' }}</strong>
-      </div>
-    </div>
-    <div class="col-sm-2">
-      <div class="callout callout-info b-t-1 b-r-1 b-b-1">
-        <small class="text-muted">N.E. Price</small><br>
-        <strong class="h4">{{ item.nePrice | currency:'PHP':'symbol-narrow' }}</strong>
-      </div>
-    </div>
-  </div>
-  <div class="mb-5">
-    <a routerLink="/inventory" class="btn btn-secondary btn-square">
-      <i class="fa fa-angle-double-left"></i> Back
-    </a>
-    <a routerLink="/inventory/edit/{{ item.id }}" class="btn btn-info btn-square ml-1">
-      <i class="fa fa-edit"></i> Edit
-    </a>
   </div>
 </div>

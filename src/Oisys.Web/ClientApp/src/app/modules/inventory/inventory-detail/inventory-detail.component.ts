@@ -1,5 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, AfterContentInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
+
+import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
+
 import { InventoryService } from '../../../shared/services/inventory.service';
 import { Item } from '../../../shared/models/item';
 
@@ -8,19 +12,26 @@ import { Item } from '../../../shared/models/item';
   templateUrl: './inventory-detail.component.html',
   styleUrls: ['./inventory-detail.component.css']
 })
-export class InventoryDetailComponent implements OnInit {
-  item: Item = new Item();
+export class InventoryDetailComponent implements AfterContentInit {
+  item$: Observable<Item>;
 
-  constructor(private route: ActivatedRoute, private inventoryService: InventoryService) { }
+  constructor(
+    private inventoryService: InventoryService,
+    private route: ActivatedRoute
+  ) { }
 
-  ngOnInit() {
-    this.route.paramMap.subscribe(params => {
-      var id = params.get("id");
-      this.inventoryService
-        .getItemById(parseInt(id))
-        .subscribe(result => {
-          this.item = result;
-        });
-    });
-  }
+  ngAfterContentInit() {
+    this.loadItemDetails();
+  };
+
+  loadItemDetails() {
+    const itemId = +this.route.snapshot.paramMap.get('id');
+    if (itemId && itemId != 0) {
+      this.item$ = this.inventoryService
+        .getItemById(itemId)
+        .pipe(
+          map(item => new Item(item))
+        );
+    }
+  };
 }
