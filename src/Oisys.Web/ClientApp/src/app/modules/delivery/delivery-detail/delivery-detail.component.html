@@ -1,3 +1,55 @@
-<p>
-  delivery-detail works!
-</p>
+<div class="card" *ngIf="delivery$ | async as delivery">
+  <div class="card-body">
+    <div class="small">
+      Delivery # {{ delivery.deliveryNumber }}
+      <span class="badge badge-danger align-top" *ngIf="delivery.isNew">New!</span>
+    </div>
+    <div class="font-italic mb-2">
+      <span class="mr-5">Location: {{ delivery.city.name }}, {{ delivery.province.name }}</span>
+      <span class="mx-5">Plate Number: {{ delivery.plateNumber }}</span>
+      <span class="mx-5">Date: {{ delivery.date | date:'MM/dd/yyyy' }}</span>
+    </div>
+    <ul class="list-unstyled">
+      <li *ngFor="let groupedItem of delivery.groupedItems">
+        <div class="card card-accent-primary">
+          <div class="card-body">
+            <h6 class="card-title">
+              {{ groupedItem.customerName }}.
+              <small class="text-muted">{{ groupedItem.customerAddress }}.</small>
+            </h6>
+            <table class="table table-sm border-bottom">
+              <thead>
+                <tr>
+                  <th width="10%" class="text-right">Quantity</th>
+                  <th width="10%">Unit</th>
+                  <th>Order #</th>
+                  <th>Order Date</th>
+                  <th>Item</th>
+                  <th width="20%" class="align-middle">Category</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let lineItem of groupedItem.lineItems">
+                  <td class="text-right">{{ lineItem.quantity }}</td>
+                  <td>{{ lineItem.unit }}</td>
+                  <td>{{ lineItem.orderCode }}</td>
+                  <td>{{ lineItem.orderDate }}</td>
+                  <td>{{ lineItem.item }}</td>
+                  <td>{{ lineItem.categoryName }}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </li>
+    </ul>
+    <div>
+      <a routerLink="/deliveries" class="btn btn-sm btn-ghost-dark mr-1" accesskey="b">
+        <i class="fa fa-angle-double-left mr-1"></i>Back
+      </a>
+      <a routerLink="/deliveries/edit/{{ delivery.id }}" class="btn btn-sm btn-ghost-dark" accesskey="e">
+        <i class="fa fa-pencil mr-1"></i>Edit
+      </a>
+    </div>
+  </div>
+</div>

@@ -18,16 +18,19 @@ export class InvoiceLineItem extends JsonModelBase {
     return this.type == InvoiceLineItemType.CreditMemo;
   }
 
-  //constructor();
-  constructor(lineItem: InvoiceLineItem = {} as InvoiceLineItem) {
+  constructor();
+  constructor(lineItem: InvoiceLineItem);
+  constructor(lineItem?: any) {
     super();
 
-    this.id = lineItem.id || 0;
-    this.code = lineItem.code || 0;
-    this.date = lineItem.date || new Date();
-    this.totalAmount = lineItem.totalAmount || 0;
+    this.id = lineItem && lineItem.id || 0;
+    this.code = lineItem && lineItem.code || 0;
+    this.date = lineItem && lineItem.date || new Date();
+    this.totalAmount = lineItem && lineItem.totalAmount || 0;
 
-    this.orderId = lineItem.orderId || 0;
-    this.creditMemoId = lineItem.creditMemoId || 0;
+    this.type = (lineItem && lineItem.type) ? InvoiceLineItemType[lineItem.type as string] : InvoiceLineItemType.Order;
+
+    this.orderId = lineItem && lineItem.orderId || 0;
+    this.creditMemoId = lineItem && lineItem.creditMemoId || 0;
   }
 }

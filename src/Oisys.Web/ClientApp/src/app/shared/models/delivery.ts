@@ -6,6 +6,7 @@ import { DeliveryGroupItem } from "./delivery-group-item";
 
 export class Delivery extends JsonModelBase {
   public id: number;
+  public deliveryNumber: number;
   public date: Date;
   public provinceId: number;
   public provinceName: string;
@@ -54,7 +55,13 @@ export class Delivery extends JsonModelBase {
       });
     }
     return groupedItems;
-  };
+  }
+
+  get isNew() {
+    const today = new Date();
+    const sevenDaysBefore = new Date(today.setDate(today.getDate() - 7));
+    return this.date > sevenDaysBefore;
+  }
 
   constructor();
   constructor(delivery: Delivery);
@@ -62,7 +69,8 @@ export class Delivery extends JsonModelBase {
     super();
 
     this.id = delivery && delivery.id || 0;
-    this.date = delivery && delivery.date || new Date();
+    this.deliveryNumber = delivery && delivery.deliveryNumber || 0;
+    this.date = (delivery && delivery.date) ? new Date(delivery.date) : new Date();
     this.plateNumber = delivery && delivery.plateNumber || '';
 
     this.provinceId = delivery && delivery.provinceId || 0;
@@ -75,6 +83,8 @@ export class Delivery extends JsonModelBase {
       delivery.lineItems.map(lineItem => new DeliveryLineItem(lineItem)) : new Array<DeliveryLineItem>();
     this.province = (delivery && delivery.province) ? new Province(delivery.province) : undefined;
     this.city = (delivery && delivery.city) ? new City(delivery.city) : undefined;
+
+    console.log(delivery);
   }
 
   updateQuantity(orderLineItemId: number, newQuantity: number) {

@@ -134,12 +134,26 @@ namespace OisysNew.Controllers
             try
             {
                 var entity = await context.CreditMemos
-                    .Include(c => c.Customer).ThenInclude(c => c.Province)
-                    .Include(c => c.Customer).ThenInclude(c => c.City)
-                    .Include(c => c.LineItems).ThenInclude(lineItem => (lineItem as CreditMemoLineItem).Item)
-                    .Include(c => c.LineItems).ThenInclude(lineItem => (lineItem as CreditMemoLineItem).OrderLineItem).ThenInclude(orderLineItem => orderLineItem.Order)
-                    .Include(c => c.LineItems).ThenInclude(lineItem => (lineItem as CreditMemoLineItem).OrderLineItem).ThenInclude(orderLineItem => orderLineItem.Item)
-                    .Include(c => c.LineItems).ThenInclude(lineItem => (lineItem as CreditMemoLineItem).OrderLineItem).ThenInclude(orderLineItem => orderLineItem.Item).ThenInclude(item => item.Category)
+                    .Include(c => c.Customer)
+                        .ThenInclude(c => c.Province)
+                    .Include(c => c.Customer)
+                        .ThenInclude(c => c.City)
+                    .Include(c => c.LineItems)
+                        .ThenInclude(lineItem => (lineItem as CreditMemoLineItem).Item)
+                    .Include(c => c.LineItems)
+                        .ThenInclude(lineItem => (lineItem as CreditMemoLineItem).OrderLineItem)
+                        .ThenInclude(orderLineItem => orderLineItem.Order)
+                        .ThenInclude(order => order.Customer)
+                        .ThenInclude(customer => customer.Province)
+                    .Include(c => c.LineItems)
+                        .ThenInclude(lineItem => (lineItem as CreditMemoLineItem).OrderLineItem)
+                        .ThenInclude(orderLineItem => orderLineItem.Order)
+                        .ThenInclude(order => order.Customer)
+                        .ThenInclude(customer => customer.City)
+                    .Include(c => c.LineItems)
+                        .ThenInclude(lineItem => (lineItem as CreditMemoLineItem).OrderLineItem)
+                        .ThenInclude(orderLineItem => orderLineItem.Item)
+                        .ThenInclude(item => item.Category)
                     .AsNoTracking()
                     .SingleOrDefaultAsync(c => c.Id == id);
 

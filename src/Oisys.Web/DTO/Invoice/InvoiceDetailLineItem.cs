@@ -1,18 +1,35 @@
-﻿using OisysNew.DTO.CreditMemo;
-using OisysNew.DTO.Order;
-
-namespace OisysNew.DTO.Invoice
+﻿namespace OisysNew.DTO.Invoice
 {
     public class InvoiceDetailLineItem : DTOBase
     {
         /// <summary>
-        /// Gets or sets the invoice order.
+        /// Gets or sets order id.
         /// </summary>
-        public OrderLookup Order { get; set; }
+        public long? OrderId { get; set; }
 
         /// <summary>
-        /// Gets or sets the invoice credit memo.
+        /// Gets or sets credit memo id.
         /// </summary>
-        public CreditMemoLookup CreditMemo { get; set; }
+        public long? CreditMemoId { get; set; }
+
+        /// <summary>
+        /// Gets or sets code property.
+        /// </summary>
+        public string Code { get; set; }
+
+        /// <summary>
+        /// Gets or sets date property.
+        /// </summary>
+        public string Date { get; set; }
+
+        /// <summary>
+        /// Gets or sets total amount property.
+        /// </summary>
+        public decimal TotalAmount { get; set; }
+
+        /// <summary>
+        /// Gets or sets line item type.
+        /// </summary>
+        public string Type { get; set; }
     }
 }

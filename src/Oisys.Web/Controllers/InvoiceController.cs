@@ -190,22 +190,27 @@ namespace OisysNew.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult> Update(long id, [FromBody]SaveInvoiceRequest entity)
         {
-            var invoiceExists = await this.context.Invoices
-                .AnyAsync(c => c.Id == id);
-
-            if (!invoiceExists)
-            {
-                return NotFound(id);
-            }
-
             try
             {
-                // Map the entity to an invoice object
-                var invoice = this.mapper.Map<Invoice>(entity);
+                var invoice = await context.Invoices
+                    .Include(c => c.LineItems)
+                    .AsNoTracking()
+                    .SingleOrDefaultAsync(c => c.Id == id);
 
-                this.context.Update(invoice);
+                if (invoice == null)
+                {
+                    return NotFound();
+                }
 
-                await this.context.SaveChangesAsync();
+                await orderService.ProcessInvoice(invoice.LineItems, false);
+                await orderService.ProcessInvoice(entity.LineItems, true);
+                
+                // Update the invoice data
+                invoice = mapper.Map<Invoice>(entity);
+
+                context.Update(invoice);
+                await context.SaveChangesAsync();
+
                 return StatusCode(StatusCodes.Status204NoContent);
             }
             catch (DbUpdateConcurrencyException concurrencyEx)

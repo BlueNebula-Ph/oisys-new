@@ -1,16 +1,16 @@
 <div class="card" *ngIf="salesQuotation$ | async as salesQuotation">
   <div class="card-body">
-    <h6 class="card-title">
+    <div class="small">
       Sales Quotation # {{ salesQuotation.quoteNumber }}
       <span class="badge badge-danger align-top" *ngIf="salesQuotation.isNew">New!</span>
-    </h6>
+    </div>
     <div class="font-italic" *ngIf="salesQuotation.customer as customer">
       <div>{{ customer.name }}</div>
       <div>{{ customer.address }}, {{ customer.cityName }}, {{ customer.provinceName }}</div>
     </div>
     <div class="my-2">
-      <div>Date: {{ salesQuotation.date | date:'MM/dd/yyyy' }}</div>
-      <div>Delivery Fee: {{ salesQuotation.deliveryFee | currency:'PHP':'₱ ' }}</div>
+      <span>Date: {{ salesQuotation.date | date:'MM/dd/yyyy' }}</span>
+      <span class="mx-5">Delivery Fee: {{ salesQuotation.deliveryFee | currency:'PHP':'₱ ' }}</span>
     </div>
     <table class="table table-sm table-striped border">
       <thead>

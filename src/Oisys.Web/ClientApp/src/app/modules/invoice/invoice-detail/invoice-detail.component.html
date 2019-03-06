@@ -1,3 +1,59 @@
-<p>
-  invoice-detail works!
-</p>
+<div class="card" *ngIf="invoice$ | async as invoice">
+  <div class="card-body">
+    <div class="small">
+      Invoice # {{ invoice.invoiceNumber }}
+      <span class="badge badge-danger align-top" *ngIf="invoice.isNew">New!</span>
+    </div>
+    <div class="font-italic" *ngIf="invoice.customer as customer">
+      <div>{{ customer.name }}</div>
+      <div>{{ customer.address }}, {{ customer.cityName }}, {{ customer.provinceName }}</div>
+    </div>
+    <div class="my-2">
+      <span>Date: {{ invoice.date | date:'MM/dd/yyyy' }}</span>
+    </div>
+    <table class="table table-sm table-striped border">
+      <thead>
+        <tr>
+          <th width="10%"></th>
+          <th class="align-middle" width="30%">Code</th>
+          <th class="align-middle" width="20%">Date</th>
+          <th class="align-middle text-right" width="30%">Total Amount</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let lineItem of invoice.lineItems">
+          <td class="align-middle text-center">
+            <span *ngIf="lineItem.isOrder"><i class="fa fa-plus text-success"></i></span>
+            <span *ngIf="lineItem.isCreditMemo"><i class="fa fa-minus text-danger"></i></span>
+          </td>
+          <td class="align-middle">
+            <span *ngIf="lineItem.isOrder">Order # {{ lineItem.code }}</span>
+            <span *ngIf="lineItem.isCreditMemo">Credit Memo # {{ lineItem.code }}</span>
+          </td>
+          <td class="align-middle">{{ lineItem.date }}</td>
+          <td class="align-middle text-right">{{ lineItem.totalAmount | currency:'PHP':'₱ ' }}</td>
+        </tr>
+      </tbody>
+      <tfoot class="font-weight-bold">
+        <tr>
+          <td colspan="4" class="text-right">
+            <ul class="list-unstyled">
+              <li class="my-2">Total Amount Due - {{ invoice.totalAmountDue | currency:'PHP':'₱ ' }}</li>
+              <li class="my-2">Total Credit Amount - {{ invoice.totalCreditAmount | currency:'PHP':'₱ ' }}</li>
+              <li class="my-2">Discount - ({{ invoice.discountPercent | number:'1.2-2' }}%) {{ invoice.discountAmount | currency:'PHP':'₱ ' }}</li>
+              <li class="my-2">Total Amount - {{ invoice.totalAmount | currency:'PHP':'₱ ' }}</li>
+            </ul>
+          </td>
+        </tr>
+      </tfoot>
+    </table>
+    <div>
+      <a routerLink="/invoices" class="btn btn-sm btn-ghost-dark mr-1" accesskey="b">
+        <i class="fa fa-angle-double-left mr-1"></i>Back
+      </a>
+      <a routerLink="/invoices/edit/{{ invoice.id }}" class="btn btn-sm btn-ghost-dark" accesskey="e">
+        <i class="fa fa-pencil mr-1"></i>Edit
+      </a>
+    </div>
+  </div>
+</div>

@@ -2,7 +2,7 @@ import { Component, AfterContentInit, ViewChild, ElementRef, OnDestroy } from '@
 import { ActivatedRoute } from '@angular/router';
 import { NgForm } from '@angular/forms';
 
-import { Observable, forkJoin, Subscription, Subscribable } from 'rxjs';
+import { Observable, forkJoin, Subscription } from 'rxjs';
 import { debounceTime, distinctUntilChanged, map, switchMap } from 'rxjs/operators';
 import { NgbTypeaheadConfig } from '@ng-bootstrap/ng-bootstrap';
 
@@ -37,6 +37,10 @@ export class InvoiceFormComponent implements AfterContentInit, OnDestroy {
   isSaving = false;
 
   @ViewChild('customer') customerField: ElementRef;
+
+  get isCustomerDisabled() {
+    return this.invoice.id && this.invoice.id != 0;
+  }
 
   constructor(
     private invoiceService: InvoiceService,
@@ -98,7 +102,7 @@ export class InvoiceFormComponent implements AfterContentInit, OnDestroy {
 
   saveFailed = (error) => {
     this.util.showErrorMessage('An error occurred while saving. Please try again.');
-    console.log(error);
+    this.isSaving = false;
   };
 
   saveCompleted = () => {
@@ -106,7 +110,7 @@ export class InvoiceFormComponent implements AfterContentInit, OnDestroy {
   };
 
   customerSelected(customer: Customer) {
-    if (this.invoice.selectedCustomer && this.invoice.selectedCustomer.id != 0) {
+    if (this.invoice.customer && this.invoice.customer.id && this.invoice.customer.id != 0) {
       this.fetchItemsSub = forkJoin(
         this.orderService.getOrderLookup(customer.id),
         this.creditMemoService.getCreditMemoLookup(customer.id)

@@ -39,6 +39,12 @@ export class CreditMemo extends JsonModelBase {
     return this.lineItems && this.lineItems.length > 0 && this.lineItems.every(lineItem => lineItem.itemId && lineItem.itemId != 0);
   }
 
+  get isNew() {
+    const today = new Date();
+    const sevenDaysBefore = new Date(today.setDate(today.getDate() - 7));
+    return this.date > sevenDaysBefore;
+  }
+
   constructor();
   constructor(creditMemo: CreditMemo);
   constructor(creditMemo?: any) {
@@ -49,7 +55,7 @@ export class CreditMemo extends JsonModelBase {
     this.customerId = creditMemo && creditMemo.customerId || 0;
     this.customerName = creditMemo && creditMemo.customerName || '';
     this.customerAddress = creditMemo && creditMemo.customerAddress || '';
-    this.date = creditMemo && creditMemo.date || new Date();
+    this.date = (creditMemo && creditMemo.date) ? new Date(creditMemo.date) : new Date();
     this.driver = creditMemo && creditMemo.driver || '';
 
     this.lineItems = (creditMemo && creditMemo.lineItems) ?

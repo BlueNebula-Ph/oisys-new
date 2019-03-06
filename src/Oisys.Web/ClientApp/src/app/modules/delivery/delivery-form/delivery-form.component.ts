@@ -108,6 +108,7 @@ export class DeliveryFormComponent implements AfterContentInit, OnDestroy {
     if (this.selectedCustomer && this.selectedCustomer.id != 0 && !this.customerIdExists(this.selectedCustomer.id)) {
       this.fetchCustomerOrderItems(this.selectedCustomer);
       this.customerField.nativeElement.value = '';
+      this.customerField.nativeElement.focus();
     }
   };
 

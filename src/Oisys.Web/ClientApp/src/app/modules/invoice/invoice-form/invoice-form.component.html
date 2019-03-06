@@ -11,8 +11,8 @@
                 <div class="form-group">
                   <label>Customer.</label>
                   <div appInputGroupStyle>
-                    <input appControlStyle #customer name="customer" placeholder="Select customer..."
-                           [(ngModel)]="invoice.selectedCustomer" [ngbTypeahead]="searchCustomer" (ngModelChange)="customerSelected($event)"
+                    <input appControlStyle #customer name="customer" placeholder="Select customer..." [disabled]="isCustomerDisabled"
+                           [(ngModel)]="invoice.customer" [ngbTypeahead]="searchCustomer" (ngModelChange)="customerSelected($event)"
                            [inputFormatter]="customerFormatter" [resultTemplate]="customerTemplate" required>
                     <div class="input-group-append">
                       <span class="input-group-text">* Required</span>
@@ -49,7 +49,7 @@
                 <tr>
                   <td width="10%"></td>
                   <td class="align-middle"width="30%">Code</td>
-                  <td class="align-middle"width="20%">Date</td>
+                  <td class="align-middle text-center" width="20%">Date</td>
                   <td class="align-middle text-right" width="30%">Total Amount</td>
                   <td width="10%"></td>
                 </tr>
@@ -64,7 +64,7 @@
                     <span *ngIf="lineItem.isOrder">Order # {{ lineItem.code }}</span>
                     <span *ngIf="lineItem.isCreditMemo">Credit Memo # {{ lineItem.code }}</span>
                   </td>
-                  <td class="align-middle">{{ lineItem.date }}</td>
+                  <td class="align-middle text-center">{{ lineItem.date }}</td>
                   <td class="align-middle text-right">{{ lineItem.totalAmount | currency:'PHP':'₱ ' }}</td>
                   <td class="text-center">
                     <button type="button" class="btn btn-ghost-danger btn-sm" (click)="removeLineItem($index)"><i class="fa fa-fw fa-trash"></i></button>

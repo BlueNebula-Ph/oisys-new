@@ -1,3 +1,67 @@
-<p>
-  credit-memo-detail works!
-</p>
+<div class="card" *ngIf="creditMemo$ | async as creditMemo">
+  <div class="card-body">
+    <div class="small">
+      Credit Memo # {{ creditMemo.code }}
+      <span class="badge badge-danger align-top" *ngIf="creditMemo.isNew">New!</span>
+    </div>
+    <div class="font-italic" *ngIf="creditMemo.customer as customer">
+      <div>{{ customer.name }}</div>
+      <div>{{ customer.address }}, {{ customer.cityName }}, {{ customer.provinceName }}</div>
+    </div>
+    <div class="my-2">
+      <span>Date: {{ creditMemo.date | date:'MM/dd/yyyy' }}</span>
+      <span class="mx-5">Driver: {{ creditMemo.driver }}</span>
+    </div>
+    <table class="table table-sm table-striped border">
+      <thead>
+        <tr>
+          <th width="5%"></th>
+          <th width="5%" class="text-right">Qty</th>
+          <th width="5%">Unit</th>
+          <th>Item</th>
+          <th width="15%">Category</th>
+          <th width="15%" class="text-right">Unit Price</th>
+          <th width="25%" class="text-right">Total Price</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let lineItem of creditMemo.lineItems">
+          <td class="text-center">
+            <span *ngIf="lineItem.shouldAddBackToInventory" class="text-success" title="Item returned to inventory.">
+              <i class="fa fa-check"></i>
+            </span>
+            <span *ngIf="!lineItem.shouldAddBackToInventory" class="text-danger" title="Item not returned to inventory.">
+              <i class="fa fa-times"></i>
+            </span>
+          </td>
+          <td class="text-right">{{ lineItem.quantity }}</td>
+          <td>{{ lineItem.unit }}</td>
+          <td>
+            <div>{{ lineItem.orderLineItem.itemCode }} - {{ lineItem.orderLineItem.itemName }}</div>
+            <div class="small text-muted">Order # {{ lineItem.orderLineItem.orderCode }} on {{ lineItem.orderLineItem.orderDate }}</div>
+          </td>
+          <td>{{ lineItem.categoryName }}</td>
+          <td class="text-right">{{ lineItem.unitPrice | currency:'PHP':'₱ ' }}</td>
+          <td class="text-right">{{ lineItem.totalPrice | currency:'PHP':'₱ ' }}</td>
+        </tr>
+      </tbody>
+      <tfoot class="font-weight-bold">
+        <tr>
+          <td colspan="7" class="text-right">
+            <ul class="list-unstyled">
+              <li class="my-2">Total Amount - {{ creditMemo.totalAmount | currency:'PHP':'₱ ' }}</li>
+            </ul>
+          </td>
+        </tr>
+      </tfoot>
+    </table>
+    <div>
+      <a routerLink="/credit-memos" class="btn btn-sm btn-ghost-dark mr-1" accesskey="b">
+        <i class="fa fa-angle-double-left mr-1"></i>Back
+      </a>
+      <a routerLink="/credit-memos/edit/{{ creditMemo.id }}" class="btn btn-sm btn-ghost-dark" accesskey="e">
+        <i class="fa fa-pencil mr-1"></i>Edit
+      </a>
+    </div>
+  </div>
+</div>

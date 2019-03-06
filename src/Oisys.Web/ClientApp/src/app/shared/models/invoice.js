@@ -1,13 +1,14 @@
 import { JsonModelBase } from "./json-model-base";
+import { Customer } from "./customer";
 import { InvoiceLineItem } from "./invoice-line-item";
 import { InvoiceLineItemType } from "./invoice-line-item-type";
 export class Invoice extends JsonModelBase {
-    get selectedCustomer() {
-        return this._selectedCustomer;
+    get customer() {
+        return this._customer;
     }
-    set selectedCustomer(customer) {
+    set customer(customer) {
         if (customer) {
-            this._selectedCustomer = customer;
+            this._customer = customer;
             this.customerId = customer.id;
         }
     }
@@ -23,14 +24,21 @@ export class Invoice extends JsonModelBase {
     get discountAmount() {
         return parseFloat(((this.totalAmountDue - this.totalCreditAmount) * this.discountPercent / 100).toFixed(2));
     }
+    get isNew() {
+        const today = new Date();
+        const sevenDaysBefore = new Date(today.setDate(today.getDate() - 7));
+        return this.date > sevenDaysBefore;
+    }
     constructor(invoice) {
         super();
         this.id = invoice && invoice.id || 0;
         this.invoiceNumber = invoice && invoice.invoiceNumber || 0;
-        this.date = invoice && invoice.date || new Date();
+        this.date = (invoice && invoice.date) ? new Date(invoice.date) : new Date();
         this.discountPercent = invoice && invoice.discountPercent || 0;
         this.lineItems = (invoice && invoice.lineItems) ?
             invoice.lineItems.map(lineItem => new InvoiceLineItem(lineItem)) : new Array();
+        this.customer = (invoice && invoice.customer) ?
+            new Customer(invoice.customer) : undefined;
     }
     computeTotalAmount(type) {
         var totalAmount = 0;
