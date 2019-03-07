@@ -38,6 +38,7 @@ export class Customer {
         this.cityId = customer && customer.cityId || 0;
         this.cityName = customer && customer.cityName || '';
         this.priceListId = customer && customer.priceListId || PriceList["Main Price"];
+        this.priceList = (customer && customer.priceListId) ? PriceList[customer.priceListId] : '';
         this.province = (customer && customer.province) ? new Province(customer.province) : undefined;
         this.city = (customer && customer.city) ? new City(customer.city) : undefined;
     }

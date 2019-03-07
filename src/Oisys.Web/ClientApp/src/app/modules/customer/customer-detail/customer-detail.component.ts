@@ -1,5 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, AfterContentInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
+
+import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
+
 import { CustomerService } from '../../../shared/services/customer.service';
 import { Customer } from '../../../shared/models/customer';
 
@@ -8,19 +12,24 @@ import { Customer } from '../../../shared/models/customer';
   templateUrl: './customer-detail.component.html',
   styleUrls: ['./customer-detail.component.css']
 })
-export class CustomerDetailComponent implements OnInit {
-  customer: Customer = new Customer();
+export class CustomerDetailComponent implements AfterContentInit {
+  customer$: Observable<Customer>;
 
-  constructor(private route: ActivatedRoute, private customerService: CustomerService) { }
+  constructor(
+    private customerService: CustomerService,
+    private route: ActivatedRoute
+  ) { }
 
-  ngOnInit() {
-    this.route.paramMap.subscribe(params => {
-      var id = params.get("id");
-      this.customerService
-        .getCustomerById(parseInt(id))
-        .subscribe(result => {
-          this.customer = result;
-        });
-    });
-  }
+  ngAfterContentInit() {
+    this.loadCustomerDetails();
+  };
+
+  loadCustomerDetails() {
+    const customerId = +this.route.snapshot.paramMap.get('id');
+    this.customer$ = this.customerService
+      .getCustomerById(customerId)
+      .pipe(
+        map(customer => new Customer(customer))
+      );
+  };
 }

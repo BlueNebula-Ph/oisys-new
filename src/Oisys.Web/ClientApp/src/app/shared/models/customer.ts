@@ -14,6 +14,7 @@ export class Customer {
   public terms: string;
   public discount: number;
   public priceListId: number;
+  public priceList: string;
   public provinceName: string;
   public cityName: string;
 
@@ -61,6 +62,7 @@ export class Customer {
     this.cityName = customer && customer.cityName || '';
 
     this.priceListId = customer && customer.priceListId || PriceList["Main Price"];
+    this.priceList = (customer && customer.priceListId) ? PriceList[customer.priceListId] : '';
 
     this.province = (customer && customer.province) ? new Province(customer.province) : undefined;
     this.city = (customer && customer.city) ? new City(customer.city) : undefined;
