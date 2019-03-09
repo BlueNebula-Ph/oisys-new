@@ -158,6 +158,11 @@
             public const string QuoteNumber = "QuoteNumber";
 
             /// <summary>
+            /// The username column name.
+            /// </summary>
+            public const string Username = "Username";
+
+            /// <summary>
             /// The voucher number column name.
             /// </summary>
             public const string VoucherNumber = "VoucherNumber";

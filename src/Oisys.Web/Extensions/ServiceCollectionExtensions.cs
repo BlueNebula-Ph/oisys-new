@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.DependencyInjection;
 using OisysNew.Helpers;
 using OisysNew.Helpers.Interfaces;
 using OisysNew.Services;
@@ -15,6 +16,7 @@ namespace OisysNew.Extensions
                 .AddTransient<IInventoryService, InventoryService>()
                 .AddTransient<IEntityListHelpers, EntityListHelpers>()
                 .AddTransient<IOrderService, OrderService>();
+            serviceCollection.AddTransient(typeof(IPasswordHasher<>), typeof(PasswordHasher<>));
         }
     }
 }

@@ -27,7 +27,10 @@ export class ProvinceListComponent implements AfterContentInit, OnDestroy {
 
   @ViewChild('searchBox') input: ElementRef;
 
-  constructor(private provinceService: ProvinceService, private util: UtilitiesService) {
+  constructor(
+    private provinceService: ProvinceService,
+    private util: UtilitiesService
+  ) {
     this.page.pageNumber = 0;
     this.page.size = 20;
     this.sort.prop = 'name';
@@ -72,10 +75,10 @@ export class ProvinceListComponent implements AfterContentInit, OnDestroy {
   };
 
   onDeleteProvince(id: number): void {
-    if (confirm("Are you sure you want to delete this province?")) {
+    if (confirm('Are you sure you want to delete this province?')) {
       this.deleteProvinceSub = this.provinceService.deleteProvince(id).subscribe(() => {
         this.loadProvinces();
-        this.util.showSuccessMessage("Province deleted successfully.");
+        this.util.showSuccessMessage('Province deleted successfully.');
       });
     }
   };

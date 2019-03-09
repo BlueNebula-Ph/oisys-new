@@ -22,7 +22,7 @@ export class ProvinceService {
 
     return this.http.post<any>(searchUrl, filter)
       .pipe(
-      catchError(this.util.handleError('getProvinces', []))
+        catchError(this.util.handleError('getProvinces', []))
       );
   };
 

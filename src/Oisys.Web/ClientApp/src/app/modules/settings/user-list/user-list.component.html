@@ -1,3 +1,75 @@
-<p>
-  user-list works!
-</p>
+<div class="animated fadeIn">
+  <h3>User Management.</h3>
+  <div class="row">
+    <div class="col pr-0">
+      <div appInputGroupStyle>
+        <input appControlStyle placeholder="Search users" (keyup)="onKeyup($event)" #searchBox>
+        <div class="input-group-append">
+          <button type="button" class="btn btn-primary" (click)="search()">
+            <i class="fa fa-search"></i> Search
+          </button>
+        </div>
+      </div>
+
+      <div class="datatable-container mt-3">
+        <div class="progress-bar progress-bar-striped progress-bar-animated prog-bar" [hidden]="!isLoading"></div>
+        <ngx-datatable class="bootstrap"
+                       [rows]="(rows$ | async) || []"
+                       [columnMode]="'flex'"
+                       [headerHeight]="40"
+                       [summaryRow]="false"
+                       [footerHeight]="40"
+                       [rowHeight]="'auto'"
+                       [reorderable]="false"
+                       [externalPaging]="true"
+                       [count]="page.totalElements"
+                       [offset]="page.pageNumber"
+                       [limit]="page.size"
+                       [externalSorting]="true"
+                       (page)="setPage($event)"
+                       (sort)="onSort($event)">
+          <ngx-datatable-column name="User" prop="username" [flexGrow]="1">
+            <ng-template let-user="row" ngx-datatable-cell-template>
+              <div>{{ user.username }}</div>
+              <div class="small">{{ user.firstname }} {{ user.lastname }}</div>
+            </ng-template>
+          </ngx-datatable-column>
+          <ngx-datatable-column name="Access" prop="accessrights" [flexGrow]="2">
+            <ng-template let-user="row" ngx-datatable-cell-template>
+              <span *ngIf="user.admin">
+                <i class="fa fa-check text-success ml-1"></i> Admin
+              </span>
+              <span *ngIf="user.canView">
+                <i class="fa fa-check text-success ml-1"></i> View
+              </span>
+              <span *ngIf="user.canWrite">
+                <i class="fa fa-check text-success ml-1"></i> Write
+              </span>
+              <span *ngIf="user.canDelete">
+                <i class="fa fa-check text-success ml-1"></i> Delete
+              </span>
+              <span *ngIf="!user.admin && !user.canView && !user.canWrite && !user.canDelete">
+                <i class="fa fa-times text-danger ml-1"></i> No Access
+              </span>
+            </ng-template>
+          </ngx-datatable-column>
+          <ngx-datatable-column name="" [flexGrow]="1">
+            <ng-template ngx-datatable-cell-template let-row="row">
+              <button class="btn btn-sm btn-ghost-primary" (click)="onEditUser(row)" title="Edit this user.">
+                <i class="fa fa-pencil"></i>
+              </button>
+              <button class="btn btn-sm btn-ghost-danger ml-1" (click)="onDeleteUser(row.id)" title="Delete this user.">
+                <i class="fa fa-trash-o"></i>
+              </button>
+            </ng-template>
+          </ngx-datatable-column>
+        </ngx-datatable>
+      </div>
+    </div>
+
+    <div class="col">
+      <app-edit-user [user]="selectedUser" (onUserSaved)="onUserSaved($event)"></app-edit-user>
+    </div>
+  </div>
+</div>
+

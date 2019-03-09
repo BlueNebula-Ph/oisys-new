@@ -1,8 +1,8 @@
-﻿namespace OisysNew.Models
-{
-    using System;
-    using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
+namespace OisysNew.Models
+{
     /// <summary>
     /// <see cref="Delivery"/> class Delivery object.
     /// </summary>

@@ -1,0 +1,87 @@
+<div class="card no-radius">
+  <div class="card-header">
+    Save User Information.
+  </div>
+  <div class="card-body">
+    <form #userForm="ngForm" (ngSubmit)="saveUser(userForm)">
+      <div class="form-group">
+        <label>Username.</label>
+        <div appInputGroupStyle>
+          <input appControlStyle #username type="text" name="username" [(ngModel)]="user.username" required>
+          <div class="input-group-append">
+            <span class="input-group-text">* Required</span>
+          </div>
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Password.</label>
+        <div appInputGroupStyle>
+          <input appControlStyle #pword type="password" name="pword" [(ngModel)]="user.password"
+                 [disabled]="user.id != 0 && !user.updatePassword" required>
+          <div class="input-group-append">
+            <span class="input-group-text">* Required</span>
+          </div>
+        </div>
+        <div *ngIf="user.id != 0">
+          <div class="form-check form-check-inline mt-2">
+            <label class="switch switch-label switch-pill switch-primary mr-2">
+              <input class="switch-input" type="checkbox" [(ngModel)]="user.updatePassword"
+                     [ngModelOptions]="{standalone: true}" (ngModelChange)="togglePassword($event)">
+              <span class="switch-slider" data-checked="✓" data-unchecked="✕"></span>
+            </label>
+            <label>Update password.</label>
+          </div>
+        </div>
+      </div>
+      <div class="form-group">
+        <label>First name.</label>
+        <div appInputGroupStyle>
+          <input appControlStyle type="text" name="firstname" [(ngModel)]="user.firstname" required>
+          <div class="input-group-append">
+            <span class="input-group-text">* Required</span>
+          </div>
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Last name.</label>
+        <div appInputGroupStyle>
+          <input appControlStyle type="text" name="lastname" [(ngModel)]="user.lastname" required>
+          <div class="input-group-append">
+            <span class="input-group-text">* Required</span>
+          </div>
+        </div>
+      </div>
+      <div class="form-group">
+        <div class="form-check form-check-inline mr-3">
+          <label class="switch switch-label switch-pill switch-primary">
+            <input class="switch-input" type="checkbox" [(ngModel)]="user.admin" [ngModelOptions]="{standalone: true}">
+            <span class="switch-slider" data-checked="✓" data-unchecked="✕"></span>Admin
+          </label>
+        </div>
+        <div class="form-check form-check-inline mr-3">
+          <label class="switch switch-label switch-pill switch-secondary">
+            <input class="switch-input" type="checkbox" [(ngModel)]="user.canView" [ngModelOptions]="{standalone: true}">
+            <span class="switch-slider" data-checked="✓" data-unchecked="✕"></span>View
+          </label>
+        </div>
+        <div class="form-check form-check-inline mr-3">
+          <label class="switch switch-label switch-pill switch-secondary">
+            <input class="switch-input" type="checkbox" [(ngModel)]="user.canWrite" [ngModelOptions]="{standalone: true}">
+            <span class="switch-slider" data-checked="✓" data-unchecked="✕"></span>Write
+          </label>
+        </div>
+        <div class="form-check form-check-inline mr-3">
+          <label class="switch switch-label switch-pill switch-secondary">
+            <input class="switch-input" type="checkbox" [(ngModel)]="user.canDelete" [ngModelOptions]="{standalone: true}">
+            <span class="switch-slider" data-checked="✓" data-unchecked="✕"></span>Delete
+          </label>
+        </div>
+      </div>
+      <div class="form-group form-actions">
+        <button type="submit" class="btn btn-sm btn-primary btn-square" [disabled]="!userForm.form.valid || isSaving" title="Save user information.">
+          <i *ngIf="!isSaving" class="fa fa-save"></i><i *ngIf="isSaving" class="fa fa-spinner fa-spin"></i>&nbsp;Save
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

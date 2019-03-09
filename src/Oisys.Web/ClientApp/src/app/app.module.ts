@@ -30,8 +30,6 @@ import { AppComponent } from './shared/components/app/app.component';
 import { NavMenuComponent } from './shared/components/nav-menu/nav-menu.component';
 
 import { HomeComponent } from './shared/components/home/home.component';
-import { FetchDataComponent } from './shared/components/fetch-data/fetch-data.component';
-import { CounterComponent } from './shared/components/counter/counter.component';
 
 export const CustomScrollConfig: PerfectScrollbarConfigInterface = {
   suppressScrollX: true
@@ -51,9 +49,7 @@ export const CustomCurrencyMaskConfig: CurrencyMaskConfig = {
   declarations: [
     AppComponent,
     NavMenuComponent,
-    HomeComponent,
-    CounterComponent,
-    FetchDataComponent
+    HomeComponent
   ],
   imports: [
     BrowserModule.withServerTransition({ appId: 'ng-cli-universal' }),

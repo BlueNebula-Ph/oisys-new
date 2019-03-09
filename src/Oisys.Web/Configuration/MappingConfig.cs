@@ -10,6 +10,7 @@ using OisysNew.DTO.Item;
 using OisysNew.DTO.Order;
 using OisysNew.DTO.Province;
 using OisysNew.DTO.SalesQuote;
+using OisysNew.DTO.User;
 using OisysNew.Extensions;
 using OisysNew.Models;
 using System.Linq;
@@ -219,22 +220,22 @@ namespace OisysNew.Configuration
 
             CreateMap<SaveSalesQuoteLineItemRequest, SalesQuoteLineItem>();
 
+            // User
+            CreateMap<ApplicationUser, UserSummary>()
+                .ForMember(d => d.Admin, o => o.MapFrom(s => s.AccessRights.Contains("admin")))
+                .ForMember(d => d.CanView, o => o.MapFrom(s => s.AccessRights.Contains("canView")))
+                .ForMember(d => d.CanWrite, o => o.MapFrom(s => s.AccessRights.Contains("canWrite")))
+                .ForMember(d => d.CanDelete, o => o.MapFrom(s => s.AccessRights.Contains("canDelete")));
+
+            CreateMap<SaveUserRequest, ApplicationUser>()
+                .ForMember(d => d.PasswordHash, o => o.Ignore());
+
             // // Customer Transaction
             // // TODO: Create method to compute running balance
             // CreateMap<SaveCustomerTrxRequest, CustomerTransaction>();
 
             // CreateMap<CustomerTransaction, CustomerTransactionSummary>()
             //     .ForMember(d => d.Customer, s => s.MapFrom(o => o.Customer.Name));
-
-            // // User
-            // CreateMap<User, UserSummary>()
-            //     .ForMember(d => d.Admin, o => o.MapFrom(s => s.AccessRights.Contains("admin")))
-            //     .ForMember(d => d.CanView, o => o.MapFrom(s => s.AccessRights.Contains("canView")))
-            //     .ForMember(d => d.CanWrite, o => o.MapFrom(s => s.AccessRights.Contains("canWrite")))
-            //     .ForMember(d => d.CanDelete, o => o.MapFrom(s => s.AccessRights.Contains("canDelete")));
-
-            // CreateMap<SaveUserRequest, User>()
-            //     .ForMember(d => d.PasswordHash, o => o.Ignore());
         }
     }
 }

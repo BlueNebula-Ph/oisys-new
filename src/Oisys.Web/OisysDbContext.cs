@@ -101,6 +101,7 @@ namespace OisysNew
             CreateOrderModel(modelBuilder);
             CreateProvinceAndCityModels(modelBuilder);
             CreateSalesQuoteModels(modelBuilder);
+            CreateUserModel(modelBuilder);
         }
 
         private static void CreateCashVoucherModel(ModelBuilder modelBuilder)
@@ -374,6 +375,25 @@ namespace OisysNew
                     .WithMany(p => p.LineItems)
                     .HasForeignKey(p => p.SalesQuoteId);
             });
+        }
+
+        private static void CreateUserModel(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<ApplicationUser>(entity => 
+            {
+                // Setup required fields
+                entity.Property(p => p.Username).IsRequired();
+                entity.Property(p => p.PasswordHash).IsRequired();
+                entity.Property(p => p.Firstname).IsRequired();
+                entity.Property(p => p.Lastname).IsRequired();
+
+                // Setup query filters
+                entity.HasQueryFilter(c => !c.IsDeleted);
+
+                // Setup concurrency checks
+                entity.Property(p => p.RowVersion).IsRowVersion();
+            });
+
         }
     }
 }

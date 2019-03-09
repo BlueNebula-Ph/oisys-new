@@ -35,6 +35,7 @@
     <None Remove="ClientApp\src\app\modules\quotation\quotation-form\quotation-form.component.html~RF41bcceed.TMP" />
     <None Remove="ClientApp\src\app\modules\quotation\quotation-form\quotation-form.component.html~RF41bcceed.TMP" />
     <None Remove="ClientApp\src\app\nav.ts" />
+    <None Remove="ClientApp\src\app\shared\models\access-rights.ts" />
     <None Remove="ClientApp\src\app\shared\models\adjustment-type.ts" />
     <None Remove="ClientApp\src\app\shared\models\adjustment.ts" />
     <None Remove="ClientApp\src\app\shared\models\cash-voucher.ts" />
@@ -62,6 +63,7 @@
 
   <ItemGroup>
     <TypeScriptCompile Include="ClientApp\src\app\nav.ts" />
+    <TypeScriptCompile Include="ClientApp\src\app\shared\models\access-rights.ts" />
     <TypeScriptCompile Include="ClientApp\src\app\shared\models\adjustment-type.ts" />
     <TypeScriptCompile Include="ClientApp\src\app\shared\models\adjustment.ts" />
     <TypeScriptCompile Include="ClientApp\src\app\shared\models\cash-voucher.ts" />

@@ -77,7 +77,7 @@ export const navItems = [
   },
   {
     name: 'Users',
-    url: '/pages',
+    url: '/users',
     icon: 'cui-user'
   }
 ];

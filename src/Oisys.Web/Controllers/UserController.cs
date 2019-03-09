@@ -1,16 +1,15 @@
 ﻿using AutoMapper;
-using AutoMapper.QueryableExtensions;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using OisysNew.DTO;
-using OisysNew.DTO.Province;
+using OisysNew.DTO.User;
 using OisysNew.Helpers;
 using OisysNew.Helpers.Interfaces;
 using OisysNew.Models;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Dynamic.Core;
 using System.Threading.Tasks;
@@ -19,58 +18,61 @@ namespace OisysNew.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class ProvinceController : ControllerBase
+    public class UserController : ControllerBase
     {
         private readonly IOisysDbContext context;
         private readonly IMapper mapper;
         private readonly IListHelpers listHelpers;
+        private readonly IPasswordHasher<ApplicationUser> passwordHasher;
         private readonly ILogger logger;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="ProvinceController"/> class.
+        /// Initializes a new instance of the <see cref="UserController"/> class.
         /// </summary>
-        /// <param name="context">DbContext</param>
-        /// <param name="mapper">Automapper</param>
-        /// <param name="listHelpers">List helper</param>
-        /// <param name="logger">The logger</param>
-        public ProvinceController(
-            IOisysDbContext context, 
-            IMapper mapper, 
+        /// <param name="context">The DbContext</param>
+        /// <param name="mapper">The mapper</param>
+        /// <param name="builder">The summary list builder</param>
+        /// <param name="passwordHasher">The tool for hashing passwords</param>
+        public UserController(
+            IOisysDbContext context,
+            IMapper mapper,
             IListHelpers listHelpers,
-            ILogger<ProvinceController> logger)
+            IPasswordHasher<ApplicationUser> passwordHasher,
+            ILogger<UserController> logger)
         {
             this.context = context;
             this.mapper = mapper;
             this.listHelpers = listHelpers;
+            this.passwordHasher = passwordHasher;
             this.logger = logger;
         }
 
         /// <summary>
-        /// Returns list of active <see cref="Province"/>
+        /// Returns list of active <see cref="ApplicationUser"/>
         /// </summary>
-        /// <param name="filter"><see cref="ProvinceFilterRequest"/></param>
-        /// <returns>List of Province</returns>
-        [HttpPost("search", Name = "GetAllProvince")]
+        /// <param name="filter"><see cref="UserFilterRequest"/></param>
+        /// <returns>List of Users</returns>
+        [HttpPost("search", Name = "GetAllUsers")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult<PaginatedList<ProvinceSummary>>> GetAll([FromBody]ProvinceFilterRequest filter)
+        public async Task<ActionResult<PaginatedList<UserSummary>>> GetAll([FromBody]UserFilterRequest filter)
         {
             try
             {
-                // get list of active sales quote (not deleted)
-                var list = context.Provinces
-                    .Include(c => c.Cities)
+                // get list of active users (not deleted)
+                var list = context.Users
                     .AsNoTracking();
 
                 // filter
-                if (!string.IsNullOrEmpty(filter?.SearchTerm))
+                if (filter != null)
                 {
-                    list = list.Where(c => c.Name.Contains(filter.SearchTerm, StringComparison.CurrentCultureIgnoreCase) ||
-                        c.Cities.Any(a => a.Name.Contains(filter.SearchTerm, StringComparison.CurrentCultureIgnoreCase)));
+                    list = list.Where(a => a.Username.Contains(filter.SearchTerm) ||
+                        a.Firstname.Contains(filter.SearchTerm) ||
+                        a.Lastname.Contains(filter.SearchTerm));
                 }
 
                 // sort
-                var ordering = $"{Constants.ColumnNames.Name} {Constants.DefaultSortDirection}";
+                var ordering = $"{Constants.ColumnNames.Username} {Constants.DefaultSortDirection}";
                 if (!string.IsNullOrEmpty(filter?.SortBy))
                 {
                     ordering = $"{filter.SortBy} {filter.SortDirection}";
@@ -78,7 +80,7 @@ namespace OisysNew.Controllers
 
                 list = list.OrderBy(ordering);
 
-                var result = await listHelpers.CreatePaginatedListAsync<Province, ProvinceSummary>(list, filter.PageNumber, filter.PageSize);
+                var result = await listHelpers.CreatePaginatedListAsync<ApplicationUser, UserSummary>(list, filter.PageNumber, filter.PageSize);
                 return result;
             }
             catch (Exception e)
@@ -89,64 +91,28 @@ namespace OisysNew.Controllers
         }
 
         /// <summary>
-        /// Returns list of active <see cref="Province"/>
-        /// </summary>
-        /// <returns>List of Provinces</returns>
-        [HttpGet("lookup/{name?}", Name = "GetProvinceLookup")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult<IEnumerable<ProvinceLookup>>> GetLookup(string name = "")
-        {
-            try
-            {
-                // get list of active items (not deleted)
-                var list = context.Provinces.AsNoTracking();
-
-                if (!string.IsNullOrEmpty(name))
-                {
-                    list = list.Where(a => a.Name.StartsWith(name, StringComparison.CurrentCultureIgnoreCase));
-                }
-
-                // sort
-                var ordering = $"Name {Constants.DefaultSortDirection}";
-
-                list = list.OrderBy(ordering);
-
-                var provinces = await list.ProjectTo<ProvinceLookup>(mapper.ConfigurationProvider).ToListAsync();
-                return provinces;
-            }
-            catch (Exception e)
-            {
-                logger.LogError(e.Message);
-                return StatusCode(StatusCodes.Status500InternalServerError);
-            }
-        }
-
-        /// <summary>
-        /// Gets a specific <see cref="Province"/>.
+        /// Gets a specific <see cref="ApplicationUser"/>.
         /// </summary>
         /// <param name="id">id</param>
-        /// <returns>Province</returns>
-        [HttpGet("{id}", Name = "GetProvinceById")]
+        /// <returns>User summary object</returns>
+        [HttpGet("{id}", Name = "GetUserById")]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult<ProvinceSummary>> GetProvinceById(long id)
+        public async Task<ActionResult<UserSummary>> GetUserById(long id)
         {
             try
             {
-                var entity = await context.Provinces
-                    .Include(c => c.Cities)
-                    .AsNoTracking()
-                    .SingleOrDefaultAsync(c => c.Id == id);
+                var entity = await context.Users
+                .AsNoTracking()
+                .SingleOrDefaultAsync(c => c.Id == id);
 
                 if (entity == null)
                 {
                     return NotFound(id);
                 }
 
-                var province = mapper.Map<ProvinceSummary>(entity);
-                return province;
+                var user = mapper.Map<UserSummary>(entity);
+                return user;
             }
             catch (Exception e)
             {
@@ -156,23 +122,25 @@ namespace OisysNew.Controllers
         }
 
         /// <summary>
-        /// Creates a <see cref="Province"/>.
+        /// Creates a <see cref="ApplicationUser"/>.
         /// </summary>
-        /// <param name="entity">entity to be created</param>
-        /// <returns>Province</returns>
+        /// <param name="entity">User to be created</param>
+        /// <returns>User object</returns>
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult<SaveProvinceRequest>> Create([FromBody]SaveProvinceRequest entity)
+        public async Task<ActionResult<SaveUserRequest>> Create([FromBody]SaveUserRequest entity)
         {
             try
             {
-                var province = mapper.Map<Province>(entity);
-                await context.Provinces.AddAsync(province);
+                var user = mapper.Map<ApplicationUser>(entity);
+                user.PasswordHash = passwordHasher.HashPassword(user, entity.Password);
+
+                await context.Users.AddAsync(user);
                 await context.SaveChangesAsync();
 
-                return CreatedAtRoute(nameof(GetProvinceById), new { id = province.Id }, entity);
+                return CreatedAtRoute(nameof(GetUserById), new { id = user.Id }, entity);
             }
             catch (Exception e)
             {
@@ -182,10 +150,10 @@ namespace OisysNew.Controllers
         }
 
         /// <summary>
-        /// Updates a specific <see cref="Province"/>.
+        /// Updates a specific <see cref="ApplicationUser"/>.
         /// </summary>
         /// <param name="id">id</param>
-        /// <param name="entity">entity</param>
+        /// <param name="request">entity</param>
         /// <returns>None</returns>
         [HttpPut("{id}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
@@ -193,21 +161,26 @@ namespace OisysNew.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status409Conflict)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult> Update(long id, [FromBody]SaveProvinceRequest entity)
+        public async Task<ActionResult> Update(long id, [FromBody]SaveUserRequest request)
         {
             try
             {
-                var province = await context.Provinces
+                var user = await context.Users
                     .AsNoTracking()
                     .SingleOrDefaultAsync(t => t.Id == id);
 
-                if (province == null)
+                if (user == null)
                 {
                     return NotFound(id);
                 }
 
-                province = mapper.Map<Province>(entity);
-                context.Update(province);
+                var oldPassword = user.PasswordHash;
+                user = mapper.Map<ApplicationUser>(request);
+                user.PasswordHash = request.UpdatePassword ?
+                    passwordHasher.HashPassword(user, request.Password) :
+                    oldPassword;
+
+                context.Update(user);
                 await context.SaveChangesAsync();
 
                 return StatusCode(StatusCodes.Status204NoContent);
@@ -225,7 +198,7 @@ namespace OisysNew.Controllers
         }
 
         /// <summary>
-        /// Deletes a specific <see cref="Province"/>.
+        /// Deletes a specific <see cref="ApplicationUser"/>.
         /// </summary>
         /// <param name="id">id</param>
         /// <returns>None</returns>
@@ -237,15 +210,15 @@ namespace OisysNew.Controllers
         {
             try
             {
-                var province = await context.Provinces
+                var user = await context.Users
                     .SingleOrDefaultAsync(c => c.Id == id);
 
-                if (province == null)
+                if (user == null)
                 {
                     return NotFound(id);
                 }
 
-                province.IsDeleted = true;
+                user.IsDeleted = true;
                 await context.SaveChangesAsync();
 
                 return StatusCode(StatusCodes.Status204NoContent);

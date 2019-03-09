@@ -56,13 +56,13 @@ export class EditCategoryComponent implements OnInit, OnDestroy {
 
   saveSuccess = (result) => {
     this.clearCategory();
-    this.util.showSuccessMessage("Category saved successfully.");
+    this.util.showSuccessMessage('Category saved successfully.');
     this.categoryNameField.nativeElement.focus();
     this.onCategorySaved.emit(result);
   };
 
   saveFailed = (error) => {
-    this.util.showErrorMessage("An error occurred while saving. Please try again.");
+    this.util.showErrorMessage('An error occurred while saving. Please try again.');
     console.log(error);
   };
 

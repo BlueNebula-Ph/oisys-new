@@ -2,8 +2,6 @@ import { NgModule }             from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 
 import { HomeComponent } from '../../shared/components/home/home.component';
-import { CounterComponent } from '../../shared/components/counter/counter.component';
-import { FetchDataComponent } from '../../shared/components/fetch-data/fetch-data.component';
 
 import { CategoryListComponent } from '../settings/category-list/category-list.component';
 import { ProvinceListComponent } from '../settings/province-list/province-list.component';
@@ -44,9 +42,6 @@ import { InvoiceDetailComponent } from '../invoice/invoice-detail/invoice-detail
 
 const routes: Routes = [
   { path: '', component: HomeComponent, pathMatch: 'full' },
-  // Examples
-  { path: 'counter', component: CounterComponent },
-  { path: 'fetch-data', component: FetchDataComponent },
   // Orders
   { path: 'orders', component: OrderListComponent },
   { path: 'orders/edit/:id', component: OrderFormComponent },

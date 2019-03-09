@@ -9,6 +9,7 @@ import { EditCategoryComponent } from './edit-category/edit-category.component';
 import { ProvinceListComponent } from './province-list/province-list.component';
 import { EditProvinceComponent } from './edit-province/edit-province.component';
 import { UserListComponent } from './user-list/user-list.component';
+import { EditUserComponent } from './edit-user/edit-user.component';
 
 @NgModule({
   imports: [
@@ -21,7 +22,8 @@ import { UserListComponent } from './user-list/user-list.component';
     EditCategoryComponent,
     ProvinceListComponent,
     EditProvinceComponent,
-    UserListComponent
+    UserListComponent,
+    EditUserComponent
   ]
 })
 export class SettingsModule { }
