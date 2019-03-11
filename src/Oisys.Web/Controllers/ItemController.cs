@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using AutoMapper.QueryableExtensions;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -22,6 +23,7 @@ namespace OisysNew.Controllers
     /// <summary>
     /// <see cref="ItemController"/> class handles Item basic add, edit, delete and get.
     /// </summary>
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class ItemController : Controller

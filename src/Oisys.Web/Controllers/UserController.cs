@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -16,6 +17,10 @@ using System.Threading.Tasks;
 
 namespace OisysNew.Controllers
 {
+    /// <summary>
+    /// <see cref="UserController"/> handles basic add, edit, delete and fetching of users.
+    /// </summary>
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class UserController : ControllerBase

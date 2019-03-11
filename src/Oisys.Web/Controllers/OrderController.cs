@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using AutoMapper.QueryableExtensions;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -20,8 +21,9 @@ using System.Threading.Tasks;
 namespace OisysNew.Controllers
 {
     /// <summary>
-    /// <see cref="OrderController"/> class handles Order basic add, edit, delete and get.
+    /// <see cref="OrderController"/> class handles basic add, edit, delete and fetching of orders.
     /// </summary>
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class OrderController : Controller

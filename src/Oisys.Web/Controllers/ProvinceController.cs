@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using AutoMapper.QueryableExtensions;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -17,6 +18,10 @@ using System.Threading.Tasks;
 
 namespace OisysNew.Controllers
 {
+    /// <summary>
+    /// <see cref="ProvinceController"/> class handles basic add, edit, delete and fetching of provinces.
+    /// </summary>
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class ProvinceController : ControllerBase

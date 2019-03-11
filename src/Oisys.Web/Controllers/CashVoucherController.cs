@@ -1,4 +1,5 @@
 using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -18,6 +19,7 @@ namespace OisysNew.Controllers
     /// <summary>
     /// <see cref="CashVoucherController"/> class handles CashVoucher basic add, edit, delete and get.
     /// </summary>
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class CashVoucherController : Controller

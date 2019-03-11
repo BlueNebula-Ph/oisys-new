@@ -1,4 +1,5 @@
 using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -17,8 +18,9 @@ using System.Threading.Tasks;
 namespace OisysNew.Controllers
 {
     /// <summary>
-    /// <see cref="SalesQuoteController"/> class handles SalesQuote basic add, edit, delete and get.
+    /// <see cref="SalesQuoteController"/> class handles basic add, edit, delete and fetching of sales quotations.
     /// </summary>
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class SalesQuoteController : Controller

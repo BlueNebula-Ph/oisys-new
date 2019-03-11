@@ -1,4 +1,5 @@
 using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -20,6 +21,7 @@ namespace OisysNew.Controllers
     /// <summary>
     /// <see cref="InvoiceController"/> class handles adding, editing, deleting and fetching of invoices.
     /// </summary>
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class InvoiceController : Controller
