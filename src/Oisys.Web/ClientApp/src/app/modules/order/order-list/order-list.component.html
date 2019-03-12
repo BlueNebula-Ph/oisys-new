@@ -51,7 +51,9 @@
           </ngx-datatable-column>
           <ngx-datatable-column name="" [flexGrow]="2">
             <ng-template ngx-datatable-header-template>
-              <a routerLink="/orders/edit/0" class="btn btn-sm btn-primary float-right" accesskey="n"><i class="fa fa-plus"></i> New Order</a>
+              <a routerLink="/orders/edit/0" class="btn btn-sm btn-primary float-right" accesskey="n" *ngIf="canWrite">
+                <i class="fa fa-plus"></i> New Order
+              </a>
             </ng-template>
             <ng-template ngx-datatable-cell-template let-row="row">
               <div class="text-right">

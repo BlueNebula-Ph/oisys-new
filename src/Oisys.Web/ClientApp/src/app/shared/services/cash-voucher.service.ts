@@ -14,7 +14,10 @@ import { PagedData } from '../models/paged-data';
 export class CashVoucherService {
   private url = `${environment.apiHost}api/cashVoucher`;
 
-  constructor(private http: HttpClient, private util: UtilitiesService) { }
+  constructor(
+    private http: HttpClient,
+    private util: UtilitiesService
+  ) { }
 
   getCashVouchers(
     pageNumber: number,

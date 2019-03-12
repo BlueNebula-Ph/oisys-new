@@ -1,40 +1,46 @@
-<app-header
-  [fixed]="true"
-  [navbarBrandFull]="{src: '', width: 89, height: 25, alt: ''}"
-  [navbarBrandMinimized]="{src: '', width: 30, height: 30, alt: 'My Logo'}"
-  [sidebarToggler]="false"
-  [mobileSidebarToggler]="false"
-  [asideMenuToggler]="false"
-  [mobileAsideMenuToggler]="false">
-  <div class="mr-3 p-3 border rounded">
-    <i class="fa fa-user"></i>
-  </div>
-</app-header>
-<div class="app-body">
-  <app-sidebar [fixed]="true" [display]="'lg'">
-    <app-sidebar-nav [navItems]="navItems" [perfectScrollbar]></app-sidebar-nav>
-    <!--<app-sidebar-minimizer></app-sidebar-minimizer>-->
-  </app-sidebar>
-  <!-- Main content -->
-  <main class="main">
-
-    <!-- Breadcrumb -->
-    <ol class="breadcrumb py-2">
-      <app-breadcrumb></app-breadcrumb>
-      <!-- Breadcrumb Menu-->
-      <li class="breadcrumb-menu d-md-down-none">
-        <div class="btn-group" role="group" aria-label="Button group with nested dropdown">
-          <a class="btn" [routerLink]="['/']"><i class="cui-home mr-1"></i>Home</a>
-        </div>
-      </li>
-    </ol>
-
-    <div class="container-fluid">
-      <router-outlet></router-outlet>
-    </div>
-  </main>
+<div *ngIf="!isLoggedIn">
+  <router-outlet></router-outlet>
 </div>
-<app-footer [fixed]="false">
-  <span>&copy; 2018 Ace Plastic Center.</span>
-  <span class="ml-auto">Powered by <a href="https://coreui.io/angular">CoreUI for Angular</a></span>
-</app-footer>
+<div *ngIf="isLoggedIn">
+  <app-header [fixed]="true"
+              [navbarBrandFull]="{src: '', width: 89, height: 25, alt: ''}"
+              [navbarBrandMinimized]="{src: '', width: 30, height: 30, alt: 'My Logo'}"
+              [sidebarToggler]="false"
+              [mobileSidebarToggler]="false"
+              [asideMenuToggler]="false"
+              [mobileAsideMenuToggler]="false">
+    <div class="mr-3 p-3 border rounded">
+      <i class="fa fa-user"></i>
+      <button class="btn btn-sm" (click)="logout()">Logout</button>
+    </div>
+  </app-header>
+  <div class="app-body">
+    <app-sidebar [fixed]="true" [display]="'lg'">
+      <app-sidebar-nav [navItems]="navItems" [perfectScrollbar]></app-sidebar-nav>
+      <!--<app-sidebar-minimizer></app-sidebar-minimizer>-->
+    </app-sidebar>
+    <!-- Main content -->
+    <main class="main">
+
+      <!-- Breadcrumb -->
+      <ol class="breadcrumb py-2">
+        <app-breadcrumb></app-breadcrumb>
+        <!-- Breadcrumb Menu-->
+        <li class="breadcrumb-menu d-md-down-none">
+          <div class="btn-group" role="group" aria-label="Button group with nested dropdown">
+            <a class="btn" [routerLink]="['/']"><i class="cui-home mr-1"></i>Home</a>
+          </div>
+        </li>
+      </ol>
+
+      <div class="container-fluid">
+        <router-outlet></router-outlet>
+      </div>
+    </main>
+  </div>
+  <app-footer [fixed]="true">
+    <span>&copy; 2018 Ace Plastic Center.</span>
+    <span class="ml-auto">Powered by <a href="https://coreui.io/angular">CoreUI for Angular</a></span>
+  </app-footer>
+</div>
+

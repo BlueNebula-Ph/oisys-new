@@ -51,6 +51,7 @@
     <None Remove="ClientApp\src\app\shared\models\item.ts" />
     <None Remove="ClientApp\src\app\shared\models\json-model-base.ts" />
     <None Remove="ClientApp\src\app\shared\models\line-item.ts" />
+    <None Remove="ClientApp\src\app\shared\models\logged-user.ts" />
     <None Remove="ClientApp\src\app\shared\models\order-line-item.ts" />
     <None Remove="ClientApp\src\app\shared\models\order.ts" />
     <None Remove="ClientApp\src\app\shared\models\page.ts" />
@@ -79,6 +80,7 @@
     <TypeScriptCompile Include="ClientApp\src\app\shared\models\json-model-base.ts" />
     <TypeScriptCompile Include="ClientApp\src\app\shared\models\city.ts" />
     <TypeScriptCompile Include="ClientApp\src\app\shared\models\item.ts" />
+    <TypeScriptCompile Include="ClientApp\src\app\shared\models\logged-user.ts" />
     <TypeScriptCompile Include="ClientApp\src\app\shared\models\order-line-item.ts" />
     <TypeScriptCompile Include="ClientApp\src\app\shared\models\order.ts" />
     <TypeScriptCompile Include="ClientApp\src\app\shared\models\page.ts" />
@@ -91,6 +93,8 @@
 
   <ItemGroup>
     <Folder Include="ClientApp\src\app\shared\directives\" />
+    <Folder Include="ClientApp\src\app\shared\interceptors\" />
+    <Folder Include="ClientApp\src\app\shared\guards\" />
   </ItemGroup>
 
   <Target Name="DebugEnsureNodeEnv" BeforeTargets="Build" Condition=" '$(Configuration)' == 'Debug' And !Exists('$(SpaRoot)node_modules') ">

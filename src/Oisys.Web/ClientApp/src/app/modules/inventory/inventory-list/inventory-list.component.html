@@ -58,7 +58,9 @@
           </ngx-datatable-column>
           <ngx-datatable-column name="" [flexGrow]="2" [sortable]="false">
             <ng-template ngx-datatable-header-template>
-              <a routerLink="/inventory/edit/0" class="btn btn-sm btn-primary float-right" accesskey="n"><i class="fa fa-plus"></i> New Item</a>
+              <a routerLink="/inventory/edit/0" class="btn btn-sm btn-primary float-right mr-1" accesskey="n">
+                <i class="fa fa-plus"></i> New Item
+              </a>
             </ng-template>
             <ng-template ngx-datatable-cell-template let-row="row">
               <div class="text-right">

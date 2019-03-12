@@ -7,6 +7,7 @@ using OisysNew.DTO.Customer;
 using OisysNew.DTO.Delivery;
 using OisysNew.DTO.Invoice;
 using OisysNew.DTO.Item;
+using OisysNew.DTO.Login;
 using OisysNew.DTO.Order;
 using OisysNew.DTO.Province;
 using OisysNew.DTO.SalesQuote;
@@ -226,6 +227,15 @@ namespace OisysNew.Configuration
                 .ForMember(d => d.CanView, o => o.MapFrom(s => s.AccessRights.Contains("canView")))
                 .ForMember(d => d.CanWrite, o => o.MapFrom(s => s.AccessRights.Contains("canWrite")))
                 .ForMember(d => d.CanDelete, o => o.MapFrom(s => s.AccessRights.Contains("canDelete")));
+
+            CreateMap<ApplicationUser, UserDto>()
+                .ForMember(d => d.Username, o => o.MapFrom(s => s.Username))
+                .ForMember(d => d.Fullname, o => o.MapFrom(s => $"{s.Firstname} {s.Lastname}"))
+                .ForMember(d => d.Admin, o => o.MapFrom(s => s.AccessRights.Contains("admin")))
+                .ForMember(d => d.CanView, o => o.MapFrom(s => s.AccessRights.Contains("canView")))
+                .ForMember(d => d.CanWrite, o => o.MapFrom(s => s.AccessRights.Contains("canWrite")))
+                .ForMember(d => d.CanDelete, o => o.MapFrom(s => s.AccessRights.Contains("canDelete")))
+                .ForMember(d => d.Token, o => o.Ignore());
 
             CreateMap<SaveUserRequest, ApplicationUser>()
                 .ForMember(d => d.PasswordHash, o => o.Ignore());

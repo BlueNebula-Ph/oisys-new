@@ -8,6 +8,7 @@ import { CustomerService } from '../../../shared/services/customer.service';
 import { ProvinceService } from '../../../shared/services/province.service';
 import { InventoryService } from '../../../shared/services/inventory.service';
 import { UtilitiesService } from '../../../shared/services/utilities.service';
+import { AuthenticationService } from '../../../shared/services/authentication.service';
 
 import { Page } from '../../../shared/models/page';
 import { Sort } from '../../../shared/models/sort';
@@ -35,11 +36,23 @@ export class OrderListComponent implements AfterContentInit, OnDestroy {
 
   isLoading: boolean = false;
 
+  get isAdmin() {
+    console.log(this.authService.currentUserValue.admin);
+    return this.authService.currentUserValue &&
+      this.authService.currentUserValue.admin;
+  }
+
+  get canWrite() {
+    return this.authService.currentUserValue &&
+      this.authService.currentUserValue.canWrite;
+  }
+
   constructor(
     private orderService: OrderService,
     private customerService: CustomerService,
     private provinceService: ProvinceService,
     private inventoryService: InventoryService,
+    private authService: AuthenticationService,
     private util: UtilitiesService) {
     this.page.pageNumber = 0;
     this.page.size = 20;

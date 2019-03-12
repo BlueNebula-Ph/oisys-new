@@ -1,4 +1,4 @@
-import { NgModule }             from '@angular/core';
+import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 
 import { HomeComponent } from '../../shared/components/home/home.component';
@@ -40,50 +40,281 @@ import { InvoiceListComponent } from '../invoice/invoice-list/invoice-list.compo
 import { InvoiceFormComponent } from '../invoice/invoice-form/invoice-form.component';
 import { InvoiceDetailComponent } from '../invoice/invoice-detail/invoice-detail.component';
 
+import { LoginComponent } from '../../shared/components/login/login.component';
+
+import { AuthGuard } from '../../shared/guards/auth-guard.guard';
+
+const adminRole = 'admin';
+const canView = 'canView';
+const canWrite = 'canWrite';
+
 const routes: Routes = [
-  { path: '', component: HomeComponent, pathMatch: 'full' },
+  {
+    path: 'login',
+    component: LoginComponent,
+    pathMatch: 'full'
+  },
+  {
+    path: '',
+    component: HomeComponent,
+    pathMatch: 'full',
+    canActivate: [AuthGuard]
+  },
   // Orders
-  { path: 'orders', component: OrderListComponent },
-  { path: 'orders/edit/:id', component: OrderFormComponent },
-  { path: 'orders/info/:id', component: OrderDetailComponent },
+  {
+    path: 'orders',
+    component: OrderListComponent,
+    canActivate: [AuthGuard],
+    data: {
+      roles: [canView]
+    }
+  },
+  {
+    path: 'orders/edit/:id',
+    component: OrderFormComponent,
+    canActivate: [AuthGuard],
+    data: {
+      roles: [canWrite]
+    }
+  },
+  {
+    path: 'orders/info/:id',
+    component: OrderDetailComponent,
+    canActivate: [AuthGuard],
+    data: {
+      roles: [canView]
+    }
+  },
   // Customers
-  { path: 'customers', component: CustomerListComponent },
-  { path: 'customers/edit/:id', component: EditCustomerComponent },
-  { path: 'customers/info/:id', component: CustomerDetailComponent },
+  {
+    path: 'customers',
+    component: CustomerListComponent,
+    canActivate: [AuthGuard],
+    data: {
+      roles: [canView]
+    }
+  },
+  {
+    path: 'customers/edit/:id',
+    component: EditCustomerComponent,
+    canActivate: [AuthGuard],
+    data: {
+      roles: [canWrite]
+    }
+  },
+  {
+    path: 'customers/info/:id',
+    component: CustomerDetailComponent,
+    canActivate: [AuthGuard],
+    data: {
+      roles: [canView]
+    }
+  },
   // Items
-  { path: 'inventory', component: InventoryListComponent },
-  { path: 'inventory/edit/:id', component: InventoryFormComponent },
-  { path: 'inventory/info/:id', component: InventoryDetailComponent },
-  { path: 'adjustment', component: AdjustItemComponent, data: { type: 'adjustment' } },
-  { path: 'manufacture', component: AdjustItemComponent, data: { type: 'manufacturing' } },
+  {
+    path: 'inventory',
+    component: InventoryListComponent,
+    canActivate: [AuthGuard],
+    data: {
+      roles: [canView]
+    }
+  },
+  {
+    path: 'inventory/edit/:id',
+    component: InventoryFormComponent,
+    canActivate: [AuthGuard],
+    data: {
+      roles: [canWrite]
+    }
+  },
+  {
+    path: 'inventory/info/:id',
+    component: InventoryDetailComponent,
+    canActivate: [AuthGuard],
+    data: {
+      roles: [canView]
+    }
+  },
+  {
+    path: 'adjustment',
+    component: AdjustItemComponent,
+    canActivate: [AuthGuard],
+    data: {
+      type: 'adjustment',
+      roles: [canWrite]
+    }, 
+  },
+  {
+    path: 'manufacture',
+    component: AdjustItemComponent,
+    canActivate: [AuthGuard],
+    data: {
+      type: 'manufacturing',
+      roles: [canWrite]
+    }
+  },
   // Cash vouchers
-  { path: 'vouchers', component: VoucherListComponent },
-  { path: 'vouchers/edit/:id', component: VoucherFormComponent },
-  { path: 'vouchers/info/:id', component: VoucherDetailComponent },
+  {
+    path: 'vouchers',
+    component: VoucherListComponent,
+    canActivate: [AuthGuard],
+    data: {
+      roles: [canView]
+    }
+  },
+  {
+    path: 'vouchers/edit/:id',
+    component: VoucherFormComponent,
+    canActivate: [AuthGuard],
+    data: {
+      roles: [canWrite]
+    }
+  },
+  {
+    path: 'vouchers/info/:id',
+    component: VoucherDetailComponent,
+    canActivate: [AuthGuard],
+    data: {
+      roles: [canView]
+    }
+  },
   // Sales quotations
-  { path: 'sales-quotations', component: QuotationListComponent },
-  { path: 'sales-quotations/edit/:id', component: QuotationFormComponent },
-  { path: 'sales-quotations/info/:id', component: QuotationDetailComponent },
+  {
+    path: 'sales-quotations',
+    component: QuotationListComponent,
+    canActivate: [AuthGuard],
+    data: {
+      roles: [canView]
+    }
+  },
+  {
+    path: 'sales-quotations/edit/:id',
+    component: QuotationFormComponent,
+    canActivate: [AuthGuard],
+    data: {
+      roles: [canWrite]
+    }
+  },
+  {
+    path: 'sales-quotations/info/:id',
+    component: QuotationDetailComponent,
+    canActivate: [AuthGuard],
+    data: {
+      roles: [canView]
+    }
+  },
   // Credit memos
-  { path: 'credit-memos', component: CreditMemoListComponent },
-  { path: 'credit-memos/edit/:id', component: CreditMemoFormComponent },
-  { path: 'credit-memos/info/:id', component: CreditMemoDetailComponent },
+  {
+    path: 'credit-memos',
+    component: CreditMemoListComponent,
+    canActivate: [AuthGuard],
+    data: {
+      roles: [canView]
+    }
+  },
+  {
+    path: 'credit-memos/edit/:id',
+    component: CreditMemoFormComponent,
+    canActivate: [AuthGuard],
+    data: {
+      roles: [canWrite]
+    }
+  },
+  {
+    path: 'credit-memos/info/:id',
+    component: CreditMemoDetailComponent,
+    canActivate: [AuthGuard],
+    data: {
+      roles: [canView]
+    }
+  },
   // Deliveries
-  { path: 'deliveries', component: DeliveryListComponent },
-  { path: 'deliveries/edit/:id', component: DeliveryFormComponent },
-  { path: 'deliveries/info/:id', component: DeliveryDetailComponent },
+  {
+    path: 'deliveries',
+    component: DeliveryListComponent,
+    canActivate: [AuthGuard],
+    data: {
+      roles: [canView]
+    }
+  },
+  {
+    path: 'deliveries/edit/:id',
+    component: DeliveryFormComponent,
+    canActivate: [AuthGuard],
+    data: {
+      roles: [canWrite]
+    }
+  },
+  {
+    path: 'deliveries/info/:id',
+    component: DeliveryDetailComponent,
+    canActivate: [AuthGuard],
+    data: {
+      roles: [canView]
+    }
+  },
   // Invoices
-  { path: 'invoices', component: InvoiceListComponent },
-  { path: 'invoices/edit/:id', component: InvoiceFormComponent },
-  { path: 'invoices/info/:id', component: InvoiceDetailComponent },
+  {
+    path: 'invoices',
+    component: InvoiceListComponent,
+    canActivate: [AuthGuard],
+    data: {
+      roles: [canView]
+    }
+  },
+  {
+    path: 'invoices/edit/:id',
+    component: InvoiceFormComponent,
+    canActivate: [AuthGuard],
+    data: {
+      roles: [canWrite]
+    }
+  },
+  {
+    path: 'invoices/info/:id',
+    component: InvoiceDetailComponent,
+    canActivate: [AuthGuard],
+    data: {
+      roles: [canView]
+    }
+  },
   // Admin
-  { path: 'categories', component: CategoryListComponent, pathMatch: 'full' },
-  { path: 'provinces', component: ProvinceListComponent, pathMatch: 'full' },
-  { path: 'users', component: UserListComponent, pathMatch: 'full' },
+  {
+    path: 'categories',
+    component: CategoryListComponent,
+    pathMatch: 'full',
+    canActivate: [AuthGuard],
+    data: {
+      roles: [adminRole]
+    }
+  },
+  {
+    path: 'provinces',
+    component: ProvinceListComponent,
+    pathMatch: 'full',
+    canActivate: [AuthGuard],
+    data: {
+      roles: [adminRole]
+    }
+  },
+  {
+    path: 'users',
+    component: UserListComponent,
+    pathMatch: 'full',
+    canActivate: [AuthGuard],
+    data: {
+      roles: [adminRole]
+    }
+  },
+  // Otherwise
+  {
+    path: '**',
+    redirectTo: ''
+  }
 ];
- 
+
 @NgModule({
-  imports: [ RouterModule.forRoot(routes) ],
-  exports: [ RouterModule ]
+  imports: [RouterModule.forRoot(routes)],
+  exports: [RouterModule]
 })
-export class AppRoutingModule {}
+export class AppRoutingModule { }

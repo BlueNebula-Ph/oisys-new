@@ -14,7 +14,10 @@ import { PagedData } from '../models/paged-data';
 export class UserService {
   private url = `${environment.apiHost}api/user`;
 
-  constructor(private http: HttpClient, private util: UtilitiesService) { }
+  constructor(
+    private http: HttpClient,
+    private util: UtilitiesService
+  ) { }
 
   getUsers(pageNumber: number, pageSize: number, sortBy: string, sortDirection: string, searchTerm: string): Observable<PagedData<User>> {
     var filter = { pageNumber, pageSize, sortBy, sortDirection, searchTerm };
