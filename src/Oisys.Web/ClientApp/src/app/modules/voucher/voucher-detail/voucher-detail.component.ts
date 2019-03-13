@@ -4,21 +4,28 @@ import { ActivatedRoute } from '@angular/router';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
-import { CashVoucher } from '../../../shared/models/cash-voucher';
 import { CashVoucherService } from '../../../shared/services/cash-voucher.service';
+import { AuthenticationService } from '../../../shared/services/authentication.service';
+
+import { CashVoucher } from '../../../shared/models/cash-voucher';
+
+import { PageBase } from '../../../shared/helpers/page-base';
 
 @Component({
   selector: 'app-voucher-detail',
   templateUrl: './voucher-detail.component.html',
   styleUrls: ['./voucher-detail.component.css']
 })
-export class VoucherDetailComponent implements AfterContentInit {
+export class VoucherDetailComponent extends PageBase implements AfterContentInit {
   voucher$: Observable<CashVoucher>;
 
   constructor(
     private cashVoucherService: CashVoucherService,
+    private authService: AuthenticationService,
     private route: ActivatedRoute
-  ) { }
+  ) {
+    super(authService);
+  }
 
   ngAfterContentInit() {
     this.loadVoucherDetails();

@@ -18,12 +18,14 @@ import { Order } from '../../../shared/models/order';
 import { Item } from '../../../shared/models/item';
 import { Province } from '../../../shared/models/province';
 
+import { PageBase } from '../../../shared/helpers/page-base';
+
 @Component({
   selector: 'app-order-list',
   templateUrl: './order-list.component.html',
   styleUrls: ['./order-list.component.css']
 })
-export class OrderListComponent implements AfterContentInit, OnDestroy {
+export class OrderListComponent extends PageBase implements AfterContentInit, OnDestroy {
   page: Page = new Page();
   sort: Sort = new Sort();
   search: Search = new Search();
@@ -36,24 +38,16 @@ export class OrderListComponent implements AfterContentInit, OnDestroy {
 
   isLoading: boolean = false;
 
-  get isAdmin() {
-    console.log(this.authService.currentUserValue.admin);
-    return this.authService.currentUserValue &&
-      this.authService.currentUserValue.admin;
-  }
-
-  get canWrite() {
-    return this.authService.currentUserValue &&
-      this.authService.currentUserValue.canWrite;
-  }
-
   constructor(
     private orderService: OrderService,
     private customerService: CustomerService,
     private provinceService: ProvinceService,
     private inventoryService: InventoryService,
     private authService: AuthenticationService,
-    private util: UtilitiesService) {
+    private util: UtilitiesService
+  ) {
+    super(authService);
+
     this.page.pageNumber = 0;
     this.page.size = 20;
     this.sort.prop = 'date';

@@ -4,21 +4,28 @@ import { ActivatedRoute } from '@angular/router';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
-import { Order } from '../../../shared/models/order';
 import { OrderService } from '../../../shared/services/order.service';
+import { AuthenticationService } from '../../../shared/services/authentication.service';
+
+import { Order } from '../../../shared/models/order';
+
+import { PageBase } from '../../../shared/helpers/page-base';
 
 @Component({
   selector: 'app-order-detail',
   templateUrl: './order-detail.component.html',
   styleUrls: ['./order-detail.component.css']
 })
-export class OrderDetailComponent implements AfterContentInit {
+export class OrderDetailComponent extends PageBase implements AfterContentInit {
   order$: Observable<Order>;
 
   constructor(
     private orderService: OrderService,
+    private authService: AuthenticationService,
     private route: ActivatedRoute
-  ) { }
+  ) {
+    super(authService);
+  }
 
   ngAfterContentInit() {
     this.loadOrderDetails();

@@ -4,6 +4,7 @@ import { of, Observable, Subscription } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 
 import { CashVoucherService } from '../../../shared/services/cash-voucher.service';
+import { AuthenticationService } from '../../../shared/services/authentication.service';
 import { UtilitiesService } from '../../../shared/services/utilities.service';
 
 import { Page } from '../../../shared/models/page';
@@ -11,12 +12,14 @@ import { Sort } from '../../../shared/models/sort';
 import { Search } from '../../../shared/models/search';
 import { CashVoucher } from '../../../shared/models/cash-voucher';
 
+import { PageBase } from '../../../shared/helpers/page-base';
+
 @Component({
   selector: 'app-voucher-list',
   templateUrl: './voucher-list.component.html',
   styleUrls: ['./voucher-list.component.css']
 })
-export class VoucherListComponent implements AfterContentInit, OnDestroy {
+export class VoucherListComponent extends PageBase implements AfterContentInit, OnDestroy {
   page: Page = new Page();
   sort: Sort = new Sort();
   search: Search = new Search();
@@ -28,7 +31,11 @@ export class VoucherListComponent implements AfterContentInit, OnDestroy {
 
   constructor(
     private cashVoucherService: CashVoucherService,
-    private util: UtilitiesService) {
+    private authService: AuthenticationService,
+    private util: UtilitiesService
+  ) {
+    super(authService);
+
     this.page.pageNumber = 0;
     this.page.size = 20;
     this.sort.prop = 'date';

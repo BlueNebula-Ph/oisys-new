@@ -5,6 +5,7 @@ import { catchError, map } from 'rxjs/operators';
 
 import { CustomerService } from '../../../shared/services/customer.service';
 import { ProvinceService } from '../../../shared/services/province.service';
+import { AuthenticationService } from '../../../shared/services/authentication.service';
 import { UtilitiesService } from '../../../shared/services/utilities.service';
 
 import { Customer } from '../../../shared/models/customer';
@@ -13,12 +14,14 @@ import { Sort } from '../../../shared/models/sort';
 import { Search } from '../../../shared/models/search';
 import { Province } from '../../../shared/models/province';
 
+import { PageBase } from '../../../shared/helpers/page-base';
+
 @Component({
   selector: 'app-customer-list',
   templateUrl: './customer-list.component.html',
   styleUrls: ['./customer-list.component.css']
 })
-export class CustomerListComponent implements AfterContentInit, OnDestroy {
+export class CustomerListComponent extends PageBase implements AfterContentInit, OnDestroy {
   page: Page = new Page();
   sort: Sort = new Sort();
   search: Search = new Search();
@@ -29,7 +32,14 @@ export class CustomerListComponent implements AfterContentInit, OnDestroy {
 
   isLoading: boolean = false;
 
-  constructor(private customerService: CustomerService, private provinceService: ProvinceService, private util: UtilitiesService) {
+  constructor(
+    private customerService: CustomerService,
+    private provinceService: ProvinceService,
+    private authService: AuthenticationService,
+    private util: UtilitiesService
+  ) {
+    super(authService);
+
     this.page.pageNumber = 0;
     this.page.size = 20;
     this.sort.prop = 'name';

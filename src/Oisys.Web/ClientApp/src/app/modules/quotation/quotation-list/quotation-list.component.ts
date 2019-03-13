@@ -7,6 +7,7 @@ import { SalesQuotationService } from '../../../shared/services/sales-quotation.
 import { CustomerService } from '../../../shared/services/customer.service';
 import { ProvinceService } from '../../../shared/services/province.service';
 import { InventoryService } from '../../../shared/services/inventory.service';
+import { AuthenticationService } from '../../../shared/services/authentication.service';
 import { UtilitiesService } from '../../../shared/services/utilities.service';
 
 import { Page } from '../../../shared/models/page';
@@ -17,12 +18,14 @@ import { SalesQuotation } from '../../../shared/models/sales-quotation';
 import { Item } from '../../../shared/models/item';
 import { Province } from '../../../shared/models/province';
 
+import { PageBase } from '../../../shared/helpers/page-base';
+
 @Component({
   selector: 'app-quotation-list',
   templateUrl: './quotation-list.component.html',
   styleUrls: ['./quotation-list.component.css']
 })
-export class QuotationListComponent implements AfterContentInit, OnDestroy {
+export class QuotationListComponent extends PageBase implements AfterContentInit, OnDestroy {
   page: Page = new Page();
   sort: Sort = new Sort();
   search: Search = new Search();
@@ -40,7 +43,11 @@ export class QuotationListComponent implements AfterContentInit, OnDestroy {
     private customerService: CustomerService,
     private provinceService: ProvinceService,
     private inventoryService: InventoryService,
-    private util: UtilitiesService) {
+    private authService: AuthenticationService,
+    private util: UtilitiesService
+  ) {
+    super(authService);
+
     this.page.pageNumber = 0;
     this.page.size = 20;
     this.sort.prop = 'date';

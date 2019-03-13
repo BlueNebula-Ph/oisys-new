@@ -60,10 +60,10 @@
                 <a routerLink="/orders/info/{{ row.id }}" class="btn btn-ghost-primary" title="View order information.">
                   <i class="fa fa-sticky-note-o"></i>
                 </a>
-                <a routerLink="/orders/edit/{{ row.id }}" class="btn btn-ghost-primary ml-1" title="Edit this order.">
+                <a routerLink="/orders/edit/{{ row.id }}" class="btn btn-ghost-primary ml-1" title="Edit this order." *ngIf="canWrite">
                   <i class="fa fa-pencil"></i>
                 </a>
-                <button class="btn btn-ghost-danger ml-1" (click)="onDeleteOrder(row.id)" title="Delete this order.">
+                <button class="btn btn-ghost-danger ml-1" (click)="onDeleteOrder(row.id)" title="Delete this order." *ngIf="canDelete">
                   <i class="fa fa-trash-o"></i>
                 </button>
               </div>

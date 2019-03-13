@@ -5,6 +5,7 @@ import { catchError, map } from 'rxjs/operators';
 
 import { InvoiceService } from '../../../shared/services/invoice.service';
 import { CustomerService } from '../../../shared/services/customer.service';
+import { AuthenticationService } from '../../../shared/services/authentication.service';
 import { UtilitiesService } from '../../../shared/services/utilities.service';
 
 import { Page } from '../../../shared/models/page';
@@ -13,12 +14,14 @@ import { Search } from '../../../shared/models/search';
 import { Customer } from '../../../shared/models/customer';
 import { Invoice } from '../../../shared/models/invoice';
 
+import { PageBase } from '../../../shared/helpers/page-base';
+
 @Component({
   selector: 'app-invoice-list',
   templateUrl: './invoice-list.component.html',
   styleUrls: ['./invoice-list.component.css']
 })
-export class InvoiceListComponent implements AfterContentInit, OnDestroy {
+export class InvoiceListComponent extends PageBase implements AfterContentInit, OnDestroy {
   page: Page = new Page();
   sort: Sort = new Sort();
   search: Search = new Search();
@@ -32,7 +35,11 @@ export class InvoiceListComponent implements AfterContentInit, OnDestroy {
   constructor(
     private invoiceService: InvoiceService,
     private customerService: CustomerService,
-    private util: UtilitiesService) {
+    private authService: AuthenticationService,
+    private util: UtilitiesService
+  ) {
+    super(authService);
+
     this.page.pageNumber = 0;
     this.page.size = 20;
     this.sort.prop = 'date';

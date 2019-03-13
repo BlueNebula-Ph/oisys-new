@@ -5,6 +5,7 @@ import { catchError, map } from 'rxjs/operators';
 
 import { InventoryService } from '../../../shared/services/inventory.service';
 import { CategoryService } from '../../../shared/services/category.service';
+import { AuthenticationService } from '../../../shared/services/authentication.service';
 import { UtilitiesService } from '../../../shared/services/utilities.service';
 
 import { Item } from '../../../shared/models/item';
@@ -13,12 +14,14 @@ import { Sort } from '../../../shared/models/sort';
 import { Search } from '../../../shared/models/search';
 import { Category } from '../../../shared/models/category';
 
+import { PageBase } from '../../../shared/helpers/page-base';
+
 @Component({
   selector: 'app-inventory-list',
   templateUrl: './inventory-list.component.html',
   styleUrls: ['./inventory-list.component.css']
 })
-export class InventoryListComponent implements AfterContentInit, OnDestroy {
+export class InventoryListComponent extends PageBase implements AfterContentInit, OnDestroy {
   page: Page = new Page();
   sort: Sort = new Sort();
   search: Search = new Search();
@@ -29,7 +32,14 @@ export class InventoryListComponent implements AfterContentInit, OnDestroy {
 
   isLoading: boolean = false;
 
-  constructor(private inventoryService: InventoryService, private categoryService: CategoryService, private util: UtilitiesService) {
+  constructor(
+    private inventoryService: InventoryService,
+    private categoryService: CategoryService,
+    private authService: AuthenticationService,
+    private util: UtilitiesService
+  ) {
+    super(authService);
+
     this.page.pageNumber = 0;
     this.page.size = 20;
     this.sort.prop = 'name';

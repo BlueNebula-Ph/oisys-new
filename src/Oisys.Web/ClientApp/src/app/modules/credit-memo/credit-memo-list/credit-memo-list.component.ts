@@ -6,6 +6,7 @@ import { catchError, map } from 'rxjs/operators';
 import { CreditMemoService } from '../../../shared/services/credit-memo.service';
 import { CustomerService } from '../../../shared/services/customer.service';
 import { InventoryService } from '../../../shared/services/inventory.service';
+import { AuthenticationService } from '../../../shared/services/authentication.service';
 import { UtilitiesService } from '../../../shared/services/utilities.service';
 
 import { Page } from '../../../shared/models/page';
@@ -15,12 +16,14 @@ import { Customer } from '../../../shared/models/customer';
 import { CreditMemo } from '../../../shared/models/credit-memo';
 import { Item } from '../../../shared/models/item';
 
+import { PageBase } from '../../../shared/helpers/page-base';
+
 @Component({
   selector: 'app-credit-memo-list',
   templateUrl: './credit-memo-list.component.html',
   styleUrls: ['./credit-memo-list.component.css']
 })
-export class CreditMemoListComponent implements AfterContentInit, OnDestroy {
+export class CreditMemoListComponent extends PageBase implements AfterContentInit, OnDestroy {
   page: Page = new Page();
   sort: Sort = new Sort();
   search: Search = new Search();
@@ -36,7 +39,11 @@ export class CreditMemoListComponent implements AfterContentInit, OnDestroy {
     private creditMemoService: CreditMemoService,
     private customerService: CustomerService,
     private inventoryService: InventoryService,
-    private util: UtilitiesService) {
+    private authService: AuthenticationService,
+    private util: UtilitiesService
+  ) {
+    super(authService);
+
     this.page.pageNumber = 0;
     this.page.size = 20;
     this.sort.prop = 'date';

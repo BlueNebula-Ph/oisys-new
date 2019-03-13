@@ -57,17 +57,19 @@
           </ngx-datatable-column>
           <ngx-datatable-column name="" [flexGrow]="2">
             <ng-template ngx-datatable-header-template>
-              <a routerLink="/vouchers/edit/0" class="btn btn-sm btn-primary float-right" accesskey="n"><i class="fa fa-plus"></i> New Voucher</a>
+              <a routerLink="/vouchers/edit/0" class="btn btn-sm btn-primary float-right" accesskey="n" *ngIf="canWrite">
+                <i class="fa fa-plus"></i> New Voucher
+              </a>
             </ng-template>
             <ng-template ngx-datatable-cell-template let-row="row">
               <div class="text-right">
                 <a routerLink="/vouchers/info/{{ row.id }}" class="btn btn-ghost-primary" title="View voucher information.">
                   <i class="fa fa-sticky-note-o"></i>
                 </a>
-                <a routerLink="/vouchers/edit/{{ row.id }}" class="btn btn-ghost-primary ml-1" title="Edit this voucher.">
+                <a routerLink="/vouchers/edit/{{ row.id }}" class="btn btn-ghost-primary ml-1" title="Edit this voucher." *ngIf="canWrite">
                   <i class="fa fa-pencil"></i>
                 </a>
-                <button class="btn btn-ghost-danger ml-1" (click)="onDeleteVoucher(row.id)" title="Delete this voucher.">
+                <button class="btn btn-ghost-danger ml-1" (click)="onDeleteVoucher(row.id)" title="Delete this voucher." *ngIf="canDelete">
                   <i class="fa fa-trash-o"></i>
                 </button>
               </div>

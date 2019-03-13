@@ -49,17 +49,19 @@
           </ngx-datatable-column>
           <ngx-datatable-column name="" [flexGrow]="2">
             <ng-template ngx-datatable-header-template>
-              <a routerLink="/credit-memos/edit/0" class="btn btn-sm btn-primary float-right" accesskey="n"><i class="fa fa-plus"></i> New Credit Memo</a>
+              <a routerLink="/credit-memos/edit/0" class="btn btn-sm btn-primary float-right" accesskey="n" *ngIf="canWrite">
+                <i class="fa fa-plus"></i> New Credit Memo
+              </a>
             </ng-template>
             <ng-template ngx-datatable-cell-template let-row="row">
               <div class="text-right">
                 <a routerLink="/credit-memos/info/{{ row.id }}" class="btn btn-ghost-primary" title="View credit memo information.">
                   <i class="fa fa-sticky-note-o"></i>
                 </a>
-                <a routerLink="/credit-memos/edit/{{ row.id }}" class="btn btn-ghost-primary ml-1" title="Edit this credit memo.">
+                <a routerLink="/credit-memos/edit/{{ row.id }}" class="btn btn-ghost-primary ml-1" title="Edit this credit memo." *ngIf="canWrite">
                   <i class="fa fa-pencil"></i>
                 </a>
-                <button class="btn btn-ghost-danger ml-1" (click)="onDeleteCreditMemo(row.id)" title="Delete this credit memo.">
+                <button class="btn btn-ghost-danger ml-1" (click)="onDeleteCreditMemo(row.id)" title="Delete this credit memo." *ngIf="canDelete">
                   <i class="fa fa-trash-o"></i>
                 </button>
               </div>
