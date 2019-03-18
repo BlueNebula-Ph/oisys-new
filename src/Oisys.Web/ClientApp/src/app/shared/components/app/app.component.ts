@@ -19,6 +19,14 @@ export class AppComponent implements OnDestroy {
     return this.authService.currentUserValue;
   }
 
+  get fullname() {
+    return this.authService.currentUserValue.fullname;
+  }
+
+  get username() {
+    return this.authService.currentUserValue.username;
+  }
+
   constructor(
     private authService: AuthenticationService,
     private router: Router

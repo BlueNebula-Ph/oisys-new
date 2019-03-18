@@ -1,6 +1,14 @@
-<div class="animated fadeIn card center m-5">
+<div class="animated fadeIn card center login-form">
   <div class="card-body">
-    Login Page
+    <div class="row mb-3">
+      <div class="col-3">
+        <img src="../../../../assets/logo.jpg" class="img-thumbnail" width="80" height="80" />
+      </div>
+      <div class="col-9 pl-0">
+        <h2 class="card-title mt-2 mb-2">Ace Plastic Center.</h2>
+        <h5 class="card-subtitle mb-2 text-muted">Orders and Inventory Management.</h5>
+      </div>
+    </div>
     <form #loginForm="ngForm" (ngSubmit)="onLogin(loginForm)">
       <div class="form-group">
         <div appInputGroupStyle>
@@ -9,7 +17,7 @@
               <i class="fa fa-user fa-fw"></i>
             </span>
           </div>
-          <input appControlStyle name="username" [(ngModel)]="username" required />
+          <input #usernameBox appControlStyle name="username" [(ngModel)]="username" required />
         </div>
       </div>
       <div class="form-group">
@@ -23,7 +31,9 @@
         </div>
       </div>
       <button type="submit" class="btn btn-primary" [disabled]="loginForm.invalid || isLoading">
-        Login
+        <i *ngIf="!isLoading" class="fa fa-sign-in mr-1"></i>
+        <i *ngIf="isLoading" class="fa fa-spinner fa-spin mr-1"></i>
+        <span>Login</span>
       </button>
     </form>
   </div>

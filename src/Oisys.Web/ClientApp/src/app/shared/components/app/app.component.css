@@ -1,5 +1,40 @@
+header {
+  position: fixed;
+  width: 100%;
+  z-index: 1020;
+  border-bottom: 1px solid #c8ced3;
+  height: 55px;
+  margin: 0;
+  padding: 0 10px;
+  background-color: #fff;
+  display: flex;
+  flex-direction: row;
+}
+
+.brand-text {
+  display: flex;
+  flex-direction: column;
+}
+
+  .brand-text .h4 {
+    color: #565656;
+  }
+
+.user-icon {
+  color: #555;
+  font-size: xx-large;
+}
+
+.app-body {
+  margin-top: 55px;
+}
+
 .main-panel {
   margin-left: 15%;
+}
+
+.breadcrumb-menu {
+  margin-left: 0;
 }
 
 @media (max-width: 767px) {

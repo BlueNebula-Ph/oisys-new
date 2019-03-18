@@ -1,4 +1,4 @@
-import { Component, ViewEncapsulation, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewChild, ElementRef, AfterContentInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { NgForm } from '@angular/forms';
 
@@ -11,7 +11,7 @@ import { AuthenticationService } from '../../services/authentication.service';
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.css']
 })
-export class LoginComponent implements OnInit, OnDestroy {
+export class LoginComponent implements OnInit, AfterContentInit, OnDestroy {
   username: string;
   password: string;
   error: string;
@@ -21,6 +21,8 @@ export class LoginComponent implements OnInit, OnDestroy {
   isLoading = false;
   defaultUrl = '/'
   returnUrl: string;
+
+  @ViewChild('usernameBox') usernameField: ElementRef;
 
   constructor(
     private authService: AuthenticationService,
@@ -35,6 +37,10 @@ export class LoginComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/';
+  }
+
+  ngAfterContentInit() {
+    this.focusDefault();
   }
 
   ngOnDestroy() {
@@ -54,9 +60,13 @@ export class LoginComponent implements OnInit, OnDestroy {
           this.router.navigate([this.returnUrl]);
         },
         error => {
-          this.error = error;
           this.isLoading = false;
+          this.focusDefault();
         }
       );
+  };
+
+  private focusDefault() {
+    setTimeout(() => { this.usernameField.nativeElement.focus(); }, 100);
   };
 }

@@ -5,12 +5,14 @@ import { Observable, throwError } from "rxjs";
 import { catchError } from "rxjs/operators";
 
 import { AuthenticationService } from "../services/authentication.service";
+import { UtilitiesService } from "../services/utilities.service";
 
 @Injectable()
 export class ErrorInterceptor implements HttpInterceptor {
 
   constructor(
-    private authService: AuthenticationService
+    private authService: AuthenticationService,
+    private util: UtilitiesService
   ) { }
 
   intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
@@ -23,8 +25,11 @@ export class ErrorInterceptor implements HttpInterceptor {
             location.reload(true);
           }
 
-          const error = err.error.message || err.statusText;
-          return throwError(error);
+          if (err.status === 400) {
+            this.util.showErrorMessage(err.error);
+          }
+
+          return throwError(err);
         }));
   }
 }

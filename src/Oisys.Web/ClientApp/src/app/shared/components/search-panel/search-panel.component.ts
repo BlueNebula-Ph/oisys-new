@@ -32,7 +32,7 @@ export class SearchPanelComponent implements AfterContentInit {
 
   search: Search = new Search();
 
-  @ViewChild("keywords") keywordsField: ElementRef;
+  @ViewChild('keywords') keywordsField: ElementRef;
 
   constructor() { }
 
