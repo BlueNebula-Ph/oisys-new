@@ -49,6 +49,8 @@
     <None Remove="ClientApp\src\app\shared\models\invoice-line-item-type.ts" />
     <None Remove="ClientApp\src\app\shared\models\invoice-line-item.ts" />
     <None Remove="ClientApp\src\app\shared\models\invoice.ts" />
+    <None Remove="ClientApp\src\app\shared\models\item-history.ts" />
+    <None Remove="ClientApp\src\app\shared\models\item-order-history.ts" />
     <None Remove="ClientApp\src\app\shared\models\item.ts" />
     <None Remove="ClientApp\src\app\shared\models\json-model-base.ts" />
     <None Remove="ClientApp\src\app\shared\models\line-item.ts" />
@@ -78,6 +80,8 @@
     <TypeScriptCompile Include="ClientApp\src\app\shared\models\invoice-line-item-type.ts" />
     <TypeScriptCompile Include="ClientApp\src\app\shared\models\invoice-line-item.ts" />
     <TypeScriptCompile Include="ClientApp\src\app\shared\models\invoice.ts" />
+    <TypeScriptCompile Include="ClientApp\src\app\shared\models\item-history.ts" />
+    <TypeScriptCompile Include="ClientApp\src\app\shared\models\item-order-history.ts" />
     <TypeScriptCompile Include="ClientApp\src\app\shared\models\line-item.ts" />
     <TypeScriptCompile Include="ClientApp\src\app\shared\models\json-model-base.ts" />
     <TypeScriptCompile Include="ClientApp\src\app\shared\models\city.ts" />

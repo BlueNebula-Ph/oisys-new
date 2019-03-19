@@ -8,6 +8,8 @@ import { Item } from '../models/item';
 import { UtilitiesService } from './utilities.service';
 import { PagedData } from '../models/paged-data';
 import { Adjustment } from '../models/adjustment';
+import { ItemHistory } from '../models/item-history';
+import { ItemOrderHistory } from '../models/item-order-history';
 
 @Injectable({
   providedIn: 'root'
@@ -62,5 +64,15 @@ export class InventoryService {
       return this.http.post<Adjustment>(adjustmentUrl, adjustment, this.util.httpOptions);
     }
     throw new Error('Adjustment item id cannot be empty.');
+  };
+
+  getItemHistory(id: number, page: number, size: number): Observable<PagedData<ItemHistory>> {
+    var url = `${this.url}/${id}/history?page=${page}&size=${size}`;
+    return this.http.get<any>(url);
+  };
+
+  getItemOrderHistory(id: number, page: number, size: number): Observable<PagedData<ItemOrderHistory>> {
+    var url = `${this.url}/${id}/orders?page=${page}&size=${size}`;
+    return this.http.get<any>(url);
   };
 }

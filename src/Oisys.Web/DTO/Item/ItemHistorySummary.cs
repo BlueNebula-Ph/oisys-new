@@ -7,7 +7,7 @@ namespace OisysNew.DTO.Item
         /// <summary>
         /// Gets or sets the item transaction date
         /// </summary>
-        public DateTime Date { get; set; }
+        public string Date { get; set; }
 
         /// <summary>
         /// Gets or sets the item transaction quantity

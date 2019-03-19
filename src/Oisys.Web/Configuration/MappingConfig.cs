@@ -160,7 +160,8 @@ namespace OisysNew.Configuration
             CreateMap<SaveItemRequest, Item>();
 
             // Item History
-            CreateMap<ItemHistory, ItemHistorySummary>();
+            CreateMap<ItemHistory, ItemHistorySummary>()
+                .ForMember(d => d.Date, s => s.MapFrom(o => o.Date.ToShortDateString()));
 
             // Order
             CreateMap<Order, OrderSummary>()
@@ -195,6 +196,11 @@ namespace OisysNew.Configuration
                 .ForMember(d => d.QuantityDelivered, s => s.MapFrom(o => o.QuantityDelivered))
                 .ForMember(d => d.OrderLineItemId, s => s.MapFrom(o => o.Id))
                 .ForMember(d => d.Customer, s => s.MapFrom(o => o.Order.Customer));
+
+            CreateMap<OrderLineItem, ItemOrderSummary>()
+                .ForMember(d => d.CustomerName, s => s.MapFrom(o => o.Order.Customer.Name))
+                .ForMember(d => d.DateOrdered, s => s.MapFrom(o => o.Order.Date.ToShortDateString()))
+                .ForMember(d => d.QuantityOrdered, s => s.MapFrom(o => o.Quantity));
 
             // Province
             CreateMap<Province, ProvinceSummary>()

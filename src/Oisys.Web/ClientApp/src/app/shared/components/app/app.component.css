@@ -1,10 +1,11 @@
 header {
-  position: fixed;
+  position: relative;
   width: 100%;
   z-index: 1020;
   border-bottom: 1px solid #c8ced3;
   height: 55px;
   margin: 0;
+  /*margin-bottom: 55px;*/
   padding: 0 10px;
   background-color: #fff;
   display: flex;
@@ -26,7 +27,6 @@ header {
 }
 
 .app-body {
-  margin-top: 55px;
 }
 
 .main-panel {

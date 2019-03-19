@@ -152,7 +152,6 @@ namespace OisysNew.Controllers
             {
                 var entity = await context.Items
                     .Include(a => a.Category)
-                    .Include(a => a.TransactionHistory)
                     .AsNoTracking()
                     .SingleOrDefaultAsync(c => c.Id == id);
 
@@ -163,6 +162,66 @@ namespace OisysNew.Controllers
 
                 var itemDetail = mapper.Map<ItemDetail>(entity);
                 return itemDetail;
+            }
+            catch (Exception e)
+            {
+                logger.LogError(e.Message);
+                return StatusCode(StatusCodes.Status500InternalServerError);
+            }
+        }
+
+        /// <summary>
+        /// Gets <see cref="ItemHistory"/> of an item.
+        /// </summary>
+        /// <param name="id">id</param>
+        /// <param name="page">page index requested (0 based)</param>
+        /// <param name="size">page size requested</param>
+        /// <returns>List of item histories</returns>
+        [HttpGet("{id}/history", Name = "GetItemTransactionHistory")]
+        [ProducesResponseType(typeof(PaginatedList<ItemHistorySummary>), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<ActionResult<PaginatedList<ItemHistorySummary>>> GetItemTransactionHistory([FromRoute]long id, [FromQuery]int page, [FromQuery]int size)
+        {
+            try
+            {
+                var transactionHistories = context.ItemHistories
+                    .AsNoTracking()
+                    .Where(a => a.ItemId == id)
+                    .OrderByDescending(a => a.Date);
+
+                return await listHelpers.CreatePaginatedListAsync<ItemHistory, ItemHistorySummary>(
+                    transactionHistories, page, size);
+            }
+            catch (Exception e)
+            {
+                logger.LogError(e.Message);
+                return StatusCode(StatusCodes.Status500InternalServerError);
+            }
+        }
+
+        /// <summary>
+        /// Gets <see cref="ItemOrderSummary"/> of an item.
+        /// </summary>
+        /// <param name="id">id</param>
+        /// <param name="page">page index requested (0 based)</param>
+        /// <param name="size">page size requested</param>
+        /// <returns>List of item order history</returns>
+        [HttpGet("{id}/orders", Name = "GetItemOrderHistory")]
+        [ProducesResponseType(typeof(PaginatedList<ItemOrderSummary>), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<ActionResult<PaginatedList<ItemOrderSummary>>> GetItemOrderHistory([FromRoute]long id, [FromQuery]int page, [FromQuery]int size)
+        {
+            try
+            {
+                var orderHistory = context.OrderLineItems
+                    .Include(a => a.Order)
+                        .ThenInclude(a => a.Customer)
+                    .AsNoTracking()
+                    .Where(a => a.ItemId == id)
+                    .OrderByDescending(a => a.Order.Date);
+
+                return await listHelpers.CreatePaginatedListAsync<OrderLineItem, ItemOrderSummary>(
+                    orderHistory, page, size);
             }
             catch (Exception e)
             {
