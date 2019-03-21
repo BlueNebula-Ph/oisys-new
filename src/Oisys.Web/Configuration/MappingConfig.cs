@@ -64,6 +64,13 @@ namespace OisysNew.Configuration
             CreateMap<CreditMemo, CreditMemoLookup>()
                 .ForMember(d => d.Date, s => s.MapFrom(o => o.Date.ToShortDateString()));
 
+            CreateMap<CreditMemo, CustomerTransactionSummary>()
+                .ForMember(d => d.Code, s => s.MapFrom(o => $"Credit Memo # {o.Code.ToString()}"))
+                .ForMember(d => d.Date, s => s.MapFrom(o => o.Date.ToShortDateString()))
+                .ForMember(d => d.Type, s => s.MapFrom(o => "Credit Memo"))
+                .ForMember(d => d.TotalAmount, s => s.MapFrom(o => o.TotalAmount))
+                .ForMember(d => d.IsInvoiced, s => s.MapFrom(o => o.IsInvoiced));
+
             CreateMap<SaveCreditMemoRequest, CreditMemo>();
 
             // Credit Memo Line Item
@@ -177,6 +184,13 @@ namespace OisysNew.Configuration
 
             CreateMap<Order, OrderLookup>()
                 .ForMember(d => d.Date, s => s.MapFrom(o => o.Date.ToShortDateString()));
+
+            CreateMap<Order, CustomerTransactionSummary>()
+                .ForMember(d => d.Code, s => s.MapFrom(o => $"Order # {o.Code.ToString()}"))
+                .ForMember(d => d.Date, s => s.MapFrom(o => o.Date.ToShortDateString()))
+                .ForMember(d => d.Type, s => s.MapFrom(o => "Order"))
+                .ForMember(d => d.TotalAmount, s => s.MapFrom(o => o.TotalAmount))
+                .ForMember(d => d.IsInvoiced, s => s.MapFrom(o => o.IsInvoiced));
 
             CreateMap<SaveOrderRequest, Order>();
 

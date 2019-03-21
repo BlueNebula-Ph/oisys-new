@@ -7,6 +7,7 @@ import { environment } from '../../../environments/environment';
 import { Customer } from '../models/customer';
 import { UtilitiesService } from './utilities.service';
 import { PagedData } from '../models/paged-data';
+import { CustomerTransaction } from '../models/customer-transaction';
 
 @Injectable({
   providedIn: 'root'
@@ -53,5 +54,10 @@ export class CustomerService {
   deleteCustomer(id: number): Observable<any> {
     var deleteUrl = `${this.url}/${id}`;
     return this.http.delete(deleteUrl, this.util.httpOptions);
+  };
+
+  getTransactions(id: number, page: number, size: number): Observable<PagedData<CustomerTransaction>> {
+    var url = `${this.url}/${id}/transactions?page=${page}&size=${size}`;
+    return this.http.get<any>(url);
   };
 }

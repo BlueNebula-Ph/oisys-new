@@ -40,8 +40,8 @@ namespace OisysNew.Controllers
         /// <param name="listHelpers">List helper</param>
         /// <param name="logger">Logger</param>
         public CustomerController(
-            IOisysDbContext context, 
-            IMapper mapper, 
+            IOisysDbContext context,
+            IMapper mapper,
             IListHelpers listHelpers,
             ILogger<CustomerController> logger)
         {
@@ -144,48 +144,6 @@ namespace OisysNew.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError);
             }
         }
-
-        /// <summary>
-        /// Returns list of active <see cref="Customer"/> with corresponding orders.
-        /// </summary>
-        /// <param name="isDelivered">Indicates whether orders returned are delivered or not.</param>
-        /// <returns>List of Customers with orders</returns>
-        //[HttpGet("lookupWithOrders/{isDelivered?}", Name = "GetCustomerLookupWithOrders")]
-        //public IActionResult GetLookupWithOrders(bool isDelivered = false)
-        //{
-        //    // get list of active items (not deleted)
-        //    var list = context.Customers
-        //        .AsNoTracking()
-        //        .Where(c => !c.IsDeleted);
-
-        //    // sort
-        //    var ordering = $"Name {Constants.DefaultSortDirection}";
-
-        //    list = list.OrderBy(ordering);
-
-        //    var customers = list.ProjectTo<CustomerWithOrdersLookup>().ToList();
-
-        //    // get the corresponding open orders of each customer
-        //    foreach (var customer in customers)
-        //    {
-        //        var orderDetails = context.OrderDetails
-        //        .Include(c => c.Item)
-        //        .ThenInclude(c => c.Category)
-        //        .AsNoTracking()
-        //        .Where(c => !c.Order.IsDeleted && c.Order.CustomerId == customer.Id);
-
-        //        if (!isDelivered)
-        //        {
-        //            orderDetails = orderDetails.Where(a => a.QuantityDelivered != a.Quantity);
-        //        }
-
-        //        orderDetails = orderDetails.OrderBy(c => c.Item.Code);
-
-        //        customer.OrderDetails = orderDetails.ProjectTo<OrderDetailLookup>().ToList();
-        //    }
-
-        //    return Ok(customers);
-        //}
 
         /// <summary>
         /// Gets a specific <see cref="Customer"/>.
@@ -320,68 +278,54 @@ namespace OisysNew.Controllers
         }
 
         /// <summary>
-        /// Adds a transaction record to a <see cref="Customer"/> record
-        /// </summary>
-        /// <param name="customerId">Customer Id</param>
-        /// <param name="entity">Entity to add</param>
-        /// <returns><see cref="Customer"/></returns>
-        //[HttpPost("{customerId}/transaction")]
-        //public async Task<IActionResult> AddCustomerTransaction(long customerId, [FromBody] SaveCustomerTrxRequest entity)
-        //{
-        //    if (entity == null || customerId == 0 || !ModelState.IsValid)
-        //    {
-        //        return BadRequest(ModelState);
-        //    }
-
-        //    var transaction = mapper.Map<CustomerTransaction>(entity);
-
-        //    await context.CustomerTransactions.AddAsync(transaction);
-        //    await context.SaveChangesAsync();
-
-        //    return Ok(entity);
-        //}
-
-        /// <summary>
         /// Gets all transactions of a customer
         /// </summary>
         /// <param name="filter">Filter values</param>
         /// <returns>Returns list of <see cref="CustomerTransactionSummary"/></returns>
-        //[HttpPost("getTransactions")]
-        //public async Task<IActionResult> GetCustomerTransactions([FromBody] CustomerTransactionFilterRequest filter)
-        //{
-        //    if (!ModelState.IsValid)
-        //    {
-        //        return BadRequest(ModelState);
-        //    }
+        [HttpGet("{id}/transactions")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<ActionResult<PaginatedList<CustomerTransactionSummary>>> GetCustomerTransactions([FromRoute]long id, [FromQuery]int page, [FromQuery]int size)
+        {
+            try
+            {
+                var customerExists = await context.Customers.AnyAsync(a => a.Id == id);
+                if (!customerExists)
+                {
+                    return NotFound();
+                }
 
-        //    var transactions = context.CustomerTransactions
-        //        .AsNoTracking();
+                var orders = context.Orders
+                    .AsNoTracking()
+                    .Where(c => c.CustomerId == id)
+                    .ProjectTo<CustomerTransactionSummary>(mapper.ConfigurationProvider);
 
-        //    if (!(filter?.CustomerId).IsNullOrZero())
-        //    {
-        //        transactions = transactions.Where(c => c.CustomerId == filter.CustomerId);
-        //    }
+                var creditMemos = context.CreditMemos
+                    .AsNoTracking()
+                    .Where(a => a.CustomerId == id)
+                    .ProjectTo<CustomerTransactionSummary>(mapper.ConfigurationProvider);
 
-        //    if (filter?.DateFrom != null || filter?.DateTo != null)
-        //    {
-        //        filter.DateFrom = filter.DateFrom == null || filter.DateFrom == DateTime.MinValue ? DateTime.Today : filter.DateFrom;
-        //        filter.DateTo = filter.DateTo == null || filter.DateTo == DateTime.MinValue ? DateTime.Today : filter.DateTo;
+                var combined = orders
+                    .Concat(creditMemos)
+                    .OrderByDescending(a => a.Date);
 
-        //        transactions = transactions.Where(c => c.Date >= filter.DateFrom && c.Date < filter.DateTo.Value.AddDays(1));
-        //    }
+                var newPageNumber = page + 1;
 
-        //    // sort
-        //    var ordering = $"Date {Constants.DefaultSortDirection}";
-        //    if (!string.IsNullOrEmpty(filter?.SortBy))
-        //    {
-        //        ordering = $"{filter.SortBy} {filter.SortDirection}";
-        //    }
+                var count = await combined.CountAsync();
+                var totalPages = (int)Math.Ceiling(count / (double)size);
 
-        //    transactions = transactions.OrderBy(ordering);
+                var items = await combined
+                    .Page(newPageNumber, size)
+                    .ToListAsync();
 
-        //    var mappedTransactions = await transactionListBuilder.BuildAsync(transactions, filter);
-
-        //    return Ok(mappedTransactions);
-        //}
+                return new PaginatedList<CustomerTransactionSummary>(items, size, count, totalPages, page);
+            }
+            catch (Exception e)
+            {
+                logger.LogError(e.Message);
+                return StatusCode(StatusCodes.Status500InternalServerError);
+            }
+        }
     }
 }

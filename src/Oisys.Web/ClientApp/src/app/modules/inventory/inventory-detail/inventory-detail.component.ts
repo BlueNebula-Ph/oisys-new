@@ -24,9 +24,11 @@ export class InventoryDetailComponent extends PageBase implements AfterContentIn
 
   itemHistory$: Observable<ItemHistory[]>;
   itemHistoryPage: Page = new Page();
+  itemHistoryLoading = false;
 
   itemOrders$: Observable<ItemOrderHistory[]>;
   itemOrdersPage: Page = new Page();
+  itemOrdersLoading = false;
 
   itemId: number;
 
@@ -61,22 +63,26 @@ export class InventoryDetailComponent extends PageBase implements AfterContentIn
   };
 
   loadItemHistory() {
+    this.itemHistoryLoading = true;
     this.itemHistory$ = this.inventoryService
       .getItemHistory(this.itemId, this.itemHistoryPage.pageNumber, this.itemHistoryPage.size)
       .pipe(
         map(data => {
           this.itemHistoryPage = data.pageInfo;
+          this.itemHistoryLoading = false;
           return data.items;
         })
       );
   };
 
   loadOrderHistory() {
+    this.itemOrdersLoading = true;
     this.itemOrders$ = this.inventoryService
       .getItemOrderHistory(this.itemId, this.itemOrdersPage.pageNumber, this.itemOrdersPage.size)
       .pipe(
         map(data => {
           this.itemOrdersPage = data.pageInfo;
+          this.itemOrdersLoading = false;
           return data.items;
         })
       );

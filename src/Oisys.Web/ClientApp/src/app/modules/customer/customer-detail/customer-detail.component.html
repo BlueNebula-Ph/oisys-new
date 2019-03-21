@@ -1,9 +1,9 @@
 <div class="animated fadeIn card" *ngIf="customer$ | async as customer">
   <div class="card-body">
-    <h5 class="card-title">
+    <h4 class="card-title">
       {{ customer.name }}
       <span class="badge badge-primary">{{ customer.priceList }}</span>
-    </h5>
+    </h4>
     <p class="text-muted">{{ customer.address }}, {{ customer.city.name }}, {{ customer.province.name }}</p>
     <div class="brand-card">
       <div class="brand-card-body">
@@ -42,6 +42,62 @@
             Terms
           </div>
         </div>
+      </div>
+    </div>
+    <div>
+      <h6>Recent Transactions.</h6>
+      <div class="datatable-container">
+        <div class="progress-bar progress-bar-striped progress-bar-animated prog-bar" [hidden]="!transactionsLoading"></div>
+        <ngx-datatable class="bootstrap"
+                       [rows]="(transactions$ | async) || []"
+                       [columnMode]="'flex'"
+                       [headerHeight]="10"
+                       [summaryRow]="false"
+                       [footerHeight]="25"
+                       [rowHeight]="'auto'"
+                       [reorderable]="false"
+                       [externalPaging]="true"
+                       [count]="transactionsPage.totalElements"
+                       [offset]="transactionsPage.pageNumber"
+                       [limit]="transactionsPage.size"
+                       [externalSorting]="false"
+                       (page)="setPage($event)">
+          <ngx-datatable-column name="" prop="type" [sortable]="false" [flexGrow]="1">
+            <ng-template let-value="value" ngx-datatable-cell-template>
+              <div class="text-center">
+                <i *ngIf="value == 'Order'" class="fa fa-plus text-success"></i>
+                <i *ngIf="value == 'Credit Memo'" class="fa fa-minus text-danger"></i>
+              </div>
+            </ng-template>
+          </ngx-datatable-column>
+          <ngx-datatable-column name="Code" prop="code" [sortable]="false" [flexGrow]="1">
+            <ng-template let-value="value" ngx-datatable-cell-template>
+              {{ value }}
+            </ng-template>
+          </ngx-datatable-column>
+          <ngx-datatable-column name="Date" prop="date" [sortable]="false" [flexGrow]="1" headerClass="center">
+            <ng-template let-value="value" ngx-datatable-cell-template>
+              <div class="text-center">
+                {{ value }}
+              </div>
+            </ng-template>
+          </ngx-datatable-column>
+          <ngx-datatable-column name="Total Amount" prop="totalAmount" [sortable]="false" [flexGrow]="1" headerClass="right">
+            <ng-template let-value="value" ngx-datatable-cell-template>
+              <div class="text-right">
+                {{ value | currency:'PHP':'₱ ' }}
+              </div>
+            </ng-template>
+          </ngx-datatable-column>
+          <ngx-datatable-column name="Invoiced" prop="isInvoiced" [sortable]="false" [flexGrow]="1" headerClass="center">
+            <ng-template let-value="value" ngx-datatable-cell-template>
+              <div class="text-center">
+                <i *ngIf="value" class="fa fa-check text-success"></i>
+                <i *ngIf="!value" class="fa fa-times text-danger"></i>
+              </div>
+            </ng-template>
+          </ngx-datatable-column>
+        </ngx-datatable>
       </div>
     </div>
     <div>
