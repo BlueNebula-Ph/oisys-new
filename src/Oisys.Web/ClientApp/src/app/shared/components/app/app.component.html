@@ -1,43 +1,39 @@
-<div *ngIf="isLoggedIn">
-  <header class="justify-content-between">
-    <a [routerLink]="['/']" class="navbar-brand d-flex">
-      <img class="navbar-brand-full" src="../../../../assets/logo.jpg" width="50" height="50" />
-      <div class="brand-text">
-        <div class="h4 mb-0">Ace Plastic Center</div>
-        <small class="text-muted">Order and Inventory Management.</small>
-      </div>
-    </a>
-    <div>
-      <div class="d-inline-block">
-        <i class="fa fa-user-circle user-icon"></i>
-      </div>
-      <div class="d-inline-block mt-2 ml-2">
-        <div>Welcome {{ fullname }}!</div>
-        <div class="small text-muted">Logged on as {{ username }} |
-          <a class="text-danger pointer" (click)="logout()">
-            <i class="fa fa-sign-out"></i> Sign out
-          </a>
-        </div>
+<header class="justify-content-between" *ngIf="isLoggedIn">
+  <a [routerLink]="['/']" class="navbar-brand d-flex">
+    <img class="navbar-brand-full" src="../../../../assets/logo.jpg" width="50" height="50" />
+    <div class="brand-text">
+      <div class="h4 mb-0">Ace Plastic Center</div>
+      <small class="text-muted">Order and Inventory Management.</small>
+    </div>
+  </a>
+  <div>
+    <div class="d-inline-block">
+      <i class="fa fa-user-circle user-icon"></i>
+    </div>
+    <div class="d-inline-block mt-2 ml-2">
+      <div>Welcome {{ fullname }}!</div>
+      <div class="small text-muted">
+        Logged on as {{ username }} |
+        <a class="text-danger pointer" (click)="logout()">
+          <i class="fa fa-sign-out"></i> Sign out
+        </a>
       </div>
     </div>
-  </header>
-  <div class="app-body">
-    <app-sidebar [fixed]="false" [display]="'lg'">
-      <app-sidebar-nav [navItems]="navItems" [perfectScrollbar]></app-sidebar-nav>
-    </app-sidebar>
-    <main class="main">
-      <ol class="breadcrumb py-2 mb-3">
-        <li class="breadcrumb-menu d-md-down-none">
-          <a class="btn" [routerLink]="['/']"><i class="fa fa-home mr-1"></i>Home</a>
-          <a class="btn" [routerLink]="['/']"><i class="fa fa-bar-chart mr-2"></i>Reports</a>
-        </li>
-      </ol>
-      <div class="container-fluid">
-        <router-outlet></router-outlet>
-      </div>
-    </main>
   </div>
-</div>
-<div *ngIf="!isLoggedIn">
-  <router-outlet></router-outlet>
+</header>
+<div class="app-body">
+  <app-sidebar [fixed]="false" [display]="'lg'" *ngIf="isLoggedIn">
+    <app-sidebar-nav [navItems]="navItems" [perfectScrollbar]></app-sidebar-nav>
+  </app-sidebar>
+  <main class="main">
+    <ol class="breadcrumb py-2 mb-3" *ngIf="isLoggedIn">
+      <li class="breadcrumb-menu d-md-down-none">
+        <a class="btn" [routerLink]="['/']"><i class="fa fa-home mr-1"></i>Home</a>
+        <a class="btn" [routerLink]="['/reports']"><i class="fa fa-bar-chart mr-2"></i>Reports</a>
+      </li>
+    </ol>
+    <div class="container-fluid">
+      <router-outlet></router-outlet>
+    </div>
+  </main>
 </div>

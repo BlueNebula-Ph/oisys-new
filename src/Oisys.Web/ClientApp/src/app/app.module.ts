@@ -33,6 +33,7 @@ import { HomeComponent } from './shared/components/home/home.component';
 import { LoginComponent } from './shared/components/login/login.component';
 import { JwtInterceptor } from './shared/interceptors/jwt.interceptor';
 import { ErrorInterceptor } from './shared/interceptors/error.interceptor';
+import { ReportsModule } from './modules/reports/reports.module';
 
 export const CustomScrollConfig: PerfectScrollbarConfigInterface = {
   suppressScrollX: true
@@ -70,6 +71,7 @@ export const CustomCurrencyMaskConfig: CurrencyMaskConfig = {
     VoucherModule,
     QuotationModule,
     SettingsModule,
+    ReportsModule,
     AppHeaderModule,
     AppSidebarModule,
     AppFooterModule,
@@ -78,7 +80,7 @@ export const CustomCurrencyMaskConfig: CurrencyMaskConfig = {
     NgxDatatableModule,
     ToastrModule.forRoot(),
     NgbTypeaheadModule,
-    CurrencyMaskModule
+    CurrencyMaskModule,
   ],
   providers: [
     { provide: PERFECT_SCROLLBAR_CONFIG, useValue: CustomScrollConfig },

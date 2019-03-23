@@ -40,6 +40,11 @@ import { InvoiceListComponent } from '../invoice/invoice-list/invoice-list.compo
 import { InvoiceFormComponent } from '../invoice/invoice-form/invoice-form.component';
 import { InvoiceDetailComponent } from '../invoice/invoice-detail/invoice-detail.component';
 
+import { ReportSelectorComponent } from '../reports/report-selector/report-selector.component';
+import { CountSheetComponent } from '../reports/count-sheet/count-sheet.component';
+import { OrderSummaryComponent } from '../reports/order-summary/order-summary.component';
+import { ProductSalesComponent } from '../reports/product-sales/product-sales.component';
+
 import { LoginComponent } from '../../shared/components/login/login.component';
 
 import { AuthGuard } from '../../shared/guards/auth-guard.guard';
@@ -57,8 +62,8 @@ const routes: Routes = [
   {
     path: '',
     component: HomeComponent,
-    pathMatch: 'full',
-    canActivate: [AuthGuard]
+    canActivate: [AuthGuard],
+    runGuardsAndResolvers: "always"
   },
   // Orders
   {
@@ -67,7 +72,8 @@ const routes: Routes = [
     canActivate: [AuthGuard],
     data: {
       roles: [canView]
-    }
+    },
+    runGuardsAndResolvers: "always"
   },
   {
     path: 'orders/edit/:id',
@@ -305,6 +311,29 @@ const routes: Routes = [
     data: {
       roles: [adminRole]
     }
+  },
+  // Reports
+  {
+    path: 'reports',
+    component: ReportSelectorComponent,
+    canActivate: [AuthGuard],
+    children: [
+      {
+        path: 'count-sheet',
+        component: CountSheetComponent,
+        canActivate: [AuthGuard]
+      },
+      {
+        path: 'order-summary',
+        component: OrderSummaryComponent,
+        canActivate: [AuthGuard]
+      },
+      {
+        path: 'product-sales',
+        component: ProductSalesComponent,
+        canActivate: [AuthGuard]
+      }
+    ]
   },
   // Otherwise
   {

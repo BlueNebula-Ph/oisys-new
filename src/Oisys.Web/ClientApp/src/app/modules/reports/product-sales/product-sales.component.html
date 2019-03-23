@@ -1,0 +1,37 @@
+<div class="form-row mb-2">
+  <div class="col-3">
+    <div appInputGroupStyle>
+      <div class="input-group-prepend">
+        <span class="input-group-text">Date From</span>
+      </div>
+      <input appControlStyle type="date" name="dateFrom" [(ngModel)]="dateFrom" />
+    </div>
+  </div>
+  <div class="col-3">
+    <div appInputGroupStyle>
+      <div class="input-group-prepend">
+        <span class="input-group-text">Date To</span>
+      </div>
+      <input appControlStyle type="date" name="dateTo" [(ngModel)]="dateTo" />
+    </div>
+  </div>
+  <button class="btn btn-sm btn-primary" (click)="loadReport()">
+    <i class="fa fa-filter"></i> Filter
+  </button>
+</div>
+<table class="table table-sm">
+  <thead class="thead-light">
+    <tr>
+      <th width="40%">Item</th>
+      <th width="30%" class="text-center">Total Quantity Sold</th>
+      <th width="30%" class="text-right">Total Sales</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let sale of ((sales$ | async) || [])">
+      <td>{{ sale.item }}</td>
+      <td class="text-center">{{ sale.quantitySold }}</td>
+      <td class="text-right">{{ sale.totalSales | currency:'PHP':'₱ ' }}</td>
+    </tr>
+  </tbody>
+</table>

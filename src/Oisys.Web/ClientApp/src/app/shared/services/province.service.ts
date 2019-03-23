@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { environment } from '../../../environments/environment';
 import { catchError } from 'rxjs/operators';
+import { environment } from '../../../environments/environment';
 
 import { UtilitiesService } from './utilities.service';
 import { Province } from '../models/province';
@@ -14,7 +14,10 @@ import { PagedData } from '../models/paged-data';
 export class ProvinceService {
   private url = `${environment.apiHost}api/province`;
 
-  constructor(private http: HttpClient, private util: UtilitiesService) { }
+  constructor(
+    private http: HttpClient,
+    private util: UtilitiesService
+  ) { }
 
   getProvinces(pageNumber: number, pageSize: number, sortBy: string, sortDirection: string, searchTerm: string): Observable<PagedData<Province>> {
     var filter = { pageNumber, pageSize, sortBy, sortDirection, searchTerm };

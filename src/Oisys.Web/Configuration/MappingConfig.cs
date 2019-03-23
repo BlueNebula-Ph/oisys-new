@@ -10,6 +10,7 @@ using OisysNew.DTO.Item;
 using OisysNew.DTO.Login;
 using OisysNew.DTO.Order;
 using OisysNew.DTO.Province;
+using OisysNew.DTO.Report;
 using OisysNew.DTO.SalesQuote;
 using OisysNew.DTO.User;
 using OisysNew.Extensions;
@@ -164,6 +165,9 @@ namespace OisysNew.Configuration
             CreateMap<Item, ItemDetail>()
                 .ForMember(d => d.Category, s => s.MapFrom(o => o.Category));
 
+            CreateMap<Item, ItemCount>()
+                .ForMember(d => d.Category, s => s.MapFrom(o => o.Category.Name));
+
             CreateMap<SaveItemRequest, Item>();
 
             // Item History
@@ -191,6 +195,13 @@ namespace OisysNew.Configuration
                 .ForMember(d => d.Type, s => s.MapFrom(o => "Order"))
                 .ForMember(d => d.TotalAmount, s => s.MapFrom(o => o.TotalAmount))
                 .ForMember(d => d.IsInvoiced, s => s.MapFrom(o => o.IsInvoiced));
+
+            CreateMap<Order, OrderReport>()
+                .ForMember(d => d.Code, s => s.MapFrom(o => $"Order # {o.Code.ToString()}"))
+                .ForMember(d => d.Customer, s => s.MapFrom(o => o.Customer.Name))
+                .ForMember(d => d.Date, s => s.MapFrom(o => o.Date.ToShortDateString()))
+                .ForMember(d => d.DueDate, s => s.MapFrom(o => o.DueDate.HasValue ? o.DueDate.Value.ToShortDateString() : string.Empty))
+                .ForMember(d => d.TotalAmount, s => s.MapFrom(o => o.TotalAmount));
 
             CreateMap<SaveOrderRequest, Order>();
 

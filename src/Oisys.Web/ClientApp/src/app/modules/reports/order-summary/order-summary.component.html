@@ -1,0 +1,48 @@
+<div class="form-row mb-2">
+  <div class="col-3">
+    <div appInputGroupStyle>
+      <div class="input-group-prepend">
+        <span class="input-group-text">Date From</span>
+      </div>
+      <input appControlStyle type="date" name="dateFrom" [(ngModel)]="dateFrom" />
+    </div>
+  </div>
+  <div class="col-3">
+    <div appInputGroupStyle>
+      <div class="input-group-prepend">
+        <span class="input-group-text">Date To</span>
+      </div>
+      <input appControlStyle type="date" name="dateTo" [(ngModel)]="dateTo" />
+    </div>
+  </div>
+  <button class="btn btn-sm btn-primary" (click)="loadReport()">
+    <i class="fa fa-filter"></i> Filter
+  </button>
+</div>
+<table class="table table-sm">
+  <thead class="thead-light">
+    <tr>
+      <th>Code</th>
+      <th>Customer</th>
+      <th class="text-center">Date</th>
+      <th class="text-center">Due Date</th>
+      <th class="text-right">Total Amount</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let order of ((orders$ | async) || [])">
+      <td>{{ order.code }}</td>
+      <td>{{ order.customer }}</td>
+      <td class="text-center">{{ order.date }}</td>
+      <td class="text-center">{{ order.dueDate }}</td>
+      <td class="text-right">{{ order.totalAmount | currency:'PHP':'₱ ' }}</td>
+    </tr>
+  </tbody>
+  <tfoot>
+    <tr>
+      <td colspan="5" class="text-right">
+        <strong>Total: {{ totalAmount | currency:'PHP':'₱ ' }}</strong>
+      </td>
+    </tr>
+  </tfoot>
+</table>

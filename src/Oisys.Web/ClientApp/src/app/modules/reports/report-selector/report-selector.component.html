@@ -1,0 +1,19 @@
+<div class="animate fadeIn">
+  <h4>Reports.</h4>
+  <div class="row">
+    <div class="col-2">
+      <div class="card p-0">
+        <div class="card-body">
+          <ul class="list-unstyled mb-0">
+            <li class="mb-2"><a class="text-dark" [routerLink]="['count-sheet']"><i class="fa fa-line-chart mr-2"></i>Count Sheet</a></li>
+            <li class="mb-2"><a class="text-dark" [routerLink]="['order-summary']"><i class="fa fa-bar-chart mr-2"></i>Order Summary</a></li>
+            <li class="mb-2"><a class="text-dark" [routerLink]="['product-sales']"><i class="fa fa-pie-chart mr-2"></i>Product Sales</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div class="col-10">
+      <router-outlet></router-outlet>
+    </div>
+  </div>
+</div>

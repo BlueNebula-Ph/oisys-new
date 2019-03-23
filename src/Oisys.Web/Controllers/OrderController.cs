@@ -131,16 +131,25 @@ namespace OisysNew.Controllers
         /// <returns>List of Orders per Customer</returns>
         [HttpGet("{customerId}/lookup/{isInvoiced?}", Name = "GetOrderLookup")]
         [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult<IEnumerable<OrderLookup>>> GetLookup(int customerId, bool isInvoiced = false)
         {
-            // get list of active items (not deleted)
-            var list = context.Orders
-                .AsNoTracking()
-                .Where(c => c.CustomerId == customerId && c.IsInvoiced == isInvoiced)
-                .OrderBy(c => c.Code);
+            try
+            {
+                // get list of active items (not deleted)
+                var list = context.Orders
+                    .AsNoTracking()
+                    .Where(c => c.CustomerId == customerId && c.IsInvoiced == isInvoiced)
+                    .OrderBy(c => c.Code);
 
-            var orders = await list.ProjectTo<OrderLookup>(mapper.ConfigurationProvider).ToListAsync();
-            return orders;
+                var orders = await list.ProjectTo<OrderLookup>(mapper.ConfigurationProvider).ToListAsync();
+                return orders;
+            }
+            catch (Exception e)
+            {
+                logger.LogError(e.Message);
+                return StatusCode(StatusCodes.Status500InternalServerError);
+            }
         }
 
         /// <summary>
