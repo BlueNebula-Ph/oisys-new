@@ -25,9 +25,10 @@ export class CreditMemoService {
     customerId: number = 0,
     itemId: number = 0,
     dateFrom?: Date,
-    dateTo?: Date
+    dateTo?: Date,
+    isInvoiced?: boolean
   ): Observable<PagedData<CreditMemo>> {
-    var filter = { pageNumber, pageSize, sortBy, sortDirection, searchTerm, customerId, itemId, dateFrom, dateTo };
+    var filter = { pageNumber, pageSize, sortBy, sortDirection, searchTerm, customerId, itemId, dateFrom, dateTo, isInvoiced };
     var searchUrl = `${this.url}/search`;
 
     return this.http.post<any>(searchUrl, filter)

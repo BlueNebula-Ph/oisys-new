@@ -19,8 +19,8 @@ export class InventoryService {
 
   constructor(private http: HttpClient, private util: UtilitiesService) { }
 
-  getItems(pageNumber: number, pageSize: number, sortBy: string, sortDirection: string, searchTerm: string, categoryId: number = 0): Observable<PagedData<Item>> {
-    var filter = { pageNumber, pageSize, sortBy, sortDirection, searchTerm, categoryId };
+  getItems(pageNumber: number, pageSize: number, sortBy: string, sortDirection: string, searchTerm: string, categoryId: number = 0, isQuantityLow: boolean = false): Observable<PagedData<Item>> {
+    var filter = { pageNumber, pageSize, sortBy, sortDirection, searchTerm, categoryId, isQuantityLow };
     var searchUrl = `${this.url}/search`;
 
     return this.http.post<any>(searchUrl, filter)

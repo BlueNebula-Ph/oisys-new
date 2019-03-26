@@ -36,6 +36,11 @@
         public const int DefaultPageIndex = 1;
 
         /// <summary>
+        /// The default quantity to be considered low
+        /// </summary>
+        public const int DefaultLowQuantity = 20;
+
+        /// <summary>
         /// <see cref="TransactionType"/> class to hold commonly used values object.
         /// </summary>
         public static class TransactionType

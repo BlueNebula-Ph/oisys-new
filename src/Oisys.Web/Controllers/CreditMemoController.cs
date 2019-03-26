@@ -103,6 +103,9 @@ namespace OisysNew.Controllers
                     list = list.Where(c => c.LineItems.Any(d => d.OrderLineItem.ItemId == filter.ItemId));
                 }
 
+                var isInvoiced = filter?.IsInvoiced ?? false;
+                list = list.Where(c => c.IsInvoiced == isInvoiced);
+
                 // sort
                 var ordering = $"{Constants.ColumnNames.Code} {Constants.DefaultSortDirection}";
                 if (!string.IsNullOrEmpty(filter?.SortBy))

@@ -96,6 +96,26 @@
       <input appControlStyle type="date" placeholder="Date To" [(ngModel)]="search.dateTo" />
     </div>
 
+    <!-- Is invoiced -->
+    <div *ngIf="showInvoiced" class="input-group mb-2">
+      <div class="input-group-prepend" title="Search items that are invoiced.">
+        <div class="input-group-text">
+          <input class="fa-fw" type="checkbox" [(ngModel)]="search.isInvoiced">
+        </div>
+      </div>
+      <input appControlStyle readonly value="Show invoiced items." />
+    </div>
+
+    <!-- Low quantity -->
+    <div *ngIf="showLowQuantity" class="input-group mb-2">
+      <div class="input-group-prepend" title="Search items with low quantity.">
+        <div class="input-group-text">
+          <input class="fa-fw" type="checkbox" [(ngModel)]="search.isQuantityLow">
+        </div>
+      </div>
+      <input appControlStyle readonly value="Show items with low quantity." />
+    </div>
+
     <!-- Buttons -->
     <div>
       <button type="button" class="btn btn-sm btn-primary mr-1" (click)="performSearch()" accesskey="s">

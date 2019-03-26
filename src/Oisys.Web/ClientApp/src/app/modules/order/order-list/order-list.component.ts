@@ -76,7 +76,8 @@ export class OrderListComponent extends PageBase implements AfterContentInit, On
       this.search.provinceId,
       this.search.itemId,
       this.search.dateFrom,
-      this.search.dateTo)
+      this.search.dateTo,
+      this.search.isInvoiced)
       .pipe(
         map(data => {
           // Flip flag to show that loading has finished.

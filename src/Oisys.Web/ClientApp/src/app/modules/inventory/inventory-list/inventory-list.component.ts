@@ -65,7 +65,8 @@ export class InventoryListComponent extends PageBase implements AfterContentInit
       this.sort.prop,
       this.sort.dir,
       this.search.searchTerm,
-      this.search.categoryId)
+      this.search.categoryId,
+      this.search.isQuantityLow)
       .pipe(
         map(data => {
           // Flip flag to show that loading has finished.

@@ -71,7 +71,8 @@ export class CreditMemoListComponent extends PageBase implements AfterContentIni
       this.search.customerId,
       this.search.itemId,
       this.search.dateFrom,
-      this.search.dateTo)
+      this.search.dateTo,
+      this.search.isInvoiced)
       .pipe(
         map(data => {
           // Flip flag to show that loading has finished.

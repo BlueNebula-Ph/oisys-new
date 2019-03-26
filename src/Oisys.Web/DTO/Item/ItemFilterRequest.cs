@@ -11,13 +11,8 @@
         public int CategoryId { get; set; }
 
         /// <summary>
-        /// Gets or sets property Price.
+        /// Gets or sets a value indicating whether item has low quantity.
         /// </summary>
-        public decimal? Price { get; set; }
-
-        /// <summary>
-        /// Gets or sets property Weight.
-        /// </summary>
-        public decimal? Weight { get; set; }
+        public bool IsQuantityLow { get; set; }
     }
 }

@@ -83,6 +83,11 @@ namespace OisysNew.Controllers
                     list = list.Where(c => c.CategoryId == filter.CategoryId);
                 }
 
+                if (filter?.IsQuantityLow ?? false)
+                {
+                    list = list.Where(c => c.Quantity < Constants.DefaultLowQuantity);
+                }
+
                 // sort
                 var ordering = $"{Constants.ColumnNames.Code} {Constants.DefaultSortDirection}";
                 if (!string.IsNullOrEmpty(filter?.SortBy))

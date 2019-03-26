@@ -13,6 +13,8 @@ export class Search {
   public selectedCategory: Category = null;
   public dateFrom: Date = null;
   public dateTo: Date = null;
+  public isInvoiced: boolean = false;
+  public isQuantityLow: boolean = false;
 
   get provinceId(): number {
     if (this.selectedProvince) {

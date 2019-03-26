@@ -27,9 +27,10 @@ export class OrderService {
     provinceId: number = 0,
     itemId: number = 0,
     dateFrom?: Date,
-    dateTo?: Date
+    dateTo?: Date,
+    isInvoiced?: boolean
   ): Observable<PagedData<Order>> {
-    var filter = { pageNumber, pageSize, sortBy, sortDirection, searchTerm, customerId, provinceId, itemId, dateFrom, dateTo };
+    var filter = { pageNumber, pageSize, sortBy, sortDirection, searchTerm, customerId, provinceId, itemId, dateFrom, dateTo, isInvoiced };
     var searchUrl = `${this.url}/search`;
 
     return this.http.post<any>(searchUrl, filter)

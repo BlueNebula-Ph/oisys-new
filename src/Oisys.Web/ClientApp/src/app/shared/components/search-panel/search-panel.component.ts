@@ -28,6 +28,9 @@ export class SearchPanelComponent implements AfterContentInit {
   @Input() showCustomers: boolean = false;
   @Input() customers: Customer[] = new Array<Customer>();
 
+  @Input() showInvoiced: boolean = false;
+  @Input() showLowQuantity: boolean = false;
+
   @Output() searched = new EventEmitter<Search>();
 
   search: Search = new Search();
