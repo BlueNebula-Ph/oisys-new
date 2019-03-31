@@ -15,11 +15,14 @@ import { CustomerTransaction } from '../models/customer-transaction';
 export class CustomerService {
   private url = `${environment.apiHost}api/customer`;
 
-  constructor(private http: HttpClient, private util: UtilitiesService) { }
+  constructor(
+    private http: HttpClient,
+    private util: UtilitiesService
+  ) { }
 
   getCustomers(pageNumber: number, pageSize: number, sortBy: string, sortDirection: string, searchTerm: string, provinceId: number = 0, cityId: number = 0): Observable<PagedData<Customer>> {
-    var filter = { pageNumber, pageSize, sortBy, sortDirection, searchTerm, provinceId, cityId };
-    var searchUrl = `${this.url}/search`;
+    const filter = { pageNumber, pageSize, sortBy, sortDirection, searchTerm, provinceId, cityId };
+    const searchUrl = `${this.url}/search`;
 
     return this.http.post<any>(searchUrl, filter)
       .pipe(
@@ -28,12 +31,12 @@ export class CustomerService {
   };
 
   getCustomerById(id: number): Observable<Customer> {
-    var getUrl = `${this.url}/${id}`;
+    const getUrl = `${this.url}/${id}`;
     return this.http.get<Customer>(getUrl);
   };
 
   getCustomerLookup(provinceId: number = 0, cityId: number = 0, name: string = ''): Observable<Customer[]> {
-    var lookupUrl = `${this.url}/lookup/${provinceId}/${cityId}`;
+    let lookupUrl = `${this.url}/lookup/${provinceId}/${cityId}`;
 
     if (name !== '') {
       lookupUrl = lookupUrl.concat(`/${name}`);
@@ -46,18 +49,18 @@ export class CustomerService {
     if (customer.id == 0) {
       return this.http.post<Customer>(this.url, customer, this.util.httpOptions);
     } else {
-      var editUrl = `${this.url}/${customer.id}`;
+      const editUrl = `${this.url}/${customer.id}`;
       return this.http.put<Customer>(editUrl, customer, this.util.httpOptions);
     }
   };
 
   deleteCustomer(id: number): Observable<any> {
-    var deleteUrl = `${this.url}/${id}`;
+    const deleteUrl = `${this.url}/${id}`;
     return this.http.delete(deleteUrl, this.util.httpOptions);
   };
 
   getTransactions(id: number, page: number, size: number): Observable<PagedData<CustomerTransaction>> {
-    var url = `${this.url}/${id}/transactions?page=${page}&size=${size}`;
+    const url = `${this.url}/${id}/transactions?page=${page}&size=${size}`;
     return this.http.get<any>(url);
   };
 }

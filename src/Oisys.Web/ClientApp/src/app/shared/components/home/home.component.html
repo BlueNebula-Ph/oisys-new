@@ -4,14 +4,17 @@
       <div class="card text-white bg-primary">
         <div class="card-body">
           <div class="float-right">
-            <select appControlStyle>
-              <option>Last 7 days</option>
-              <option>Last 14 days</option>
-              <option>Last 30 days</option>
-              <option>Last 60 days</option>
+            <select appControlStyle id="orderCountSelect" [(ngModel)]="orderCountDays" (ngModelChange)="orderCountUpdated($event)">
+              <option value="7">Last 7 days</option>
+              <option value="14">Last 14 days</option>
+              <option value="30">Last 30 days</option>
+              <option value="60">Last 60 days</option>
             </select>
           </div>
-          <div class="text-value">9.823</div>
+          <div class="text-value" *ngIf="{ val: ordersCount$ | async } as orders">
+            <ng-container *ngIf="orders.val == undefined; then loading"></ng-container>
+            <span *ngIf="orders.val != undefined">{{ orders.val }}</span>
+          </div>
           <div>Recent orders.</div>
         </div>
       </div>
@@ -20,14 +23,17 @@
       <div class="card text-white bg-primary">
         <div class="card-body">
           <div class="float-right">
-            <select appControlStyle>
-              <option>Last 7 days</option>
-              <option>Last 14 days</option>
-              <option>Last 30 days</option>
-              <option>Last 60 days</option>
+            <select appControlStyle id="salesSelect" [(ngModel)]="salesDays" (ngModelChange)="salesDaysUpdated($event)">
+              <option value="7">Last 7 days</option>
+              <option value="14">Last 14 days</option>
+              <option value="30">Last 30 days</option>
+              <option value="60">Last 60 days</option>
             </select>
           </div>
-          <div class="text-value">9.823</div>
+          <div class="text-value" *ngIf="{ val: salesValue$ | async } as sales">
+            <ng-container *ngIf="sales.val == undefined; then loading"></ng-container>
+            <span *ngIf="sales.val != undefined">{{ sales.val | currency:'PHP':'₱ ' }}</span>
+          </div>
           <div>Recent sales.</div>
         </div>
       </div>
@@ -35,22 +41,66 @@
     <div class="col-3">
       <div class="card text-white bg-danger">
         <div class="card-body">
-          <div class="text-value">9.823</div>
-          <div>Orders due this week</div>
+          <div class="text-value" *ngIf="{ val: ordersDue$ | async } as orderDue">
+            <ng-container *ngIf="orderDue.val == undefined; then loading"></ng-container>
+            <span *ngIf="orderDue.val != undefined">{{ orderDue.val }}</span>
+          </div>
+          <div>Orders due. (Next 7 days)</div>
         </div>
       </div>
     </div>
     <div class="col-3">
       <div class="card text-white bg-danger">
         <div class="card-body">
-          <div class="text-value">9.823</div>
-          <div>Low quantity items</div>
+          <div class="text-value" *ngIf="{ val: lowQuantityItems$ | async } as lowQuantityItems">
+            <ng-container *ngIf="lowQuantityItems.val == undefined; then loading"></ng-container>
+            <span *ngIf="lowQuantityItems.val != undefined">{{ lowQuantityItems.val }}</span>
+          </div>
+          <div>Low quantity items.</div>
         </div>
       </div>
     </div>
   </div>
   <h4>Orders board.</h4>
-  <table class="table">
-
-  </table>
+  <div *ngIf="{ val: ordersBoard$ | async } as board">
+    <ng-container *ngTemplateOutlet="board.val == undefined ? loading : (board.val.length == 0 ? noOrders : orders); context: { board: board.val }">
+    </ng-container>
+  </div>
 </div>
+<ng-template #loading>
+  <i class="fa fa-spinner fa-spin"></i> Loading...
+</ng-template>
+<ng-template #noOrders>
+  <span class="text-value">No open orders found.</span>
+</ng-template>
+<ng-template #orders let-orders="board">
+  <div class="card no-radius" *ngFor="let area of orders">
+    <div class="card-body">
+      <div class="text-value">Area: {{ area.city }}, {{ area.province }}</div>
+      <table class="table table-sm table-striped mb-0">
+        <thead class="thead-light">
+          <tr>
+            <th>Customer</th>
+            <th>Quantity</th>
+            <th>Item</th>
+            <th>Category</th>
+            <th>Order Code</th>
+            <th>Date</th>
+            <th>Due Date</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let order of area.orders">
+            <td>{{ order.customer }}</td>
+            <td>{{ order.quantity }} {{ order.unit }}</td>
+            <td>{{ order.itemCode }} - {{ order.itemName }}</td>
+            <td>{{ order.category }}</td>
+            <td>{{ order.orderCode }}</td>
+            <td>{{ order.date }}</td>
+            <td>{{ order.dueDate }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</ng-template>

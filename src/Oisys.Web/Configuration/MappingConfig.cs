@@ -4,6 +4,7 @@ using OisysNew.DTO.CashVoucher;
 using OisysNew.DTO.Category;
 using OisysNew.DTO.CreditMemo;
 using OisysNew.DTO.Customer;
+using OisysNew.DTO.Dashboard;
 using OisysNew.DTO.Delivery;
 using OisysNew.DTO.Invoice;
 using OisysNew.DTO.Item;
@@ -226,6 +227,17 @@ namespace OisysNew.Configuration
                 .ForMember(d => d.CustomerName, s => s.MapFrom(o => o.Order.Customer.Name))
                 .ForMember(d => d.DateOrdered, s => s.MapFrom(o => o.Order.Date.ToShortDateString()))
                 .ForMember(d => d.QuantityOrdered, s => s.MapFrom(o => o.Quantity));
+
+            CreateMap<OrderLineItem, DashboardOrder>()
+                .ForMember(d => d.Category, s => s.MapFrom(o => o.Item.Category.Name))
+                .ForMember(d => d.Customer, s => s.MapFrom(o => o.Order.Customer.Name))
+                .ForMember(d => d.Date, s => s.MapFrom(o => o.Order.Date.ToShortDateString()))
+                .ForMember(d => d.DueDate, s => s.MapFrom(o => o.Order.DueDate.HasValue ? o.Order.DueDate.Value.ToShortDateString() : string.Empty))
+                .ForMember(d => d.ItemCode, s => s.MapFrom(o => o.Item.Code))
+                .ForMember(d => d.ItemName, s => s.MapFrom(o => o.Item.Name))
+                .ForMember(d => d.OrderCode, s => s.MapFrom(o => o.Order.Code))
+                .ForMember(d => d.Quantity, s => s.MapFrom(o => o.Quantity))
+                .ForMember(d => d.Unit, s => s.MapFrom(o => o.Item.Unit));
 
             // Province
             CreateMap<Province, ProvinceSummary>()
