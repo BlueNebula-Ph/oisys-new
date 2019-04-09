@@ -15,6 +15,11 @@ namespace OisysNew.DTO.Province
         public string Name { get; set; }
 
         /// <summary>
+        /// Gets or sets the concurrency check.
+        /// </summary>
+        public string RowVersion { get; set; }
+
+        /// <summary>
         /// Gets or sets collection of subcategories property.
         /// </summary>
         public IEnumerable<SaveCityRequest> Cities { get; set; }

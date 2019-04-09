@@ -17,7 +17,7 @@ namespace OisysNew.DTO.Province
         /// <summary>
         /// Gets or sets the province row version
         /// </summary>
-        public byte[] RowVersion { get; set; }
+        public string RowVersion { get; set; }
 
         /// <summary>
         /// Gets or sets collection of cities.

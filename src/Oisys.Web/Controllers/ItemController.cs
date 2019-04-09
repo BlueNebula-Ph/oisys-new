@@ -282,19 +282,22 @@ namespace OisysNew.Controllers
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        [ProducesResponseType(StatusCodes.Status409Conflict)]
+        [ProducesResponseType(typeof(string), StatusCodes.Status409Conflict)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult> Update(long id, [FromBody]SaveItemRequest entity)
         {
             try
             {
-                var item = await context.Items.SingleOrDefaultAsync(t => t.Id == id);
+                var item = await context.Items
+                    .AsNoTracking()
+                    .SingleOrDefaultAsync(t => t.Id == id);
+
                 if (item == null)
                 {
                     return NotFound(id);
                 }
 
-                mapper.Map(entity, item);
+                item = mapper.Map<Item>(entity);
                 context.Update(item);
                 await context.SaveChangesAsync();
 
@@ -303,7 +306,7 @@ namespace OisysNew.Controllers
             catch (DbUpdateConcurrencyException concurrencyEx)
             {
                 logger.LogError(concurrencyEx.Message);
-                return StatusCode(StatusCodes.Status409Conflict);
+                return StatusCode(StatusCodes.Status409Conflict, Constants.ErrorMessages.ConcurrencyErrorMessage);
             }
             catch (Exception ex)
             {

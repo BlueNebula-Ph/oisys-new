@@ -13,6 +13,6 @@
         /// <summary>
         /// Gets or sets the category row version
         /// </summary>
-        public byte[] RowVersion { get; set; }
+        public string RowVersion { get; set; }
     }
 }

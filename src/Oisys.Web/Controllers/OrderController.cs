@@ -303,7 +303,7 @@ namespace OisysNew.Controllers
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        [ProducesResponseType(StatusCodes.Status409Conflict)]
+        [ProducesResponseType(typeof(string), StatusCodes.Status409Conflict)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult> Update(long id, [FromBody]SaveOrderRequest entity)
         {
@@ -338,7 +338,7 @@ namespace OisysNew.Controllers
             catch (DbUpdateConcurrencyException concurrencyEx)
             {
                 logger.LogError(concurrencyEx.Message);
-                return StatusCode(StatusCodes.Status409Conflict);
+                return StatusCode(StatusCodes.Status409Conflict, Constants.ErrorMessages.ConcurrencyErrorMessage);
             }
             catch (Exception ex)
             {
@@ -355,7 +355,7 @@ namespace OisysNew.Controllers
         [HttpDelete("{id}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(typeof(string), StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult> Delete(long id)
         {
             try
@@ -375,6 +375,11 @@ namespace OisysNew.Controllers
                 await context.SaveChangesAsync();
 
                 return StatusCode(StatusCodes.Status204NoContent);
+            }
+            catch (DbUpdateException e)
+            {
+                logger.LogError(e.Message);
+                return StatusCode(StatusCodes.Status500InternalServerError, "Order cannot be deleted at this moment. There might be other records using it as a reference (i.e. credit memo, delivery).");
             }
             catch (Exception e)
             {

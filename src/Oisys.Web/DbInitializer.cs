@@ -12,13 +12,15 @@ namespace OisysNew
     {
         public static void Seed(OisysDbContext context, IHostingEnvironment env)
         {
-            context.Database.EnsureDeleted();
-            context.Database.EnsureCreated();
-
             if (env.IsDevelopment())
             {
+                context.Database.EnsureDeleted();
+                context.Database.EnsureCreated();
+
                 SeedCategories(context);
                 SeedProvincesAndCities(context);
+                context.SaveChanges();
+
                 SeedCustomer(context);
                 SeedItems(context);
             }
@@ -40,7 +42,7 @@ namespace OisysNew
                     ContactNumber = "399-39-39",
                     ContactPerson = "Mr. Mickey",
                     Address = "Disneyland Tokyo",
-                    CityId = 4,
+                    CityId = 3,
                     ProvinceId = 1,
                     Terms = "term1",
                     Discount = 10m,
@@ -113,50 +115,10 @@ namespace OisysNew
             {
                 var categories = new List<Category>
                 {
-                    new Category { Name = "Material123" },
-                    new Category { Name = "Lead234" },
-                    new Category { Name = "Paint345" },
-                    new Category { Name = "Tubes456" },
-                    new Category { Name = "Material567" },
-                    new Category { Name = "Lead678" },
-                    new Category { Name = "Paint456" },
-                    new Category { Name = "Tubes234" },
-                    new Category { Name = "Material1123" },
-                    new Category { Name = "Lead11234" },
-                    new Category { Name = "Paint112344" },
-                    new Category { Name = "Tubes4466899" },
-                    new Category { Name = "Material7897" },
-                    new Category { Name = "Lead5679" },
-                    new Category { Name = "Paint5679" },
-                    new Category { Name = "Tubes5678" },
-                    new Category { Name = "Material45689" },
-                    new Category { Name = "Lead4568" },
-                    new Category { Name = "Paint456890" },
-                    new Category { Name = "Tubes56756" },
-                    new Category { Name = "Material34579" },
-                    new Category { Name = "Lead345733" },
-                    new Category { Name = "Paint22336678" },
-                    new Category { Name = "Tubes11122666" },
-                    new Category { Name = "Material11557" },
-                    new Category { Name = "Lead12456" },
-                    new Category { Name = "Paint3678" },
-                    new Category { Name = "Tubes4455" },
-                    new Category { Name = "Material2233" },
-                    new Category { Name = "Lead1111222" },
-                    new Category { Name = "Paint23244" },
-                    new Category { Name = "Tubes1111" },
-                    new Category { Name = "Material23344" },
-                    new Category { Name = "Lead45646" },
-                    new Category { Name = "Paint8888" },
-                    new Category { Name = "Tubes7777" },
-                    new Category { Name = "Material6666" },
-                    new Category { Name = "Lead555" },
-                    new Category { Name = "Paint444" },
-                    new Category { Name = "Tubes333" },
-                    new Category { Name = "Material222" },
-                    new Category { Name = "Lead123" },
-                    new Category { Name = "Paint234" },
-                    new Category { Name = "Tubes567" }
+                    new Category { Name = "Material" },
+                    new Category { Name = "Paint" },
+                    new Category { Name = "Stainless" },
+                    new Category { Name = "Vacuum" },
                 };
                 context.Categories.AddRange(categories);
             }

@@ -35,14 +35,14 @@ namespace OisysNew
             {
                 opt.UseLazyLoadingProxies();
 
-                //if (env.IsDevelopment())
-                //{
-                //    opt.UseSqlServer(Configuration.GetConnectionString(DatabaseName));
-                //}
-                //else
-                //{
-                opt.UseInMemoryDatabase(DatabaseName);
-                //}
+                if (env.IsDevelopment() || env.IsProduction())
+                {
+                    opt.UseSqlServer(Configuration.GetConnectionString(DatabaseName));
+                }
+                else if(string.Compare(env.EnvironmentName, "Heroku", true) == 0)
+                {
+                    opt.UseInMemoryDatabase(DatabaseName);
+                }
             });
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);

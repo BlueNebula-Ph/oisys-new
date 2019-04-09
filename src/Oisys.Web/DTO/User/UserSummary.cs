@@ -39,5 +39,10 @@
         /// Gets or sets a value indicating whether a user has delete access.
         /// </summary>
         public bool CanDelete { get; set; }
+
+        /// <summary>
+        /// Gets or sets the concurrency check.
+        /// </summary>
+        public string RowVersion { get; set; }
     }
 }

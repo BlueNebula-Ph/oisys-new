@@ -19,6 +19,11 @@ namespace OisysNew.DTO.Province
         public int? ProvinceId { get; set; }
 
         /// <summary>
+        /// Gets or sets the concurrency check.
+        /// </summary>
+        public string RowVersion { get; set; }
+
+        /// <summary>
         /// Gets or sets a value indicating whether the city is deleted.
         /// </summary>
         public bool IsDeleted { get; set; }

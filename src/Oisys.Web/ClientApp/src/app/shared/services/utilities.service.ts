@@ -20,6 +20,9 @@ export class UtilitiesService {
   };
 
   showErrorMessage(message: string): void {
+    if (message == '') {
+      message = "An error has occurred. Please contact your administrator.";
+    }
     this.toastrService.error(message, 'Error!');
   };
 

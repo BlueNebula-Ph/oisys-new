@@ -17,6 +17,7 @@ export class Customer {
   public priceList: string;
   public provinceName: string;
   public cityName: string;
+  public rowVersion: string;
 
   private _province: Province;
   get province() {
@@ -54,6 +55,7 @@ export class Customer {
     this.address = customer && customer.address || '';
     this.terms = customer && customer.terms || '';
     this.discount = customer && customer.discount || '';
+    this.rowVersion = customer && customer.rowVersion || '';
 
     this.provinceId = customer && customer.provinceId || 0;
     this.provinceName = customer && customer.provinceName || '';

@@ -172,5 +172,16 @@
             /// </summary>
             public const string VoucherNumber = "VoucherNumber";
         }
+
+        /// <summary>
+        /// Error message constants.
+        /// </summary>
+        public static class ErrorMessages
+        {
+            /// <summary>
+            /// Concurrency error
+            /// </summary>
+            public const string ConcurrencyErrorMessage = "Someone just updated this record. Please refresh the page to get the latest version.";
+        }
     }
 }

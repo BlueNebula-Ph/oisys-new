@@ -77,14 +77,12 @@ export class EditCustomerComponent implements AfterContentInit, OnDestroy {
   };
 
   saveSuccess = () => {
-    if (this.customer.id == 0) {
-      this.setCustomer(undefined);
-    }
+    this.loadCustomerForm();
     this.util.showSuccessMessage('Customer saved successfully.');
   };
 
   saveFailed = (error) => {
-    this.util.showErrorMessage('An error occurred while saving. Please try again.');
+    this.isSaving = false;
     console.log(error);
   };
 
@@ -93,7 +91,7 @@ export class EditCustomerComponent implements AfterContentInit, OnDestroy {
   };
 
   provinceUpdated() {
-    this.customer.city = new City(); 
+    this.customer.city = new City();
   };
 
   // Autocomplete
@@ -118,7 +116,7 @@ export class EditCustomerComponent implements AfterContentInit, OnDestroy {
 
   provinceFormatter = (x: { name: string }) => x.name;
   cityFormatter = (x: { name: string }) => x.name;
-  
+
   private filterCities(value: string): City[] {
     const filterValue = value.toLowerCase();
 

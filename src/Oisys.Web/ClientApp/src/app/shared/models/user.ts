@@ -9,6 +9,7 @@ export class User extends JsonModelBase {
   public canWrite: boolean;
   public canView: boolean;
   public canDelete: boolean;
+  public rowVersion: string;
 
   private _admin: boolean;
   get admin() {

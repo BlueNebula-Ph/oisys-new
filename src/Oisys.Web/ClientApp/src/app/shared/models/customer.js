@@ -33,6 +33,7 @@ export class Customer {
         this.address = customer && customer.address || '';
         this.terms = customer && customer.terms || '';
         this.discount = customer && customer.discount || '';
+        this.rowVersion = customer && customer.rowVersion || '';
         this.provinceId = customer && customer.provinceId || 0;
         this.provinceName = customer && customer.provinceName || '';
         this.cityId = customer && customer.cityId || 0;

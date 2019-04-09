@@ -65,8 +65,7 @@ export class EditProvinceComponent implements AfterContentInit, OnDestroy {
   };
 
   saveFailed = (error) => {
-    this.util.showErrorMessage("An error occurred while saving. Please try again.");
-    console.log(error);
+    this.isSaving = false;
   };
 
   saveCompleted = () => {

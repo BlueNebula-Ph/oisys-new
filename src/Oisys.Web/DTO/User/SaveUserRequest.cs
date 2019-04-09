@@ -34,5 +34,10 @@
         /// Gets or sets a value indicating whether to save a new password.
         /// </summary>
         public bool UpdatePassword { get; set; }
+
+        /// <summary>
+        /// Gets or sets the concurrency check.
+        /// </summary>
+        public string RowVersion { get; set; }
     }
 }

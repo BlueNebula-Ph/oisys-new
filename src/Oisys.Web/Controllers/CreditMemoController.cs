@@ -323,7 +323,10 @@ namespace OisysNew.Controllers
             {
                 var creditMemo = await context.CreditMemos
                                 .Include(c => c.LineItems)
-                                .Include("Details.OrderDetail.Item")
+                                    .ThenInclude(detail => (detail as CreditMemoLineItem).OrderLineItem)
+                                        .ThenInclude(orderLineItem => orderLineItem.Item)
+                                .Include(c => c.LineItems)
+                                    .ThenInclude(detail => (detail as CreditMemoLineItem).TransactionHistory)
                                 .AsNoTracking()
                                 .SingleOrDefaultAsync(c => c.Id == id);
 

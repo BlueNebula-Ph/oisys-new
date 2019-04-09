@@ -10,12 +10,12 @@ namespace OisysNew.Models
         /// <summary>
         /// Gets or sets the id property
         /// </summary>
-        public int Id { get; set; }
+        public long Id { get; set; }
 
         /// <summary>
         /// Gets or sets the item id property
         /// </summary>
-        public int ItemId { get; set; }
+        public long ItemId { get; set; }
 
         /// <summary>
         /// Gets or sets the quantity property
@@ -51,5 +51,10 @@ namespace OisysNew.Models
         /// Gets or sets the item navigation property
         /// </summary>
         public virtual Item Item { get; set; }
+
+        /// <summary>
+        /// Gets or sets the item history linked to this adjustment.
+        /// </summary>
+        public virtual ItemHistory TransactionHistory { get; set; }
     }
 }

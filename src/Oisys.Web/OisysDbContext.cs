@@ -115,6 +115,9 @@ namespace OisysNew
                 // Setup concurrency checks
                 entity.Property(p => p.RowVersion).IsRowVersion();
 
+                // Setup decimal precision
+                entity.Property(p => p.Amount).HasColumnType("decimal(18, 2)");
+
                 entity.Property(o => o.VoucherNumber)
                     .HasDefaultValueSql("NEXT VALUE FOR VoucherNumber");
 
@@ -150,6 +153,9 @@ namespace OisysNew
                 // Setup concurrency checks
                 entity.Property(p => p.RowVersion).IsRowVersion();
 
+                // Setup decimal precision
+                entity.Property(p => p.TotalAmount).HasColumnType("decimal(18, 2)");
+
                 // Setup auto numbering
                 entity.Property(o => o.Code)
                     .HasDefaultValueSql("NEXT VALUE FOR CreditMemoCode");
@@ -161,13 +167,23 @@ namespace OisysNew
 
             modelBuilder.Entity<CreditMemoLineItem>(entity =>
             {
+                // Setup decimal precision
+                entity.Property(p => p.UnitPrice).HasColumnType("decimal(18, 2)");
+                entity.Property(p => p.TotalPrice).HasColumnType("decimal(18, 2)");
+
                 entity.HasOne(d => d.CreditMemo)
                     .WithMany(p => p.LineItems)
                     .HasForeignKey(p => p.CreditMemoId);
 
-                entity.HasOne(d => d.TransactionHistory)
-                     .WithOne(d => d.CreditMemoLineItem)
-                     .OnDelete(DeleteBehavior.Cascade);
+                entity.HasOne(d => d.OrderLineItem)
+                    .WithMany()
+                    .HasForeignKey(d => d.OrderLineItemId)
+                    .OnDelete(DeleteBehavior.Restrict);
+
+                entity.HasOne(d => d.Item)
+                    .WithMany()
+                    .HasForeignKey(d => d.ItemId)
+                    .OnDelete(DeleteBehavior.Restrict);
             });
         }
 
@@ -177,8 +193,11 @@ namespace OisysNew
             {
                 // Setup required fields
                 entity.Property(p => p.Name).IsRequired();
-                entity.Property(p => p.CityId).IsRequired();
                 entity.Property(p => p.ProvinceId).IsRequired();
+                entity.Property(p => p.CityId).IsRequired();
+
+                // Setup decimal precision
+                entity.Property(p => p.Discount).HasColumnType("decimal(18, 2)");
 
                 // Setup concurrency checks
                 entity.Property(p => p.RowVersion).IsRowVersion();
@@ -188,10 +207,24 @@ namespace OisysNew
 
                 // Setup value conversions
                 entity.Property(a => a.PriceList).HasConversion<string>();
+
+                // Setup foreign keys
+                entity.HasOne(p => p.Province)
+                    .WithMany()
+                    .HasForeignKey(a => a.ProvinceId)
+                    .OnDelete(DeleteBehavior.Restrict);
+
+                entity.HasOne(p => p.City)
+                    .WithMany()
+                    .HasForeignKey(a => a.CityId)
+                    .OnDelete(DeleteBehavior.Restrict);
             });
 
             modelBuilder.Entity<CustomerTransaction>(entity =>
             {
+                // Setup decimal precision
+                entity.Property(p => p.Amount).HasColumnType("decimal(18, 2)");
+
                 entity.HasOne(d => d.Customer)
                     .WithMany(d => d.Transactions)
                     .HasForeignKey(p => p.CustomerId);
@@ -238,6 +271,13 @@ namespace OisysNew
                 // Setup concurrency checks
                 entity.Property(p => p.RowVersion).IsRowVersion();
 
+                // Setup decimal precision
+                entity.Property(p => p.DiscountPercent).HasColumnType("decimal(18, 2)");
+                entity.Property(p => p.DiscountAmount).HasColumnType("decimal(18, 2)");
+                entity.Property(p => p.TotalAmount).HasColumnType("decimal(18, 2)");
+                entity.Property(p => p.TotalAmountDue).HasColumnType("decimal(18, 2)");
+                entity.Property(p => p.TotalCreditAmount).HasColumnType("decimal(18, 2)");
+
                 entity.Property(o => o.InvoiceNumber)
                     .HasDefaultValueSql("NEXT VALUE FOR InvoiceNumber");
 
@@ -252,6 +292,16 @@ namespace OisysNew
                 entity.HasOne(d => d.Invoice)
                     .WithMany(p => p.LineItems)
                     .HasForeignKey(p => p.InvoiceId);
+
+                entity.HasOne(d => d.CreditMemo)
+                    .WithMany()
+                    .HasForeignKey(d => d.CreditMemoId)
+                    .OnDelete(DeleteBehavior.Restrict);
+
+                entity.HasOne(d => d.Order)
+                    .WithMany()
+                    .HasForeignKey(d => d.OrderId)
+                    .OnDelete(DeleteBehavior.Restrict);
             });
         }
 
@@ -274,6 +324,17 @@ namespace OisysNew
                 entity.Property(a => a.MainPrice).HasDefaultValue(0);
                 entity.Property(a => a.NEPrice).HasDefaultValue(0);
                 entity.Property(a => a.WalkInPrice).HasDefaultValue(0);
+
+                // Setup decimal precision
+                entity.Property(p => p.MainPrice).HasColumnType("decimal(18, 2)");
+                entity.Property(p => p.NEPrice).HasColumnType("decimal(18, 2)");
+                entity.Property(p => p.WalkInPrice).HasColumnType("decimal(18, 2)");
+
+                // Setup foreign keys
+                entity.HasOne(p => p.Category)
+                    .WithMany()
+                    .HasForeignKey(a => a.CategoryId)
+                    .OnDelete(DeleteBehavior.Restrict);
             });
 
             modelBuilder.Entity<ItemHistory>(entity =>
@@ -281,7 +342,23 @@ namespace OisysNew
                 // Setup foreign keys
                 entity.HasOne(a => a.Item)
                     .WithMany(a => a.TransactionHistory)
-                    .HasForeignKey(a => a.ItemId);
+                    .HasForeignKey(a => a.ItemId)
+                    .OnDelete(DeleteBehavior.Restrict);
+
+                entity.HasOne(a => a.OrderLineItem)
+                    .WithOne(a => a.TransactionHistory)
+                    .HasForeignKey<ItemHistory>(a => a.OrderLineItemId)
+                    .OnDelete(DeleteBehavior.Cascade);
+
+                entity.HasOne(a => a.CreditMemoLineItem)
+                    .WithOne(a => a.TransactionHistory)
+                    .HasForeignKey<ItemHistory>(a => a.CreditMemoLineItemId)
+                    .OnDelete(DeleteBehavior.Restrict);
+
+                entity.HasOne(a => a.Adjustment)
+                    .WithOne(a => a.TransactionHistory)
+                    .HasForeignKey<ItemHistory>(a => a.AdjustmentId)
+                    .OnDelete(DeleteBehavior.Cascade);
             });
         }
 
@@ -300,6 +377,12 @@ namespace OisysNew
                 // Setup concurrency checks
                 entity.Property(p => p.RowVersion).IsRowVersion();
 
+                // Setup decimal precision
+                entity.Property(p => p.DiscountPercent).HasColumnType("decimal(18, 2)");
+                entity.Property(p => p.DiscountAmount).HasColumnType("decimal(18, 2)");
+                entity.Property(p => p.GrossAmount).HasColumnType("decimal(18, 2)");
+                entity.Property(p => p.TotalAmount).HasColumnType("decimal(18, 2)");
+
                 // Setup auto numbering
                 entity.Property(p => p.Code)
                     .HasDefaultValueSql("NEXT VALUE FOR OrderCode");
@@ -312,13 +395,18 @@ namespace OisysNew
             // Order Detail
             modelBuilder.Entity<OrderLineItem>(entity =>
             {
+                // Setup decimal precision
+                entity.Property(p => p.UnitPrice).HasColumnType("decimal(18, 2)");
+
                 entity.HasOne(d => d.Order)
                     .WithMany(p => p.LineItems)
-                    .HasForeignKey(p => p.OrderId);
-
-                entity.HasOne(d => d.TransactionHistory)
-                    .WithOne(d => d.OrderLineItem)
+                    .HasForeignKey(p => p.OrderId)
                     .OnDelete(DeleteBehavior.Cascade);
+
+                entity.HasOne(d => d.Item)
+                    .WithMany()
+                    .HasForeignKey(a => a.ItemId)
+                    .OnDelete(DeleteBehavior.Restrict);
             });
         }
 
@@ -346,6 +434,12 @@ namespace OisysNew
 
                 // Setup concurrency checks
                 entity.Property(p => p.RowVersion).IsRowVersion();
+
+                // Setup foreign key
+                entity.HasOne(p => p.Province)
+                    .WithMany(p => p.Cities)
+                    .HasForeignKey(p => p.ProvinceId)
+                    .OnDelete(DeleteBehavior.Restrict);
             });
         }
 
@@ -360,6 +454,10 @@ namespace OisysNew
                 // Setup concurrency checks
                 entity.Property(p => p.RowVersion).IsRowVersion();
 
+                // Setup decimal precision
+                entity.Property(p => p.DeliveryFee).HasColumnType("decimal(18, 2)");
+                entity.Property(p => p.TotalAmount).HasColumnType("decimal(18, 2)");
+
                 // Setup autonumbering
                 entity.Property(o => o.QuoteNumber)
                     .HasDefaultValueSql("NEXT VALUE FOR QuotationCode");
@@ -371,15 +469,25 @@ namespace OisysNew
 
             modelBuilder.Entity<SalesQuoteLineItem>(entity =>
             {
+                // Setup decimal precision
+                entity.Property(p => p.TotalPrice).HasColumnType("decimal(18, 2)");
+                entity.Property(p => p.UnitPrice).HasColumnType("decimal(18, 2)");
+
                 entity.HasOne(d => d.SalesQuote)
                     .WithMany(p => p.LineItems)
-                    .HasForeignKey(p => p.SalesQuoteId);
+                    .HasForeignKey(p => p.SalesQuoteId)
+                    .OnDelete(DeleteBehavior.Cascade);
+
+                entity.HasOne(d => d.Item)
+                    .WithMany()
+                    .HasForeignKey(p => p.ItemId)
+                    .OnDelete(DeleteBehavior.Restrict);
             });
         }
 
         private static void CreateUserModel(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<ApplicationUser>(entity => 
+            modelBuilder.Entity<ApplicationUser>(entity =>
             {
                 // Setup required fields
                 entity.Property(p => p.Username).IsRequired();
@@ -393,7 +501,6 @@ namespace OisysNew
                 // Setup concurrency checks
                 entity.Property(p => p.RowVersion).IsRowVersion();
             });
-
         }
     }
 }

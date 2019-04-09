@@ -62,8 +62,7 @@ export class EditCategoryComponent implements OnInit, OnDestroy {
   };
 
   saveFailed = (error) => {
-    this.util.showErrorMessage('An error occurred while saving. Please try again.');
-    console.log(error);
+    this.isSaving = false;
   };
 
   saveCompleted = () => {

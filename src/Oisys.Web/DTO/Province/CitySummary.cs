@@ -18,7 +18,7 @@
         /// <summary>
         /// Gets or sets the city row version
         /// </summary>
-        public byte[] RowVersion { get; set; }
+        public string RowVersion { get; set; }
 
         /// <summary>
         /// Gets or sets the province name of the city.

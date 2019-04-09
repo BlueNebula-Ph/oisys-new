@@ -16,6 +16,7 @@ using OisysNew.DTO.SalesQuote;
 using OisysNew.DTO.User;
 using OisysNew.Extensions;
 using OisysNew.Models;
+using System;
 using System.Linq;
 
 namespace OisysNew.Configuration
@@ -43,15 +44,23 @@ namespace OisysNew.Configuration
             CreateMap<SaveCashVoucherRequest, CashVoucher>();
 
             // Category
-            CreateMap<Category, CategorySummary>();
+            CreateMap<Category, CategorySummary>()
+                .ForMember(d => d.RowVersion, s => s.MapFrom(o => Convert.ToBase64String(o.RowVersion)));
+
             CreateMap<Category, CategoryLookup>();
-            CreateMap<SaveCategoryRequest, Category>();
+
+            CreateMap<SaveCategoryRequest, Category>()
+                .ForMember(d => d.RowVersion, s => s.MapFrom(o => Convert.FromBase64String(o.RowVersion)));
 
             // City
             CreateMap<City, CitySummary>()
-                .ForMember(d => d.ProvinceName, s => s.MapFrom(o => o.Province.Name));
+                .ForMember(d => d.ProvinceName, s => s.MapFrom(o => o.Province.Name))
+                .ForMember(d => d.RowVersion, s => s.MapFrom(o => Convert.ToBase64String(o.RowVersion)));
+
             CreateMap<City, CityLookup>();
-            CreateMap<SaveCityRequest, City>();
+
+            CreateMap<SaveCityRequest, City>()
+                .ForMember(d => d.RowVersion, s => s.MapFrom(o => Convert.FromBase64String(o.RowVersion))); ;
 
             // Credit Memo
             CreateMap<CreditMemo, CreditMemoSummary>()
@@ -98,11 +107,13 @@ namespace OisysNew.Configuration
             CreateMap<Customer, CustomerDetail>()
                 .ForMember(d => d.PriceListId, s => s.MapFrom(o => (int)o.PriceList))
                 .ForMember(d => d.Province, s => s.MapFrom(o => o.Province))
-                .ForMember(d => d.City, s => s.MapFrom(o => o.City));
+                .ForMember(d => d.City, s => s.MapFrom(o => o.City))
+                .ForMember(d => d.RowVersion, s => s.MapFrom(o => Convert.ToBase64String(o.RowVersion)));
 
             CreateMap<SaveCustomerRequest, Customer>()
                 .ForMember(d => d.PriceList, s => s.MapFrom(o => o.PriceListId))
-                .ForMember(d => d.Keywords, s => s.MapFrom(o => $"{o.Name} {o.Address} {o.ContactNumber} {o.ContactPerson}"));
+                .ForMember(d => d.Keywords, s => s.MapFrom(o => $"{o.Name} {o.Address} {o.ContactNumber} {o.ContactPerson}"))
+                .ForMember(d => d.RowVersion, s => s.MapFrom(o => Convert.FromBase64String(o.RowVersion)));
 
             // Customer Transaction
             CreateMap<CustomerTransaction, CustomerTransactionSummary>();
@@ -241,10 +252,14 @@ namespace OisysNew.Configuration
 
             // Province
             CreateMap<Province, ProvinceSummary>()
-                .ForMember(d => d.Cities, s => s.MapFrom(o => o.Cities.OrderBy(c => c.Name)));
+                .ForMember(d => d.Cities, s => s.MapFrom(o => o.Cities.OrderBy(c => c.Name)))
+                .ForMember(d => d.RowVersion, s => s.MapFrom(o => Convert.ToBase64String(o.RowVersion)));
+
             CreateMap<Province, ProvinceLookup>()
                 .ForMember(d => d.Cities, s => s.MapFrom(o => o.Cities.OrderBy(c => c.Name)));
-            CreateMap<SaveProvinceRequest, Province>();
+
+            CreateMap<SaveProvinceRequest, Province>()
+                .ForMember(d => d.RowVersion, s => s.MapFrom(o => Convert.FromBase64String(o.RowVersion)));
 
             // Sales Quote
             CreateMap<SalesQuote, SalesQuoteSummary>()
@@ -269,7 +284,8 @@ namespace OisysNew.Configuration
                 .ForMember(d => d.Admin, o => o.MapFrom(s => s.AccessRights.Contains("admin")))
                 .ForMember(d => d.CanView, o => o.MapFrom(s => s.AccessRights.Contains("canView")))
                 .ForMember(d => d.CanWrite, o => o.MapFrom(s => s.AccessRights.Contains("canWrite")))
-                .ForMember(d => d.CanDelete, o => o.MapFrom(s => s.AccessRights.Contains("canDelete")));
+                .ForMember(d => d.CanDelete, o => o.MapFrom(s => s.AccessRights.Contains("canDelete")))
+                .ForMember(d => d.RowVersion, o => o.MapFrom(s => Convert.ToBase64String(s.RowVersion)));
 
             CreateMap<ApplicationUser, UserDto>()
                 .ForMember(d => d.Username, o => o.MapFrom(s => s.Username))
@@ -281,14 +297,8 @@ namespace OisysNew.Configuration
                 .ForMember(d => d.Token, o => o.Ignore());
 
             CreateMap<SaveUserRequest, ApplicationUser>()
-                .ForMember(d => d.PasswordHash, o => o.Ignore());
-
-            // // Customer Transaction
-            // // TODO: Create method to compute running balance
-            // CreateMap<SaveCustomerTrxRequest, CustomerTransaction>();
-
-            // CreateMap<CustomerTransaction, CustomerTransactionSummary>()
-            //     .ForMember(d => d.Customer, s => s.MapFrom(o => o.Customer.Name));
+                .ForMember(d => d.PasswordHash, o => o.Ignore())
+                .ForMember(d => d.RowVersion, o => o.MapFrom(s => Convert.FromBase64String(s.RowVersion)));
         }
     }
 }
