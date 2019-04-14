@@ -19,5 +19,10 @@
         /// Gets or sets the province navigation property.
         /// </summary>
         public virtual Province Province { get; set; }
+
+        /// <summary>
+        /// Gets or sets concurrency check.
+        /// </summary>
+        public byte[] RowVersion { get; set; }
     }
 }

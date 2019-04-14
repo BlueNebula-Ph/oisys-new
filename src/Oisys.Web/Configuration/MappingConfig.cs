@@ -40,8 +40,11 @@ namespace OisysNew.Configuration
 
             // Cash Voucher
             CreateMap<CashVoucher, CashVoucherSummary>()
-                .ForMember(d => d.Date, s => s.MapFrom(o => o.Date.ToShortDateString()));
-            CreateMap<SaveCashVoucherRequest, CashVoucher>();
+                .ForMember(d => d.Date, s => s.MapFrom(o => o.Date.ToShortDateString()))
+                .ForMember(d => d.RowVersion, s => s.MapFrom(o => Convert.ToBase64String(o.RowVersion)));
+
+            CreateMap<SaveCashVoucherRequest, CashVoucher>()
+                .ForMember(d => d.RowVersion, s => s.MapFrom(o => Convert.FromBase64String(o.RowVersion)));
 
             // Category
             CreateMap<Category, CategorySummary>()
@@ -70,7 +73,8 @@ namespace OisysNew.Configuration
 
             CreateMap<CreditMemo, CreditMemoDetail>()
                 .ForMember(d => d.Date, s => s.MapFrom(o => o.Date.ToShortDateString()))
-                .ForMember(d => d.Customer, s => s.MapFrom(o => o.Customer));
+                .ForMember(d => d.Customer, s => s.MapFrom(o => o.Customer))
+                .ForMember(d => d.RowVersion, s => s.MapFrom(o => Convert.ToBase64String(o.RowVersion)));
 
             CreateMap<CreditMemo, CreditMemoLookup>()
                 .ForMember(d => d.Date, s => s.MapFrom(o => o.Date.ToShortDateString()));
@@ -82,7 +86,8 @@ namespace OisysNew.Configuration
                 .ForMember(d => d.TotalAmount, s => s.MapFrom(o => o.TotalAmount))
                 .ForMember(d => d.IsInvoiced, s => s.MapFrom(o => o.IsInvoiced));
 
-            CreateMap<SaveCreditMemoRequest, CreditMemo>();
+            CreateMap<SaveCreditMemoRequest, CreditMemo>()
+                .ForMember(d => d.RowVersion, s => s.MapFrom(o => Convert.FromBase64String(o.RowVersion)));
 
             // Credit Memo Line Item
             CreateMap<CreditMemoLineItem, CreditMemoDetailLineItem>()
@@ -127,9 +132,11 @@ namespace OisysNew.Configuration
             CreateMap<Delivery, DeliveryDetail>()
                 .ForMember(d => d.Date, s => s.MapFrom(o => o.Date.ToShortDateString()))
                 .ForMember(d => d.Province, s => s.MapFrom(o => o.Province))
-                .ForMember(d => d.City, s => s.MapFrom(o => o.City));
+                .ForMember(d => d.City, s => s.MapFrom(o => o.City))
+                .ForMember(d => d.RowVersion, s => s.MapFrom(o => Convert.ToBase64String(o.RowVersion)));
 
-            CreateMap<SaveDeliveryRequest, Delivery>();
+            CreateMap<SaveDeliveryRequest, Delivery>()
+                .ForMember(d => d.RowVersion, s => s.MapFrom(o => Convert.FromBase64String(o.RowVersion)));
 
             // Delivery Line Item
             CreateMap<DeliveryLineItem, DeliveryDetailLineItem>()
@@ -154,16 +161,18 @@ namespace OisysNew.Configuration
 
             CreateMap<Invoice, InvoiceDetail>()
                 .ForMember(d => d.Date, s => s.MapFrom(o => o.Date.ToShortDateString()))
-                .ForMember(d => d.Customer, s => s.MapFrom(o => o.Customer));
+                .ForMember(d => d.Customer, s => s.MapFrom(o => o.Customer))
+                .ForMember(d => d.RowVersion, s => s.MapFrom(o => Convert.ToBase64String(o.RowVersion)));
 
-            CreateMap<SaveInvoiceRequest, Invoice>();
+            CreateMap<SaveInvoiceRequest, Invoice>()
+                .ForMember(d => d.RowVersion, s => s.MapFrom(o => Convert.FromBase64String(o.RowVersion)));
 
             // Invoice Line Item
             CreateMap<InvoiceLineItem, InvoiceDetailLineItem>()
-                .ForMember(d => d.Code, s => s.MapFrom(o => o.OrderId != 0 ? o.Order.Code : (o.CreditMemoId != 0 ? o.CreditMemo.Code : default(int))))
-                .ForMember(d => d.Date, s => s.MapFrom(o => o.OrderId != 0 ? o.Order.Date.ToShortDateString() : (o.CreditMemoId != 0 ? o.CreditMemo.Date.ToShortDateString() : default(string))))
-                .ForMember(d => d.TotalAmount, s => s.MapFrom(o => o.OrderId != 0 ? o.Order.TotalAmount : (o.CreditMemoId != 0 ? o.CreditMemo.TotalAmount : default(decimal))))
-                .ForMember(d => d.Type, s => s.MapFrom(o => o.OrderId != 0 ? "Order" : "CreditMemo"));
+                .ForMember(d => d.Code, s => s.MapFrom(o => o.OrderId.HasValue ? o.Order.Code : (o.CreditMemoId.HasValue ? o.CreditMemo.Code : default(int))))
+                .ForMember(d => d.Date, s => s.MapFrom(o => o.OrderId.HasValue ? o.Order.Date.ToShortDateString() : (o.CreditMemoId.HasValue ? o.CreditMemo.Date.ToShortDateString() : default(string))))
+                .ForMember(d => d.TotalAmount, s => s.MapFrom(o => o.OrderId.HasValue ? o.Order.TotalAmount : (o.CreditMemoId.HasValue ? o.CreditMemo.TotalAmount : default(decimal))))
+                .ForMember(d => d.Type, s => s.MapFrom(o => o.OrderId.HasValue ? "Order" : "CreditMemo"));
 
             CreateMap<SaveInvoiceLineItemRequest, InvoiceLineItem>();
 
@@ -175,12 +184,14 @@ namespace OisysNew.Configuration
                 .ForMember(d => d.CategoryName, s => s.MapFrom(o => o.Category.Name));
 
             CreateMap<Item, ItemDetail>()
-                .ForMember(d => d.Category, s => s.MapFrom(o => o.Category));
+                .ForMember(d => d.Category, s => s.MapFrom(o => o.Category))
+                .ForMember(d => d.RowVersion, s => s.MapFrom(o => Convert.ToBase64String(o.RowVersion)));
 
             CreateMap<Item, ItemCount>()
                 .ForMember(d => d.Category, s => s.MapFrom(o => o.Category.Name));
 
-            CreateMap<SaveItemRequest, Item>();
+            CreateMap<SaveItemRequest, Item>()
+                .ForMember(d => d.RowVersion, s => s.MapFrom(o => Convert.FromBase64String(o.RowVersion)));
 
             // Item History
             CreateMap<ItemHistory, ItemHistorySummary>()
@@ -196,7 +207,8 @@ namespace OisysNew.Configuration
             CreateMap<Order, OrderDetail>()
                 .ForMember(d => d.Date, s => s.MapFrom(o => o.Date.ToShortDateString()))
                 .ForMember(d => d.DueDate, s => s.MapFrom(o => o.DueDate.HasValue ? o.DueDate.Value.ToShortDateString() : string.Empty))
-                .ForMember(d => d.Customer, s => s.MapFrom(o => o.Customer));
+                .ForMember(d => d.Customer, s => s.MapFrom(o => o.Customer))
+                .ForMember(d => d.RowVersion, s => s.MapFrom(o => Convert.ToBase64String(o.RowVersion)));
 
             CreateMap<Order, OrderLookup>()
                 .ForMember(d => d.Date, s => s.MapFrom(o => o.Date.ToShortDateString()));
@@ -215,7 +227,8 @@ namespace OisysNew.Configuration
                 .ForMember(d => d.DueDate, s => s.MapFrom(o => o.DueDate.HasValue ? o.DueDate.Value.ToShortDateString() : string.Empty))
                 .ForMember(d => d.TotalAmount, s => s.MapFrom(o => o.TotalAmount));
 
-            CreateMap<SaveOrderRequest, Order>();
+            CreateMap<SaveOrderRequest, Order>()
+                .ForMember(d => d.RowVersion, s => s.MapFrom(o => Convert.FromBase64String(o.RowVersion)));
 
             // Order Line Item
             CreateMap<OrderLineItem, OrderDetailLineItem>()
@@ -269,9 +282,11 @@ namespace OisysNew.Configuration
 
             CreateMap<SalesQuote, SalesQuoteDetail>()
                 .ForMember(d => d.Date, s => s.MapFrom(o => o.Date.ToShortDateString()))
-                .ForMember(d => d.Customer, s => s.MapFrom(o => o.Customer));
+                .ForMember(d => d.Customer, s => s.MapFrom(o => o.Customer))
+                .ForMember(d => d.RowVersion, s => s.MapFrom(o => Convert.ToBase64String(o.RowVersion)));
 
-            CreateMap<SaveSalesQuoteRequest, SalesQuote>();
+            CreateMap<SaveSalesQuoteRequest, SalesQuote>()
+                .ForMember(d => d.RowVersion, s => s.MapFrom(o => Convert.FromBase64String(o.RowVersion)));
 
             // Sales Quote Detail
             CreateMap<SalesQuoteLineItem, SalesQuoteDetailLineItem>()

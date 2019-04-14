@@ -159,12 +159,12 @@ namespace OisysNew.Controllers
         /// Returns a list of order line items
         /// </summary>
         /// <param name="customerId">Customer Id</param>
-        /// <param name="isDelivered">True is delivered, false if not</param>
+        /// <param name="type">return or delivery</param>
         /// <returns>List of order details per customer</returns>
-        [HttpGet("lineItems/{customerId}/lookup/{isDelivered?}/{itemName?}", Name = "GetOrderLineItemLookup")]
+        [HttpGet("lineItems/{customerId}/lookup/{type?}/{itemName?}", Name = "GetOrderLineItemLookup")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult<IEnumerable<OrderLineItemLookup>>> GetOrderLineItemLookup(int customerId, bool isDelivered = false, string itemName = "")
+        public async Task<ActionResult<IEnumerable<OrderLineItemLookup>>> GetOrderLineItemLookup(int customerId, string type = "", string itemName = "")
         {
             try
             {
@@ -177,9 +177,13 @@ namespace OisysNew.Controllers
                     .AsNoTracking()
                     .Where(c => c.Order.CustomerId == customerId);
 
-                if (!isDelivered)
+                if (string.Compare(type, "delivery", true) == 0)
                 {
                     list = list.Where(c => c.QuantityDelivered != c.Quantity);
+                }
+                else if (string.Compare(type, "return", true) == 0)
+                {
+                    list = list.Where(c => c.QuantityReturned != c.Quantity);
                 }
 
                 if (!string.IsNullOrEmpty(itemName))

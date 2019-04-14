@@ -72,5 +72,10 @@ namespace OisysNew.Models
         /// Gets or sets transaction history for the item.
         /// </summary>
         public virtual ICollection<ItemHistory> TransactionHistory { get; set; }
+
+        /// <summary>
+        /// Gets or sets concurrency check.
+        /// </summary>
+        public byte[] RowVersion { get; set; }
     }
 }

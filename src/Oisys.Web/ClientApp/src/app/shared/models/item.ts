@@ -14,6 +14,7 @@ export class Item {
   public mainPrice: number;
   public walkInPrice: number;
   public nePrice: number;
+  public rowVersion: string;
 
   private _category: Category;
   get category() {
@@ -33,6 +34,7 @@ export class Item {
     this.code = item && item.code || '';
     this.name = item && item.name || '';
     this.description = item && item.description || '';
+    this.rowVersion = item && item.rowVersion || '';
 
     this.categoryId = item && item.categoryId || 0;
     this.categoryName = item && item.categoryName || '';

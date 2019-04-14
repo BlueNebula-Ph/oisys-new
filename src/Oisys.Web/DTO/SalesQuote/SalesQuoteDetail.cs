@@ -39,8 +39,8 @@ namespace OisysNew.DTO.SalesQuote
         public IEnumerable<SalesQuoteDetailLineItem> LineItems { get; set; }
 
         /// <summary>
-        /// Gets or sets the row version for concurrency check.
+        /// Gets or sets concurrency check.
         /// </summary>
-        public byte[] RowVersion { get; set; }
+        public string RowVersion { get; set; }
     }
 }

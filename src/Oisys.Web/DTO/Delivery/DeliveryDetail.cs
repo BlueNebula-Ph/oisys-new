@@ -34,5 +34,10 @@ namespace OisysNew.DTO.Delivery
         /// Gets or sets property Details.
         /// </summary>
         public IEnumerable<DeliveryDetailLineItem> LineItems { get; set; }
+
+        /// <summary>
+        /// Gets or sets concurrency check.
+        /// </summary>
+        public string RowVersion { get; set; }
     }
 }

@@ -65,5 +65,10 @@ namespace OisysNew.DTO.Item
         /// </summary>
         [Required]
         public int Quantity { get; set; }
+
+        /// <summary>
+        /// Gets or sets concurrency check.
+        /// </summary>
+        public string RowVersion { get; set; }
     }
 }

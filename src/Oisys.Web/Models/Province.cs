@@ -16,5 +16,10 @@ namespace OisysNew.Models
         /// Gets or sets the cities under this province.
         /// </summary>
         public virtual ICollection<City> Cities { get; set; }
+
+        /// <summary>
+        /// Gets or sets concurrency check.
+        /// </summary>
+        public byte[] RowVersion { get; set; }
     }
 }

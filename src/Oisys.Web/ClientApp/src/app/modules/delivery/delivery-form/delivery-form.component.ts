@@ -89,15 +89,12 @@ export class DeliveryFormComponent implements AfterContentInit, OnDestroy {
   };
 
   saveSuccess = () => {
-    if (this.delivery.id == 0) {
-      this.setDelivery(undefined);
-    }
+    this.loadDeliveryForm();
     this.util.showSuccessMessage('Delivery saved successfully.');
   };
 
   saveFailed = (error) => {
-    this.util.showErrorMessage('An error occurred while saving. Please try again.');
-    console.log(error);
+    this.isSaving = false;
   };
 
   saveCompleted = () => {
@@ -118,7 +115,7 @@ export class DeliveryFormComponent implements AfterContentInit, OnDestroy {
 
   fetchCustomerOrderItems(customer: Customer) {
     this.getOrderLineItemSub = this.orderService
-      .getOrderLineItemLookup(customer.id, false)
+      .getOrderLineItemLookup(customer.id, 'delivery')
       .subscribe(data => {
         var newItems = data.map(orderLineItem =>
         {

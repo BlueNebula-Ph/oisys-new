@@ -30,7 +30,7 @@ export class InvoiceLineItem extends JsonModelBase {
 
     this.type = (lineItem && lineItem.type) ? InvoiceLineItemType[lineItem.type as string] : InvoiceLineItemType.Order;
 
-    this.orderId = lineItem && lineItem.orderId || 0;
-    this.creditMemoId = lineItem && lineItem.creditMemoId || 0;
+    this.orderId = lineItem && lineItem.orderId || null;
+    this.creditMemoId = lineItem && lineItem.creditMemoId || null;
   }
 }

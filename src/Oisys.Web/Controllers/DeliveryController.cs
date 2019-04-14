@@ -217,20 +217,20 @@ namespace OisysNew.Controllers
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        [ProducesResponseType(StatusCodes.Status409Conflict)]
+        [ProducesResponseType(typeof(string), StatusCodes.Status409Conflict)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult> Update(long id, [FromBody]SaveDeliveryRequest entity)
         {
-            var deliveryExists = await context.Deliveries
-                .AnyAsync(c => c.Id == id);
-
-            if (!deliveryExists)
-            {
-                return NotFound();
-            }
-
             try
             {
+                var deliveryExists = await context.Deliveries
+                .AnyAsync(c => c.Id == id);
+
+                if (!deliveryExists)
+                {
+                    return NotFound();
+                }
+
                 // Adjust actual quantities accordingly
                 //foreach (var updatedDeliveryDetail in entity.Details)
                 //{

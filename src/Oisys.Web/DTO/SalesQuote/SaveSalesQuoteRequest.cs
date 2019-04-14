@@ -40,5 +40,10 @@ namespace OisysNew.DTO.SalesQuote
         /// Gets or sets collection of SalesQuoteDetails navigation property.
         /// </summary>
         public IEnumerable<SaveSalesQuoteLineItemRequest> LineItems { get; set; }
+
+        /// <summary>
+        /// Gets or sets concurrency check.
+        /// </summary>
+        public string RowVersion { get; set; }
     }
 }

@@ -62,5 +62,10 @@ namespace OisysNew.Models
         /// Gets or sets line items of the order.
         /// </summary>
         public virtual ICollection<OrderLineItem> LineItems { get; set; }
+
+        /// <summary>
+        /// Gets or sets concurrency check.
+        /// </summary>
+        public byte[] RowVersion { get; set; }
     }
 }

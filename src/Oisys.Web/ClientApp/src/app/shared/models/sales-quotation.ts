@@ -11,6 +11,7 @@ export class SalesQuotation extends JsonModelBase {
   public date: Date;
   public deliveryFee: number;
   public lineItems: LineItem[];
+  public rowVersion: string;
 
   private _customer: Customer;
   get customer() {
@@ -58,6 +59,7 @@ export class SalesQuotation extends JsonModelBase {
     this.date = (salesQuotation && salesQuotation.date) ? new Date(salesQuotation.date) : new Date();
 
     this.deliveryFee = salesQuotation && salesQuotation.deliveryFee || 0;
+    this.rowVersion = salesQuotation && salesQuotation.rowVersion || '';
 
     this.lineItems = (salesQuotation && salesQuotation.lineItems) ? salesQuotation.lineItems.map(lineItem => new LineItem(lineItem)) : new Array<LineItem>();
     this.customer = (salesQuotation && salesQuotation.customer) ? new Customer(salesQuotation.customer) : undefined;

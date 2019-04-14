@@ -252,7 +252,7 @@ namespace OisysNew.Controllers
 
                 context.ItemHistories.Add(new ItemHistory
                 {
-                    ItemId = item.Id,
+                    Item = item,
                     Date = DateTime.Now,
                     Quantity = entity.Quantity,
                     Remarks = Constants.AdjustmentRemarks.InitialQuantity
@@ -261,9 +261,7 @@ namespace OisysNew.Controllers
                 await context.Items.AddAsync(item);
                 await context.SaveChangesAsync();
 
-                var mappedItem = mapper.Map<ItemSummary>(item);
-
-                return CreatedAtRoute(nameof(GetItemById), new { id = item.Id }, mappedItem);
+                return CreatedAtRoute(nameof(GetItemById), new { id = item.Id }, entity);
             }
             catch (Exception e)
             {

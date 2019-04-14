@@ -11,6 +11,7 @@ export class Order extends JsonModelBase {
   public date: Date;
   public dueDate: Date;
   public lineItems: LineItem[];
+  public rowVersion: string;
 
   private _customer: Customer;
   get customer() {
@@ -80,6 +81,7 @@ export class Order extends JsonModelBase {
     this.customerName = order && order.customerName || '';
     this.customerAddress = order && order.customerAddress || '';
     this.discountPercent = order && order.discountPercent || 0;
+    this.rowVersion = order && order.rowVersion || '';
 
     this.date = (order && order.date) ? new Date(order.date) : new Date();
     this.dueDate = (order && order.dueDate) ? new Date(order.dueDate) : new Date();

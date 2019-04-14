@@ -77,7 +77,7 @@ namespace OisysNew.Controllers
                     Encoding.UTF8.GetBytes(authOptions.Value.Key)), SecurityAlgorithms.HmacSha256);
 
             var token = new JwtSecurityToken(
-                expires: DateTime.UtcNow.AddDays(90),
+                expires: DateTime.UtcNow.AddDays(1),
                 notBefore: DateTime.UtcNow,
                 signingCredentials: signingCred);
 

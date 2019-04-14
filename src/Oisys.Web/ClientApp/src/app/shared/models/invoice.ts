@@ -10,6 +10,7 @@ export class Invoice extends JsonModelBase {
   public discountPercent: number;
   public customerId: number;
   public lineItems: InvoiceLineItem[];
+  public rowVersion: string;
 
   private _customer: Customer;
   get customer() {
@@ -53,6 +54,7 @@ export class Invoice extends JsonModelBase {
     this.invoiceNumber = invoice && invoice.invoiceNumber || 0;
     this.date = (invoice && invoice.date) ? new Date(invoice.date) : new Date();
     this.discountPercent = invoice && invoice.discountPercent || 0;
+    this.rowVersion = invoice && invoice.rowVersion || '';
 
     this.lineItems = (invoice && invoice.lineItems) ?
       invoice.lineItems.map(lineItem => new InvoiceLineItem(lineItem)) : new Array<InvoiceLineItem>();

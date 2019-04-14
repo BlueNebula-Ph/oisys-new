@@ -65,5 +65,10 @@ namespace OisysNew.Models
         /// Gets or sets the invoice details.
         /// </summary>
         public virtual ICollection<InvoiceLineItem> LineItems { get; set; }
+
+        /// <summary>
+        /// Gets or sets concurrency check.
+        /// </summary>
+        public byte[] RowVersion { get; set; }
     }
 }

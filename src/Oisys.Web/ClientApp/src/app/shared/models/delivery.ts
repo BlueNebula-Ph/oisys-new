@@ -14,6 +14,7 @@ export class Delivery extends JsonModelBase {
   public cityName: string;
   public plateNumber: string;
   public lineItems: DeliveryLineItem[];
+  public rowVersion: string;
 
   private _province: Province;
   get province() {
@@ -72,6 +73,7 @@ export class Delivery extends JsonModelBase {
     this.deliveryNumber = delivery && delivery.deliveryNumber || 0;
     this.date = (delivery && delivery.date) ? new Date(delivery.date) : new Date();
     this.plateNumber = delivery && delivery.plateNumber || '';
+    this.rowVersion = delivery && delivery.rowVersion || '';
 
     this.provinceId = delivery && delivery.provinceId || 0;
     this.provinceName = delivery && delivery.provinceName || '';

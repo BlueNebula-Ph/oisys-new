@@ -69,15 +69,12 @@ export class VoucherFormComponent implements AfterContentInit, OnDestroy {
   };
 
   saveSuccess = () => {
-    if (this.voucher.id == 0) {
-      this.setVoucher(undefined);
-    }
+    this.loadVoucherForm();
     this.util.showSuccessMessage('Cash voucher saved successfully.');
   };
 
   saveFailed = (error) => {
-    this.util.showErrorMessage('An error occurred while saving. Please try again.');
-    console.log(error);
+    this.isSaving = false;
   };
 
   saveCompleted = () => {

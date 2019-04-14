@@ -9,5 +9,10 @@
         /// Gets or sets the category name.
         /// </summary>
         public string Name { get; set; }
+
+        /// <summary>
+        /// Gets or sets concurrency check.
+        /// </summary>
+        public byte[] RowVersion { get; set; }
     }
 }

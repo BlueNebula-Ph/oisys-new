@@ -57,7 +57,7 @@
                 </tr>
               </thead>
               <tbody>
-                <tr *ngFor="let lineItem of creditMemo.lineItems">
+                <tr *ngFor="let lineItem of creditMemo.lineItems; index as i;">
                   <td><input appControlStyle [appFocus]="true" type="number" class="text-right" [(ngModel)]="lineItem.quantity" [ngModelOptions]="{standalone: true}" /></td>
                   <td><input appControlStyle [(ngModel)]="lineItem.unit" [ngModelOptions]="{standalone: true}" readonly /></td>
                   <td>
@@ -74,7 +74,7 @@
                     </div>
                   </td>
                   <td class="text-center">
-                    <button type="button" class="btn btn-ghost-danger btn-sm" (click)="removeLineItem($index)"><i class="fa fa-fw fa-trash"></i></button>
+                    <button type="button" class="btn btn-ghost-danger btn-sm" (click)="removeLineItem(i)"><i class="fa fa-fw fa-trash"></i></button>
                   </td>
                 </tr>
                 <tr *ngIf="creditMemo.lineItems.length == 0">

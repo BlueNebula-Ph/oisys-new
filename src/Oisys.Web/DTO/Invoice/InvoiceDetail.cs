@@ -54,5 +54,10 @@ namespace OisysNew.DTO.Invoice
         /// Gets or sets the invoice line items.
         /// </summary>
         public IEnumerable<InvoiceDetailLineItem> LineItems { get; set; }
+
+        /// <summary>
+        /// Gets or sets concurrency check.
+        /// </summary>
+        public string RowVersion { get; set; }
     }
 }

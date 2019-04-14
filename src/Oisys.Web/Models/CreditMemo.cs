@@ -47,5 +47,10 @@ namespace OisysNew.Models
         /// Gets or sets the Line Items for credit memo.
         /// </summary>
         public virtual ICollection<CreditMemoLineItem> LineItems { get; set; }
+
+        /// <summary>
+        /// Gets or sets concurrency check.
+        /// </summary>
+        public byte[] RowVersion { get; set; }
     }
 }

@@ -43,6 +43,6 @@
         /// <summary>
         /// Gets or sets row version for concurrency check
         /// </summary>
-        public byte[] RowVersion { get; set; }
+        public string RowVersion { get; set; }
     }
 }

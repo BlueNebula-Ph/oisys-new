@@ -59,6 +59,7 @@ export class Order extends JsonModelBase {
         this.customerName = order && order.customerName || '';
         this.customerAddress = order && order.customerAddress || '';
         this.discountPercent = order && order.discountPercent || 0;
+        this.rowVersion = order && order.rowVersion || '';
         this.date = (order && order.date) ? new Date(order.date) : new Date();
         this.dueDate = (order && order.dueDate) ? new Date(order.dueDate) : new Date();
         this.lineItems = (order && order.lineItems) ? order.lineItems.map(lineItem => new LineItem(lineItem)) : new Array();

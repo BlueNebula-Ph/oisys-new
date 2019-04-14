@@ -15,34 +15,39 @@ namespace OisysNew.DTO.CashVoucher
         public int VoucherNumber { get; set; }
 
         /// <summary>
-        /// Gets or sets the voucher date
+        /// Gets or sets the voucher date.
         /// </summary>
         public DateTime Date { get; set; }
 
         /// <summary>
-        /// Gets or sets pay to
+        /// Gets or sets pay to.
         /// </summary>
         [Required(ErrorMessage = "Please input pay to")]
         public string PayTo { get; set; }
 
         /// <summary>
-        /// Gets or sets description
+        /// Gets or sets description.
         /// </summary>
         public string Description { get; set; }
 
         /// <summary>
-        /// Gets or sets category
+        /// Gets or sets category.
         /// </summary>
         public VoucherCategory Category { get; set; }
 
         /// <summary>
-        /// Gets or sets amount
+        /// Gets or sets amount.
         /// </summary>
         public decimal Amount { get; set; }
 
         /// <summary>
-        /// Gets or sets released by
+        /// Gets or sets released by.
         /// </summary>
         public string ReleasedBy { get; set; }
+
+        /// <summary>
+        /// Gets or sets concurrency check.
+        /// </summary>
+        public string RowVersion { get; set; }
     }
 }

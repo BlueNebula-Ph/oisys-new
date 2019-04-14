@@ -10,6 +10,7 @@ export class CashVoucher {
   public category: VoucherCategory;
   public categoryName: string;
   public releasedBy: string;
+  public rowVersion: string;
 
   constructor();
   constructor(cashVoucher: CashVoucher);
@@ -23,5 +24,6 @@ export class CashVoucher {
     this.category = (cashVoucher && cashVoucher.category) ? VoucherCategory[cashVoucher.category as string] : VoucherCategory.Automotive;
     this.categoryName = cashVoucher && cashVoucher.category || '';
     this.releasedBy = cashVoucher && cashVoucher.releasedBy || '';
+    this.rowVersion = cashVoucher && cashVoucher.rowVersion || '';
   }
 }

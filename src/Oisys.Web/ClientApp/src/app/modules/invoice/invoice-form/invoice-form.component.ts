@@ -86,6 +86,12 @@ export class InvoiceFormComponent implements AfterContentInit, OnDestroy {
 
   saveInvoice(invoiceForm: NgForm) {
     if (invoiceForm.valid) {
+      if (this.invoice.totalAmount < 0) {
+        if (!confirm('Total amount for this invoice is less than zero. Are you sure you want to continue?')) {
+          return;
+        }
+      }
+
       this.isSaving = true;
       this.saveInvoiceSub = this.invoiceService
         .saveInvoice(this.invoice)
@@ -94,14 +100,11 @@ export class InvoiceFormComponent implements AfterContentInit, OnDestroy {
   };
 
   saveSuccess = () => {
-    if (this.invoice.id == 0) {
-      this.setInvoice(undefined);
-    }
+    this.loadInvoiceForm();
     this.util.showSuccessMessage('Invoice saved successfully.');
   };
 
   saveFailed = (error) => {
-    this.util.showErrorMessage('An error occurred while saving. Please try again.');
     this.isSaving = false;
   };
 
@@ -128,8 +131,8 @@ export class InvoiceFormComponent implements AfterContentInit, OnDestroy {
     lineItem.date = value && value.date || undefined;
     lineItem.totalAmount = value && value.totalAmount || 0;
     lineItem.type = type;
-    lineItem.orderId = type == InvoiceLineItemType.Order ? (value && value.id || 0) : 0
-    lineItem.creditMemoId = type == InvoiceLineItemType.CreditMemo ? (value && value.id || 0) : 0;
+    lineItem.orderId = type == InvoiceLineItemType.Order ? (value && value.id || null) : null
+    lineItem.creditMemoId = type == InvoiceLineItemType.CreditMemo ? (value && value.id || null) : null;
     return lineItem;
   };
 

@@ -77,15 +77,12 @@ export class OrderFormComponent implements AfterContentInit, OnDestroy {
   };
 
   saveSuccess = () => {
-    if (this.order.id == 0) {
-      this.setOrder(undefined);
-    }
+    this.loadOrderForm();
     this.util.showSuccessMessage('Order saved successfully.');
   };
 
   saveFailed = (error) => {
-    this.util.showErrorMessage('An error occurred while saving. Please try again.');
-    console.log(error);
+    this.isSaving = false;
   };
 
   saveCompleted = () => {
@@ -101,6 +98,7 @@ export class OrderFormComponent implements AfterContentInit, OnDestroy {
   };
 
   removeLineItem(index: number) {
+    console.log(index);
     if (confirm('Are you sure you want to remove this item?')) {
       this.order.lineItems.splice(index, 1);
     }

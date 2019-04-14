@@ -79,15 +79,12 @@ export class QuotationFormComponent implements AfterContentInit, OnDestroy {
   };
 
   saveSuccess = () => {
-    if (this.salesQuotation.id == 0) {
-      this.setQuotation(undefined);
-    }
+    this.loadQuotationForm();
     this.util.showSuccessMessage('Sales quotation saved successfully.');
   };
 
   saveFailed = (error) => {
-    this.util.showErrorMessage('An error occurred while saving. Please try again.');
-    console.log(error);
+    this.isSaving = false;
   };
 
   saveCompleted = () => {

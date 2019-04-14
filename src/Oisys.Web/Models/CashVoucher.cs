@@ -41,5 +41,10 @@ namespace OisysNew.Models
         /// Gets or sets released by
         /// </summary>
         public string ReleasedBy { get; set; }
+
+        /// <summary>
+        /// Gets or sets concurrency check.
+        /// </summary>
+        public byte[] RowVersion { get; set; }
     }
 }

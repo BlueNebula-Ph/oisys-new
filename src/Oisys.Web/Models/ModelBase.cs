@@ -12,11 +12,5 @@ namespace OisysNew.Models
         /// </summary>
         [Key]
         public long Id { get; set; }
-
-        /// <summary>
-        /// Gets or sets concurrency check.
-        /// </summary>
-        [Timestamp]
-        public byte[] RowVersion { get; set; }
     }
 }

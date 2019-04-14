@@ -47,5 +47,10 @@ namespace OisysNew.Models
         /// Gets or sets property Details.
         /// </summary>
         public virtual ICollection<DeliveryLineItem> LineItems { get; set; }
+
+        /// <summary>
+        /// Gets or sets concurrency check.
+        /// </summary>
+        public byte[] RowVersion { get; set; }
     }
 }

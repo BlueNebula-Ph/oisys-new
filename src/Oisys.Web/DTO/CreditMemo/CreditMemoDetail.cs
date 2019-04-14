@@ -38,6 +38,6 @@ namespace OisysNew.DTO.CreditMemo
         /// <summary>
         /// Gets or sets concurrency check.
         /// </summary>
-        public byte[] RowVersion { get; set; }
+        public string RowVersion { get; set; }
     }
 }

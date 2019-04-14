@@ -77,15 +77,12 @@ export class CreditMemoFormComponent implements AfterContentInit, OnDestroy {
   };
 
   saveSuccess = () => {
-    if (this.creditMemo.id == 0) {
-      this.setCreditMemo(undefined);
-    }
+    this.loadCreditMemoForm();
     this.util.showSuccessMessage('Credit memo saved successfully.');
   };
 
   saveFailed = (error) => {
-    this.util.showErrorMessage('An error occurred while saving. Please try again.');
-    console.log(error);
+    this.isSaving = false;
   };
 
   saveCompleted = () => {
@@ -123,7 +120,7 @@ export class CreditMemoFormComponent implements AfterContentInit, OnDestroy {
       debounceTime(200),
       distinctUntilChanged(),
       switchMap(term => term.length < 2 ? [] :
-        this.orderService.getOrderLineItemLookup(this.creditMemo.customerId, false, term)
+        this.orderService.getOrderLineItemLookup(this.creditMemo.customerId, 'return', term)
           .pipe(
             map(orders => orders.splice(0, 10))
           )

@@ -14,8 +14,8 @@ export class InvoiceLineItem extends JsonModelBase {
         this.date = lineItem && lineItem.date || new Date();
         this.totalAmount = lineItem && lineItem.totalAmount || 0;
         this.type = (lineItem && lineItem.type) ? InvoiceLineItemType[lineItem.type] : InvoiceLineItemType.Order;
-        this.orderId = lineItem && lineItem.orderId || 0;
-        this.creditMemoId = lineItem && lineItem.creditMemoId || 0;
+        this.orderId = lineItem && lineItem.orderId || null;
+        this.creditMemoId = lineItem && lineItem.creditMemoId || null;
     }
 }
 //# sourceMappingURL=invoice-line-item.js.map

@@ -54,6 +54,7 @@ export class Delivery extends JsonModelBase {
         this.deliveryNumber = delivery && delivery.deliveryNumber || 0;
         this.date = (delivery && delivery.date) ? new Date(delivery.date) : new Date();
         this.plateNumber = delivery && delivery.plateNumber || '';
+        this.rowVersion = delivery && delivery.rowVersion || '';
         this.provinceId = delivery && delivery.provinceId || 0;
         this.provinceName = delivery && delivery.provinceName || '';
         this.cityId = delivery && delivery.cityId || 0;

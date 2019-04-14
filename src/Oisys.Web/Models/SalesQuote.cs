@@ -42,5 +42,10 @@ namespace OisysNew.Models
         /// Gets or sets collection of SalesQuoteDetails navigation property.
         /// </summary>
         public virtual ICollection<SalesQuoteLineItem> LineItems { get; set; }
+
+        /// <summary>
+        /// Gets or sets concurrency check.
+        /// </summary>
+        public byte[] RowVersion { get; set; }
     }
 }

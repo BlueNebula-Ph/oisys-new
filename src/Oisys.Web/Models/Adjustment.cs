@@ -5,13 +5,8 @@ namespace OisysNew.Models
     /// <summary>
     /// <see cref="Adjustment"/> class.
     /// </summary>
-    public class Adjustment
+    public class Adjustment : ModelBase
     {
-        /// <summary>
-        /// Gets or sets the id property
-        /// </summary>
-        public long Id { get; set; }
-
         /// <summary>
         /// Gets or sets the item id property
         /// </summary>

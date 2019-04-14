@@ -76,15 +76,12 @@ export class InventoryFormComponent implements AfterContentInit, OnDestroy {
   };
 
   saveSuccess = () => {
-    if (this.item.id == 0) {
-      this.setItem(undefined);
-    }
+    this.loadItemForm();
     this.util.showSuccessMessage('Item saved successfully.');
   };
 
   saveFailed = (error) => {
-    this.util.showErrorMessage('An error occurred while saving. Please try again.');
-    console.log(error);
+    this.isSaving = false;
   };
 
   saveCompleted = () => {

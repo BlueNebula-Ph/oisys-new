@@ -25,8 +25,13 @@ export class ErrorInterceptor implements HttpInterceptor {
             location.reload(true);
           }
 
-          if (err.status === 400 || err.status == 409 || err.status == 500) {
+          if (err.status == 409 || err.status == 500) {
             this.util.showErrorMessage(err.error);
+          }
+
+          if (err.status == 400) {
+            let errorMessages = err.error.ErrorMessage.join('<br />');
+            this.util.showErrorMessage(errorMessages);
           }
 
           return throwError(err);

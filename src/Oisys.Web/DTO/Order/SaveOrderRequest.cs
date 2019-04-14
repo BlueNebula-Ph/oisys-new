@@ -57,5 +57,10 @@ namespace OisysNew.DTO.Order
         /// Gets or sets property Details navigation property.
         /// </summary>
         public ICollection<SaveOrderLineItemRequest> LineItems { get; set; }
+
+        /// <summary>
+        /// Gets or sets concurrency check.
+        /// </summary>
+        public string RowVersion { get; set; }
     }
 }

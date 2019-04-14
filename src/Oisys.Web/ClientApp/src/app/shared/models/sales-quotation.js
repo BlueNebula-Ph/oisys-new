@@ -39,6 +39,7 @@ export class SalesQuotation extends JsonModelBase {
         this.customerAddress = salesQuotation && salesQuotation.customerAddress || '';
         this.date = (salesQuotation && salesQuotation.date) ? new Date(salesQuotation.date) : new Date();
         this.deliveryFee = salesQuotation && salesQuotation.deliveryFee || 0;
+        this.rowVersion = salesQuotation && salesQuotation.rowVersion || '';
         this.lineItems = (salesQuotation && salesQuotation.lineItems) ? salesQuotation.lineItems.map(lineItem => new LineItem(lineItem)) : new Array();
         this.customer = (salesQuotation && salesQuotation.customer) ? new Customer(salesQuotation.customer) : undefined;
     }

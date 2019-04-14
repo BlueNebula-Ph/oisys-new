@@ -10,6 +10,7 @@ export class CashVoucher {
         this.category = (cashVoucher && cashVoucher.category) ? VoucherCategory[cashVoucher.category] : VoucherCategory.Automotive;
         this.categoryName = cashVoucher && cashVoucher.category || '';
         this.releasedBy = cashVoucher && cashVoucher.releasedBy || '';
+        this.rowVersion = cashVoucher && cashVoucher.rowVersion || '';
     }
 }
 //# sourceMappingURL=cash-voucher.js.map

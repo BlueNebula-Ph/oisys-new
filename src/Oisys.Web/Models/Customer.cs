@@ -77,5 +77,10 @@ namespace OisysNew.Models
         /// Gets or sets property Customer transactions.
         /// </summary>
         public virtual ICollection<CustomerTransaction> Transactions { get; set; }
+
+        /// <summary>
+        /// Gets or sets concurrency check.
+        /// </summary>
+        public byte[] RowVersion { get; set; }
     }
 }

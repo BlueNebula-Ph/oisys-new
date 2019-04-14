@@ -30,5 +30,10 @@
         /// ex. CanRead, CanWrite, CanDelete or Admin
         /// </summary>
         public string AccessRights { get; set; }
+
+        /// <summary>
+        /// Gets or sets concurrency check.
+        /// </summary>
+        public byte[] RowVersion { get; set; }
     }
 }
