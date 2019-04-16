@@ -54,13 +54,13 @@ namespace OisysNew
         public DbSet<Delivery> Deliveries { get; set; }
 
         /// <inheritdoc />
-        public DbSet<DeliveryLineItem> DeliveryDetails { get; set; }
+        public DbSet<DeliveryLineItem> DeliveryLineItems { get; set; }
 
         /// <inheritdoc />
         public DbSet<Invoice> Invoices { get; set; }
 
         /// <inheritdoc />
-        public DbSet<InvoiceLineItem> InvoiceDetails { get; set; }
+        public DbSet<InvoiceLineItem> InvoiceLineItems { get; set; }
 
         /// <inheritdoc />
         public DbSet<Item> Items { get; set; }

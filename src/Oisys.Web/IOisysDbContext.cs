@@ -31,7 +31,7 @@ namespace OisysNew
         DbSet<CreditMemo> CreditMemos { get; set; }
 
         /// <summary>
-        /// Gets or sets the credit memo details db set.
+        /// Gets or sets the credit memo line items db set.
         /// </summary>
         DbSet<CreditMemoLineItem> CreditMemoLineItems { get; set; }
 
@@ -51,9 +51,9 @@ namespace OisysNew
         DbSet<Delivery> Deliveries { get; set; }
 
         /// <summary>
-        /// Gets or sets the delivery details db set.
+        /// Gets or sets the delivery line items db set.
         /// </summary>
-        DbSet<DeliveryLineItem> DeliveryDetails { get; set; }
+        DbSet<DeliveryLineItem> DeliveryLineItems { get; set; }
 
         /// <summary>
         /// Gets or sets the invoice db set.
@@ -61,9 +61,9 @@ namespace OisysNew
         DbSet<Invoice> Invoices { get; set; }
 
         /// <summary>
-        /// Gets or sets the invoice details db set.
+        /// Gets or sets the invoice line items db set.
         /// </summary>
-        DbSet<InvoiceLineItem> InvoiceDetails { get; set; }
+        DbSet<InvoiceLineItem> InvoiceLineItems { get; set; }
 
         /// <summary>
         /// Gets or sets the items db set.
@@ -81,7 +81,7 @@ namespace OisysNew
         DbSet<Order> Orders { get; set; }
 
         /// <summary>
-        /// Gets or sets the order details db set.
+        /// Gets or sets the order line items db set.
         /// </summary>
         DbSet<OrderLineItem> OrderLineItems { get; set; }
 
@@ -96,7 +96,7 @@ namespace OisysNew
         DbSet<SalesQuote> SalesQuotes { get; set; }
 
         /// <summary>
-        /// Gets or sets the sales quote details db set.
+        /// Gets or sets the sales quote line items db set.
         /// </summary>
         DbSet<SalesQuoteLineItem> SalesQuoteLineItems { get; set; }
 

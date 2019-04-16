@@ -206,7 +206,10 @@ namespace OisysNew.Controllers
 
                 await orderService.ProcessInvoice(invoice.LineItems, false);
                 await orderService.ProcessInvoice(entity.LineItems, true);
-                
+
+                // Process deleted line items
+                entityListHelpers.CheckItemsForDeletion(invoice.LineItems, entity.LineItems);
+
                 // Update the invoice data
                 invoice = mapper.Map<Invoice>(entity);
 

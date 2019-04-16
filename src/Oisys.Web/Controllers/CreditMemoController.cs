@@ -278,6 +278,9 @@ namespace OisysNew.Controllers
                 await orderService.ProcessReturns(creditMemo.LineItems, AdjustmentType.Deduct);
                 await orderService.ProcessReturns(updatedCreditMemo.LineItems, AdjustmentType.Add);
 
+                // Process deleted line items
+                entityListHelpers.CheckItemsForDeletion(creditMemo.LineItems, updatedCreditMemo.LineItems);
+
                 // Update the credit memo values
                 creditMemo = mapper.Map<CreditMemo>(updatedCreditMemo);
 

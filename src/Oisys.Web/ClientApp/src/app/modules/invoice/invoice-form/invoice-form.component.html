@@ -43,12 +43,15 @@
                 </div>
               </div>
             </div>
-            <h6 class="card-title">Step 2. Review order & credit memo information.</h6>
+            <h6 class="card-title">
+              Step 2. Review order & credit memo information.
+              <a class="text-muted pointer" (click)="refreshOrders()"><i class="fa fa-refresh"></i> Refresh</a>
+            </h6>
             <table class="table form-table border-bottom">
               <thead>
                 <tr>
                   <td width="10%"></td>
-                  <td class="align-middle"width="30%">Code</td>
+                  <td class="align-middle" width="30%">Code</td>
                   <td class="align-middle text-center" width="20%">Date</td>
                   <td class="align-middle text-right" width="30%">Total Amount</td>
                   <td width="10%"></td>

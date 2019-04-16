@@ -113,16 +113,37 @@ export class InvoiceFormComponent implements AfterContentInit, OnDestroy {
   };
 
   customerSelected(customer: Customer) {
-    if (this.invoice.customer && this.invoice.customer.id && this.invoice.customer.id != 0) {
-      this.fetchItemsSub = forkJoin(
-        this.orderService.getOrderLookup(customer.id),
-        this.creditMemoService.getCreditMemoLookup(customer.id)
-      ).subscribe(([orderResponse, creditMemoResponse]) => {
-        var orders = orderResponse.map(val => this.createInvoiceLineItem(val, InvoiceLineItemType.Order));
-        var creditMemos = creditMemoResponse.map(val => this.createInvoiceLineItem(val, InvoiceLineItemType.CreditMemo));
-        this.invoice.lineItems = orders.concat(creditMemos);
-      });
+    if (customer && customer.id) {
+      this.loadOrdersAndCreditMemos(customer.id, true);
     }
+  };
+
+  refreshOrders() {
+    if (this.invoice && this.invoice.customer && this.invoice.customer.id) {
+      this.loadOrdersAndCreditMemos(this.invoice.customer.id, false);
+    }
+  };
+
+  loadOrdersAndCreditMemos(id: number, isNew: boolean) {
+    this.fetchItemsSub = forkJoin(
+      this.orderService.getOrderLookup(id),
+      this.creditMemoService.getCreditMemoLookup(id)
+    ).subscribe(([orderResponse, creditMemoResponse]) => {
+      let orders = orderResponse.map(val => this.createInvoiceLineItem(val, InvoiceLineItemType.Order));
+      let creditMemos = creditMemoResponse.map(val => this.createInvoiceLineItem(val, InvoiceLineItemType.CreditMemo));
+
+      if (isNew) {
+        this.invoice.lineItems = orders.concat(creditMemos);
+      } else {
+        let newItems = orders.concat(creditMemos);
+        newItems.forEach((val) => {
+          let itemInList = this.invoice.lineItems.find(x => x.creditMemoId == val.creditMemoId && x.orderId == val.orderId);
+          if (!itemInList) {
+            this.invoice.lineItems.push(val);
+          }
+        });
+      }
+    });
   };
 
   createInvoiceLineItem(value: any, type: InvoiceLineItemType): InvoiceLineItem {
