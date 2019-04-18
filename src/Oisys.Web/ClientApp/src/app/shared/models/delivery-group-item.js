@@ -1,8 +1,10 @@
 export class DeliveryGroupItem {
-    constructor(customerName, customerAddress, lineItems) {
+    constructor(customerId, customerName, customerAddress, lineItems) {
+        this.customerId = customerId;
         this.customerName = customerName;
         this.customerAddress = customerAddress;
         this.lineItems = lineItems;
+        this.customerId = customerId || 0;
         this.customerName = customerName || '';
         this.customerAddress = customerAddress || '';
         this.lineItems = lineItems || new Array();

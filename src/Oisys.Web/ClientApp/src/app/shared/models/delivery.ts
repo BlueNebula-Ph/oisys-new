@@ -13,7 +13,8 @@ export class Delivery extends JsonModelBase {
   public cityId: number;
   public cityName: string;
   public plateNumber: string;
-  public lineItems: DeliveryLineItem[];
+  
+  public groupedItems: DeliveryGroupItem[] = new Array<DeliveryGroupItem>();
   public rowVersion: string;
 
   private _province: Province;
@@ -41,27 +42,19 @@ export class Delivery extends JsonModelBase {
     }
   }
 
-  get groupedItems() {
-    const groupedItems = new Array<DeliveryGroupItem>();
-    if (this.lineItems && this.lineItems.length > 0) {
-      this.lineItems.forEach((lineItem) => {
-        var groupItem = groupedItems.find(i => i.customerName == lineItem.customer.name);
-        if (groupItem) {
-          groupItem.addLineItem(lineItem);
-        } else {
-          var address = `${lineItem.customer.address}, ${lineItem.customer.cityName}, ${lineItem.customer.provinceName}`;
-          var deliveryGroupItem = new DeliveryGroupItem(lineItem.customer.name, address, [lineItem]);
-          groupedItems.push(deliveryGroupItem);
-        }
-      });
-    }
-    return groupedItems;
-  }
-
   get isNew() {
     const today = new Date();
     const sevenDaysBefore = new Date(today.setDate(today.getDate() - 7));
     return this.date > sevenDaysBefore;
+  }
+
+  private _lineItems: DeliveryLineItem[];
+  get lineItems() {
+    return this._lineItems;
+  }
+  set lineItems(val: DeliveryLineItem[]) {
+    this._lineItems = val;
+    this.groupLineItems();
   }
 
   constructor();
@@ -85,12 +78,26 @@ export class Delivery extends JsonModelBase {
       delivery.lineItems.map(lineItem => new DeliveryLineItem(lineItem)) : new Array<DeliveryLineItem>();
     this.province = (delivery && delivery.province) ? new Province(delivery.province) : undefined;
     this.city = (delivery && delivery.city) ? new City(delivery.city) : undefined;
-
-    console.log(delivery);
   }
 
   updateQuantity(orderLineItemId: number, newQuantity: number) {
     var deliveryLineItem = this.lineItems.find(item => item.orderLineItemId == orderLineItemId);
     deliveryLineItem.quantity = newQuantity;
+  };
+
+  groupLineItems() {
+    this.groupedItems = new Array<DeliveryGroupItem>();
+    if (this.lineItems && this.lineItems.length > 0) {
+      this.lineItems.forEach((lineItem) => {
+        var groupItem = this.groupedItems.find(i => i.customerName == lineItem.customer.name);
+        if (groupItem) {
+          groupItem.addLineItem(lineItem);
+        } else {
+          var address = `${lineItem.customer.address}, ${lineItem.customer.cityName}, ${lineItem.customer.provinceName}`;
+          var deliveryGroupItem = new DeliveryGroupItem(lineItem.customer.id, lineItem.customer.name, address, [lineItem]);
+          this.groupedItems.push(deliveryGroupItem);
+        }
+      });
+    }
   };
 }

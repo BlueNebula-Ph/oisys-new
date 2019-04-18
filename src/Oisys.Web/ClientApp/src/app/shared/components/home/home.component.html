@@ -81,7 +81,7 @@
         <thead class="thead-light">
           <tr>
             <th>Customer</th>
-            <th>Quantity</th>
+            <th class="text-right pr-2">Qty (Delivered)</th>
             <th>Item</th>
             <th>Category</th>
             <th>Order Code</th>
@@ -92,7 +92,7 @@
         <tbody>
           <tr *ngFor="let order of area.orders">
             <td>{{ order.customer }}</td>
-            <td>{{ order.quantity }} {{ order.unit }}</td>
+            <td class="text-right pr-2">{{ order.quantity }} {{ order.unit }} ({{ order.quantityDelivered }})</td>
             <td>{{ order.itemCode }} - {{ order.itemName }}</td>
             <td>{{ order.category }}</td>
             <td>{{ order.orderCode }}</td>

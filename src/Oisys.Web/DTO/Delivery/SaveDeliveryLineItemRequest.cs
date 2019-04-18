@@ -5,7 +5,7 @@ namespace OisysNew.DTO.Delivery
     /// <summary>
     /// <see cref="SaveDeliveryLineItemRequest"/> is a viewmodel for saving delivery line items
     /// </summary>
-    public class SaveDeliveryLineItemRequest
+    public class SaveDeliveryLineItemRequest : DTOBase
     {
         /// <summary>
         /// Gets or sets the quantity delivered.

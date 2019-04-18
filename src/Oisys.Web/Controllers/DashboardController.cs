@@ -157,6 +157,7 @@ namespace OisysNew.Controllers
                                 ItemName = x.Item.Name,
                                 OrderCode = x.Order.Code,
                                 Quantity = x.Quantity,
+                                QuantityDelivered = x.QuantityDelivered,
                                 Unit = x.Item.Unit
                             })
                         })

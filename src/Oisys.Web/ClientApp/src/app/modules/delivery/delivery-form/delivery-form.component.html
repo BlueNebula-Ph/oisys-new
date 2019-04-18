@@ -11,7 +11,7 @@
                 <div class="form-group">
                   <label>Province.</label>
                   <div appInputGroupStyle>
-                    <input appControlStyle #province name="province" placeholder="Province"
+                    <input appControlStyle #province name="province" placeholder="Province" [disabled]="isProvinceDisabled"
                            [(ngModel)]="delivery.province" [ngbTypeahead]="searchProvince"
                            [inputFormatter]="provinceFormatter" [resultTemplate]="provTemplate" required>
                     <div class="input-group-append">
@@ -24,7 +24,7 @@
                 <div class="form-group">
                   <label>City.</label>
                   <div appInputGroupStyle>
-                    <input appControlStyle name="city" placeholder="City" [disabled]="!delivery.provinceId || delivery.provinceId == 0"
+                    <input appControlStyle name="city" placeholder="City" [disabled]="!delivery.provinceId || delivery.provinceId == 0 || isProvinceDisabled"
                            [(ngModel)]="delivery.city" [ngbTypeahead]="searchCity"
                            [inputFormatter]="cityFormatter" [resultTemplate]="cityTemplate" required>
                     <div class="input-group-append">
@@ -77,12 +77,13 @@
                   </div>
                 </div>
               </li>
-              <li *ngFor="let groupedItem of delivery.groupedItems">
+              <li *ngFor="let groupedItem of delivery.groupedItems;">
                 <div class="card card-accent-primary">
                   <div class="card-body">
                     <h6 class="card-title">
                       {{ groupedItem.customerName }}.
-                      <small class="text-muted">{{ groupedItem.customerAddress }}.</small>
+                      <small class="text-muted">{{ groupedItem.customerAddress }}.</small>&nbsp;&nbsp;&nbsp;
+                      <a class="text-muted pointer" (click)="refreshOrders(groupedItem.customerId)"><i class="fa fa-refresh"></i> Refresh</a>
                     </h6>
                     <table class="table table-sm border-bottom">
                       <thead>
@@ -101,7 +102,7 @@
                           <td>
                             <input appControlStyle type="number" class="text-right"
                                    [value]="lineItem.quantity" (change)="quantityUpdated($event, lineItem)"
-                                   [max]="lineItem.quantityNotDelivered" />
+                                   [max]="lineItem.quantity" min="0" />
                           </td>
                           <td><input appControlStyle [value]="lineItem.unit" readonly /></td>
                           <td><input appControlStyle [value]="lineItem.orderCode" readonly /></td>
@@ -119,7 +120,7 @@
                         </tr>
                       </tbody>
                     </table>
-                    <button class="btn btn-sm btn-ghost-danger" title="Remove all orders from this customer.">
+                    <button type="button" class="btn btn-sm btn-ghost-danger" title="Remove all orders from this customer." (click)="removeCustomer(groupedItem.customerId)">
                       <i class="fa fa-trash"></i> Remove
                     </button>
                   </div>
@@ -129,7 +130,7 @@
           </div>
           <div class="card-footer">
             <button type="submit" class="btn btn-primary btn-square" title="Save delivery information." accesskey="s"
-                    [disabled]="!deliveryForm.form.valid || isSaving">
+                    [disabled]="!deliveryForm.form.valid || delivery.lineItems.length == 0 || isSaving">
               <i *ngIf="!isSaving" class="fa fa-save mr-1"></i><i *ngIf="isSaving" class="fa fa-spinner fa-spin mr-1"></i>Save
             </button>
             <a routerLink="/deliveries" class="btn btn-secondary btn-square ml-1" accesskey="b">

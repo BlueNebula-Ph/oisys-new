@@ -7,5 +7,6 @@ export class DashboardOrderItem {
   public itemName: string;
   public orderCode: string;
   public quantity: number;
+  public quantityDelivered: number;
   public unit: string;
 }

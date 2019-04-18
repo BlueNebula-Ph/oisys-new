@@ -28,6 +28,11 @@
         public int Quantity { get; set; }
 
         /// <summary>
+        /// Gets or sets the quantity delivered.
+        /// </summary>
+        public int QuantityDelivered { get; set; }
+
+        /// <summary>
         /// Gets or sets the unit of the item ordered.
         /// </summary>
         public string Unit { get; set; }

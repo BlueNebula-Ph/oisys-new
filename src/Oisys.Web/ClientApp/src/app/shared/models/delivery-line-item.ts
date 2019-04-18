@@ -12,7 +12,7 @@ export class DeliveryLineItem extends JsonModelBase {
   public itemName: string;
   public unit: string;
   public categoryName: string;
-  public quantityNotDelivered: number = 0;
+  public quantityDelivered: number;
 
   get item() {
     return `${this.itemCode} - ${this.itemName}`;
@@ -37,6 +37,7 @@ export class DeliveryLineItem extends JsonModelBase {
     this.id = deliveryLineItem && deliveryLineItem.id || 0;
     this.orderLineItemId = deliveryLineItem && deliveryLineItem.orderLineItemId || 0;
     this.quantity = deliveryLineItem && deliveryLineItem.quantity || 0;
+    this.quantityDelivered = deliveryLineItem && deliveryLineItem.quantityDelivered || 0;
 
     this.orderCode = deliveryLineItem && deliveryLineItem.orderCode || '';
     this.orderDate = deliveryLineItem && deliveryLineItem.orderDate || '';

@@ -9,6 +9,7 @@ using OisysNew.Helpers;
 using OisysNew.Models;
 using System;
 using System.Collections;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace OisysNew.Services
@@ -89,6 +90,7 @@ namespace OisysNew.Services
         private async Task UpdateQuantityReturned(CreditMemoLineItem lineItem, AdjustmentType adjustmentType)
         {
             var orderLineItem = await FetchLineItem(lineItem.OrderLineItemId);
+            var tempQuantityReturned = orderLineItem.QuantityReturned;
 
             orderLineItem.QuantityReturned = adjustmentType == AdjustmentType.Add ?
                 orderLineItem.QuantityReturned + lineItem.Quantity :
@@ -97,13 +99,20 @@ namespace OisysNew.Services
             // Quantity returned cannot be more than original order quantity
             if (orderLineItem.QuantityReturned > orderLineItem.Quantity)
             {
-                throw new QuantityReturnedException($"Quantity returned cannot be more than original quantity.");
+                var errorBuilder = new StringBuilder("Quantity returned cannot be more than the quantity ordered.<br />");
+                if (tempQuantityReturned != 0)
+                    errorBuilder.Append($"{orderLineItem.Item.Name} of order {orderLineItem.Order.Code} already has {tempQuantityReturned}/{orderLineItem.Quantity} returned.");
+                else
+                    errorBuilder.Append($"{orderLineItem.Item.Name} of order {orderLineItem.Order.Code} only has {orderLineItem.Quantity} quantity ordered.");
+
+                throw new QuantityReturnedException(errorBuilder.ToString());
             }
         }
 
         private async Task UpdateQuantityDelivered(DeliveryLineItem lineItem, AdjustmentType adjustmentType)
         {
             var orderLineItem = await FetchLineItem(lineItem.OrderLineItemId);
+            var tempQuantityDelivered = orderLineItem.QuantityDelivered;
 
             orderLineItem.QuantityDelivered = adjustmentType == AdjustmentType.Add ?
                 orderLineItem.QuantityDelivered + lineItem.Quantity :
@@ -112,7 +121,13 @@ namespace OisysNew.Services
             // Quantity delivered cannot be more than original order quantity
             if (orderLineItem.QuantityDelivered > orderLineItem.Quantity)
             {
-                throw new QuantityDeliveredException($"Quantity delivered cannot be more than original quantity.");
+                var errorBuilder = new StringBuilder("Quantity delivered cannot be more than the quantity ordered.<br />");
+                if (tempQuantityDelivered != 0)
+                    errorBuilder.Append($"{orderLineItem.Item.Name} of order {orderLineItem.Order.Code} already has {tempQuantityDelivered}/{orderLineItem.Quantity} delivered.");
+                else
+                    errorBuilder.Append($"{orderLineItem.Item.Name} of order {orderLineItem.Order.Code} only has {orderLineItem.Quantity} quantity ordered.");
+
+                throw new QuantityDeliveredException(errorBuilder.ToString());
             }
         }
 

@@ -223,55 +223,41 @@ namespace OisysNew.Controllers
         {
             try
             {
-                var deliveryExists = await context.Deliveries
-                .AnyAsync(c => c.Id == id);
+                var delivery = await context.Deliveries
+                    .Include(c => c.LineItems)
+                    .AsNoTracking()
+                    .SingleOrDefaultAsync(a => a.Id == id);
 
-                if (!deliveryExists)
+                if (delivery == null)
                 {
                     return NotFound();
                 }
 
-                // Adjust actual quantities accordingly
-                //foreach (var updatedDeliveryDetail in entity.Details)
-                //{
-                //    var deliveryDetailItem = await this.context.Items.FindAsync(updatedDeliveryDetail.ItemId);
-                //    if (deliveryDetailItem != null)
-                //    {
-                //        // Fetch the old detail as no tracking to not interfere with the context-tracked order detail
-                //        var oldDetail = await this.context.OrderDetails
-                //            .AsNoTracking()
-                //            .SingleOrDefaultAsync(c => c.Id == updatedDeliveryDetail.Id);
+                // Process the deliveries
+                await orderService.ProcessDeliveries(delivery.LineItems, AdjustmentType.Deduct);
+                await orderService.ProcessDeliveries(entity.LineItems, AdjustmentType.Add);
 
-                //        // If the order detail exists, return the old quantities back
-                //        if (oldDetail != null)
-                //        {
-                //            this.adjustmentService.ModifyQuantity(QuantityType.ActualQuantity, deliveryDetailItem, oldDetail.Quantity, AdjustmentType.Add, Constants.AdjustmentRemarks.DeliveryUpdated);
+                // Process deleted line items
+                entityListHelpers.CheckItemsForDeletion(delivery.LineItems, entity.LineItems);
 
-                //            // If DeliveryId is set to 0, do not re-add the actual quantity
-                //            if (updatedDeliveryDetail.DeliveryId == 0)
-                //            {
-                //                continue;
-                //            }
-                //        }
+                delivery = mapper.Map<Delivery>(entity);
 
-                //        // Deduct the correct amount from the item's current quantity
-                //        this.adjustmentService.ModifyQuantity(QuantityType.ActualQuantity, deliveryDetailItem, updatedDeliveryDetail.Quantity, AdjustmentType.Deduct, Constants.AdjustmentRemarks.DeliveryUpdated);
-                //    }
-                //}
-
-                // Map the entity to an delivery object
-                var delivery = this.mapper.Map<Delivery>(entity);
-
-                this.context.Update(delivery);
-
-                await this.context.SaveChangesAsync();
+                context.Update(delivery);
+                await context.SaveChangesAsync();
 
                 return StatusCode(StatusCodes.Status204NoContent);
+            }
+            catch (QuantityDeliveredException dEx)
+            {
+                logger.LogError(dEx.Message);
+
+                ModelState.AddModelError(Constants.ErrorMessage, dEx.Message);
+                return BadRequest(ModelState);
             }
             catch (DbUpdateConcurrencyException concurrencyEx)
             {
                 logger.LogError(concurrencyEx.Message);
-                return StatusCode(StatusCodes.Status409Conflict);
+                return StatusCode(StatusCodes.Status409Conflict, Constants.ErrorMessages.ConcurrencyErrorMessage);
             }
             catch (Exception ex)
             {

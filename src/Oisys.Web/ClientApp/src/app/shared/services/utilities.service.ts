@@ -20,10 +20,10 @@ export class UtilitiesService {
   };
 
   showErrorMessage(message: string): void {
-    if (message == '') {
+    if (!message || message == '') {
       message = "An error has occurred. Please contact your administrator.";
     }
-    this.toastrService.error(message, 'Error!');
+    this.toastrService.error(message, 'Error!', { timeOut: 8000, enableHtml: true });
   };
 
   /**

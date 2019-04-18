@@ -38,6 +38,10 @@ export class DeliveryFormComponent implements AfterContentInit, OnDestroy {
   @ViewChild('province') provinceField: ElementRef;
   @ViewChild('customer') customerField: ElementRef;
 
+  get isProvinceDisabled() {
+    return this.delivery.id && this.delivery.id != 0;
+  }
+
   constructor(
     private deliveryService: DeliveryService,
     private provinceService: ProvinceService,
@@ -103,7 +107,7 @@ export class DeliveryFormComponent implements AfterContentInit, OnDestroy {
 
   customerSelected() {
     if (this.selectedCustomer && this.selectedCustomer.id != 0 && !this.customerIdExists(this.selectedCustomer.id)) {
-      this.fetchCustomerOrderItems(this.selectedCustomer);
+      this.fetchCustomerOrderItems(this.selectedCustomer.id, true);
       this.customerField.nativeElement.value = '';
       this.customerField.nativeElement.focus();
     }
@@ -113,20 +117,30 @@ export class DeliveryFormComponent implements AfterContentInit, OnDestroy {
     return this.delivery.lineItems.find(x => x.customer.id == id) != null;
   };
 
-  fetchCustomerOrderItems(customer: Customer) {
+  fetchCustomerOrderItems(customerId: number, isNew: boolean) {
     this.getOrderLineItemSub = this.orderService
-      .getOrderLineItemLookup(customer.id, 'delivery')
+      .getOrderLineItemLookup(customerId, 'delivery')
       .subscribe(data => {
-        var newItems = data.map(orderLineItem =>
+        let newItems = data.map(orderLineItem =>
         {
-          var quantityNotDelivered = orderLineItem.quantity - orderLineItem.quantityDelivered;
-          var deliveryItem = new DeliveryLineItem(orderLineItem);
+          let quantityNotDelivered = orderLineItem.quantity - orderLineItem.quantityDelivered;
+          let deliveryItem = new DeliveryLineItem(orderLineItem);
           deliveryItem.id = 0; // Set id to 0
           deliveryItem.quantity = quantityNotDelivered;
-          deliveryItem.quantityNotDelivered = quantityNotDelivered;
           return deliveryItem;
         });
-        this.delivery.lineItems = this.delivery.lineItems.concat(newItems);
+
+        if (isNew) {
+          this.delivery.lineItems = this.delivery.lineItems.concat(newItems);
+        } else {
+          newItems.forEach((val) => {
+            let itemInList = this.delivery.lineItems.find(x => x.orderLineItemId == val.orderLineItemId);
+            if (!itemInList) {
+              this.delivery.lineItems.push(val);
+            }
+          });
+          this.delivery.groupLineItems();
+        }
       });
   };
 
@@ -137,13 +151,18 @@ export class DeliveryFormComponent implements AfterContentInit, OnDestroy {
   };
 
   quantityUpdated(event: any, lineItem: DeliveryLineItem) {
-    this.delivery.updateQuantity(lineItem.orderLineItemId, +event.target.value);
+    this.delivery.updateQuantity(lineItem.orderLineItemId, event.target.valueAsNumber);
   };
 
   removeLineItem(index: number) {
     if (confirm('Are you sure you want to remove this item?')) {
       this.delivery.lineItems.splice(index, 1);
+      this.delivery.groupLineItems();
     }
+  };
+
+  refreshOrders(customerId: number) {
+    this.fetchCustomerOrderItems(customerId, false);
   };
 
   // Autocomplete
