@@ -8,6 +8,7 @@ using Microsoft.Extensions.Logging;
 using OisysNew.DTO;
 using OisysNew.DTO.Item;
 using OisysNew.Extensions;
+using OisysNew.Filters;
 using OisysNew.Helpers;
 using OisysNew.Helpers.Interfaces;
 using OisysNew.Models;
@@ -111,10 +112,10 @@ namespace OisysNew.Controllers
         /// Returns list of active <see cref="Item"/>
         /// </summary>
         /// <returns>List of Items</returns>
-        [HttpGet("lookup/{name?}", Name = "GetItemLookup")]
+        [HttpGet("lookup/{code?}", Name = "GetItemLookup")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult<IEnumerable<ItemLookup>>> GetLookup(string name = "")
+        public async Task<ActionResult<IEnumerable<ItemLookup>>> GetLookup(string code = "")
         {
             try
             {
@@ -122,9 +123,9 @@ namespace OisysNew.Controllers
                 var list = context.Items
                     .AsNoTracking();
 
-                if (!string.IsNullOrEmpty(name))
+                if (!string.IsNullOrEmpty(code))
                 {
-                    list = list.Where(a => a.Name.StartsWith(name, StringComparison.CurrentCultureIgnoreCase));
+                    list = list.Where(a => a.Code.StartsWith(code, StringComparison.CurrentCultureIgnoreCase));
                 }
 
                 // sort
@@ -244,6 +245,7 @@ namespace OisysNew.Controllers
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [ServiceFilter(typeof(ValidateDuplicateItemCodeAttribute))]
         public async Task<ActionResult> Create([FromBody]SaveItemRequest entity)
         {
             try
@@ -282,6 +284,7 @@ namespace OisysNew.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(typeof(string), StatusCodes.Status409Conflict)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [ServiceFilter(typeof(ValidateDuplicateItemCodeAttribute))]
         public async Task<ActionResult> Update(long id, [FromBody]SaveItemRequest entity)
         {
             try

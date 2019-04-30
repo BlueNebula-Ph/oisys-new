@@ -90,5 +90,5 @@ export class AdjustItemComponent implements AfterContentInit, OnDestroy {
       )
     );
 
-  itemFormatter = (x: { name: string }) => x.name;
+  itemFormatter = (x: { code: string, name: string }) => `${x.code} - ${x.name}`;
 }

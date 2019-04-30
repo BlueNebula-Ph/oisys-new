@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;
+using OisysNew.Filters;
 using OisysNew.Helpers;
 using OisysNew.Helpers.Interfaces;
 using OisysNew.Services;
@@ -17,6 +18,7 @@ namespace OisysNew.Extensions
                 .AddTransient<IEntityListHelpers, EntityListHelpers>()
                 .AddTransient<IOrderService, OrderService>();
             serviceCollection.AddTransient(typeof(IPasswordHasher<>), typeof(PasswordHasher<>));
+            serviceCollection.AddScoped<ValidateDuplicateItemCodeAttribute>();
         }
     }
 }

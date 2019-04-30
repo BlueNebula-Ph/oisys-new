@@ -128,5 +128,5 @@ export class CreditMemoFormComponent implements AfterContentInit, OnDestroy {
     );
 
   customerFormatter = (x: { name: string }) => x.name;
-  itemFormatter = (x: { itemName: string, orderCode: string }) => `${x.itemName} - Order # ${x.orderCode}`;
+  itemFormatter = (x: { itemCode: string, itemName: string, orderCode: string }) => `${x.itemCode} - ${x.itemName} - Order # ${x.orderCode}`;
 }

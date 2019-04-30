@@ -161,10 +161,10 @@ namespace OisysNew.Controllers
         /// <param name="customerId">Customer Id</param>
         /// <param name="type">return or delivery</param>
         /// <returns>List of order details per customer</returns>
-        [HttpGet("lineItems/{customerId}/lookup/{type?}/{itemName?}", Name = "GetOrderLineItemLookup")]
+        [HttpGet("lineItems/{customerId}/lookup/{type?}/{itemCode?}", Name = "GetOrderLineItemLookup")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult<IEnumerable<OrderLineItemLookup>>> GetOrderLineItemLookup(int customerId, string type = "", string itemName = "")
+        public async Task<ActionResult<IEnumerable<OrderLineItemLookup>>> GetOrderLineItemLookup(int customerId, string type = "", string itemCode = "")
         {
             try
             {
@@ -186,9 +186,9 @@ namespace OisysNew.Controllers
                     list = list.Where(c => c.QuantityReturned != c.Quantity);
                 }
 
-                if (!string.IsNullOrEmpty(itemName))
+                if (!string.IsNullOrEmpty(itemCode))
                 {
-                    list = list.Where(c => c.Item.Name.StartsWith(itemName, StringComparison.CurrentCultureIgnoreCase));
+                    list = list.Where(c => c.Item.Code.StartsWith(itemCode, StringComparison.CurrentCultureIgnoreCase));
                 }
 
                 list = list.OrderBy(c => c.Item.Code);

@@ -130,5 +130,5 @@ export class OrderFormComponent implements AfterContentInit, OnDestroy {
     );
 
   customerFormatter = (x: { name: string }) => x.name;
-  itemFormatter = (x: { name: string }) => x.name;
+  itemFormatter = (x: { code: string, name: string }) => `${x.code} - ${x.name}`;
 }
