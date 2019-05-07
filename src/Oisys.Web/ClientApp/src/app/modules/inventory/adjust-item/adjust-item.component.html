@@ -34,10 +34,13 @@
           </div>
         </div>
         <div class="card-footer">
-          <button type="submit" class="btn btn-sm btn-primary btn-square ml-1" title="Save {{ label }} information." accesskey="s"
+          <button type="submit" class="btn btn-primary btn-square ml-1" title="Save {{ label }} information." accesskey="s"
                   [disabled]="!adjustmentForm.form.valid || adjustment.itemId == 0 || !adjustment.itemId || isSaving">
             <i *ngIf="!isSaving" class="fa fa-save mr-1"></i><i *ngIf="isSaving" class="fa fa-spinner fa-spin mr-1"></i>Save
           </button>
+          <a *ngIf="isManufacturing" routerLink="/manufacture-list" class="btn btn-secondary btn-square ml-1">
+            <i class="fa fa-angle-double-left mr-1"></i>Back
+          </a>
         </div>
       </div>
     </div>

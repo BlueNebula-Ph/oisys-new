@@ -20,6 +20,12 @@ namespace OisysNew.DTO
         public AdjustmentType AdjustmentType { get; set; }
 
         /// <summary>
+        /// Gets or sets the adjustment category.
+        /// Either adjustment or manufacture.
+        /// </summary>
+        public AdjustmentCategory Category { get; set; }
+
+        /// <summary>
         /// Gets or sets property AdjustmentQuantity.
         /// </summary>
         [Required]

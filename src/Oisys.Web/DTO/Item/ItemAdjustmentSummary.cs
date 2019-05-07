@@ -10,7 +10,7 @@ namespace OisysNew.DTO.Item
         /// <summary>
         /// Gets or sets property id.
         /// </summary>
-        public int Id { get; set; }
+        public long Id { get; set; }
 
         /// <summary>
         /// Gets or sets property item.
@@ -20,12 +20,12 @@ namespace OisysNew.DTO.Item
         /// <summary>
         /// Gets or sets property adjustment date.
         /// </summary>
-        public DateTime AdjustmentDate { get; set; }
+        public string AdjustmentDate { get; set; }
 
         /// <summary>
         /// Gets or sets property quantity.
         /// </summary>
-        public int Quantity { get; set; }
+        public int AdjustmentQuantity { get; set; }
 
         /// <summary>
         /// Gets or sets property adjustment type.

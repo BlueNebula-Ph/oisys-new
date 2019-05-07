@@ -57,11 +57,6 @@
             </ng-template>
           </ngx-datatable-column>
           <ngx-datatable-column name="" [flexGrow]="2" [sortable]="false">
-            <ng-template ngx-datatable-header-template>
-              <a routerLink="/inventory/edit/0" class="btn btn-sm btn-primary float-right mr-1" accesskey="n" *ngIf="canWrite">
-                <i class="fa fa-plus"></i> New Item
-              </a>
-            </ng-template>
             <ng-template ngx-datatable-cell-template let-row="row">
               <div class="text-right">
                 <a routerLink="/inventory/info/{{ row.id }}" class="btn btn-ghost-primary" title="View item information.">
@@ -80,6 +75,9 @@
       </div>
     </div>
     <div class="col-3">
+      <a routerLink="/inventory/edit/0" class="btn btn-sm btn-primary btn-block mb-2" accesskey="n" *ngIf="canWrite">
+        <i class="fa fa-plus"></i> New Item
+      </a>
       <app-search-panel (searched)="onSearch($event)"
                         [showCategories]="true"
                         [categories]="categories$ | async"

@@ -8,6 +8,7 @@ import { InventoryListComponent } from './inventory-list/inventory-list.componen
 import { InventoryFormComponent } from './inventory-form/inventory-form.component';
 import { InventoryDetailComponent } from './inventory-detail/inventory-detail.component';
 import { AdjustItemComponent } from './adjust-item/adjust-item.component';
+import { ManufactureListComponent } from './manufacture-list/manufacture-list.component';
 
 @NgModule({
   imports: [
@@ -20,6 +21,7 @@ import { AdjustItemComponent } from './adjust-item/adjust-item.component';
     InventoryFormComponent,
     InventoryDetailComponent,
     AdjustItemComponent,
+    ManufactureListComponent,
   ]
 })
 export class InventoryModule { }

@@ -15,6 +15,7 @@ import { InventoryListComponent } from '../inventory/inventory-list/inventory-li
 import { InventoryFormComponent } from '../inventory/inventory-form/inventory-form.component';
 import { InventoryDetailComponent } from '../inventory/inventory-detail/inventory-detail.component';
 import { AdjustItemComponent } from '../inventory/adjust-item/adjust-item.component';
+import { ManufactureListComponent } from '../inventory/manufacture-list/manufacture-list.component';
 
 import { OrderListComponent } from '../order/order-list/order-list.component';
 import { OrderDetailComponent } from '../order/order-detail/order-detail.component';
@@ -157,6 +158,14 @@ const routes: Routes = [
     data: {
       type: 'manufacturing',
       roles: [canWrite]
+    }
+  },
+  {
+    path: 'manufacture-list',
+    component: ManufactureListComponent,
+    canActivate: [AuthGuard],
+    data: {
+      roles: [canView]
     }
   },
   // Cash vouchers

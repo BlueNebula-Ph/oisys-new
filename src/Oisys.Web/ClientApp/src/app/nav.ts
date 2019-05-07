@@ -15,7 +15,7 @@ export const navItems = [
   },
   {
     name: 'Manufacture',
-    url: '/manufacture',
+    url: '/manufacture-list',
     icon: 'fa fa-wrench'
   },
   {

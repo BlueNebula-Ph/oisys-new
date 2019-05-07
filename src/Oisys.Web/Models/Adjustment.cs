@@ -1,4 +1,5 @@
-﻿using System;
+﻿using OisysNew.Helpers;
+using System;
 
 namespace OisysNew.Models
 {
@@ -21,6 +22,12 @@ namespace OisysNew.Models
         /// Gets or sets the adjustment type property.
         /// </summary>
         public string AdjustmentType { get; set; }
+
+        /// <summary>
+        /// Gets or sets the adjustment category.
+        /// Either adjustment or manufacture.
+        /// </summary>
+        public AdjustmentCategory Category { get; set; }
 
         /// <summary>
         /// Gets or sets the adjustment date property

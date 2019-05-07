@@ -56,11 +56,6 @@
             </ng-template>
           </ngx-datatable-column>
           <ngx-datatable-column name="" [flexGrow]="2">
-            <ng-template ngx-datatable-header-template>
-              <a routerLink="/vouchers/edit/0" class="btn btn-sm btn-primary float-right" accesskey="n" *ngIf="canWrite">
-                <i class="fa fa-plus"></i> New Voucher
-              </a>
-            </ng-template>
             <ng-template ngx-datatable-cell-template let-row="row">
               <div class="text-right">
                 <a routerLink="/vouchers/info/{{ row.id }}" class="btn btn-ghost-primary" title="View voucher information.">
@@ -79,6 +74,9 @@
       </div>
     </div>
     <div class="col-3">
+      <a routerLink="/vouchers/edit/0" class="btn btn-sm btn-primary btn-block mb-2" accesskey="n" *ngIf="canWrite">
+        <i class="fa fa-plus"></i> New Voucher
+      </a>
       <app-search-panel (searched)="onSearch($event)"
                         [showDates]="true">
       </app-search-panel>

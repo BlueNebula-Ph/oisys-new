@@ -206,6 +206,40 @@ namespace OisysNew.Controllers
         }
 
         /// <summary>
+        /// Gets item adjustments
+        /// </summary>
+        /// <param name="id">id</param>
+        /// <param name="page">page index requested (0 based)</param>
+        /// <param name="size">page size requested</param>
+        /// <returns>List of item histories</returns>
+        [HttpGet("adjustments/{category}", Name = "GetAdjustments")]
+        [ProducesResponseType(typeof(PaginatedList<ItemAdjustmentSummary>), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<ActionResult<PaginatedList<ItemAdjustmentSummary>>> GetAdjustments([FromRoute]int category, [FromQuery]int page, [FromQuery]int size, [FromQuery]int itemId = 0)
+        {
+            try
+            {
+                var adjustments = context.Adjustments
+                    .AsNoTracking()
+                    .Where(a => (int)a.Category == category);
+
+                if (itemId != 0)
+                {
+                    adjustments = adjustments.Where(a => a.ItemId == itemId);
+                }
+
+                adjustments = adjustments.OrderByDescending(a => a.AdjustmentDate);
+
+                return await listHelpers.CreatePaginatedListAsync<Adjustment, ItemAdjustmentSummary>(adjustments, page, size);
+            }
+            catch (Exception e)
+            {
+                logger.LogError(e.Message);
+                return StatusCode(StatusCodes.Status500InternalServerError);
+            }
+        }
+
+        /// <summary>
         /// Gets <see cref="ItemOrderSummary"/> of an item.
         /// </summary>
         /// <param name="id">id</param>

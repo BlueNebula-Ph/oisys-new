@@ -12,6 +12,8 @@ import { Category } from '../../models/category';
   styleUrls: ['./search-panel.component.css']
 })
 export class SearchPanelComponent implements AfterContentInit {
+  @Input() showKeywords: boolean = true;
+
   @Input() showProvinces: boolean = false;
   @Input() provinces: Province[] = new Array<Province>();
 

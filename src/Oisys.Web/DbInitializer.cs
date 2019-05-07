@@ -14,6 +14,7 @@ namespace OisysNew
         {
             if (env.IsDevelopment())
             {
+                //context.Database.EnsureDeleted();
                 context.Database.EnsureCreated();
 
                 SeedCategories(context);

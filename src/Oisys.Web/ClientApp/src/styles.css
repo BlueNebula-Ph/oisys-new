@@ -48,3 +48,32 @@ datatable-header-cell.center > div {
 datatable-header-cell.right > div {
   text-align: right;
 }
+
+.btn-primary, .btn-primary[disabled] {
+  background-color: #008080;
+  border-color: #008080;
+  color: #fff;
+}
+
+  .btn-primary:hover {
+    background-color: #006666;
+    color: #fff;
+  }
+
+.btn-ghost-primary {
+  color: #008080;
+}
+
+  .btn-ghost-primary:hover {
+    background-color: #008080;
+    color: #fff;
+  }
+
+.card.bg-primary {
+  background-color: #008080 !important;
+}
+
+.badge-primary {
+  background-color: #008080 !important;
+  color: #fff;
+}

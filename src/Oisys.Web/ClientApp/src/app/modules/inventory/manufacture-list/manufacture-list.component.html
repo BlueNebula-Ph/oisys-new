@@ -1,5 +1,5 @@
 <div class="animated fadeIn">
-  <h3>Customer Management.</h3>
+  <h3>Manufactured Items.</h3>
   <div class="row">
     <div class="col-9 pr-0">
       <div class="datatable-container">
@@ -19,58 +19,47 @@
                        [externalSorting]="true"
                        (page)="setPage($event)"
                        (sort)="onSort($event)">
-          <ngx-datatable-column name="Name" prop="name" [flexGrow]="3">
-            <ng-template let-row="row" ngx-datatable-cell-template>
-              <div>{{ row.name }}</div>
-              <div class="small">{{ row.address + ',' + row.cityName + ',' + row.provinceName }}</div>
-            </ng-template>
-          </ngx-datatable-column>
-          <ngx-datatable-column name="Email" prop="email" [flexGrow]="2">
+          <ngx-datatable-column name="Quantity" prop="adjustmentQuantity" [flexGrow]="1" [sortable]="false">
             <ng-template let-value="value" ngx-datatable-cell-template>
               {{ value }}
             </ng-template>
           </ngx-datatable-column>
-          <ngx-datatable-column name="Contact #" prop="contactNumber" [flexGrow]="2">
+          <ngx-datatable-column name="Item" prop="item" [flexGrow]="1" [sortable]="false">
             <ng-template let-value="value" ngx-datatable-cell-template>
               {{ value }}
             </ng-template>
           </ngx-datatable-column>
-          <ngx-datatable-column name="Contact Person" prop="contactPerson" [flexGrow]="2">
+          <ngx-datatable-column name="Date" prop="adjustmentDate" [flexGrow]="1" [sortable]="false">
             <ng-template let-value="value" ngx-datatable-cell-template>
               {{ value }}
             </ng-template>
           </ngx-datatable-column>
-          <ngx-datatable-column name="Price List" prop="priceList" [flexGrow]="2">
+          <ngx-datatable-column name="Machine" prop="machine" [flexGrow]="1" [sortable]="false">
             <ng-template let-value="value" ngx-datatable-cell-template>
               {{ value }}
             </ng-template>
           </ngx-datatable-column>
-          <ngx-datatable-column name="" [flexGrow]="2">
-            <ng-template ngx-datatable-cell-template let-row="row">
-              <div class="text-right">
-                <a routerLink="/customers/info/{{ row.id }}" class="btn btn-ghost-primary" title="View customer information.">
-                  <i class="fa fa-sticky-note-o"></i>
-                </a>
-                <a routerLink="/customers/edit/{{ row.id }}" class="btn btn-ghost-primary ml-1" title="Edit this customer." *ngIf="canWrite">
-                  <i class="fa fa-pencil"></i>
-                </a>
-                <button class="btn btn-ghost-danger ml-1" (click)="onDeleteCustomer(row.id)" title="Delete this customer." *ngIf="canDelete">
-                  <i class="fa fa-trash-o"></i>
-                </button>
-              </div>
+          <ngx-datatable-column name="Operator" prop="operator" [flexGrow]="1" [sortable]="false">
+            <ng-template let-value="value" ngx-datatable-cell-template>
+              {{ value }}
+            </ng-template>
+          </ngx-datatable-column>
+          <ngx-datatable-column name="Remarks" prop="remarks" [flexGrow]="1" [sortable]="false">
+            <ng-template let-value="value" ngx-datatable-cell-template>
+              {{ value }}
             </ng-template>
           </ngx-datatable-column>
         </ngx-datatable>
       </div>
     </div>
     <div class="col-3">
-      <a routerLink="/customers/edit/0" class="btn btn-sm btn-primary btn-block mb-2" accesskey="n" *ngIf="canWrite">
-        <i class="fa fa-plus"></i> New Customer
+      <a routerLink="/manufacture" class="btn btn-sm btn-block btn-primary mb-2" accesskey="n" *ngIf="canWrite">
+        <i class="fa fa-plus"></i> Manufacture Item
       </a>
       <app-search-panel (searched)="onSearch($event)"
-                        [showProvinces]="true"
-                        [provinces]="provinces$ | async"
-                        [showCities]="true">
+                        [showKeywords]="false"
+                        [showItems]="true"
+                        [items]="items$ | async">
       </app-search-panel>
     </div>
   </div>

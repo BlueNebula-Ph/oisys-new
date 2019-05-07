@@ -33,10 +33,13 @@ namespace OisysNew.Configuration
         {
             // Adjustment
             CreateMap<Adjustment, ItemAdjustmentSummary>()
-                .ForMember(d => d.Item, s => s.MapFrom(o => o.Item.Name));
+                .ForMember(d => d.Item, s => s.MapFrom(o => $"{o.Item.Code} - {o.Item.Name}"))
+                .ForMember(d => d.AdjustmentQuantity, s => s.MapFrom(o => o.Quantity))
+                .ForMember(d => d.AdjustmentDate, s => s.MapFrom(o => o.AdjustmentDate.ToShortDateString()));
 
             CreateMap<SaveItemAdjustmentRequest, Adjustment>()
-                .ForMember(d => d.Quantity, s => s.MapFrom(o => o.AdjustmentQuantity));
+                .ForMember(d => d.Quantity, s => s.MapFrom(o => o.AdjustmentQuantity))
+                .ForMember(d => d.AdjustmentDate, s => s.MapFrom(o => DateTime.Now));
 
             // Cash Voucher
             CreateMap<CashVoucher, CashVoucherSummary>()

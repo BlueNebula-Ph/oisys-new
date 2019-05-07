@@ -16,6 +16,9 @@ export class Adjustment {
         this.remarks = adjustment && adjustment.remarks || '';
         this.operator = adjustment && adjustment.operator || '';
         this.machine = adjustment && adjustment.machine || '';
+        this.category = adjustment && adjustment.category || 0;
+        this.item = adjustment && adjustment.item || '';
+        this.adjustmentDate = adjustment && adjustment.adjustmentDate || '';
     }
     ;
 }

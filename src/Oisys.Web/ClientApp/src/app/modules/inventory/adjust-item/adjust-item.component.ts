@@ -10,6 +10,7 @@ import { UtilitiesService } from '../../../shared/services/utilities.service';
 
 import { Adjustment } from '../../../shared/models/adjustment';
 import { AdjustmentType } from '../../../shared/models/adjustment-type';
+import { AdjustmentCategory } from '../../../shared/models/adjustment-category';
 
 @Component({
   selector: 'app-adjust-item',
@@ -74,6 +75,7 @@ export class AdjustItemComponent implements AfterContentInit, OnDestroy {
 
   clearAdjustment() {
     this.adjustment = new Adjustment();
+    this.adjustment.category = this.isAdjustment ? AdjustmentCategory.Adjustment : AdjustmentCategory.Manufacture;
     this.itemNameField.nativeElement.focus();
   };
 

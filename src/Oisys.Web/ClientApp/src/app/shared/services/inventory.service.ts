@@ -75,4 +75,14 @@ export class InventoryService {
     var url = `${this.url}/${id}/orders?page=${page}&size=${size}`;
     return this.http.get<any>(url);
   };
+
+  getItemAdjustments(category: number, page: number, size: number, id: number = 0): Observable<PagedData<Adjustment>> {
+    var url = `${this.url}/adjustments/${category}?page=${page}&size=${size}`;
+
+    if (id != 0) {
+      url = url.concat(`&itemId=${id}`);
+    }
+
+    return this.http.get<any>(url);
+  };
 }
