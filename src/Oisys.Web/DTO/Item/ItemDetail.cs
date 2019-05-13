@@ -55,9 +55,14 @@ namespace OisysNew.DTO.Item
         public CategoryLookup Category { get; set; }
 
         /// <summary>
-        /// Gets or sets property Quantity.
+        /// Gets or sets the order quantity of the item.
         /// </summary>
         public int Quantity { get; set; }
+
+        /// <summary>
+        /// Gets or sets the stock quantity of the item.
+        /// </summary>
+        public int StockQuantity { get; set; }
 
         /// <summary>
         /// Gets or sets concurrency check.

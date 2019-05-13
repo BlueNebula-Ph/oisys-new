@@ -408,7 +408,7 @@ namespace OisysNew.Controllers
 
                 // Perform adjustment
                 var adjustments = new List<Adjustment> { adjustment };
-                await inventoryService.ProcessAdjustments(adjustments, saveAdjustmentRequest.AdjustmentType, saveAdjustmentRequest.Remarks);
+                await inventoryService.ProcessAdjustments(adjustments, saveAdjustmentRequest.AdjustmentType, saveAdjustmentRequest.Remarks, QuantityType.Both);
 
                 await context.AddAsync(adjustment);
                 await context.SaveChangesAsync();

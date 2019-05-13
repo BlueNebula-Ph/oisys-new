@@ -8,11 +8,11 @@
         /// <summary>
         /// Gets or sets order id.
         /// </summary>
-        public int? OrderId { get; set; }
+        public long? OrderId { get; set; }
 
         /// <summary>
         /// Gets or sets credit memo id.
         /// </summary>
-        public int? CreditMemoId { get; set; }
+        public long? CreditMemoId { get; set; }
     }
 }

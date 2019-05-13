@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using OisysNew.DTO.CreditMemo;
 using OisysNew.DTO.Order;
+using OisysNew.Exceptions;
 using OisysNew.Helpers;
 using OisysNew.Models;
 using System;
@@ -27,31 +28,31 @@ namespace OisysNew.Services
             this.logger = logger;
         }
 
-        public async Task ProcessAdjustments(IEnumerable itemsToUpdate, AdjustmentType adjustmentType, string remarks)
+        public async Task ProcessAdjustments(IEnumerable itemsToUpdate, AdjustmentType adjustmentType, string remarks, QuantityType quantityType)
         {
             foreach (var item in itemsToUpdate)
             {
                 switch (item)
                 {
                     case OrderLineItem orderLineItem:
-                        await ProcessItemAdjustmentAsync(orderLineItem.ItemId, orderLineItem.Quantity, adjustmentType);
+                        await ProcessItemAdjustmentAsync(orderLineItem.ItemId, orderLineItem.Quantity, adjustmentType, quantityType);
                         await UpdateOrderLineItemHistory(orderLineItem, adjustmentType, remarks);
                         break;
                     case SaveOrderLineItemRequest orderDetailLineItemRequest:
-                        await ProcessItemAdjustmentAsync(orderDetailLineItemRequest.ItemId, orderDetailLineItemRequest.Quantity, adjustmentType);
+                        await ProcessItemAdjustmentAsync(orderDetailLineItemRequest.ItemId, orderDetailLineItemRequest.Quantity, adjustmentType, quantityType);
                         var lineItem = mapper.Map<OrderLineItem>(orderDetailLineItemRequest);
                         await UpdateOrderLineItemHistory(lineItem, adjustmentType, remarks);
                         break;
                     case Adjustment adjustment:
-                        await ProcessItemAdjustmentAsync(adjustment.ItemId, adjustment.Quantity, adjustmentType);
+                        await ProcessItemAdjustmentAsync(adjustment.ItemId, adjustment.Quantity, adjustmentType, quantityType);
                         UpdateAdjustmentItemHistory(adjustment);
                         break;
                     case CreditMemoLineItem creditMemoLineItem:
-                        await ProcessItemAdjustmentAsync(creditMemoLineItem.ItemId, creditMemoLineItem.Quantity, adjustmentType);
+                        await ProcessItemAdjustmentAsync(creditMemoLineItem.ItemId, creditMemoLineItem.Quantity, adjustmentType, quantityType);
                         await UpdateCreditMemoItemHistory(creditMemoLineItem, adjustmentType, remarks);
                         break;
                     case SaveCreditMemoLineItemRequest creditMemoLineItemRequest:
-                        await ProcessItemAdjustmentAsync(creditMemoLineItemRequest.ItemId, creditMemoLineItemRequest.Quantity, adjustmentType);
+                        await ProcessItemAdjustmentAsync(creditMemoLineItemRequest.ItemId, creditMemoLineItemRequest.Quantity, adjustmentType, quantityType);
                         var cmLineItem = mapper.Map<CreditMemoLineItem>(creditMemoLineItemRequest);
                         await UpdateCreditMemoItemHistory(cmLineItem, adjustmentType, remarks);
                         break;
@@ -61,7 +62,7 @@ namespace OisysNew.Services
             }
         }
 
-        private async Task ProcessItemAdjustmentAsync(long itemId, int quantity, AdjustmentType adjustmentType)
+        private async Task ProcessItemAdjustmentAsync(long itemId, int quantity, AdjustmentType adjustmentType, QuantityType quantityType = QuantityType.Both)
         {
             var item = await context.Items.FindAsync(itemId);
             if (item == null)
@@ -69,11 +70,40 @@ namespace OisysNew.Services
                 throw new ArgumentException("Item does not exist.");
             }
 
-            item.Quantity = adjustmentType == AdjustmentType.Add ?
-                item.Quantity + quantity : 
-                item.Quantity - quantity;
+            switch (quantityType)
+            {
+                case QuantityType.Quantity:
+                    AdjustQuantity(item, adjustmentType, quantity);
+                    break;
+                case QuantityType.StockQuantity:
+                    AdjustStockQuantity(item, adjustmentType, quantity);
+                    break;
+                case QuantityType.Both:
+                    AdjustQuantity(item, adjustmentType, quantity);
+                    AdjustStockQuantity(item, adjustmentType, quantity);
+                    break;
+            }
+
+            if (item.Quantity < 0)
+            {
+                throw new QuantityBelowZeroException("Insufficient quantity.");
+            }
 
             context.Entry(item).State = EntityState.Modified;
+        }
+
+        private void AdjustQuantity(Item item, AdjustmentType adjustmentType, int adjustmentQuantity)
+        {
+            item.Quantity = adjustmentType == AdjustmentType.Add ?
+                            item.Quantity + adjustmentQuantity :
+                            item.Quantity - adjustmentQuantity;
+        }
+
+        private void AdjustStockQuantity(Item item, AdjustmentType adjustmentType, int adjustmentQuantity)
+        {
+            item.StockQuantity = adjustmentType == AdjustmentType.Add ?
+                            item.StockQuantity + adjustmentQuantity :
+                            item.StockQuantity - adjustmentQuantity;
         }
 
         private async Task UpdateOrderLineItemHistory(OrderLineItem orderLineItem, AdjustmentType adjustmentType, string remarks)

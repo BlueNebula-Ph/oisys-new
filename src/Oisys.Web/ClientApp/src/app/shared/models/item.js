@@ -18,6 +18,7 @@ export class Item {
         this.categoryId = item && item.categoryId || 0;
         this.categoryName = item && item.categoryName || '';
         this.quantity = item && item.quantity || 0;
+        this.stockQuantity = item && item.stockQuantity || 0;
         this.unit = item && item.unit || '';
         this.weight = item && item.weight || '';
         this.thickness = item && item.thickness || '';

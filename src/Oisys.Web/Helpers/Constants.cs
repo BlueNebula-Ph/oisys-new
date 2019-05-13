@@ -130,6 +130,21 @@
             /// The creditmemo detail deleted text.
             /// </summary>
             public const string CreditMemoDetailDeleted = "Credit memo detail deleted";
+            
+            /// <summary>
+            /// The invoice created message
+            /// </summary>
+            public const string InvoiceCreated = "Invoice created";
+
+            /// <summary>
+            /// The invoice updated message
+            /// </summary>
+            public const string InvoiceUpdated = "Invoice updated";
+
+            /// <summary>
+            /// The invoice deleted message
+            /// </summary>
+            public const string InvoiceDeleted = "Invoice deleted";
         }
 
         /// <summary>

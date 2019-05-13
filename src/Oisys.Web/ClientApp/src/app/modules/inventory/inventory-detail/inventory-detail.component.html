@@ -8,8 +8,12 @@
     <div class="brand-card">
       <div class="brand-card-body">
         <div>
-          <div class="text-value">{{ item.quantity }} {{ item.unit }}</div>
-          <div class="text-uppercase text-muted small">Quantity</div>
+          <div class="text-value">{{ item.quantity | number: 0 }} {{ item.unit }}</div>
+          <div class="text-uppercase text-muted small">Order Qty</div>
+        </div>
+        <div>
+          <div class="text-value">{{ item.stockQuantity | number: 0 }} {{ item.unit }}</div>
+          <div class="text-uppercase text-muted small">Stock Qty</div>
         </div>
         <div>
           <div class="text-value">{{ item.mainPrice | currency:'PHP':'₱ ' }}</div>

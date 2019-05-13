@@ -21,6 +21,11 @@
         public int Quantity { get; set; }
 
         /// <summary>
+        /// Gets or sets stock quantity.
+        /// </summary>
+        public int StockQuantity { get; set; }
+
+        /// <summary>
         /// Gets or sets property Unit
         /// </summary>
         public string Unit { get; set; }

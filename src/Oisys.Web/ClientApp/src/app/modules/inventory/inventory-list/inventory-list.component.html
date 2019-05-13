@@ -37,9 +37,10 @@
               </span>
             </ng-template>
             <ng-template let-item="row" ngx-datatable-cell-template>
-              <div class="text-right">
-                {{ item.quantity | number: 0 }} {{ item.unit }}
-              </div>
+              <ul class="list-unstyled text-right mb-0">
+                <li><em>Order : </em>{{ item.quantity | number: 0 }} {{ item.unit }}</li>
+                <li><em>Stock : </em>{{ item.stockQuantity | number: 0 }} {{ item.unit }}</li>
+              </ul>
             </ng-template>
           </ngx-datatable-column>
           <ngx-datatable-column name="Pricing" prop="mainPrice" [flexGrow]="2">

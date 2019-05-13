@@ -214,13 +214,10 @@ namespace OisysNew.Controllers
 
                 // Adjust the inventory quantities for items returned
                 var itemsToBeReturned = creditMemo.LineItems.Where(a => a.ReturnedToInventory);
-                await inventoryService.ProcessAdjustments(itemsToBeReturned, AdjustmentType.Add, Constants.AdjustmentRemarks.CreditMemoCreated);
+                await inventoryService.ProcessAdjustments(itemsToBeReturned, AdjustmentType.Add, Constants.AdjustmentRemarks.CreditMemoCreated, QuantityType.Both);
 
                 // Update the order line item for quantity returned
                 await orderService.ProcessReturns(creditMemo.LineItems, AdjustmentType.Add);
-
-                // TODO: Add a customer transaction record for crediting
-
                 await context.SaveChangesAsync();
 
                 return StatusCode(StatusCodes.Status201Created);
@@ -269,10 +266,10 @@ namespace OisysNew.Controllers
 
                 // Adjust inventory quantities
                 var itemsToBeCleared = creditMemo.LineItems.Where(a => a.ReturnedToInventory);
-                await inventoryService.ProcessAdjustments(itemsToBeCleared, AdjustmentType.Deduct, Constants.AdjustmentRemarks.CreditMemoUpdated);
+                await inventoryService.ProcessAdjustments(itemsToBeCleared, AdjustmentType.Deduct, Constants.AdjustmentRemarks.CreditMemoUpdated, QuantityType.Both);
 
                 var itemsToBeReturned = updatedCreditMemo.LineItems.Where(a => a.ShouldAddBackToInventory);
-                await inventoryService.ProcessAdjustments(itemsToBeReturned, AdjustmentType.Add, Constants.AdjustmentRemarks.CreditMemoUpdated);
+                await inventoryService.ProcessAdjustments(itemsToBeReturned, AdjustmentType.Add, Constants.AdjustmentRemarks.CreditMemoUpdated, QuantityType.Both);
 
                 // Update order line items for quantity returned
                 await orderService.ProcessReturns(creditMemo.LineItems, AdjustmentType.Deduct);
@@ -337,13 +334,10 @@ namespace OisysNew.Controllers
 
                 // Adjust inventory quantities
                 var itemsToBeCleared = creditMemo.LineItems.Where(a => a.ReturnedToInventory);
-                await inventoryService.ProcessAdjustments(itemsToBeCleared, AdjustmentType.Deduct, Constants.AdjustmentRemarks.CreditMemoDeleted);
+                await inventoryService.ProcessAdjustments(itemsToBeCleared, AdjustmentType.Deduct, Constants.AdjustmentRemarks.CreditMemoDeleted, QuantityType.Both);
 
                 // Update order line items for quantity returned
                 await orderService.ProcessReturns(creditMemo.LineItems, AdjustmentType.Deduct);
-
-                // TODO: Update customer transaction record for crediting
-
 
                 context.Remove(creditMemo);
                 await context.SaveChangesAsync();

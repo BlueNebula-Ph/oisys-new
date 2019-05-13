@@ -8,6 +8,7 @@ export class Item {
   public categoryId: number;
   public categoryName: string;
   public quantity: number;
+  public stockQuantity: number;
   public unit: string;
   public weight: string;
   public thickness: string;
@@ -40,6 +41,7 @@ export class Item {
     this.categoryName = item && item.categoryName || '';
 
     this.quantity = item && item.quantity || 0;
+    this.stockQuantity = item && item.stockQuantity || 0;
     this.unit = item && item.unit || '';
     this.weight = item && item.weight || '';
     this.thickness = item && item.thickness || '';

@@ -7,6 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using OisysNew.DTO;
 using OisysNew.DTO.Order;
+using OisysNew.Exceptions;
 using OisysNew.Extensions;
 using OisysNew.Helpers;
 using OisysNew.Helpers.Interfaces;
@@ -283,12 +284,19 @@ namespace OisysNew.Controllers
                 var order = mapper.Map<Order>(entity);
 
                 // Deduct quantities from inventory
-                await inventoryService.ProcessAdjustments(order.LineItems, AdjustmentType.Deduct, Constants.AdjustmentRemarks.OrderCreated);
+                await inventoryService.ProcessAdjustments(order.LineItems, AdjustmentType.Deduct, Constants.AdjustmentRemarks.OrderCreated, QuantityType.Quantity);
 
                 await context.Orders.AddAsync(order);
                 await context.SaveChangesAsync();
 
                 return StatusCode(StatusCodes.Status201Created);
+            }
+            catch (QuantityBelowZeroException ex)
+            {
+                logger.LogError(ex.Message);
+
+                ModelState.AddModelError(Constants.ErrorMessage, ex.Message);
+                return BadRequest(ModelState);
             }
             catch (Exception e)
             {
@@ -325,8 +333,8 @@ namespace OisysNew.Controllers
                 }
 
                 // Process inventory adjustments
-                await inventoryService.ProcessAdjustments(order.LineItems, AdjustmentType.Add, Constants.AdjustmentRemarks.OrderUpdated);
-                await inventoryService.ProcessAdjustments(entity.LineItems, AdjustmentType.Deduct, Constants.AdjustmentRemarks.OrderUpdated);
+                await inventoryService.ProcessAdjustments(order.LineItems, AdjustmentType.Add, Constants.AdjustmentRemarks.OrderUpdated, QuantityType.Quantity);
+                await inventoryService.ProcessAdjustments(entity.LineItems, AdjustmentType.Deduct, Constants.AdjustmentRemarks.OrderUpdated, QuantityType.Quantity);
 
                 // Process deleted line items
                 entityListHelpers.CheckItemsForDeletion(order.LineItems, entity.LineItems);
@@ -338,6 +346,13 @@ namespace OisysNew.Controllers
                 await context.SaveChangesAsync();
 
                 return StatusCode(StatusCodes.Status204NoContent);
+            }
+            catch (QuantityBelowZeroException ex)
+            {
+                logger.LogError(ex.Message);
+
+                ModelState.AddModelError(Constants.ErrorMessage, ex.Message);
+                return BadRequest(ModelState);
             }
             catch (DbUpdateConcurrencyException concurrencyEx)
             {
@@ -373,7 +388,7 @@ namespace OisysNew.Controllers
                 }
 
                 // Process line items
-                await inventoryService.ProcessAdjustments(order.LineItems, AdjustmentType.Add, Constants.AdjustmentRemarks.OrderDeleted);
+                await inventoryService.ProcessAdjustments(order.LineItems, AdjustmentType.Add, Constants.AdjustmentRemarks.OrderDeleted, QuantityType.Quantity);
 
                 context.Remove(order);
                 await context.SaveChangesAsync();

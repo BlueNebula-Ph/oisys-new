@@ -194,6 +194,7 @@ namespace OisysNew.Configuration
                 .ForMember(d => d.Category, s => s.MapFrom(o => o.Category.Name));
 
             CreateMap<SaveItemRequest, Item>()
+                .ForMember(d => d.StockQuantity, s => s.MapFrom(o => o.Quantity))
                 .ForMember(d => d.RowVersion, s => s.MapFrom(o => Convert.FromBase64String(o.RowVersion)));
 
             // Item History

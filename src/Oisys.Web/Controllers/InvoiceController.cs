@@ -31,6 +31,7 @@ namespace OisysNew.Controllers
         private readonly IListHelpers listHelpers;
         private readonly IEntityListHelpers entityListHelpers;
         private readonly IOrderService orderService;
+        private readonly IInventoryService inventoryService;
         private readonly ILogger logger;
 
         /// <summary>
@@ -46,6 +47,7 @@ namespace OisysNew.Controllers
             IListHelpers listHelpers,
             IEntityListHelpers entityListHelpers,
             IOrderService orderService,
+            IInventoryService inventoryService,
             ILogger<InvoiceController> logger)
         {
             this.context = context;
@@ -53,6 +55,7 @@ namespace OisysNew.Controllers
             this.listHelpers = listHelpers;
             this.entityListHelpers = entityListHelpers;
             this.orderService = orderService;
+            this.inventoryService = inventoryService;
             this.logger = logger;
         }
 
@@ -166,6 +169,11 @@ namespace OisysNew.Controllers
                 var invoice = mapper.Map<Invoice>(entity);
                 await orderService.ProcessInvoice(invoice.LineItems, true);
 
+                var orderIds = invoice.LineItems.Where(a => a.OrderId != null).Select(a => a.OrderId.Value);
+                var orderLineItems = context.OrderLineItems
+                    .Where(a => orderIds.Contains(a.OrderId));
+                await inventoryService.ProcessAdjustments(orderLineItems, AdjustmentType.Deduct, Constants.AdjustmentRemarks.InvoiceCreated, QuantityType.StockQuantity);
+
                 await context.Invoices.AddAsync(invoice);
                 await context.SaveChangesAsync();
 
@@ -203,6 +211,15 @@ namespace OisysNew.Controllers
                 {
                     return NotFound();
                 }
+
+                // Revert the quantities
+                var oldOrderIds = invoice.LineItems.Where(a => a.OrderId != null).Select(a => a.OrderId.Value);
+                var oldOrderLineItems = context.OrderLineItems.Where(a => oldOrderIds.Contains(a.OrderId));
+                await inventoryService.ProcessAdjustments(oldOrderLineItems, AdjustmentType.Add, Constants.AdjustmentRemarks.InvoiceUpdated, QuantityType.StockQuantity);
+
+                var newOrderIds = entity.LineItems.Where(a => a.OrderId != null).Select(a => a.OrderId.Value);
+                var newOrderLineItems = context.OrderLineItems.Where(a => newOrderIds.Contains(a.OrderId));
+                await inventoryService.ProcessAdjustments(newOrderLineItems, AdjustmentType.Deduct, Constants.AdjustmentRemarks.InvoiceUpdated, QuantityType.StockQuantity);
 
                 await orderService.ProcessInvoice(invoice.LineItems, false);
                 await orderService.ProcessInvoice(entity.LineItems, true);
@@ -251,6 +268,12 @@ namespace OisysNew.Controllers
                 {
                     return NotFound();
                 }
+
+                // Process item quantities
+                var orderIds = invoice.LineItems.Where(a => a.OrderId != null).Select(a => a.OrderId.Value);
+                var orderLineItems = context.OrderLineItems
+                    .Where(a => orderIds.Contains(a.OrderId));
+                await inventoryService.ProcessAdjustments(orderLineItems, AdjustmentType.Add, Constants.AdjustmentRemarks.InvoiceCreated, QuantityType.StockQuantity);
 
                 await orderService.ProcessInvoice(invoice.LineItems, false);
                 context.Remove(invoice);

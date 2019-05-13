@@ -8,21 +8,21 @@
     public enum QuantityType
     {
         /// <summary>
-        /// Current quantity
+        /// The quantity that can be ordered.
         /// </summary>
-        [Display(Name = "Current Quantity")]
-        CurrentQuantity,
+        [Display(Name = "Quantity")]
+        Quantity,
 
         /// <summary>
-        /// Actual quantity
+        /// The actual quantity in stock.
         /// </summary>
-        [Display(Name = "Actual Quantity")]
-        ActualQuantity,
+        [Display(Name = "Stock Quantity")]
+        StockQuantity,
 
         /// <summary>
         /// Both quantities
         /// </summary>
-        [Display(Name = "Current & Actual Quantities")]
-        Both,
+        [Display(Name = "All Quantities")]
+        Both
     }
 }
