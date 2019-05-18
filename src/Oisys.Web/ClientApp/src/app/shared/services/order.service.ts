@@ -45,7 +45,8 @@ export class OrderService {
   };
 
   getOrderLookup(customerId: number, isInvoiced: boolean = false): Observable<Order[]> {
-    var lookupUrl = `${this.url}/${customerId}/lookup/${isInvoiced}`;
+    //var lookupUrl = `${this.url}/${customerId}/lookup/${isInvoiced}`;
+    var lookupUrl = `${this.url}/invoicing/${customerId}`;
     return this.http.get<Order[]>(lookupUrl);
   };
 

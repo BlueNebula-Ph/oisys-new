@@ -43,9 +43,14 @@ namespace OisysNew.DTO.Order
         public string Unit { get; set; }
 
         /// <summary>
-        /// Gets or sets price property.
+        /// Gets or sets unit price property.
         /// </summary>
         public decimal UnitPrice { get; set; }
+
+        /// <summary>
+        /// Gets or sets the unit price with discount applied.
+        /// </summary>
+        public decimal DiscountedUnitPrice { get; set; }
 
         /// <summary>
         /// Gets or sets category name property.
@@ -58,9 +63,14 @@ namespace OisysNew.DTO.Order
         public int QuantityReturned { get; set; }
 
         /// <summary>
-        /// Gets or sets quantity delivered property.
+        /// Gets or sets quantity delivered.
         /// </summary>
         public int QuantityDelivered { get; set; }
+
+        /// <summary>
+        /// Gets or sets the quantity invoiced.
+        /// </summary>
+        public int QuantityInvoiced { get; set; }
 
         /// <summary>
         /// Gets or sets order line item id for delivery line items.

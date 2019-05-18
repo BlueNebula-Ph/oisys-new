@@ -11,6 +11,7 @@ export class OrderLineItem {
   public categoryName: string;
   public quantityReturned: number;
   public quantityDelivered: number;
+  public discountedUnitPrice: number;
 
   get totalPrice() {
     return this.quantity * this.unitPrice;
@@ -35,5 +36,6 @@ export class OrderLineItem {
     this.categoryName = orderLineItem && orderLineItem.categoryName || '';
     this.quantityReturned = orderLineItem && orderLineItem.quantityReturned || 0;
     this.quantityDelivered = orderLineItem && orderLineItem.quantityDelivered || 0;
+    this.discountedUnitPrice = orderLineItem && orderLineItem.discountedUnitPrice || 0;
   }
 }

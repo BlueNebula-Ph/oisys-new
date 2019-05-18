@@ -37,6 +37,11 @@ namespace OisysNew.DTO.Order
         public decimal UnitPrice { get; set; }
 
         /// <summary>
+        /// Gets or sets the discounted price of an item.
+        /// </summary>
+        public decimal DiscountedUnitPrice { get; set; }
+
+        /// <summary>
         /// Gets or sets the TotalPrice. Quantity * Price.
         /// </summary>
         public decimal TotalPrice { get; set; }

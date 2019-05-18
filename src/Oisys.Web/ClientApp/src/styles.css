@@ -69,7 +69,7 @@ datatable-header-cell.right > div {
     color: #fff;
   }
 
-.card.bg-primary {
+.progress-bar.bg-primary, .card.bg-primary {
   background-color: #008080 !important;
 }
 

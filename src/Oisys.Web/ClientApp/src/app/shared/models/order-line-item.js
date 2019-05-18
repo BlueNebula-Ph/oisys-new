@@ -18,6 +18,7 @@ export class OrderLineItem {
         this.categoryName = orderLineItem && orderLineItem.categoryName || '';
         this.quantityReturned = orderLineItem && orderLineItem.quantityReturned || 0;
         this.quantityDelivered = orderLineItem && orderLineItem.quantityDelivered || 0;
+        this.discountedUnitPrice = orderLineItem && orderLineItem.discountedUnitPrice || 0;
     }
 }
 //# sourceMappingURL=order-line-item.js.map

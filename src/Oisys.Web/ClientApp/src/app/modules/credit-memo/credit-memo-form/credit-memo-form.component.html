@@ -119,6 +119,6 @@
     <small>({{ item.quantity }} {{ item.unit }})</small>
   </div>
   <div class="small">
-    Order # {{ item.orderCode }} on {{ item.orderDate }} @ {{ item.unitPrice  | currency:'PHP':'₱ ' }}
+    Order # {{ item.orderCode }} on {{ item.orderDate }} @ {{ item.discountedUnitPrice  | currency:'PHP':'₱ ' }}
   </div>
 </ng-template>

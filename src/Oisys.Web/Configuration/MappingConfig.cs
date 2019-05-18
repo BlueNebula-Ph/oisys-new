@@ -174,8 +174,8 @@ namespace OisysNew.Configuration
             CreateMap<InvoiceLineItem, InvoiceDetailLineItem>()
                 .ForMember(d => d.Code, s => s.MapFrom(o => o.OrderId.HasValue ? o.Order.Code : (o.CreditMemoId.HasValue ? o.CreditMemo.Code : default(int))))
                 .ForMember(d => d.Date, s => s.MapFrom(o => o.OrderId.HasValue ? o.Order.Date.ToShortDateString() : (o.CreditMemoId.HasValue ? o.CreditMemo.Date.ToShortDateString() : default(string))))
-                .ForMember(d => d.TotalAmount, s => s.MapFrom(o => o.OrderId.HasValue ? o.Order.TotalAmount : (o.CreditMemoId.HasValue ? o.CreditMemo.TotalAmount : default(decimal))))
-                .ForMember(d => d.Type, s => s.MapFrom(o => o.OrderId.HasValue ? "Order" : "CreditMemo"));
+                .ForMember(d => d.Type, s => s.MapFrom(o => o.OrderId.HasValue ? "Order" : "CreditMemo"))
+                .ForMember(d => d.TotalAmount, s => s.MapFrom(o => o.TotalAmount));
 
             CreateMap<SaveInvoiceLineItemRequest, InvoiceLineItem>();
 
@@ -249,7 +249,8 @@ namespace OisysNew.Configuration
                 .ForMember(d => d.CategoryName, s => s.MapFrom(o => o.Item.Category.Name))
                 .ForMember(d => d.QuantityDelivered, s => s.MapFrom(o => o.QuantityDelivered))
                 .ForMember(d => d.OrderLineItemId, s => s.MapFrom(o => o.Id))
-                .ForMember(d => d.Customer, s => s.MapFrom(o => o.Order.Customer));
+                .ForMember(d => d.Customer, s => s.MapFrom(o => o.Order.Customer))
+                .ForMember(d => d.DiscountedUnitPrice, s => s.MapFrom(o => o.DiscountedUnitPrice));
 
             CreateMap<OrderLineItem, ItemOrderSummary>()
                 .ForMember(d => d.CustomerName, s => s.MapFrom(o => o.Order.Customer.Name))

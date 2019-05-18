@@ -14,5 +14,10 @@
         /// Gets or sets credit memo id.
         /// </summary>
         public long? CreditMemoId { get; set; }
+
+        /// <summary>
+        /// Gets or sets the amount invoiced.
+        /// </summary>
+        public decimal TotalAmount { get; set; }
     }
 }

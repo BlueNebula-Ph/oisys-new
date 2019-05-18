@@ -21,19 +21,29 @@
         public long ItemId { get; set; }
 
         /// <summary>
-        /// Gets or sets property Price.
+        /// Gets or sets the unit price for the item.
         /// </summary>
         public decimal UnitPrice { get; set; }
 
         /// <summary>
-        /// Gets or sets property QuantityReturned.
+        /// Gets or sets the discounted unit price.
+        /// </summary>
+        public decimal DiscountedUnitPrice { get; set; }
+
+        /// <summary>
+        /// Gets or sets quantity returned for this line item.
         /// </summary>
         public int QuantityReturned { get; set; }
 
         /// <summary>
-        /// Gets or sets property QuantityDelivered.
+        /// Gets or sets quantity delivered for this line item.
         /// </summary>
         public int QuantityDelivered { get; set; }
+
+        /// <summary>
+        /// Gets or sets quantity invoiced for order line item.
+        /// </summary>
+        public int QuantityInvoiced { get; set; }
 
         /// <summary>
         /// Gets or sets Order navigation property.

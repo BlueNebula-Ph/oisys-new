@@ -118,12 +118,6 @@ export class InvoiceFormComponent implements AfterContentInit, OnDestroy {
     }
   };
 
-  refreshOrders() {
-    if (this.invoice && this.invoice.customer && this.invoice.customer.id) {
-      this.loadOrdersAndCreditMemos(this.invoice.customer.id, false);
-    }
-  };
-
   loadOrdersAndCreditMemos(id: number, isNew: boolean) {
     this.fetchItemsSub = forkJoin(
       this.orderService.getOrderLookup(id),

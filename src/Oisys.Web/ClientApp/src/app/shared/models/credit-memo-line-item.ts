@@ -30,7 +30,7 @@ export class CreditMemoLineItem extends JsonModelBase {
   }
 
   get unitPrice() {
-    return this._orderLineItem && this._orderLineItem.unitPrice || 0;
+    return this._orderLineItem && this._orderLineItem.discountedUnitPrice || 0;
   }
 
   get totalPrice() {

@@ -40,6 +40,9 @@ export class LineItem extends JsonModelBase {
     set unitPrice(value) {
         this._unitPrice = value;
     }
+    get discountedUnitPrice() {
+        return parseFloat((this.unitPrice - (this.unitPrice * this.discountPercent / 100)).toFixed(2));
+    }
     get totalPrice() {
         return this.quantity * this.unitPrice;
     }
@@ -49,6 +52,7 @@ export class LineItem extends JsonModelBase {
         this.quantity = lineItem && lineItem.quantity || 0;
         this.itemId = lineItem && lineItem.itemId || 0;
         this.itemName = lineItem && lineItem.itemName || '';
+        this.discountPercent = lineItem && lineItem.discountPercent || 0;
         this.priceList = lineItem && lineItem.priceList || PriceList["Main Price"];
         this.unitPrice = lineItem && lineItem.unitPrice || 0;
         this.item = (lineItem && lineItem.item) ? new Item(lineItem.item) : undefined;

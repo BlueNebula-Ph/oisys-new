@@ -92,7 +92,10 @@ export class OrderFormComponent implements AfterContentInit, OnDestroy {
   // Line items
   addLineItem() {
     if (this.order && this.order.lineItems) {
-      this.order.lineItems.push(new LineItem());
+      let lineItem = new LineItem();
+      lineItem.discountPercent = this.order.discountPercent;
+
+      this.order.lineItems.push(lineItem);
       this.order.updateLineItems();
     }
   };

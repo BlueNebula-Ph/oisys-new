@@ -96,5 +96,11 @@ export class Order extends JsonModelBase {
         lineItem.updatePriceList(this._customer.priceListId);
       });
     }
+
+    if (this.discountPercent) {
+      this.lineItems.forEach((lineItem) => {
+        lineItem.discountPercent = this.discountPercent;
+      });
+    }
   };
 }

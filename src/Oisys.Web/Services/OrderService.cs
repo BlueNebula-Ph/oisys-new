@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using OisysNew.DTO.CreditMemo;
 using OisysNew.DTO.Delivery;
@@ -9,6 +10,8 @@ using OisysNew.Helpers;
 using OisysNew.Models;
 using System;
 using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -145,8 +148,13 @@ namespace OisysNew.Services
         {
             if (!lineItem.OrderId.IsNullOrZero())
             {
-                var order = await FetchOrder(lineItem.OrderId.Value);
-                order.IsInvoiced = isInvoiced;
+                var orderLineItems = FetchOrderLineItems(lineItem.OrderId.Value);
+                foreach (var item in orderLineItems)
+                {
+                    item.QuantityInvoiced = isInvoiced ?
+                        item.QuantityDelivered - item.QuantityInvoiced :
+                        item.QuantityDelivered;
+                }
             }
             else if (!lineItem.CreditMemoId.IsNullOrZero())
             {
@@ -155,14 +163,14 @@ namespace OisysNew.Services
             }
         }
 
-        private async Task<Order> FetchOrder(long orderId)
+        private IEnumerable<OrderLineItem> FetchOrderLineItems(long orderId)
         {
-            var order = await context.Orders.FindAsync(orderId);
-            if (order == null)
+            var orderLineItems = context.OrderLineItems.Where(a => a.OrderId == orderId);
+            if (orderLineItems == null)
             {
-                throw new ArgumentException($"Order with id {orderId} not found.");
+                throw new ArgumentException($"Order line items with order id {orderId} not found.");
             }
-            return order;
+            return orderLineItems;
         }
 
         private async Task<CreditMemo> FetchCreditMemo(long creditMemoId)

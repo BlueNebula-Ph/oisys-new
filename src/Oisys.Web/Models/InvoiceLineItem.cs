@@ -21,6 +21,11 @@
         public long? CreditMemoId { get; set; }
 
         /// <summary>
+        /// Gets or sets the amount invoiced.
+        /// </summary>
+        public decimal TotalAmount { get; set; }
+
+        /// <summary>
         /// Gets or sets the invoice navigation property.
         /// </summary>
         public virtual Invoice Invoice { get; set; }
