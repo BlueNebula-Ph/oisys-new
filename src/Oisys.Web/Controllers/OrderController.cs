@@ -222,15 +222,6 @@ namespace OisysNew.Controllers
                     .AsNoTracking()
                     .Where(c => c.CustomerId == customerId && 
                         c.LineItems.Any(a => a.Quantity != a.QuantityInvoiced && a.QuantityDelivered != a.QuantityInvoiced))
-                    .Select(a => new Order
-                    {
-                        Id = a.Id,
-                        Code = a.Code,
-                        Date = a.Date,
-                        TotalAmount = a.LineItems
-                            .AsQueryable()
-                            .Sum(x => (x.QuantityDelivered - x.QuantityInvoiced) * x.DiscountedUnitPrice)
-                    })
                     .OrderBy(c => c.Code);
 
                 var orders = await list.ProjectTo<OrderLookup>(mapper.ConfigurationProvider).ToListAsync();

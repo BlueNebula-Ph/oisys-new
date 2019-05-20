@@ -215,7 +215,8 @@ namespace OisysNew.Configuration
                 .ForMember(d => d.RowVersion, s => s.MapFrom(o => Convert.ToBase64String(o.RowVersion)));
 
             CreateMap<Order, OrderLookup>()
-                .ForMember(d => d.Date, s => s.MapFrom(o => o.Date.ToShortDateString()));
+                .ForMember(d => d.Date, s => s.MapFrom(o => o.Date.ToShortDateString()))
+                .ForMember(d => d.TotalAmount, s => s.MapFrom(o => o.LineItems.AsQueryable().Sum(a => (a.QuantityDelivered - a.QuantityInvoiced) * a.DiscountedUnitPrice)));
 
             CreateMap<Order, CustomerTransactionSummary>()
                 .ForMember(d => d.Code, s => s.MapFrom(o => $"Order # {o.Code.ToString()}"))
