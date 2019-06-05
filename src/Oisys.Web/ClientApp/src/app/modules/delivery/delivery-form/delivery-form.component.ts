@@ -26,9 +26,6 @@ import { City } from '../../../shared/models/city';
 export class DeliveryFormComponent implements AfterContentInit, OnDestroy {
   delivery: Delivery = new Delivery();
 
-  customersList = new Array<Customer>();
-  selectedCustomer: Customer;
-
   getDeliverySub: Subscription;
   getOrderLineItemSub: Subscription;
   saveDeliverySub: Subscription;
@@ -36,7 +33,6 @@ export class DeliveryFormComponent implements AfterContentInit, OnDestroy {
   isSaving = false;
 
   @ViewChild('province') provinceField: ElementRef;
-  @ViewChild('customer') customerField: ElementRef;
 
   get isProvinceDisabled() {
     return this.delivery.id && this.delivery.id != 0;
@@ -45,7 +41,6 @@ export class DeliveryFormComponent implements AfterContentInit, OnDestroy {
   constructor(
     private deliveryService: DeliveryService,
     private provinceService: ProvinceService,
-    private customerService: CustomerService,
     private orderService: OrderService,
     private util: UtilitiesService,
     private route: ActivatedRoute,
@@ -105,64 +100,28 @@ export class DeliveryFormComponent implements AfterContentInit, OnDestroy {
     this.isSaving = false;
   };
 
-  customerSelected() {
-    if (this.selectedCustomer && this.selectedCustomer.id != 0 && !this.customerIdExists(this.selectedCustomer.id)) {
-      this.fetchCustomerOrderItems(this.selectedCustomer.id, true);
-      this.customerField.nativeElement.value = '';
-      this.customerField.nativeElement.focus();
+  citySelected() {
+    if (this.delivery.provinceId && this.delivery.cityId) {
+      this.fetchItemsForDelivery(this.delivery.provinceId, this.delivery.cityId);
     }
   };
 
-  customerIdExists(id: number) {
-    return this.delivery.lineItems.find(x => x.customer.id == id) != null;
-  };
-
-  fetchCustomerOrderItems(customerId: number, isNew: boolean) {
+  fetchItemsForDelivery(provinceId: number, cityId: number) {
     this.getOrderLineItemSub = this.orderService
-      .getOrderLineItemLookup(customerId, 'delivery')
+      .getOrderLineItemsForDelivery(provinceId, cityId)
       .subscribe(data => {
-        let newItems = data.map(orderLineItem =>
-        {
-          let quantityNotDelivered = orderLineItem.quantity - orderLineItem.quantityDelivered;
-          let deliveryItem = new DeliveryLineItem(orderLineItem);
-          deliveryItem.id = 0; // Set id to 0
-          deliveryItem.quantity = quantityNotDelivered;
-          return deliveryItem;
+        this.delivery.lineItems = data.map(item => {
+          item.id = 0;
+          item.quantity = item.quantity - item.quantityDelivered;
+          return new DeliveryLineItem(item);
         });
 
-        if (isNew) {
-          this.delivery.lineItems = this.delivery.lineItems.concat(newItems);
-        } else {
-          newItems.forEach((val) => {
-            let itemInList = this.delivery.lineItems.find(x => x.orderLineItemId == val.orderLineItemId);
-            if (!itemInList) {
-              this.delivery.lineItems.push(val);
-            }
-          });
-          this.delivery.groupLineItems();
-        }
+        this.delivery.groupLineItems();
       });
-  };
-
-  removeCustomer(customerId: number) {
-    if (confirm('Are you sure you want to remove this customer? Items related to this customer will also be removed.')) {
-      this.delivery.lineItems = this.delivery.lineItems.filter(val => val.customer.id != customerId);
-    }
   };
 
   quantityUpdated(event: any, lineItem: DeliveryLineItem) {
     this.delivery.updateQuantity(lineItem.orderLineItemId, event.target.valueAsNumber);
-  };
-
-  removeLineItem(index: number) {
-    if (confirm('Are you sure you want to remove this item?')) {
-      this.delivery.lineItems.splice(index, 1);
-      this.delivery.groupLineItems();
-    }
-  };
-
-  refreshOrders(customerId: number) {
-    this.fetchCustomerOrderItems(customerId, false);
   };
 
   // Autocomplete
@@ -185,21 +144,8 @@ export class DeliveryFormComponent implements AfterContentInit, OnDestroy {
       map(term => term.length < 2 ? [] : this.filterCities(term))
     );
 
-  searchCustomer = (text$: Observable<string>) =>
-    text$.pipe(
-      debounceTime(200),
-      distinctUntilChanged(),
-      switchMap(term => term.length < 2 ? [] :
-        this.customerService.getCustomerLookup(this.delivery.provinceId, this.delivery.cityId, term)
-          .pipe(
-            map(customers => customers.splice(0, 10))
-          )
-      )
-    );
-
   provinceFormatter = (x: { name: string }) => x.name;
   cityFormatter = (x: { name: string }) => x.name;
-  customerFormatter = (x: { name: string }) => x.name;
 
   private filterCities(value: string): City[] {
     const filterValue = value.toLowerCase();

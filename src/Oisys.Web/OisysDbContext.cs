@@ -18,12 +18,6 @@ namespace OisysNew
         public OisysDbContext(DbContextOptions<OisysDbContext> options)
             : base(options)
         {
-            this.ChangeTracker.Tracked += ChangeTracker_Tracked;
-        }
-
-        private void ChangeTracker_Tracked(object sender, EntityTrackedEventArgs e)
-        {
-            Console.WriteLine($"Started tracking {e.Entry.Entity.GetType()}");
         }
 
         /// <inheritdoc />

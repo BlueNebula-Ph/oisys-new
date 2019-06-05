@@ -183,6 +183,8 @@ namespace OisysNew.Controllers
         {
             try
             {
+                RemoveZeroLineItems(entity);
+
                 var delivery = mapper.Map<Delivery>(entity);
                 await context.Deliveries.AddAsync(delivery);
 
@@ -238,6 +240,7 @@ namespace OisysNew.Controllers
                 await orderService.ProcessDeliveries(entity.LineItems, AdjustmentType.Add);
 
                 // Process deleted line items
+                RemoveZeroLineItems(entity);
                 entityListHelpers.CheckItemsForDeletion(delivery.LineItems, entity.LineItems);
 
                 delivery = mapper.Map<Delivery>(entity);
@@ -303,6 +306,12 @@ namespace OisysNew.Controllers
                 logger.LogError(e.Message);
                 return StatusCode(StatusCodes.Status500InternalServerError);
             }
+        }
+
+        private SaveDeliveryRequest RemoveZeroLineItems(SaveDeliveryRequest request)
+        {
+            request.LineItems = request.LineItems.Where(a => a.Quantity != 0);
+            return request;
         }
     }
 }

@@ -19,6 +19,7 @@ export class DeliveryLineItem extends JsonModelBase {
         this.orderLineItemId = deliveryLineItem && deliveryLineItem.orderLineItemId || 0;
         this.quantity = deliveryLineItem && deliveryLineItem.quantity || 0;
         this.quantityDelivered = deliveryLineItem && deliveryLineItem.quantityDelivered || 0;
+        this.maxQuantity = this.quantity - this.quantityDelivered;
         this.orderCode = deliveryLineItem && deliveryLineItem.orderCode || '';
         this.orderDate = deliveryLineItem && deliveryLineItem.orderDate || '';
         this.itemCode = deliveryLineItem && deliveryLineItem.itemCode || '';

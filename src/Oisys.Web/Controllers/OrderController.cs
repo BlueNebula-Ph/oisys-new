@@ -205,6 +205,42 @@ namespace OisysNew.Controllers
         }
 
         /// <summary>
+        /// Returns a list of order line items for delivery
+        /// </summary>
+        /// <param name="provinceId">The province id</param>
+        /// <param name="cityId">The city id</param>
+        /// <returns>List of order line item for province and city</returns>
+        [HttpGet("lineItems", Name = "GetOrderLineItemsForDelivery")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<ActionResult<IEnumerable<OrderLineItemLookup>>> GetOrderLineItemsForDelivery([FromQuery]int provinceId, [FromQuery] int cityId)
+        {
+            try
+            {
+                // get list of active items (not deleted)
+                var list = context.OrderLineItems
+                    .Include(c => c.Order)
+                        .ThenInclude(c => c.Customer)
+                    .Include(c => c.Item)
+                        .ThenInclude(c => c.Category)
+                    .AsNoTracking()
+                    .Where(c => c.Order.Customer.ProvinceId == provinceId && 
+                        c.Order.Customer.CityId == cityId &&
+                        c.QuantityDelivered != c.Quantity);
+
+                list = list.OrderBy(c => c.Order.Customer.Name);
+
+                var orderLineItems = await list.ProjectTo<OrderLineItemLookup>(mapper.ConfigurationProvider).ToListAsync();
+                return orderLineItems;
+            }
+            catch (Exception e)
+            {
+                logger.LogError(e.Message);
+                return StatusCode(StatusCodes.Status500InternalServerError);
+            }
+        }
+
+        /// <summary>
         /// Fetches orders for invoicing
         /// </summary>
         /// <param name="customerId">The customer id selected</param>

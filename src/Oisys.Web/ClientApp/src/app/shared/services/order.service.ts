@@ -61,6 +61,11 @@ export class OrderService {
     return this.http.get<OrderLineItem[]>(lookupUrl);
   };
 
+  getOrderLineItemsForDelivery(provinceId: number, cityId: number): Observable<OrderLineItem[]> {
+    var lookupUrl = `${this.url}/lineItems?provinceId=${provinceId}&cityId=${cityId}`;
+    return this.http.get<OrderLineItem[]>(lookupUrl);
+  };
+
   saveOrder(order: Order): Observable<Order> {
     if (order.id == 0) {
       return this.http.post<Order>(this.url, order, this.util.httpOptions);

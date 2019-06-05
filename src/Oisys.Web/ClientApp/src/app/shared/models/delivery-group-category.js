@@ -1,11 +1,7 @@
-export class DeliveryGroupItem {
-    constructor(itemCode, itemName, categoryName, lineItems) {
-        this.itemCode = itemCode;
-        this.itemName = itemName;
+export class DeliveryGroupCategory {
+    constructor(categoryName, lineItems) {
         this.categoryName = categoryName;
         this.lineItems = lineItems;
-        this.itemCode = itemCode || '';
-        this.itemName = itemName || '';
         this.categoryName = categoryName || '';
         this.lineItems = lineItems || new Array();
     }
@@ -19,4 +15,4 @@ export class DeliveryGroupItem {
     }
     ;
 }
-//# sourceMappingURL=delivery-group-item.js.map
+//# sourceMappingURL=delivery-group-category.js.map

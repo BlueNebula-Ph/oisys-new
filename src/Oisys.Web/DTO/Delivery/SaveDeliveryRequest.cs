@@ -37,7 +37,7 @@ namespace OisysNew.DTO.Delivery
         public int CityId { get; set; }
 
         /// <summary>
-        /// Gets or sets property Details.
+        /// Gets or sets delivery line items.
         /// </summary>
         public IEnumerable<SaveDeliveryLineItemRequest> LineItems { get; set; }
 

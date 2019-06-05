@@ -9,40 +9,66 @@
       <span class="mx-5">Plate Number: {{ delivery.plateNumber }}</span>
       <span class="mx-5">Date: {{ delivery.date | date:'MM/dd/yyyy' }}</span>
     </div>
-    <ul class="list-unstyled">
-      <li *ngFor="let groupedItem of delivery.groupedItems">
-        <div class="card card-accent-primary">
-          <div class="card-body">
-            <h6 class="card-title">
-              {{ groupedItem.customerName }}.
-              <small class="text-muted">{{ groupedItem.customerAddress }}.</small>
-            </h6>
-            <table class="table table-sm border-bottom">
-              <thead>
-                <tr>
-                  <th width="10%" class="text-right">Quantity</th>
-                  <th width="10%">Unit</th>
-                  <th>Order #</th>
-                  <th>Order Date</th>
-                  <th>Item</th>
-                  <th width="20%" class="align-middle">Category</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr *ngFor="let lineItem of groupedItem.lineItems">
-                  <td class="text-right">{{ lineItem.quantity }}</td>
-                  <td>{{ lineItem.unit }}</td>
-                  <td>{{ lineItem.orderCode }}</td>
-                  <td>{{ lineItem.orderDate }}</td>
-                  <td>{{ lineItem.item }}</td>
-                  <td>{{ lineItem.categoryName }}</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </li>
-    </ul>
+    <div class="row px-0">
+      <div class="col-6">
+        <h6 class="card-title">Orders.</h6>
+        <table class="table table-sm border-bottom border-right border-left">
+          <thead>
+            <tr>
+              <th width="20%" class="text-right">Quantity</th>
+              <th width="30%">Item</th>
+              <th width="20%">Category</th>
+              <th width="30%">Customer</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let lineItem of delivery.lineItems; index as i;">
+              <td class="text-right">{{ lineItem.quantity }}</td>
+              <td>{{ lineItem.item }}</td>
+              <td>{{ lineItem.categoryName }}</td>
+              <td>{{ lineItem.customer.name }}</td>
+            </tr>
+            <tr *ngIf="!delivery.lineItems || delivery.lineItems.length == 0">
+              <td class="pl-3" colspan="4">No items added.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="col-6">
+        <h6 class="card-title">Summary.</h6>
+        <table class="table table-sm border-bottom border-right border-left">
+          <thead>
+            <tr>
+              <th width="35%">Item</th>
+              <th width="35%">Category</th>
+              <th width="30%">Total</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let item of delivery.groupedItems; index as i;">
+              <td>{{ item.itemCode }} - {{ item.itemName }}</td>
+              <td>{{ item.categoryName }}</td>
+              <td>{{ item.totalQuantity }}</td>
+            </tr>
+            <tr *ngIf="!delivery.groupedItems || delivery.groupedItems.length == 0">
+              <td class="pl-3" colspan="3">Summary not found.</td>
+            </tr>
+          </tbody>
+        </table>
+        <h6 class="card-title">Totals.</h6>
+        <table class="table table-sm border-bottom border-right border-left">
+          <tbody>
+            <tr *ngFor="let item of delivery.groupedCategories; index as i;">
+              <td>Total {{ item.categoryName }}</td>
+              <td>{{ item.totalQuantity }}</td>
+            </tr>
+            <tr *ngIf="!delivery.groupedItems || delivery.groupedItems.length == 0">
+              <td class="pl-3" colspan="2">Totals not computed.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
     <div>
       <a routerLink="/deliveries" class="btn btn-sm btn-ghost-dark mr-1" accesskey="b">
         <i class="fa fa-angle-double-left mr-1"></i>Back

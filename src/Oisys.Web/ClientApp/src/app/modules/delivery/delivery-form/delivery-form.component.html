@@ -5,7 +5,7 @@
         <div class="card no-radius">
           <h6 class="card-header">Save Delivery Information.</h6>
           <div class="card-body">
-            <h6 class="card-title">Step 1. Input delivery information.</h6>
+            <h6 class="card-title">Delivery information.</h6>
             <div class="row">
               <div class="col-3 pr-0">
                 <div class="form-group">
@@ -25,7 +25,7 @@
                   <label>City.</label>
                   <div appInputGroupStyle>
                     <input appControlStyle name="city" placeholder="City" [disabled]="!delivery.provinceId || delivery.provinceId == 0 || isProvinceDisabled"
-                           [(ngModel)]="delivery.city" [ngbTypeahead]="searchCity"
+                           [(ngModel)]="delivery.city" [ngbTypeahead]="searchCity" (ngModelChange)="citySelected()"
                            [inputFormatter]="cityFormatter" [resultTemplate]="cityTemplate" required>
                     <div class="input-group-append">
                       <span class="input-group-text">* Required</span>
@@ -56,77 +56,69 @@
                 </div>
               </div>
             </div>
-            <h6 class="card-title">Step 2. Select customers to load orders.</h6>
-            <div appInputGroupStyle class="mb-3">
-              <input appControlStyle #customer name="customer" class="col-3" placeholder="Select a customer..." [disabled]="!delivery.provinceId || !delivery.cityId"
-                     [(ngModel)]="selectedCustomer" [ngbTypeahead]="searchCustomer" (onModelChange)="customerSelected()"
-                     [inputFormatter]="customerFormatter" [resultTemplate]="customerTemplate">
-              <div class="input-group-append">
-                <button type="button" class="btn btn-secondary" (click)="customerSelected()">
-                  <i class="fa fa-check"></i> Select
-                </button>
+            <div class="row">
+              <div class="col-6">
+                <h6 class="card-title">Orders.</h6>
+                <table class="table table-sm border-bottom border-right border-left">
+                  <thead>
+                    <tr>
+                      <th width="20%" class="text-right">Quantity</th>
+                      <th width="30%">Item</th>
+                      <th width="20%">Category</th>
+                      <th width="30%">Customer</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr *ngFor="let lineItem of delivery.lineItems; index as i;">
+                      <td>
+                        <input appControlStyle type="number" class="text-right" (change)="quantityUpdated($event, lineItem)"
+                               [value]="lineItem.quantity" [max]="lineItem.maxQuantity" [min]="0" />
+                      </td>
+                      <td>{{ lineItem.item }}</td>
+                      <td>{{ lineItem.categoryName }}</td>
+                      <td>{{ lineItem.customer.name }}</td>
+                    </tr>
+                    <tr *ngIf="!delivery.lineItems || delivery.lineItems.length == 0">
+                      <td class="pl-3" colspan="4">No items added.</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <div class="col-6">
+                <h6 class="card-title">Summary.</h6>
+                <table class="table table-sm border-bottom border-right border-left">
+                  <thead>
+                    <tr>
+                      <th width="35%">Item</th>
+                      <th width="35%">Category</th>
+                      <th width="30%">Total</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr *ngFor="let item of delivery.groupedItems; index as i;">
+                      <td>{{ item.itemCode }} - {{ item.itemName }}</td>
+                      <td>{{ item.categoryName }}</td>
+                      <td>{{ item.totalQuantity }}</td>
+                    </tr>
+                    <tr *ngIf="!delivery.groupedItems || delivery.groupedItems.length == 0">
+                      <td class="pl-3" colspan="3">Summary not found.</td>
+                    </tr>
+                  </tbody>
+                </table>
+                <h6 class="card-title">Totals.</h6>
+                <table class="table table-sm border-bottom border-right border-left">
+                  <tbody>
+                    <tr *ngFor="let item of delivery.groupedCategories; index as i;">
+                      <td>Total {{ item.categoryName }}</td>
+                      <td>{{ item.totalQuantity }}</td>
+                    </tr>
+                    <tr *ngIf="!delivery.groupedItems || delivery.groupedItems.length == 0">
+                      <td class="pl-3" colspan="2">Totals not computed.</td>
+                    </tr>
+                  </tbody>
+                </table>
               </div>
             </div>
-            <h6 class="card-title">Step 3. Update items to be delivered.</h6>
-            <ul class="list-unstyled">
-              <li *ngIf="delivery.groupedItems.length == 0">
-                <div class="card card-accent-primary">
-                  <div class="card-body">
-                    <h6 class="card-title">No items selected.</h6>
-                    <p class="card-subtitle">Please select items to deliver.</p>
-                  </div>
-                </div>
-              </li>
-              <li *ngFor="let groupedItem of delivery.groupedItems;">
-                <div class="card card-accent-primary">
-                  <div class="card-body">
-                    <h6 class="card-title">
-                      {{ groupedItem.customerName }}.
-                      <small class="text-muted">{{ groupedItem.customerAddress }}.</small>&nbsp;&nbsp;&nbsp;
-                      <a class="text-muted pointer" (click)="refreshOrders(groupedItem.customerId)"><i class="fa fa-refresh"></i> Refresh</a>
-                    </h6>
-                    <table class="table table-sm border-bottom">
-                      <thead>
-                        <tr>
-                          <td width="10%" class="text-right">Quantity</td>
-                          <td width="10%">Unit</td>
-                          <td>Order #</td>
-                          <td>Order Date</td>
-                          <td>Item</td>
-                          <td width="20%" class="align-middle">Category</td>
-                          <td width="10%"></td>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        <tr *ngFor="let lineItem of groupedItem.lineItems; index as i;">
-                          <td>
-                            <input appControlStyle type="number" class="text-right"
-                                   [value]="lineItem.quantity" (change)="quantityUpdated($event, lineItem)"
-                                   [max]="lineItem.quantity" min="0" />
-                          </td>
-                          <td><input appControlStyle [value]="lineItem.unit" readonly /></td>
-                          <td><input appControlStyle [value]="lineItem.orderCode" readonly /></td>
-                          <td><input appControlStyle [value]="lineItem.orderDate" readonly /></td>
-                          <td><input appControlStyle [value]="lineItem.item" readonly /></td>
-                          <td><input appControlStyle [value]="lineItem.categoryName" readonly /></td>
-                          <td class="text-center">
-                            <button type="button" class="btn btn-ghost-danger btn-sm" (click)="removeLineItem(i)">
-                              <i class="fa fa-fw fa-trash"></i>
-                            </button>
-                          </td>
-                        </tr>
-                        <tr *ngIf="!groupedItem.lineItems || groupedItem.lineItems.length == 0">
-                          <td colspan="7">No items added.</td>
-                        </tr>
-                      </tbody>
-                    </table>
-                    <button type="button" class="btn btn-sm btn-ghost-danger" title="Remove all orders from this customer." (click)="removeCustomer(groupedItem.customerId)">
-                      <i class="fa fa-trash"></i> Remove
-                    </button>
-                  </div>
-                </div>
-              </li>
-            </ul>
           </div>
           <div class="card-footer">
             <button type="submit" class="btn btn-primary btn-square" title="Save delivery information." accesskey="s"
@@ -148,7 +140,4 @@
 </ng-template>
 <ng-template #cityTemplate let-city="result" let-t="term">
   <ngb-highlight [result]="city.name" [term]="t"></ngb-highlight>
-</ng-template>
-<ng-template #customerTemplate let-customer="result" let-t="term">
-  <ngb-highlight [result]="customer.name" [term]="t"></ngb-highlight>
 </ng-template>
