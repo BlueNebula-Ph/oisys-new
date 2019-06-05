@@ -283,6 +283,9 @@ namespace OisysNew
             // Invoice Line Items
             modelBuilder.Entity<InvoiceLineItem>(entity =>
             {
+                // Setup decimal precision
+                entity.Property(p => p.TotalAmount).HasColumnType("decimal(18, 2)");
+
                 entity.HasOne(d => d.Invoice)
                     .WithMany(p => p.LineItems)
                     .HasForeignKey(p => p.InvoiceId);
@@ -391,6 +394,7 @@ namespace OisysNew
             {
                 // Setup decimal precision
                 entity.Property(p => p.UnitPrice).HasColumnType("decimal(18, 2)");
+                entity.Property(p => p.DiscountedUnitPrice).HasColumnType("decimal(18, 2)");
 
                 entity.HasOne(d => d.Order)
                     .WithMany(p => p.LineItems)
