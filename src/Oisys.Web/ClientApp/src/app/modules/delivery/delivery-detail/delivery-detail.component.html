@@ -5,9 +5,9 @@
       <span class="badge badge-danger align-top" *ngIf="delivery.isNew">New!</span>
     </div>
     <div class="font-italic mb-2">
-      <span class="mr-5">Location: {{ delivery.city.name }}, {{ delivery.province.name }}</span>
-      <span class="mx-5">Plate Number: {{ delivery.plateNumber }}</span>
+      <span class="mr-5">Plate Number: {{ delivery.plateNumber }}</span>
       <span class="mx-5">Date: {{ delivery.date | date:'MM/dd/yyyy' }}</span>
+      <span class="mx-5">Areas: {{ delivery.deliveryAreaList.join(' | ') }}</span>
     </div>
     <div class="row px-0">
       <div class="col-6">
@@ -15,10 +15,11 @@
         <table class="table table-sm border-bottom border-right border-left">
           <thead>
             <tr>
-              <th width="20%" class="text-right">Quantity</th>
-              <th width="30%">Item</th>
+              <th width="10%" class="text-right">Qty</th>
+              <th width="25%">Item</th>
               <th width="20%">Category</th>
-              <th width="30%">Customer</th>
+              <th width="20%">Customer</th>
+              <th width="15%">Area</th>
             </tr>
           </thead>
           <tbody>
@@ -27,9 +28,10 @@
               <td>{{ lineItem.item }}</td>
               <td>{{ lineItem.categoryName }}</td>
               <td>{{ lineItem.customer.name }}</td>
+              <td>{{ lineItem.customer.cityName + ', ' + lineItem.customer.provinceName }}</td>
             </tr>
             <tr *ngIf="!delivery.lineItems || delivery.lineItems.length == 0">
-              <td class="pl-3" colspan="4">No items added.</td>
+              <td class="pl-3" colspan="5">No items added.</td>
             </tr>
           </tbody>
         </table>

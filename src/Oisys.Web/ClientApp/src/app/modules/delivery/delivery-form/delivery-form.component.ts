@@ -9,14 +9,13 @@ import { NgbTypeaheadConfig } from '@ng-bootstrap/ng-bootstrap';
 
 import { DeliveryService } from '../../../shared/services/delivery.service';
 import { ProvinceService } from '../../../shared/services/province.service';
-import { CustomerService } from '../../../shared/services/customer.service';
 import { OrderService } from '../../../shared/services/order.service';
 import { UtilitiesService } from '../../../shared/services/utilities.service';
 
 import { Delivery } from '../../../shared/models/delivery';
 import { DeliveryLineItem } from '../../../shared/models/delivery-line-item';
-import { Customer } from '../../../shared/models/customer';
 import { City } from '../../../shared/models/city';
+import { Province } from '../../../shared/models/province';
 
 @Component({
   selector: 'app-delivery-form',
@@ -30,13 +29,13 @@ export class DeliveryFormComponent implements AfterContentInit, OnDestroy {
   getOrderLineItemSub: Subscription;
   saveDeliverySub: Subscription;
 
+  selectedProvince: Province;
+  selectedCity: City;
+
   isSaving = false;
 
   @ViewChild('province') provinceField: ElementRef;
-
-  get isProvinceDisabled() {
-    return this.delivery.id && this.delivery.id != 0;
-  }
+  @ViewChild('deliveryDate') dateField: ElementRef;
 
   constructor(
     private deliveryService: DeliveryService,
@@ -69,7 +68,7 @@ export class DeliveryFormComponent implements AfterContentInit, OnDestroy {
 
   setDelivery(delivery: any) {
     this.delivery = delivery ? new Delivery(delivery) : new Delivery();
-    this.provinceField.nativeElement.focus();
+    this.dateField.nativeElement.focus();
   };
 
   loadDelivery(id: number) {
@@ -101,8 +100,18 @@ export class DeliveryFormComponent implements AfterContentInit, OnDestroy {
   };
 
   citySelected() {
-    if (this.delivery.provinceId && this.delivery.cityId) {
-      this.fetchItemsForDelivery(this.delivery.provinceId, this.delivery.cityId);
+    if (!this.selectedProvince && !this.selectedCity) {
+      return;
+    }
+
+    const area = `${this.selectedCity.name}, ${this.selectedProvince.name}`;
+    const areaExists = this.delivery.deliveryAreaList.find(a => a == area);
+    if (this.selectedCity.id && this.selectedProvince.id && !areaExists) {
+      this.fetchItemsForDelivery(this.selectedProvince.id, this.selectedCity.id);
+
+      this.selectedProvince = undefined;
+      this.selectedCity = undefined;
+      this.provinceField.nativeElement.focus();
     }
   };
 
@@ -110,12 +119,12 @@ export class DeliveryFormComponent implements AfterContentInit, OnDestroy {
     this.getOrderLineItemSub = this.orderService
       .getOrderLineItemsForDelivery(provinceId, cityId)
       .subscribe(data => {
-        this.delivery.lineItems = data.map(item => {
+        const newItems = data.map(item => {
           item.id = 0;
           item.quantity = item.quantity - item.quantityDelivered;
           return new DeliveryLineItem(item);
         });
-
+        this.delivery.lineItems = this.delivery.lineItems.concat(newItems);
         this.delivery.groupLineItems();
       });
   };
@@ -150,7 +159,7 @@ export class DeliveryFormComponent implements AfterContentInit, OnDestroy {
   private filterCities(value: string): City[] {
     const filterValue = value.toLowerCase();
 
-    return this.delivery.province
+    return this.selectedProvince
       .cities
       .filter(city => city.name.toLowerCase().startsWith(filterValue))
       .splice(0, 10);

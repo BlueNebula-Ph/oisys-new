@@ -21,16 +21,6 @@ namespace OisysNew.DTO.Delivery
         public string PlateNumber { get; set; }
 
         /// <summary>
-        /// Gets or sets the delivery province.
-        /// </summary>
-        public ProvinceLookup Province { get; set; }
-
-        /// <summary>
-        /// Gets or sets the delivery city.
-        /// </summary>
-        public CityLookup City { get; set; }
-
-        /// <summary>
         /// Gets or sets property Details.
         /// </summary>
         public IEnumerable<DeliveryDetailLineItem> LineItems { get; set; }

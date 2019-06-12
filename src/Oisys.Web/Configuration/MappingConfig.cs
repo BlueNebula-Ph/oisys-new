@@ -129,13 +129,12 @@ namespace OisysNew.Configuration
             // Delivery
             CreateMap<Delivery, DeliverySummary>()
                 .ForMember(d => d.Date, s => s.MapFrom(o => o.Date.ToShortDateString()))
-                .ForMember(d => d.ProvinceName, s => s.MapFrom(o => o.Province.Name))
-                .ForMember(d => d.CityName, s => s.MapFrom(o => o.City.Name));
+                .ForMember(d => d.DeliveryAreas, s => s.MapFrom(o => o.LineItems.Count != 0 ? 
+                    string.Join(" | ", o.LineItems.GroupBy(a => new { Province = a.OrderLineItem.Order.Customer.Province.Name, City = a.OrderLineItem.Order.Customer.City.Name }).Select(a => $"{a.Key.City}, {a.Key.Province}")) : 
+                    string.Empty));
 
             CreateMap<Delivery, DeliveryDetail>()
                 .ForMember(d => d.Date, s => s.MapFrom(o => o.Date.ToShortDateString()))
-                .ForMember(d => d.Province, s => s.MapFrom(o => o.Province))
-                .ForMember(d => d.City, s => s.MapFrom(o => o.City))
                 .ForMember(d => d.RowVersion, s => s.MapFrom(o => Convert.ToBase64String(o.RowVersion)));
 
             CreateMap<SaveDeliveryRequest, Delivery>()

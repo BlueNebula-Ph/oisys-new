@@ -29,9 +29,9 @@
               <div>{{ value }}</div>
             </ng-template>
           </ngx-datatable-column>
-          <ngx-datatable-column name="Area" prop="city" [flexGrow]="2">
+          <ngx-datatable-column name="Area" prop="city" [flexGrow]="2" [sortable]="false">
             <ng-template let-delivery="row" ngx-datatable-cell-template>
-              <div>{{ delivery.cityName }}, {{ delivery.provinceName }}</div>
+              <div>{{ delivery.deliveryAreas }}</div>
             </ng-template>
           </ngx-datatable-column>
           <ngx-datatable-column name="Plate Number" prop="plateNumber" [flexGrow]="2">
@@ -66,6 +66,7 @@
                         [customers]="customers$ | async"
                         [showProvinces]="true"
                         [provinces]="provinces$ | async"
+                        [showCities]="true"
                         [showItems]="true"
                         [items]="items$ | async"
                         [showDates]="true">

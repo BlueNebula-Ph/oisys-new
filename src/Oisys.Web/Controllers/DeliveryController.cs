@@ -94,7 +94,12 @@ namespace OisysNew.Controllers
 
                 if (!(filter?.ProvinceId).IsNullOrZero())
                 {
-                    list = list.Where(c => c.ProvinceId == filter.ProvinceId);
+                    list = list.Where(c => c.LineItems.Any(a => a.OrderLineItem.Order.Customer.ProvinceId == filter.ProvinceId));
+                }
+
+                if (!(filter?.CityId).IsNullOrZero())
+                {
+                    list = list.Where(c => c.LineItems.Any(a => a.OrderLineItem.Order.Customer.CityId == filter.CityId));
                 }
 
                 if (!(filter?.ItemId).IsNullOrZero())
@@ -135,9 +140,6 @@ namespace OisysNew.Controllers
             try
             {
                 var entity = await context.Deliveries
-                    .Include(c => c.Province)
-                        .ThenInclude(c => c.Cities)
-                    .Include(c => c.City)
                     .Include(c => c.LineItems)
                         .ThenInclude(lineItem => (lineItem as DeliveryLineItem).OrderLineItem)
                         .ThenInclude(orderLineItem => orderLineItem.Order)

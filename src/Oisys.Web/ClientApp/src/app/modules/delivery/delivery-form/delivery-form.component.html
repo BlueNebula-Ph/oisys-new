@@ -5,67 +5,59 @@
         <div class="card no-radius">
           <h6 class="card-header">Save Delivery Information.</h6>
           <div class="card-body">
-            <h6 class="card-title">Delivery information.</h6>
             <div class="row">
-              <div class="col-3 pr-0">
-                <div class="form-group">
-                  <label>Province.</label>
-                  <div appInputGroupStyle>
-                    <input appControlStyle #province name="province" placeholder="Province" [disabled]="isProvinceDisabled"
-                           [(ngModel)]="delivery.province" [ngbTypeahead]="searchProvince"
-                           [inputFormatter]="provinceFormatter" [resultTemplate]="provTemplate" required>
-                    <div class="input-group-append">
-                      <span class="input-group-text">* Required</span>
+              <div class="col-6">
+                <h6 class="card-title">Delivery information.</h6>
+                <div class="row">
+                  <div class="form-group col-6 pr-0">
+                    <label>Date.</label>
+                    <div appInputGroupStyle>
+                      <input appControlStyle #deliveryDate type="date" name="date" placeholder="Delivery date" [ngModel]="delivery.date | date:'yyyy-MM-dd'" (ngModelChange)="delivery.date=$event" required>
+                      <div class="input-group-append">
+                        <span class="input-group-text">* Required</span>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="form-group col-6 pr-0">
+                    <label>Plate Number.</label>
+                    <div appInputGroupStyle>
+                      <input appControlStyle name="plateNumber" placeholder="Plate Number" [(ngModel)]="delivery.plateNumber" required>
+                      <div class="input-group-append">
+                        <span class="input-group-text">* Required</span>
+                      </div>
                     </div>
                   </div>
                 </div>
               </div>
-              <div class="col-3 pr-0">
-                <div class="form-group">
-                  <label>City.</label>
-                  <div appInputGroupStyle>
-                    <input appControlStyle name="city" placeholder="City" [disabled]="!delivery.provinceId || delivery.provinceId == 0 || isProvinceDisabled"
-                           [(ngModel)]="delivery.city" [ngbTypeahead]="searchCity" (ngModelChange)="citySelected()"
-                           [inputFormatter]="cityFormatter" [resultTemplate]="cityTemplate" required>
-                    <div class="input-group-append">
-                      <span class="input-group-text">* Required</span>
-                    </div>
+              <div class="col-6">
+                <h6 class="card-title">Delivery Areas.</h6>
+                <div class="row">
+                  <div class="form-group col-6 pr-0">
+                    <label>Province.</label>
+                    <input appControlStyle #province name="province" placeholder="Province"
+                           [(ngModel)]="selectedProvince" [ngbTypeahead]="searchProvince"
+                           [inputFormatter]="provinceFormatter" [resultTemplate]="provTemplate">
                   </div>
-                </div>
-              </div>
-              <div class="col-3 pr-0">
-                <div class="form-group">
-                  <label>Date.</label>
-                  <div appInputGroupStyle>
-                    <input appControlStyle type="date" name="date" placeholder="Delivery date" [ngModel]="delivery.date | date:'yyyy-MM-dd'" (ngModelChange)="delivery.date=$event" required>
-                    <div class="input-group-append">
-                      <span class="input-group-text">* Required</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div class="col-3">
-                <div class="form-group">
-                  <label>Plate Number.</label>
-                  <div appInputGroupStyle>
-                    <input appControlStyle name="plateNumber" placeholder="Plate Number" [(ngModel)]="delivery.plateNumber" required>
-                    <div class="input-group-append">
-                      <span class="input-group-text">* Required</span>
-                    </div>
+                  <div class="form-group col-6">
+                    <label>City.</label>
+                    <input appControlStyle name="city" placeholder="City" [disabled]="!selectedProvince || !selectedProvince.id || selectedProvince.id == 0"
+                           [(ngModel)]="selectedCity" [ngbTypeahead]="searchCity" (ngModelChange)="citySelected()"
+                           [inputFormatter]="cityFormatter" [resultTemplate]="cityTemplate">
                   </div>
                 </div>
               </div>
             </div>
             <div class="row">
-              <div class="col-6">
+              <div class="col-6 pr-0">
                 <h6 class="card-title">Orders.</h6>
                 <table class="table table-sm border-bottom border-right border-left">
                   <thead>
                     <tr>
-                      <th width="20%" class="text-right">Quantity</th>
-                      <th width="30%">Item</th>
+                      <th width="12%" class="text-right">Qty</th>
+                      <th width="25%">Item</th>
                       <th width="20%">Category</th>
-                      <th width="30%">Customer</th>
+                      <th width="23%">Customer</th>
+                      <th width="20%">Area</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -77,9 +69,10 @@
                       <td>{{ lineItem.item }}</td>
                       <td>{{ lineItem.categoryName }}</td>
                       <td>{{ lineItem.customer.name }}</td>
+                      <td>{{ lineItem.customer.cityName + ', ' + lineItem.customer.provinceName }}</td>
                     </tr>
                     <tr *ngIf="!delivery.lineItems || delivery.lineItems.length == 0">
-                      <td class="pl-3" colspan="4">No items added.</td>
+                      <td class="pl-3" colspan="5">No items added.</td>
                     </tr>
                   </tbody>
                 </table>
@@ -96,7 +89,7 @@
                   </thead>
                   <tbody>
                     <tr *ngFor="let item of delivery.groupedItems; index as i;">
-                      <td>{{ item.itemCode }} - {{ item.itemName }}</td>
+                      <td>{{ item.itemCode + ' - ' + item.itemName }}</td>
                       <td>{{ item.categoryName }}</td>
                       <td>{{ item.totalQuantity }}</td>
                     </tr>

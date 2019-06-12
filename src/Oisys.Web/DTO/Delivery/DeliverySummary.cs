@@ -6,28 +6,24 @@
     public class DeliverySummary : DTOBase
     {
         /// <summary>
-        /// Gets or sets property Code.
+        /// Gets or sets the delivery number.
         /// </summary>
         public int DeliveryNumber { get; set; }
 
         /// <summary>
-        /// Gets or sets property Date.
+        /// Gets or sets the delivery date.
         /// </summary>
         public string Date { get; set; }
 
         /// <summary>
-        /// Gets or sets property Plate Number.
+        /// Gets or sets the plate number.
         /// </summary>
         public string PlateNumber { get; set; }
 
         /// <summary>
-        /// Gets or sets property Province Name.
+        /// Gets or sets areas of the delivery.
+        /// Formatted in pipe delimited string.
         /// </summary>
-        public string ProvinceName { get; set; }
-
-        /// <summary>
-        /// Gets or sets property City Name.
-        /// </summary>
-        public string CityName { get; set; }
+        public string DeliveryAreas { get; set; }
     }
 }

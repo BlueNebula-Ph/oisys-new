@@ -24,26 +24,6 @@ namespace OisysNew.Models
         public string PlateNumber { get; set; }
 
         /// <summary>
-        /// Gets or sets property Province Id.
-        /// </summary>
-        public long ProvinceId { get; set; }
-
-        /// <summary>
-        /// Gets or sets property City Id.
-        /// </summary>
-        public long CityId { get; set; }
-
-        /// <summary>
-        /// Gets or sets the province nav property.
-        /// </summary>
-        public virtual Province Province { get; set; }
-
-        /// <summary>
-        /// Gets or sets the city nav property.
-        /// </summary>
-        public virtual City City { get; set; }
-
-        /// <summary>
         /// Gets or sets property Details.
         /// </summary>
         public virtual ICollection<DeliveryLineItem> LineItems { get; set; }

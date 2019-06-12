@@ -23,17 +23,22 @@ namespace OisysNew.DTO.Delivery
         public int? ProvinceId { get; set; }
 
         /// <summary>
-        /// Gets or sets property Delivery Date From.
+        /// Gets or sets city id.
+        /// </summary>
+        public int? CityId { get; set; }
+
+        /// <summary>
+        /// Gets or sets delivery date from.
         /// </summary>
         public DateTime? DateFrom { get; set; }
 
         /// <summary>
-        /// Gets or sets property Delivery Date To.
+        /// Gets or sets delivery date to.
         /// </summary>
         public DateTime? DateTo { get; set; }
 
         /// <summary>
-        /// Gets or sets property Item.
+        /// Gets or sets item id.
         /// </summary>
         public int? ItemId { get; set; }
     }
