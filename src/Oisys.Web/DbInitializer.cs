@@ -169,7 +169,8 @@ namespace OisysNew
         {
             if (!context.Users.Any())
             {
-                var newUser = new ApplicationUser { Username = "Admin", Firstname = "Admin", Lastname = "User", AccessRights = "admin,canView,canWrite,canDelete" };
+                var rowVersion = "Dcf9Zu/SChO4DF9eQxKWnw==";
+                var newUser = new ApplicationUser { Username = "Admin", Firstname = "Admin", Lastname = "User", AccessRights = "admin,canView,canWrite,canDelete", RowVersion = Convert.FromBase64String(rowVersion) };
                 var password = new PasswordHasher<ApplicationUser>().HashPassword(newUser, "Admin");
                 newUser.PasswordHash = password;
 
