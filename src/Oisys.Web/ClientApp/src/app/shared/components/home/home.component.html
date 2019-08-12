@@ -75,8 +75,8 @@
 </ng-template>
 <ng-template #orders let-orders="board">
   <div class="card no-radius" *ngFor="let area of orders">
-    <div class="card-body">
-      <div class="text-value">Area: {{ area.city }}, {{ area.province }}</div>
+    <div class="card-body p-0">
+      <div class="p-2"><i class="fa fa-file-o mr-2"></i>Area: {{ area.city }}, {{ area.province }}</div>
       <table class="table table-sm table-striped mb-0">
         <thead class="thead-light">
           <tr>

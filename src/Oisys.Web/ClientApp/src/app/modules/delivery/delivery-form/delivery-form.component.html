@@ -4,8 +4,8 @@
       <div class="col-12 px-0">
         <div class="card no-radius">
           <h6 class="card-header">Save Delivery Information.</h6>
-          <div class="card-body">
-            <div class="row">
+          <div class="card-body p-0">
+            <div class="row m-0 py-3 top-row">
               <div class="col-6">
                 <h6 class="card-title">Delivery information.</h6>
                 <div class="row">
@@ -46,11 +46,16 @@
                   </div>
                 </div>
               </div>
+              <div class="col-12" *ngIf="delivery.groupedItems && delivery.groupedItems.length != 0">
+                <span class="badge badge-primary font-sm mr-2 px-2 py-1 font-weight-normal" *ngFor="let item of delivery.groupedCategories; index as i;">
+                  Total {{ item.categoryName }}: {{ item.totalQuantity }}
+                </span>
+              </div>
             </div>
-            <div class="row">
+            <div class="row m-0 py-3">
               <div class="col-6 pr-0">
                 <h6 class="card-title">Orders.</h6>
-                <table class="table table-sm border-bottom border-right border-left">
+                <table class="table table-sm border-bottom border-right border-left table-striped">
                   <thead>
                     <tr>
                       <th width="12%" class="text-right">Qty</th>
@@ -79,7 +84,7 @@
               </div>
               <div class="col-6">
                 <h6 class="card-title">Summary.</h6>
-                <table class="table table-sm border-bottom border-right border-left">
+                <table class="table table-sm border-bottom border-right border-left table-striped">
                   <thead>
                     <tr>
                       <th width="35%">Item</th>
@@ -95,18 +100,6 @@
                     </tr>
                     <tr *ngIf="!delivery.groupedItems || delivery.groupedItems.length == 0">
                       <td class="pl-3" colspan="3">Summary not found.</td>
-                    </tr>
-                  </tbody>
-                </table>
-                <h6 class="card-title">Totals.</h6>
-                <table class="table table-sm border-bottom border-right border-left">
-                  <tbody>
-                    <tr *ngFor="let item of delivery.groupedCategories; index as i;">
-                      <td>Total {{ item.categoryName }}</td>
-                      <td>{{ item.totalQuantity }}</td>
-                    </tr>
-                    <tr *ngIf="!delivery.groupedItems || delivery.groupedItems.length == 0">
-                      <td class="pl-3" colspan="2">Totals not computed.</td>
                     </tr>
                   </tbody>
                 </table>

@@ -12,7 +12,9 @@ import { ToastrModule } from 'ngx-toastr';
 import { NgbTypeaheadModule } from '@ng-bootstrap/ng-bootstrap';
 
 import { CurrencyMaskModule } from 'ng2-currency-mask';
-import { CurrencyMaskConfig, CURRENCY_MASK_CONFIG } from "ng2-currency-mask/src/currency-mask.config";
+import { CurrencyMaskConfig, CURRENCY_MASK_CONFIG } from 'ng2-currency-mask/src/currency-mask.config';
+
+import { NgxPrintModule } from 'ngx-print';
 
 import { AppRoutingModule } from './modules/routing/app-routing.module';
 import { CustomerModule } from './modules/customer/customer.module';
@@ -81,6 +83,7 @@ export const CustomCurrencyMaskConfig: CurrencyMaskConfig = {
     ToastrModule.forRoot(),
     NgbTypeaheadModule,
     CurrencyMaskModule,
+    NgxPrintModule
   ],
   providers: [
     { provide: PERFECT_SCROLLBAR_CONFIG, useValue: CustomScrollConfig },

@@ -7,6 +7,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { NgxDatatableModule } from '@swimlane/ngx-datatable';
 import { NgbTypeaheadModule } from '@ng-bootstrap/ng-bootstrap';
 import { CurrencyMaskModule } from 'ng2-currency-mask';
+import { NgxPrintModule } from 'ngx-print';
 
 import { EnumToArrayPipe } from '../pipes/enum-to-array.pipe';
 import { NoValuePipe } from '../pipes/no-value.pipe';
@@ -24,7 +25,8 @@ import { SearchPanelComponent } from '../components/search-panel/search-panel.co
     FormsModule,
     NgxDatatableModule,
     NgbTypeaheadModule,
-    CurrencyMaskModule
+    CurrencyMaskModule,
+    NgxPrintModule
   ],
   declarations: [
     EnumToArrayPipe,
@@ -45,7 +47,8 @@ import { SearchPanelComponent } from '../components/search-panel/search-panel.co
     RouterModule,
     NgxDatatableModule,
     NgbTypeaheadModule,
-    CurrencyMaskModule
+    CurrencyMaskModule,
+    NgxPrintModule
   ]
 })
 export class SharedModule {}

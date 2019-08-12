@@ -148,13 +148,13 @@ namespace OisysNew.Services
         {
             if (!lineItem.OrderId.IsNullOrZero())
             {
-                var orderLineItems = FetchOrderLineItems(lineItem.OrderId.Value);
-                foreach (var item in orderLineItems)
+                var order = await FetchOrder(lineItem.OrderId.Value);
+                foreach (var item in order.LineItems)
                 {
                     item.QuantityInvoiced = isInvoiced ?
-                        item.QuantityDelivered - item.QuantityInvoiced :
-                        item.QuantityDelivered;
+                        item.QuantityDelivered : item.QuantityDelivered - item.QuantityInvoiced;
                 }
+                order.IsInvoiced = order.LineItems.All(a => a.Quantity == a.QuantityInvoiced);
             }
             else if (!lineItem.CreditMemoId.IsNullOrZero())
             {
@@ -163,14 +163,14 @@ namespace OisysNew.Services
             }
         }
 
-        private IEnumerable<OrderLineItem> FetchOrderLineItems(long orderId)
+        private async Task<Order> FetchOrder(long orderId)
         {
-            var orderLineItems = context.OrderLineItems.Where(a => a.OrderId == orderId);
-            if (orderLineItems == null)
+            var order = await context.Orders.FindAsync(orderId);
+            if (order == null)
             {
-                throw new ArgumentException($"Order line items with order id {orderId} not found.");
+                throw new ArgumentException($"Order with id {orderId} not found.");
             }
-            return orderLineItems;
+            return order;
         }
 
         private async Task<CreditMemo> FetchCreditMemo(long creditMemoId)

@@ -11,6 +11,7 @@ using Microsoft.IdentityModel.Tokens;
 using OisysNew.Configuration;
 using OisysNew.Extensions;
 using Swashbuckle.AspNetCore.Swagger;
+using System;
 using System.Text;
 
 namespace OisysNew
@@ -131,6 +132,7 @@ namespace OisysNew
                     // see https://go.microsoft.com/fwlink/?linkid=864501
 
                     spa.Options.SourcePath = "ClientApp";
+                    spa.Options.StartupTimeout = TimeSpan.FromSeconds(90);
 
                     if (env.IsDevelopment())
                     {
