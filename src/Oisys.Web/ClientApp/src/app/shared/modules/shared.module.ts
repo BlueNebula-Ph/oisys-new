@@ -16,6 +16,7 @@ import { FocusDirective } from '../directives/focus.directive';
 import { ControlStyleDirective } from '../directives/control-style.directive';
 import { InputGroupStyleDirective } from '../directives/input-group-style.directive';
 import { SearchPanelComponent } from '../components/search-panel/search-panel.component';
+import { LogoComponent } from '../components/logo/logo.component';
 
 @NgModule({
   imports: [
@@ -34,7 +35,8 @@ import { SearchPanelComponent } from '../components/search-panel/search-panel.co
     FocusDirective,
     ControlStyleDirective,
     InputGroupStyleDirective,
-    SearchPanelComponent
+    SearchPanelComponent,
+    LogoComponent
   ],
   exports: [
     EnumToArrayPipe,
@@ -43,6 +45,7 @@ import { SearchPanelComponent } from '../components/search-panel/search-panel.co
     ControlStyleDirective,
     InputGroupStyleDirective,
     SearchPanelComponent,
+    LogoComponent,
     BrowserAnimationsModule,
     RouterModule,
     NgxDatatableModule,

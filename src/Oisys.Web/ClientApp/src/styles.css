@@ -77,3 +77,26 @@ datatable-header-cell.right > div {
   background-color: #008080 !important;
   color: #fff;
 }
+
+.details-logo {
+}
+
+  .details-logo span {
+    vertical-align: -webkit-baseline-middle;
+    font-size: 18pt;
+    font-weight: 500;
+  }
+
+@media print {
+  .details-logo {
+    margin-top: 30px;
+  }
+
+  .badge {
+    visibility: hidden;
+  }
+
+  #btn-container {
+    visibility: hidden;
+  }
+}
