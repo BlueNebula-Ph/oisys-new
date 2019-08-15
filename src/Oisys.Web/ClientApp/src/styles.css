@@ -96,6 +96,10 @@ datatable-header-cell.right > div {
     visibility: hidden;
   }
 
+  .fa {
+    visibility: hidden;
+  }
+
   #btn-container {
     visibility: hidden;
   }
