@@ -88,19 +88,22 @@ datatable-header-cell.right > div {
   }
 
 @media print {
-  .details-logo {
-    margin-top: 30px;
+  header {
+    display: none !important;
+    height: 0 !important;
+    border: 0 !important;
   }
 
-  .badge {
-    visibility: hidden;
-  }
-
-  .fa {
-    visibility: hidden;
+  #print-main {
+    margin: -20px !important;
+    border: 0;
   }
 
   #btn-container {
+    visibility: hidden;
+  }
+
+  .badge {
     visibility: hidden;
   }
 }

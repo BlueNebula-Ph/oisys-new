@@ -1,5 +1,5 @@
-<div class="animated fadeIn card" *ngIf="invoice$ | async as invoice">
-  <div id="main" class="card-body">
+<div id="print-main" class="animated fadeIn card" *ngIf="invoice$ | async as invoice">
+  <div class="card-body">
     <app-logo></app-logo>
     <div class="small">
       Invoice # {{ invoice.invoiceNumber }}
@@ -55,7 +55,7 @@
       <a routerLink="/invoices/edit/{{ invoice.id }}" class="btn btn-sm btn-ghost-dark" accesskey="e" *ngIf="canWrite">
         <i class="fa fa-pencil mr-1"></i>Edit
       </a>
-      <button ngxPrint [useExistingCss]="true" class="btn btn-sm btn-ghost-dark" accesskey="p" printSectionId="main">
+      <button type="button" class="btn btn-sm btn-ghost-dark" accesskey="p" onclick="window.print();">
         <i class="fa fa-print mr-1"></i> Print
       </button>
     </div>
