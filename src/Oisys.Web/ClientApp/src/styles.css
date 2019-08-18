@@ -100,10 +100,20 @@ datatable-header-cell.right > div {
   }
 
   #btn-container {
-    visibility: hidden;
+    display: none;
   }
 
   .badge {
     visibility: hidden;
+  }
+
+  .print-hide {
+    display: none;
+  }
+
+  .print-full {
+    width: 100% !important;
+    max-width: 100% !important;
+    flex: 0 0 100% !important;
   }
 }
