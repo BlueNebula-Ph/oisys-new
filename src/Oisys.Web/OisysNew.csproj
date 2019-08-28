@@ -32,8 +32,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Remove="ClientApp\src\app\modules\quotation\quotation-form\quotation-form.component.html~RF41bcceed.TMP" />
-    <None Remove="ClientApp\src\app\modules\quotation\quotation-form\quotation-form.component.html~RF41bcceed.TMP" />
     <None Remove="ClientApp\src\app\nav.ts" />
     <None Remove="ClientApp\src\app\shared\helpers\page-base.ts" />
     <None Remove="ClientApp\src\app\shared\models\access-rights.ts" />
@@ -121,12 +119,12 @@
 
   <ItemGroup>
     <Content Update="appsettings.json">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
 
   <Target Name="DebugEnsureNodeEnv" BeforeTargets="Build" Condition=" '$(Configuration)' == 'Debug' And !Exists('$(SpaRoot)node_modules') ">
-    <!-- Ensure Node.js is installed -->
+     <!--Ensure Node.js is installed--> 
     <Exec Command="node --version" ContinueOnError="true">
       <Output TaskParameter="ExitCode" PropertyName="ErrorCode" />
     </Exec>
@@ -136,12 +134,12 @@
   </Target>
 
   <Target Name="PublishRunWebpack" AfterTargets="ComputeFilesToPublish">
-    <!-- As part of publishing, ensure the JS resources are freshly built in production mode -->
+     <!--As part of publishing, ensure the JS resources are freshly built in production mode--> 
     <Exec WorkingDirectory="$(SpaRoot)" Command="npm install" />
     <Exec WorkingDirectory="$(SpaRoot)" Command="npm run build -- --prod" />
     <Exec WorkingDirectory="$(SpaRoot)" Command="npm run build:ssr -- --prod" Condition=" '$(BuildServerSideRenderer)' == 'true' " />
 
-    <!-- Include the newly-built files in the publish output -->
+     <!--Include the newly-built files in the publish output--> 
     <ItemGroup>
       <DistFiles Include="$(SpaRoot)dist\**; $(SpaRoot)dist-server\**" />
       <DistFiles Include="$(SpaRoot)node_modules\**" Condition="'$(BuildServerSideRenderer)' == 'true'" />

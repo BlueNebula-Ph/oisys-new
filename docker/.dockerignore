@@ -1,7 +1,7 @@
 .git/
 .vs/
 .vscode/
-bin/
-obj/
+[B|b]in/
+[O|o]bj/
 node_modules/
 tests/

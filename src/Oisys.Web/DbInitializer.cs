@@ -12,7 +12,7 @@ namespace OisysNew
     {
         public static void Seed(OisysDbContext context, IHostingEnvironment env)
         {
-            if (env.IsDevelopment())
+            if (env.IsDevelopment() || env.IsEnvironment("Kube"))
             {
                 //context.Database.EnsureDeleted();
                 context.Database.EnsureCreated();

@@ -36,11 +36,11 @@ namespace OisysNew
             {
                 opt.UseLazyLoadingProxies();
 
-                if (env.IsDevelopment() || env.IsProduction())
+                if (env.IsDevelopment() || env.IsProduction() || env.IsEnvironment("Kube"))
                 {
                     opt.UseSqlServer(Configuration.GetConnectionString(DatabaseName));
                 }
-                else if(string.Compare(env.EnvironmentName, "Heroku", true) == 0)
+                else if (env.IsEnvironment("Heroku"))
                 {
                     opt.UseInMemoryDatabase(DatabaseName);
                 }
@@ -55,7 +55,7 @@ namespace OisysNew
             var authSettings = authSection.Get<AuthOptions>();
             var key = Encoding.UTF8.GetBytes(authSettings.Key);
             services
-                .AddAuthentication(opt => 
+                .AddAuthentication(opt =>
                 {
                     opt.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
                     opt.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
